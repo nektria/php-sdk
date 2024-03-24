@@ -37,7 +37,7 @@ class ArrayDataFetcher
         return $this->getValue($field) !== null;
     }
 
-    private function getValue(string $field): mixed
+    protected function getValue(string $field): mixed
     {
         if (!str_contains($field, '.')) {
             $value = $this->data[$field] ?? null;
