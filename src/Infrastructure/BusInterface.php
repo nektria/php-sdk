@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Nektria\Interface;
+namespace Nektria\Infrastructure;
 
 use Nektria\Document\Document;
 use Nektria\Message\Command;

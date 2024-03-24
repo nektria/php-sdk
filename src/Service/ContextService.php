@@ -8,6 +8,10 @@ use Nektria\Util\StringUtil;
 
 class ContextService
 {
+    public const CONTEXT_INTERNAL = 'internal';
+
+    public const CONTEXT_PUBLIC = 'public';
+
     private string $context;
 
     private string $traceId;
@@ -16,13 +20,15 @@ class ContextService
 
     private string $userId;
 
+    private string $project;
+
     public function __construct(
         private readonly string $env
     ) {
-        $this->context = 'none';
+        $this->context = '';
         $this->traceId = StringUtil::uuid4();
-        $this->tenantId = 'anon.';
-        $this->userId = 'anon.';
+        $this->tenantId = '';
+        $this->project = '';
     }
 
     public function context(): string
@@ -38,6 +44,16 @@ class ContextService
     public function env(): string
     {
         return $this->env;
+    }
+
+    public function project(): string
+    {
+        return $this->project;
+    }
+
+    public function debug(): bool
+    {
+        return $this->env === 'dev';
     }
 
     public function setContext(string $context): void

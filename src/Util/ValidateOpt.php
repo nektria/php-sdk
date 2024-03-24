@@ -96,13 +96,6 @@ class ValidateOpt
         }
     }
 
-    public static function role(?string $value): void
-    {
-        if ($value !== null) {
-            Validate::role($value);
-        }
-    }
-
     // coordinates
 
     public static function latitude(?float $value): void

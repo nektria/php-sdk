@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Nektria\Util;
 
+use InvalidArgumentException;
 use Nektria\Dto\Clock;
 use Nektria\Exception\MissingFieldRequiredToCreateClassException;
-use InvalidArgumentException;
 use RuntimeException;
 use Throwable;
 

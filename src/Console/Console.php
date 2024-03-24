@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Nektria\Console;
 
 use Nektria\Document\Document;
-use Nektria\Interface\UserServiceInterface;
+use Nektria\Infrastructure\UserServiceInterface;
 use Nektria\Message\Command as CommandMessage;
 use Nektria\Message\Query;
 use Nektria\Service\Bus;

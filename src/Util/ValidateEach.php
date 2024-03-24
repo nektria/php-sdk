@@ -131,16 +131,6 @@ class ValidateEach
         }
     }
 
-    /**
-     * @param string[] $values
-     */
-    public static function role(array $values): void
-    {
-        foreach ($values as $item) {
-            Validate::role($item);
-        }
-    }
-
     // coordinates
 
     /**

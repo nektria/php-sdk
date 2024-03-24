@@ -6,8 +6,8 @@ namespace Nektria\Service;
 
 use Nektria\Document\Document;
 use Nektria\Exception\NektriaException;
-use Nektria\Interface\BusInterface;
-use Nektria\Interface\UserServiceInterface;
+use Nektria\Infrastructure\BusInterface;
+use Nektria\Infrastructure\UserServiceInterface;
 use Nektria\Message\Command;
 use Nektria\Message\Event;
 use Nektria\Message\Query;
