@@ -18,6 +18,7 @@ use PhpParser\Node\Expr\BinaryOp\SmallerOrEqual;
 use PhpParser\Node\Expr\BinaryOp\Spaceship;
 use PHPStan\Analyser\Scope;
 use PHPStan\Rules\Rule;
+use PHPStan\Rules\RuleErrorBuilder;
 use PHPStan\Type\FloatType;
 use PHPStan\Type\IntegerType;
 use PHPStan\Type\ObjectType;
@@ -36,10 +37,6 @@ class AllowComparingOnlyComparableTypesRule implements Rule
         return BinaryOp::class;
     }
 
-    /**
-     * @param BinaryOp $node
-     * @return string[]
-     */
     public function processNode(Node $node, Scope $scope): array
     {
         if (
@@ -63,11 +60,11 @@ class AllowComparingOnlyComparableTypesRule implements Rule
         $rightType = $scope->getType($node->right);
 
         if ($this->containsOnlyTypes($leftType, [$clockType, $clock2Type])) {
-            return ['Cannot compare clocks.'];
+            return [RuleErrorBuilder::message('Cannot compare clocks.')->identifier('nektria.comparation')->build()];
         }
 
         if ($this->containsOnlyTypes($rightType, [$clockType, $clock2Type])) {
-            return ['Cannot compare clocks.'];
+            return [RuleErrorBuilder::message('Cannot compare clocks.')->identifier('nektria.comparation')->build()];
         }
 
         if (
@@ -84,17 +81,17 @@ class AllowComparingOnlyComparableTypesRule implements Rule
         $rightTypeDescribed = $rightType->describe(VerbosityLevel::typeOnly());
 
         if (!$this->isComparable($leftType) || !$this->isComparable($rightType)) {
-            return [
+            return [RuleErrorBuilder::message(
                 "Comparison {$leftTypeDescribed} {$node->getOperatorSigil()} {$rightTypeDescribed} contains " .
                 'non-comparable type, only int|float|string|DateTimeInterface is allowed.'
-            ];
+            )->identifier('nektria.comparation')->build()];
         }
 
         if (!$this->isComparableTogether($leftType, $rightType)) {
-            return [
+            return [RuleErrorBuilder::message(
                 "Cannot compare different types in {$leftTypeDescribed} {$node->getOperatorSigil()} " .
                 "{$rightTypeDescribed}."
-            ];
+            )->identifier('nektria.comparation')->build()];
         }
 
         return [];
