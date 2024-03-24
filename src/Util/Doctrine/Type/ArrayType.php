@@ -13,7 +13,7 @@ class ArrayType extends JsonType
 {
     protected function getTypeName(): string
     {
-        return 'json_array';
+        return 'array_item';
     }
 
     /**
