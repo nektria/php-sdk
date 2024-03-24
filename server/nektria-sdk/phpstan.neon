@@ -1,0 +1,33 @@
+includes:
+    - '%currentWorkingDirectory%/vendor/phpstan/phpstan-symfony/extension.neon'
+    - '%currentWorkingDirectory%/vendor/phpstan/phpstan-symfony/rules.neon'
+    - '%currentWorkingDirectory%/vendor/phpstan/phpstan-mockery/extension.neon'
+    - '%currentWorkingDirectory%/vendor/phpstan/phpstan-strict-rules/rules.neon'
+    - '%currentWorkingDirectory%/vendor/phpstan/phpstan-phpunit/extension.neon'
+    - '%currentWorkingDirectory%/vendor/phpstan/phpstan-phpunit/rules.neon'
+    - '%currentWorkingDirectory%/vendor/phpstan/phpstan-doctrine/extension.neon'
+    - '%currentWorkingDirectory%/vendor/phpstan/phpstan-doctrine/rules.neon'
+    - '%currentWorkingDirectory%/vendor/phpstan/phpstan/conf/bleedingEdge.neon'
+
+parameters:
+    level: 8
+    paths:
+        - ../../src
+
+    excludePaths:
+        - '%currentWorkingDirectory%/vendor'
+
+    #symfony:
+        #container_xml_path: '%currentWorkingDirectory%/var/cache/dev/App_KernelDevDebugContainer.xml'
+
+    #scanFiles:
+        #- '%currentWorkingDirectory%/config/global.php'
+
+rules:
+    - Nektria\PHPStan\AllowComparingOnlyComparableTypesRule
+
+services:
+    -
+        class: Nektria\PHPStan\ValidateClassFieldsReturnsNotNullExtension
+        tags:
+            - phpstan.typeSpecifier.staticMethodTypeSpecifyingExtension

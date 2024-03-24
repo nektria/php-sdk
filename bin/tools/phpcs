@@ -1,0 +1,29 @@
+#!/bin/bash
+trap "exit 1" ERR
+
+USE_LOCAL=''
+USE_GOOGLE=''
+DOCKER_IMAGE='nektria-sdk'
+
+print_usage() {
+  printf "Usage: bin/php-cs-fixer [-l|g] \n"
+}
+
+while getopts 'lg' flag; do
+  case "$flag" in
+    l) USE_LOCAL='1';;
+    g) USE_GOOGLE='1';;
+    *) print_usage
+       exit 1 ;;
+  esac
+done
+
+if [ "$USE_LOCAL" = '1' ]; then
+  php -d memory_limit=-1 vendor/bin/phpcbf src --colors --standard=PSR12
+  php -d memory_limit=-1 vendor/bin/phpcs src --colors --standard=PSR12
+elif [ "$USE_GOOGLE" = '1' ]; then
+  php -d memory_limit=-1 /builder/home/.composer/vendor/bin/phpcs src --standard=PSR12
+else
+  docker exec -i "$DOCKER_IMAGE" vendor/bin/phpcbf src --colors --standard=PSR12
+  docker exec -i "$DOCKER_IMAGE" vendor/bin/phpcs src --colors --standard=PSR12
+fi
