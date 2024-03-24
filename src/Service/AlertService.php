@@ -4,26 +4,20 @@ declare(strict_types=1);
 
 namespace Nektria\Service;
 
-use RuntimeException;
 use Throwable;
 
 use function in_array;
-use function is_string;
 
 class AlertService
 {
     private string $token;
 
     public function __construct(
+        private readonly string $alertsToken,
         private readonly ContextService $contextService,
         private readonly RequestClient $requestClient,
     ) {
-        $token = getenv('ALERTS_TOKEN');
-        if (!is_string(getenv('ALERTS_TOKEN'))) {
-            throw new RuntimeException('ALERTS_TOKEN envvar is not set.');
-        }
-
-        $this->token = (string) $token;
+        $this->token = $this->alertsToken;
     }
 
     /**
