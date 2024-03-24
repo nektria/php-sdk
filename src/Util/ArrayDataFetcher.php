@@ -17,15 +17,11 @@ use function is_string;
 
 class ArrayDataFetcher
 {
-    /** @var mixed[] */
-    private array $data;
-
     /**
      * @param mixed[] $data
      */
-    public function __construct(array $data)
+    public function __construct(protected readonly array $data)
     {
-        $this->data = $data;
     }
 
     /**
