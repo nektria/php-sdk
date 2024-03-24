@@ -1,0 +1,27 @@
+###> global ###
+.fleet
+.idea
+*.DS_Store
+/.tmp
+/tmp
+/api/custom
+###< global ###
+
+###> symfony/framework-bundle ###
+/.env.local
+/.env.local.php
+/.env.*.local
+/var/
+/vendor/
+###< symfony/framework-bundle ###
+
+###> Php CS Fixer ###
+.php_cs.cache
+.php-cs-fixer.cache
+###< Php CS Fixer ###
+
+###> phpunit/phpunit ###
+/phpunit.xml
+server/nektria-sdk/.phpunit.result.cache
+.phpunit.result.cache
+###< phpunit/phpunit ###

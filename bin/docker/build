@@ -1,0 +1,2 @@
+#!/bin/bash
+docker-compose -f server/nektria-sdk/docker-compose.yml build #--no-cache

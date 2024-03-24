@@ -1,0 +1,34 @@
+#!/bin/bash
+bin/execute &> /dev/null
+bin/console &> /dev/null
+
+trap "exit 1" ERR
+
+PIPELINE=''
+
+print_usage() {
+  printf "Usage: bin/validate [-l|g] \n"
+}
+
+while getopts 'p' flag; do
+  case "$flag" in
+    p) PIPELINE='1';;
+    *) print_usage
+       exit 1 ;;
+  esac
+done
+
+bin/tools/check-dumps
+
+if [ "$PIPELINE" = '1' ]; then
+  bin/tools/composer-validate -p
+  bin/tools/phpstan -p
+  bin/tools/php-cs-fixer -p
+  bin/tools/phpcs -p
+else
+  bin/tools/composer-validate
+  bin/tools/phpstan
+  bin/tools/php-cs-fixer
+  bin/tools/phpcs
+fi
+

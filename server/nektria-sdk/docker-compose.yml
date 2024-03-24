@@ -1,0 +1,15 @@
+version: '3'
+services:
+  yieldmanager:
+    image: eu.gcr.io/nektria/php:8.1
+    container_name: nektria-sdk
+    restart: 'no'
+    networks:
+      - default
+    volumes:
+      - ../../.:/app
+      - /app/var
+    stdin_open: true
+    tty: true
+    command: bash
+
