@@ -22,7 +22,7 @@
         "symfony/http-kernel": ">=v6.0",
         "symfony/http-client-contracts": ">=v3.4",
         "symfony/messenger": ">=6.0",
-        "doctrine/orm": ">=3.1",
+        "doctrine/orm": ">=2.19 <3.0",
         "symfony/framework-bundle": "^6.4",
         "symfony/serializer": "^6.4"
     },
