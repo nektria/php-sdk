@@ -45,13 +45,13 @@ abstract class InternalReferenceRedisCache extends RedisCache
     /**
      * @return T|null
      */
-    protected function getItem(string $key): mixed
+    protected function getItem(string $key)
     {
         try {
             $luaScript = <<<LUA
                 local key1 = KEYS[1]
                 local key2 = redis.call('get', '{$this->fqn}:' .. key1)
-                if key2 == nil then
+                if key2 == nil or key2 == false then
                     return nil
                 end
                 return redis.call('get', '{$this->internalRedisCache->fqn}:' .. key2)
@@ -63,9 +63,14 @@ abstract class InternalReferenceRedisCache extends RedisCache
                 return null;
             }
 
-            return unserialize($item, [
-                'allowed_classes' => true,
-            ]);
+            if ($this->init()->getLastError() !== null) {
+                $lastError = $this->init()->getLastError();
+                $this->init()->clearLastError();
+
+                throw new RuntimeException($lastError);
+            }
+
+            return unserialize($item);
         } catch (Throwable) {
             return null;
         }
@@ -167,6 +172,13 @@ abstract class InternalReferenceRedisCache extends RedisCache
                 return [];
             }
 
+            if ($this->init()->getLastError() !== null) {
+                $lastError = $this->init()->getLastError();
+                $this->init()->clearLastError();
+
+                throw new RuntimeException($lastError);
+            }
+
             $result = [];
             foreach ($items as $item) {
                 foreach ($item as $subItem) {
@@ -228,6 +240,13 @@ abstract class InternalReferenceRedisCache extends RedisCache
 
             if ($items === false) {
                 return [];
+            }
+
+            if ($this->init()->getLastError() !== null) {
+                $lastError = $this->init()->getLastError();
+                $this->init()->clearLastError();
+
+                throw new RuntimeException($lastError);
             }
 
             $result = [];
