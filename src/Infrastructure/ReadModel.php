@@ -51,6 +51,7 @@ abstract class ReadModel
     /**
      * @param array<string, string|int|float|bool|null> $params
      * @param string[] $groupBy
+     * @return T|null
      */
     protected function getResult(string $sql, array $params = [], array $groupBy = []): ?Document
     {
