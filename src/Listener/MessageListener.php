@@ -2,12 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Nektria\Infrastructure;
+namespace Nektria\Listener;
 
 use Doctrine\DBAL\ConnectionException;
 use Doctrine\DBAL\Exception\DriverException;
 use Doctrine\ORM\EntityManagerInterface;
 use Nektria\Dto\Clock;
+use Nektria\Infrastructure\UserServiceInterface;
 use Nektria\Message\Event;
 use Nektria\Service\AlertService;
 use Nektria\Service\ContextService;
