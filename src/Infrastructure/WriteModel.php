@@ -62,7 +62,7 @@ abstract class WriteModel
     }
 
     /**
-     * @param mixed[] $criteria
+     * @param T[] $criteria
      */
     protected function findOneBy(array $criteria): ?Entity
     {
