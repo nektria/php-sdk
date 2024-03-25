@@ -26,6 +26,7 @@ class ContextService
         private readonly string $env
     ) {
         $this->context = '';
+        $this->userId = '';
         $this->traceId = StringUtil::uuid4();
         $this->tenantId = '';
         $this->project = '';
