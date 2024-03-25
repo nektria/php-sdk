@@ -26,6 +26,9 @@ abstract class WriteModel
      */
     abstract protected function getClassName(): string;
 
+    /**
+     * @param T $domain
+     */
     protected function saveEntity(Entity $domain): void
     {
         $this->manager->persist($domain);
@@ -33,6 +36,9 @@ abstract class WriteModel
         $this->manager->detach($domain);
     }
 
+    /**
+     * @param T $domain
+     */
     protected function deleteEntity(Entity $domain): void
     {
         try {
@@ -47,6 +53,9 @@ abstract class WriteModel
         }
     }
 
+    /**
+     * @return T|null
+     */
     protected function findEntity(string $id): ?Entity
     {
         return $this->getRepository()->find($id);
@@ -63,7 +72,7 @@ abstract class WriteModel
     /**
      * @param mixed[] $criteria
      * @param mixed[]|null $orderBy
-     * @return Entity[]
+     * @return T[]
      */
     protected function findBy(array $criteria, ?array $orderBy = null, int $limit = 10000, int $offset = 0): array
     {
