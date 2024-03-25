@@ -40,6 +40,15 @@ class SharedVariableCache extends SharedRedisCache
         $callback();
     }
 
+    public function refreshKey(string $key, int $lifetime = 300): bool
+    {
+        $exists = !$this->hasKey($key);
+        $value = $this->getItem($key) ?? self::DEFAULT;
+        $this->setItem($key, $value, $lifetime);
+
+        return $exists;
+    }
+
     public function saveInt(string $key, int $value): void
     {
         $this->setItem($key, $value, 604800);

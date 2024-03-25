@@ -35,10 +35,13 @@ class VariableCache extends InternalRedisCache
         return $value !== null;
     }
 
-    public function refreshKey(string $key, int $lifetime = 300): void
+    public function refreshKey(string $key, int $lifetime = 300): bool
     {
+        $exists = !$this->hasKey($key);
         $value = $this->getItem($key) ?? self::DEFAULT;
         $this->setItem($key, $value, $lifetime);
+
+        return $exists;
     }
 
     public function deleteKey(string $key): void
