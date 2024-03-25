@@ -19,12 +19,14 @@ use Throwable;
 
 class ThrowableDocument implements Document
 {
-    public int $status;
+    public readonly int $status;
+
+    public readonly Throwable $throwable;
 
     public function __construct(
-        public readonly Throwable $throwable
+        Throwable $throwable
     ) {
-        $exception = $this->throwable;
+        $exception = $throwable;
         if ($exception instanceof NektriaException) {
             $exception = $exception->realException();
         }
@@ -50,6 +52,8 @@ class ThrowableDocument implements Document
         } else {
             $this->status = Response::HTTP_INTERNAL_SERVER_ERROR;
         }
+
+        $this->throwable = $throwable;
     }
 
     public function toArray(string $model): mixed
