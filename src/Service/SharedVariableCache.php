@@ -30,6 +30,16 @@ class SharedVariableCache extends SharedRedisCache
         $this->removeItem($key);
     }
 
+    public function executeIfNotExists(string $key, callable $callback, int $lifetime = 300): void
+    {
+        if ($this->hasKey($key)) {
+            return;
+        }
+
+        $this->saveKey($key, $lifetime);
+        $callback();
+    }
+
     public function saveInt(string $key, int $value): void
     {
         $this->setItem($key, $value, 604800);

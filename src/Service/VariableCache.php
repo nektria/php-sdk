@@ -18,6 +18,16 @@ class VariableCache extends InternalRedisCache
         $this->setItem($key, self::DEFAULT, $lifetime);
     }
 
+    public function executeIfNotExists(string $key, callable $callback, int $lifetime = 300): void
+    {
+        if ($this->hasKey($key)) {
+            return;
+        }
+
+        $this->saveKey($key, $lifetime);
+        $callback();
+    }
+
     public function hasKey(string $key): bool
     {
         $value = $this->getItem($key);
