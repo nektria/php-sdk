@@ -29,6 +29,10 @@ class LogService
         private readonly string $defaultLogLevel
     ) {
         $this->channel = fopen('php://stderr', 'wb');
+
+        if ($env === 'dev' || $env === 'test') {
+            $this->channel = false;
+        }
     }
 
     /**
