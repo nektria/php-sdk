@@ -9,7 +9,6 @@ use RuntimeException;
 use Throwable;
 
 use function count;
-use function is_string;
 
 /**
  * @template T
@@ -22,14 +21,10 @@ abstract class InternalReferenceRedisCache extends RedisCache
     protected function __construct(
         private readonly InternalRedisCache $internalRedisCache,
         string $redisDsn,
+        string $redisPrefix,
         string $env,
     ) {
-        $prefix = getenv('REDIS_PREFIX');
-        if (!is_string(getenv('REDIS_PREFIX'))) {
-            throw new RuntimeException('REDIX_PREFIX envvar is not set.');
-        }
-
-        parent::__construct($redisDsn, $env, (string) $prefix);
+        parent::__construct($redisDsn, $env, $redisPrefix);
     }
 
     protected function getRawItem(string $key): ?string
