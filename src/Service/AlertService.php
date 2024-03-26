@@ -164,6 +164,7 @@ class AlertService
         }
 
         $content = str_replace(['\/', '/app/'], ['/', ''], $content);
+        $content = html_entity_decode(preg_replace('/\\\u([\da-fA-F]{4})/', '&#x\1;', $content) ?? '');
 
         $this->sendMessage(
             'bugs',
