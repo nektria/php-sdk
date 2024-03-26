@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Nektria\PHPStan;
 
+use Nektria\Util\Validate;
 use PhpParser\Node\Expr\StaticCall;
 use PHPStan\Analyser\Scope;
 use PHPStan\Analyser\SpecifiedTypes;
@@ -12,7 +13,6 @@ use PHPStan\Analyser\TypeSpecifierAwareExtension;
 use PHPStan\Analyser\TypeSpecifierContext;
 use PHPStan\Reflection\MethodReflection;
 use PHPStan\Type\TypeCombinator;
-use Nektria\Util\Validate;
 
 class ValidateClassFieldsReturnsNotNullExtension implements TypeSpecifierAwareExtension
 {

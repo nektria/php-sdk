@@ -91,6 +91,10 @@ class AlertService
                 "Trace: {$this->contextService->traceId()}\n" .
                 "‎\n‎";
 
+            if (str_contains($content, 'You are being rate limited.')) {
+                return;
+            }
+
             try {
                 $this->requestClient->post(
                     "https://discord.com/api/channels/{$channel}/messages",
