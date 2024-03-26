@@ -79,7 +79,19 @@ class AlertService
                     'Authorization' => "Bot {$this->token}"
                 ]
             );
-        } catch (Throwable) {
+        } catch (Throwable $e) {
+            try {
+                $this->requestClient->post(
+                    "https://discord.com/api/channels/{$channel}/messages",
+                    [
+                        'content' => $e->getMessage() . '\n' . $this->contextService->traceId()
+                    ],
+                    [
+                        'Authorization' => "Bot {$this->token}"
+                    ]
+                );
+            } catch (Throwable) {
+            }
         }
     }
 
