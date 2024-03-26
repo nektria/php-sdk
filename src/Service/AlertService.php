@@ -86,7 +86,7 @@ class AlertService
             $content = "‎\n" .
                 '**Discord Api Error**' .
                 "```json\n" .
-                $e->getMessage() .
+                JsonUtil::encode(JsonUtil::decode($e->getMessage()), true) .
                 "\n```" .
                 "Trace: {$this->contextService->traceId()}\n" .
                 "‎\n‎";
