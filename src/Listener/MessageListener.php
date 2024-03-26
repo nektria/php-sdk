@@ -72,8 +72,9 @@ abstract class MessageListener implements EventSubscriberInterface
             $this->contextService->setContext($contextStamp->context());
             $this->contextService->setTraceId($contextStamp->traceId());
             $this->contextService->setTenantId($contextStamp->tenantId());
-            $this->contextService->setUserId($contextStamp->userId());
-            $this->userService->authenticateSystem($contextStamp->tenantId());
+            if ($contextStamp->tenantId() !== null) {
+                $this->userService->authenticateSystem($contextStamp->tenantId());
+            }
         }
 
         $this->messageStartedAt = Clock::new()->iso8601String();
@@ -169,8 +170,10 @@ abstract class MessageListener implements EventSubscriberInterface
                 ]
             ]);
 
-            $tenantName = $this->userService->retrieveTenantName($this->contextService->tenantId());
-
+            $tenantName = 'none';
+            if ($this->contextService->tenantId() !== null) {
+                $tenantName = $this->userService->retrieveTenantName();
+            }
 
             $value = $this->variableCache->hasKey("{$tenantName}-messenger-{$classHash}");
 

@@ -50,7 +50,6 @@ class Bus implements BusInterface
                     $this->contextService->context(),
                     $this->contextService->traceId(),
                     $this->contextService->tenantId(),
-                    $this->contextService->userId()
                 )
             ])->last(HandledStamp::class);
 
@@ -79,8 +78,7 @@ class Bus implements BusInterface
                 new ContextStamp(
                     $this->contextService->context(),
                     $this->contextService->traceId(),
-                    $this->contextService->tenantId(),
-                    $this->contextService->userId()
+                    $this->contextService->tenantId()
                 )
             ]);
         } catch (HandlerFailedException $e) {
@@ -103,8 +101,7 @@ class Bus implements BusInterface
                 new ContextStamp(
                     $this->contextService->context(),
                     $this->contextService->traceId(),
-                    $this->contextService->tenantId(),
-                    $this->contextService->userId(),
+                    $this->contextService->tenantId()
                 )
             ]);
         } catch (HandlerFailedException $e) {

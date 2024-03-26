@@ -19,5 +19,5 @@ interface UserServiceInterface
 
     public function clearAuthentication(): void;
 
-    public function retrieveTenantName(string $id): string;
+    public function retrieveTenantName(): string;
 }

@@ -5,31 +5,42 @@ declare(strict_types=1);
 namespace Nektria\Service;
 
 use Nektria\Util\StringUtil;
+use Nektria\Util\ValidateOpt;
 
 class ContextService
 {
+    public const CONTEXT_PUBLIC = 'public';
+
     public const CONTEXT_INTERNAL = 'internal';
 
-    public const CONTEXT_PUBLIC = 'public';
+    public const CONTEXT_COMMON = 'common';
+
+    public const CONTEXT_ADMIN = 'admin';
+
+    public const CONTEXT_SYSTEM = 'system';
 
     private string $context;
 
     private string $traceId;
 
-    private string $tenantId;
+    private ?string $tenantId;
 
-    private string $userId;
+    private ?string $userId;
 
     private string $project;
 
+    private string $env;
+
     public function __construct(
-        private readonly string $env
+        string $env,
+        string $project
     ) {
-        $this->context = '';
-        $this->userId = '';
+        $this->env = $env;
+        $this->context = self::CONTEXT_COMMON;
         $this->traceId = StringUtil::uuid4();
-        $this->tenantId = '';
-        $this->project = '';
+        $this->project = $project;
+        $this->userId = null;
+        $this->tenantId = null;
     }
 
     public function context(): string
@@ -67,30 +78,30 @@ class ContextService
         $this->traceId = $traceId;
     }
 
-    public function tenantId(): string
+    public function tenantId(): ?string
     {
         return $this->tenantId;
     }
 
-    public function setTenantId(string $tenantId): void
+    public function setTenantId(?string $tenantId): void
     {
+        ValidateOpt::uuid4($tenantId);
         $this->tenantId = $tenantId;
     }
 
-    public function userId(): string
+    public function userId(): ?string
     {
         return $this->userId;
     }
 
-    public function setUserId(string $userId): void
+    public function setUserId(?string $userId): void
     {
+        ValidateOpt::uuid4($userId);
         $this->userId = $userId;
     }
 
     public function isAuthenticated(): bool
     {
-        return $this->userId !== ''
-            && $this->userId !== 'anon.'
-            && $this->userId !== '00000000-0000-0000-0000-000000000000';
+        return $this->userId !== null;
     }
 }
