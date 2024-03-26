@@ -12,6 +12,7 @@ use PHPStan\Analyser\TypeSpecifierAwareExtension;
 use PHPStan\Analyser\TypeSpecifierContext;
 use PHPStan\Reflection\MethodReflection;
 use PHPStan\Type\TypeCombinator;
+use Nektria\Util\Validate;
 
 class ValidateClassFieldsReturnsNotNullExtension implements TypeSpecifierAwareExtension
 {
@@ -19,7 +20,7 @@ class ValidateClassFieldsReturnsNotNullExtension implements TypeSpecifierAwareEx
 
     public function getClass(): string
     {
-        return 'Nektria\Utils\Validate';
+        return Validate::class;
     }
 
     public function isStaticMethodSupported(
