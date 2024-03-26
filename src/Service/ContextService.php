@@ -89,6 +89,8 @@ class ContextService
 
     public function isAuthenticated(): bool
     {
-        return $this->userId !== '' && $this->userId !== 'anon.';
+        return $this->userId !== ''
+            && $this->userId !== 'anon.'
+            && $this->userId !== 'RABBIT 00000000-0000-0000-0000-000000000000';
     }
 }
