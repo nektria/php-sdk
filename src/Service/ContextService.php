@@ -91,6 +91,6 @@ class ContextService
     {
         return $this->userId !== ''
             && $this->userId !== 'anon.'
-            && $this->userId !== 'RABBIT 00000000-0000-0000-0000-000000000000';
+            && $this->userId !== '00000000-0000-0000-0000-000000000000';
     }
 }
