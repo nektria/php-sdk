@@ -9,17 +9,17 @@ use Nektria\Util\ValidateOpt;
 
 class ContextService
 {
-    public const CONTEXT_PUBLIC = 'public';
+    public const PUBLIC = 'public';
 
-    public const CONTEXT_PUBLIC_V2 = 'public_v2';
+    public const PUBLIC_V2 = 'public_v2';
 
-    public const CONTEXT_INTERNAL = 'internal';
+    public const INTERNAL = 'internal';
 
-    public const CONTEXT_COMMON = 'common';
+    public const COMMON = 'common';
 
-    public const CONTEXT_ADMIN = 'admin';
+    public const ADMIN = 'admin';
 
-    public const CONTEXT_SYSTEM = 'system';
+    public const SYSTEM = 'system';
 
     private string $context;
 
@@ -38,7 +38,7 @@ class ContextService
         string $project
     ) {
         $this->env = $env;
-        $this->context = self::CONTEXT_COMMON;
+        $this->context = self::COMMON;
         $this->traceId = StringUtil::uuid4();
         $this->project = $project;
         $this->userId = null;

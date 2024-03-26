@@ -286,7 +286,7 @@ class RequestListener implements EventSubscriberInterface
                 $responseContent = [];
             }
         } else {
-            $responseContent = $document->toArray(ContextService::CONTEXT_SYSTEM);
+            $responseContent = $document->toArray(ContextService::SYSTEM);
 
             if ($route === 'app_api2_grid_get' && $status < 400) {
                 $responseContent = array_slice($responseContent['list'], 0, 120);
