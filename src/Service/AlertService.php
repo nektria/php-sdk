@@ -83,11 +83,21 @@ class AlertService
                 ]
             );
         } catch (Throwable $e) {
+            $content = "‎\n" .
+                '**Discord Api Error**' .
+                "```json\n" .
+                JsonUtil::encode([
+                    'message' => $e->getMessage(),
+                ]) .
+                "\n```" .
+                "Trace: {$this->contextService->traceId()}\n" .
+                "‎\n‎";
+
             try {
                 $this->requestClient->post(
                     "https://discord.com/api/channels/{$channel}/messages",
                     [
-                        'content' => $e->getMessage() . '\n' . $this->contextService->traceId()
+                        'content' => $content
                     ],
                     [
                         'Authorization' => "Bot {$this->token}"
