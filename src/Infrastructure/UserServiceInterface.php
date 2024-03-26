@@ -9,15 +9,15 @@ interface UserServiceInterface
     /**
      * @param string[] $roles
      */
-    public function validateRoles(array $roles): void;
+    public function validateRole(array $roles): void;
 
-    public function impersonateSystemUser(string $tenantId): void;
+    public function authenticateSystem(string $tenantId): void;
 
-    public function authenticateByApiKey(string $apiKey): void;
+    public function authenticateUser(string $apiKey): void;
 
-    public function authenticateAdminByApiKey(string $apiKey, string $tenantId): void;
+    public function authenticateAdmin(string $apiKey, string $tenantId): void;
 
-    public function unimpersonateSystemUser(): void;
+    public function clearAuthentication(): void;
 
     public function retrieveTenantName(string $id): string;
 }

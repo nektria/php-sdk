@@ -134,9 +134,9 @@ class RequestListener implements EventSubscriberInterface
                 throw new InsufficientCredentialsException();
             }
 
-            $this->userService->authenticateAdminByApiKey($token, $tenantId);
+            $this->userService->authenticateAdmin($token, $tenantId);
         } else {
-            $this->userService->authenticateByApiKey($token);
+            $this->userService->authenticateUser($token);
         }
     }
 

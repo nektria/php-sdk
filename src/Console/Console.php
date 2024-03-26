@@ -262,9 +262,9 @@ abstract class Console extends BaseCommand
         string $tenantId
     ): void {
         $bus = $this->bus;
-        $this->userService->impersonateSystemUser($tenantId);
+        $this->userService->authenticateSystem($tenantId);
         $bus->dispatchCommand($command);
-        $this->userService->unimpersonateSystemUser();
+        $this->userService->clearAuthentication();
     }
 
     /**
@@ -276,9 +276,9 @@ abstract class Console extends BaseCommand
         string $tenantId,
     ): Document {
         $bus = $this->bus;
-        $this->userService->impersonateSystemUser($tenantId);
+        $this->userService->authenticateSystem($tenantId);
         $document = $bus->dispatchQuery($query);
-        $this->userService->unimpersonateSystemUser();
+        $this->userService->clearAuthentication();
 
         return $document;
     }

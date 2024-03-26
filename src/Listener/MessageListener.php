@@ -73,7 +73,7 @@ abstract class MessageListener implements EventSubscriberInterface
             $this->contextService->setTraceId($contextStamp->traceId());
             $this->contextService->setTenantId($contextStamp->tenantId());
             $this->contextService->setUserId($contextStamp->userId());
-            $this->userService->impersonateSystemUser($contextStamp->tenantId());
+            $this->userService->authenticateSystem($contextStamp->tenantId());
         }
 
         $this->messageStartedAt = Clock::new()->iso8601String();
@@ -122,7 +122,7 @@ abstract class MessageListener implements EventSubscriberInterface
                 ]
             ], $resume);
 
-            $this->userService->unimpersonateSystemUser();
+            $this->userService->clearAuthentication();
         }
 
         try {
@@ -192,7 +192,7 @@ abstract class MessageListener implements EventSubscriberInterface
             }
         }
 
-        $this->userService->unimpersonateSystemUser();
+        $this->userService->clearAuthentication();
 
         try {
             $this->entityManager->clear();

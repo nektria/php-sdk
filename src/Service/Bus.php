@@ -152,7 +152,7 @@ class Bus implements BusInterface
             /** @var RolesRequired $instance */
             $instance = $attributes[0]->newInstance();
 
-            $this->userRoleValidator->validateRoles($instance->roles);
+            $this->userRoleValidator->validateRole($instance->roles);
         } catch (Throwable $e) {
             throw NektriaException::new($e);
         }
