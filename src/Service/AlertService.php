@@ -144,6 +144,8 @@ class AlertService
                 "‎\n‎";
         }
 
+        $content = str_replace(['\/', '/app/'], ['/', ''], $content);
+
         $this->sendMessage(
             'bugs',
             [
