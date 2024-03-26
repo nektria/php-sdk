@@ -7,7 +7,6 @@ namespace Nektria\Infrastructure;
 use Doctrine\ORM\EntityManagerInterface;
 use Nektria\Document\Document;
 use Nektria\Document\DocumentCollection;
-use Nektria\Dto\Clock;
 use Nektria\Exception\NektriaException;
 use Nektria\Util\StringUtil;
 use Throwable;
@@ -65,7 +64,7 @@ abstract class ReadModel
     }
 
     /**
-     * @param array<string, Clock|string|int|float|bool|string[]|null> $params
+     * @param array<string, string|int|float|bool|string[]|null> $params
      * @param string[] $groupBy
      * @return mixed[]
      */
@@ -115,7 +114,7 @@ abstract class ReadModel
     }
 
     /**
-     * @param array<string, Clock|string|int|float|bool|string[]|null> $params
+     * @param array<string, string|int|float|bool|string[]|null> $params
      * @param string[] $groupBy
      * @return DocumentCollection<T>
      */
