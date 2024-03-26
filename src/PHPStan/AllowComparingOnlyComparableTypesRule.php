@@ -53,8 +53,8 @@ class AllowComparingOnlyComparableTypesRule implements Rule
             return [];
         }
 
-        $clockType = new ObjectType('App\Dto\Clock');
-        $clock2Type = new ObjectType('App\Dto\Clock');
+        $clockType = new ObjectType('Nektria\Dto\Clock');
+        $clock2Type = new ObjectType('Nektria\Dto\Clock');
 
         $leftType = $scope->getType($node->left);
         $rightType = $scope->getType($node->right);

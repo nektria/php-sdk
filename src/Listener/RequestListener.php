@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Listener;
+namespace Nektria\Listener;
 
 use DomainException;
 use Nektria\Document\DocumentCollection;
@@ -48,7 +48,7 @@ class RequestListener implements EventSubscriberInterface
         private readonly Bus $bus,
         private readonly ContextService $contextService,
         private readonly LogService $logService,
-        private readonly AlertService $notificationService,
+        private readonly AlertService $alertService,
         private readonly VariableCache $variableCache,
         private readonly UserServiceInterface $userService,
         private readonly string $env,
@@ -385,35 +385,10 @@ class RequestListener implements EventSubscriberInterface
                 $document->status < 500
             );
 
-            if ($document->status >= 500) {
-                $value = $this->variableCache->hasKey($route);
-
-                if (!$value) {
-                    $this->variableCache->saveKey($route);
-
-                    $responseContent = $document->toArray('dev');
-                    unset($responseContent['trace']);
-                    $method = $event->getRequest()->getMethod();
-                    $path = $event->getRequest()->getPathInfo();
-                    $this->notificationService->sendMessage(
-                        'bugs',
-                        [
-                            'content' => $document->throwable->getMessage(),
-                            'embeds' => [
-                                'fields' => [
-                                    [
-                                        'name' => 'Method',
-                                        'value' => $method,
-                                    ],
-                                    [
-                                        'name' => 'Path',
-                                        'value' => $path,
-                                    ],
-                                ]
-                            ]
-                        ]
-                    );
-                }
+            if (($document->status >= 500) && $this->variableCache->refreshKey($route)) {
+                $method = $event->getRequest()->getMethod();
+                $path = $event->getRequest()->getPathInfo();
+                $this->alertService->sendThrowable($method, $path, $requestContent, $document);
             }
         }
     }

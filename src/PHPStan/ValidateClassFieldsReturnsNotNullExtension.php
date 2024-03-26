@@ -19,7 +19,7 @@ class ValidateClassFieldsReturnsNotNullExtension implements TypeSpecifierAwareEx
 
     public function getClass(): string
     {
-        return 'App\Utils\Validate';
+        return 'Nektria\Utils\Validate';
     }
 
     public function isStaticMethodSupported(
