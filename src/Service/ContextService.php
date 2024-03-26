@@ -21,6 +21,14 @@ class ContextService
 
     public const SYSTEM = 'system';
 
+    public const DEV = 'dev';
+
+    public const QA = 'qa';
+
+    public const STAGING = 'staging';
+
+    public const PROD = 'prod';
+
     private string $context;
 
     private string $traceId;
