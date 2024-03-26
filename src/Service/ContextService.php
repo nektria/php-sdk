@@ -11,6 +11,8 @@ class ContextService
 {
     public const CONTEXT_PUBLIC = 'public';
 
+    public const CONTEXT_PUBLIC_V2 = 'public_v2';
+
     public const CONTEXT_INTERNAL = 'internal';
 
     public const CONTEXT_COMMON = 'common';
