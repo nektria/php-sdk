@@ -113,8 +113,13 @@ class AlertService
     /**
      * @param mixed[] $input
      */
-    public function sendThrowable(string $method, string $path, array $input, ThrowableDocument $document): void
-    {
+    public function sendThrowable(
+        string $tenantName,
+        string $method,
+        string $path,
+        array $input,
+        ThrowableDocument $document
+    ): void {
         if ($this->contextService->env() === 'test') {
             return;
         }
@@ -133,6 +138,7 @@ class AlertService
         $inputString = JsonUtil::encode($input, true);
         $documentString = JsonUtil::encode($document->toArray('dev'), true);
         $content = "‎\n" .
+            "**{$tenantName}**\n" .
             "**{$method}** _{$path}_" .
             "```json\n" .
             $inputString .
@@ -145,6 +151,7 @@ class AlertService
 
         if (strlen($content) >= $maxLength) {
             $content = "‎\n" .
+                "**{$tenantName}**\n" .
                 "**{$method}** _{$path}_" .
                 "```json\n" .
                 $inputString .

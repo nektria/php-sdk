@@ -286,11 +286,7 @@ class RequestListener implements EventSubscriberInterface
                 $responseContent = [];
             }
         } else {
-            if ($document instanceof ThrowableDocument) {
-                $responseContent = $document->toArray(ContextService::CONTEXT_PUBLIC);
-            } else {
-                $responseContent = $document->toArray(ContextService::CONTEXT_PUBLIC);
-            }
+            $responseContent = $document->toArray(ContextService::CONTEXT_SYSTEM);
 
             if ($route === 'app_api2_grid_get' && $status < 400) {
                 $responseContent = array_slice($responseContent['list'], 0, 120);
@@ -386,9 +382,10 @@ class RequestListener implements EventSubscriberInterface
             );
 
             if (($document->status >= 500) && $this->variableCache->refreshKey($route)) {
+                $tenantName = $this->userService->retrieveTenantName();
                 $method = $event->getRequest()->getMethod();
                 $path = $event->getRequest()->getPathInfo();
-                $this->alertService->sendThrowable($method, $path, $requestContent, $document);
+                $this->alertService->sendThrowable($tenantName, $method, $path, $requestContent, $document);
             }
         }
     }
