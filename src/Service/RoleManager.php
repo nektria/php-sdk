@@ -40,11 +40,9 @@ class RoleManager
             self::ROLE_TRAFFIC_CHIEF,
             self::ROLE_TRAFFIC_CHIEF_EXPRESS,
             self::ROLE_MARKETING,
-            self::ROLE_ANY
         ],
         self::ROLE_ADMIN => [
             self::ROLE_SYSTEM,
-            self::ROLE_ADMIN,
             self::ROLE_USER,
             self::ROLE_GRID_VIEWER,
             self::ROLE_WAREHOUSE_SUPERVISOR,
@@ -52,23 +50,16 @@ class RoleManager
             self::ROLE_TRAFFIC_CHIEF,
             self::ROLE_TRAFFIC_CHIEF_EXPRESS,
             self::ROLE_MARKETING,
-            self::ROLE_ANY
         ],
-        self::ROLE_DRIVER => [
-            self::ROLE_ANY
-        ],
-        self::ROLE_GRID_VIEWER => [
-            self::ROLE_ANY
-        ],
+        self::ROLE_DRIVER => [],
+        self::ROLE_GRID_VIEWER => [],
         self::ROLE_TRAFFIC_CHIEF => [
             self::ROLE_TRAFFIC_CHIEF_EXPRESS,
             self::ROLE_DRIVER,
-            self::ROLE_ANY
         ],
         self::ROLE_TRAFFIC_CHIEF_EXPRESS => [
             self::ROLE_TRAFFIC_CHIEF,
             self::ROLE_DRIVER,
-            self::ROLE_ANY
         ],
         self::ROLE_USER => [
             self::ROLE_GRID_VIEWER,
@@ -77,10 +68,9 @@ class RoleManager
             self::ROLE_TRAFFIC_CHIEF,
             self::ROLE_TRAFFIC_CHIEF_EXPRESS,
             self::ROLE_MARKETING,
-            self::ROLE_ANY
         ],
-        self::ROLE_WAREHOUSE_SUPERVISOR => [self::ROLE_GRID_VIEWER, self::ROLE_ANY],
-        self::ROLE_MARKETING => [self::ROLE_ANY]
+        self::ROLE_WAREHOUSE_SUPERVISOR => [self::ROLE_GRID_VIEWER],
+        self::ROLE_MARKETING => []
     ];
 
     /**
