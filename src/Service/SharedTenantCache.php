@@ -43,6 +43,7 @@ use Nektria\Infrastructure\SharedRedisCache;
  * @extends SharedRedisCache<array{
  *     id: string,
  *     name: string,
+ *     timezone: string,
  *     metadata: WarehouseMetadataArray
  * }>
  */
@@ -52,6 +53,7 @@ class SharedTenantCache extends SharedRedisCache
      * @return array{
      *      id: string,
      *      name: string,
+     *      timezone: string,
      *      metadata: WarehouseMetadataArray
      *  }|null
      */
@@ -62,10 +64,11 @@ class SharedTenantCache extends SharedRedisCache
 
     /**
      * @param array{
-     *      id: string,
-     *      name: string,
-     *      metadata: WarehouseMetadataArray
-     *  } $tenant
+     *       id: string,
+     *       name: string,
+     *       timezone: string,
+     *       metadata: WarehouseMetadataArray
+     *   } $tenant
      */
     public function save(string $key, array $tenant): void
     {
