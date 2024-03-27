@@ -85,6 +85,23 @@ class DocumentCollection implements Document
     }
 
     /**
+     * @param callable(T): string $callback
+     * @return array<string, T[]>
+     */
+    public function classify(callable $callback): array
+    {
+        $result = [];
+
+        foreach ($this->items as $item) {
+            $key = $callback($item);
+            $result[$key] ??= [];
+            $result[$key][] = $item;
+        }
+
+        return $result;
+    }
+
+    /**
      * @return mixed[]
      */
     public function toArray(string $model): array
