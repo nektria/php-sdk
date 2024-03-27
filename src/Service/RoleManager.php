@@ -16,6 +16,8 @@ class RoleManager
 
     public const ROLE_USER = 'ROLE_USER';
 
+    public const ROLE_API = 'ROLE_API';
+
     public const ROLE_GRID_VIEWER = 'ROLE_GRID_VIEWER';
 
     public const ROLE_DRIVER = 'ROLE_DRIVER';
@@ -34,6 +36,7 @@ class RoleManager
         self::ROLE_SYSTEM => [
             self::ROLE_ADMIN,
             self::ROLE_USER,
+            self::ROLE_API,
             self::ROLE_GRID_VIEWER,
             self::ROLE_WAREHOUSE_SUPERVISOR,
             self::ROLE_DRIVER,
@@ -43,6 +46,7 @@ class RoleManager
         ],
         self::ROLE_ADMIN => [
             self::ROLE_SYSTEM,
+            self::ROLE_API,
             self::ROLE_USER,
             self::ROLE_GRID_VIEWER,
             self::ROLE_WAREHOUSE_SUPERVISOR,
@@ -62,6 +66,16 @@ class RoleManager
             self::ROLE_DRIVER,
         ],
         self::ROLE_USER => [
+            self::ROLE_API,
+            self::ROLE_GRID_VIEWER,
+            self::ROLE_WAREHOUSE_SUPERVISOR,
+            self::ROLE_DRIVER,
+            self::ROLE_TRAFFIC_CHIEF,
+            self::ROLE_TRAFFIC_CHIEF_EXPRESS,
+            self::ROLE_MARKETING,
+        ],
+        self::ROLE_API => [
+            self::ROLE_USER,
             self::ROLE_GRID_VIEWER,
             self::ROLE_WAREHOUSE_SUPERVISOR,
             self::ROLE_DRIVER,
