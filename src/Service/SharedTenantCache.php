@@ -34,7 +34,7 @@ use Nektria\Infrastructure\SharedRedisCache;
  *         sendRoutesAtPickingShiftClosesAt: bool,
  *         sendRoutesByProxy: bool,
  *         shortSpeed: number,
- *         syncRMORder: bool,
+ *         syncRMOrder: bool,
  *         syncRMShift: bool,
  *         syncRMWarehouse: bool,
  *         useAddressInsteadOfShopperCode: bool,
