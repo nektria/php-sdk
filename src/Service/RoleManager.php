@@ -74,6 +74,14 @@ class RoleManager
     ];
 
     /**
+     * @return string[]
+     */
+    public function roles(): array
+    {
+        return array_keys(self::HIERARCHY);
+    }
+
+    /**
      * @param string[] $targetRoles
      */
     public function checkAtLeast(string $role, array $targetRoles): bool
