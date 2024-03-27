@@ -31,6 +31,7 @@ class RequestClient
         $body = JsonUtil::encode($data);
         $headers = array_merge([
             'Content-Type' => 'application/json',
+            'User-Agent' => 'Nektria/1.0',
         ], $headers);
 
         try {
