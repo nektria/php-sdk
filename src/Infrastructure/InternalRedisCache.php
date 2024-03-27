@@ -9,21 +9,15 @@ use RuntimeException;
 use Throwable;
 
 use function is_bool;
-use function is_string;
 
 /**
  * @template T
  */
 abstract class InternalRedisCache extends RedisCache
 {
-    public function __construct(string $redisDsn, string $env)
+    public function __construct(string $redisDsn, string $redisPrefix, string $env)
     {
-        $prefix = getenv('REDIS_PREFIX');
-        if (!is_string(getenv('REDIS_PREFIX'))) {
-            throw new RuntimeException('REDIX_PREFIX envvar is not set.');
-        }
-
-        parent::__construct($redisDsn, $env, (string) $prefix);
+        parent::__construct($redisDsn, $env, $redisPrefix);
 
         $data = parse_url($redisDsn);
         if ($data === false) {
