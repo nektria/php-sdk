@@ -6,7 +6,7 @@ namespace Nektria\Service;
 
 use Nektria\Document\Document;
 use Nektria\Dto\Clock;
-use Nektria\Entity\Entity;
+use Nektria\Entity\EntityInterface;
 use Nektria\Util\JsonUtil;
 use Symfony\Component\Messenger\Exception\RecoverableMessageHandlingException;
 use Symfony\Component\Messenger\Exception\RejectRedeliveredMessageException;
@@ -134,7 +134,7 @@ class LogService
         foreach ($traces as $trace) {
             $args = [];
             foreach ($trace['args'] ?? [] as $arg) {
-                if ($arg instanceof Entity) {
+                if ($arg instanceof EntityInterface) {
                     $args[] = $arg::class . '::' . $arg->id();
                 } elseif ($arg instanceof Document && method_exists($arg, 'id')) {
                     $args[] = $arg::class . '::' . $arg->id();

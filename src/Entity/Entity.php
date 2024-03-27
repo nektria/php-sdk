@@ -7,7 +7,7 @@ namespace Nektria\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use Nektria\Util\StringUtil;
 
-abstract class Entity
+abstract class Entity implements EntityInterface
 {
     #[ORM\Id]
     #[ORM\Column(type: 'guid')]

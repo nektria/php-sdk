@@ -6,11 +6,11 @@ namespace Nektria\Infrastructure;
 
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\EntityRepository;
-use Nektria\Entity\Entity;
+use Nektria\Entity\EntityInterface;
 use Throwable;
 
 /**
- * @template T of Entity
+ * @template T of EntityInterface
  */
 abstract class WriteModel
 {
@@ -29,7 +29,7 @@ abstract class WriteModel
     /**
      * @param T $domain
      */
-    protected function saveEntity(Entity $domain): void
+    protected function saveEntity(EntityInterface $domain): void
     {
         $this->manager->persist($domain);
         $this->manager->flush();
@@ -39,7 +39,7 @@ abstract class WriteModel
     /**
      * @param T $domain
      */
-    protected function deleteEntity(Entity $domain): void
+    protected function deleteEntity(EntityInterface $domain): void
     {
         try {
             $this->manager->remove($domain);
@@ -56,7 +56,7 @@ abstract class WriteModel
     /**
      * @return T|null
      */
-    protected function findEntity(string $id): ?Entity
+    protected function findEntity(string $id): ?EntityInterface
     {
         return $this->getRepository()->find($id);
     }
@@ -65,7 +65,7 @@ abstract class WriteModel
      * @param mixed[] $criteria
      * @return T|null
      */
-    protected function findOneBy(array $criteria): ?Entity
+    protected function findOneBy(array $criteria): ?EntityInterface
     {
         return $this->getRepository()->findOneBy($criteria);
     }
