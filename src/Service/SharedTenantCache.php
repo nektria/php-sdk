@@ -7,66 +7,47 @@ namespace Nektria\Service;
 use Nektria\Infrastructure\SharedRedisCache;
 
 /**
- * @extends SharedRedisCache<array{
- *       id: string,
- *       name: string,
- *       metadata: array{
- *           availableTags: string[],
- *           nextStepEnabled: boolean,
- *           forceDriverAssignation: boolean,
- *           gridMode: string,
- *           gridVersion: number,
- *           syncRMORder: boolean,
- *           syncRMShift: boolean,
- *           blockWarehouse: boolean,
- *           syncRMWarehouse: boolean,
- *           autoDuplicateLastWeek: boolean,
- *           gridViewerOrdersPrefix: string,
- *           parkingTime: number,
- *           deliveryTime: number | null,
- *           ecoMode: string,
- *           expressGridDisabled: boolean,
- *           forceTags: boolean,
- *           longSpeed: number,
- *           extraLongSpeed: number,
- *           shortSpeed: number,
- *           dayOffExtendsCutoff: boolean,
- *           recoverCoords: boolean,
- *           useAddressInsteadOfShopperCode: boolean,
- *       }
- *   }>
+ * @phpstan-type WarehouseMetadataArray array{
+ *         id: string,
+ *         name: string,
+ *         metadata: array{
+ *             autoDuplicateLastWeek: bool,
+ *             availableTags: string[],
+ *             blockWarehouse: bool,
+ *             dayOffExtendsCutoff: bool,
+ *             deliveryTime: number | null,
+ *             ecoMode: string,
+ *             expressGridDisabled: bool,
+ *             extraLongSpeed: number,
+ *             forceDriverAssignation: bool,
+ *             forceTags: bool,
+ *             gridMode: string,
+ *             gridVersion: number,
+ *             gridViewerOrdersPrefix: string,
+ *             ignoreRoutesOnLogsList: string[],
+ *             importOrdersFromFileByProxy: bool,
+ *             longSpeed: number,
+ *             nextStepEnabled: bool,
+ *             parkingTime: number,
+ *             proxyHost: string,
+ *             proxyToken: string,
+ *             recoverCoords: bool,
+ *             sendNewOrderToProxy: bool,
+ *             sendRoutesByProxy: bool,
+ *             shortSpeed: number,
+ *             syncRMORder: bool,
+ *             syncRMShift: bool,
+ *             syncRMWarehouse: bool,
+ *             useAddressInsteadOfShopperCode: bool,
+ *         }
+ *     }
+ *
+ * @extends SharedRedisCache<WarehouseMetadataArray>
  */
 class SharedTenantCache extends SharedRedisCache
 {
     /**
-     * @return array{
-     *      id: string,
-     *      name: string,
-     *      metadata: array{
-     *          availableTags: string[],
-     *          nextStepEnabled: boolean,
-     *          forceDriverAssignation: boolean,
-     *          gridMode: string,
-     *          gridVersion: number,
-     *          syncRMORder: boolean,
-     *          syncRMShift: boolean,
-     *          blockWarehouse: boolean,
-     *          syncRMWarehouse: boolean,
-     *          autoDuplicateLastWeek: boolean,
-     *          gridViewerOrdersPrefix: string,
-     *          parkingTime: number,
-     *          deliveryTime: number | null,
-     *          ecoMode: string,
-     *          expressGridDisabled: boolean,
-     *          forceTags: boolean,
-     *          longSpeed: number,
-     *          extraLongSpeed: number,
-     *          shortSpeed: number,
-     *          dayOffExtendsCutoff: boolean,
-     *          recoverCoords: boolean,
-     *          useAddressInsteadOfShopperCode: boolean,
-     *      }
-     *  }|null
+     * @return WarehouseMetadataArray|null
      */
     public function read(string $key): ?array
     {
@@ -74,34 +55,7 @@ class SharedTenantCache extends SharedRedisCache
     }
 
     /**
-     * @param array{
-     *       id: string,
-     *       name: string,
-     *       metadata: array{
-     *           availableTags: string[],
-     *           nextStepEnabled: boolean,
-     *           forceDriverAssignation: boolean,
-     *           gridMode: string,
-     *           gridVersion: number,
-     *           syncRMORder: boolean,
-     *           syncRMShift: boolean,
-     *           blockWarehouse: boolean,
-     *           syncRMWarehouse: boolean,
-     *           autoDuplicateLastWeek: boolean,
-     *           gridViewerOrdersPrefix: string,
-     *           parkingTime: number,
-     *           deliveryTime: number | null,
-     *           ecoMode: string,
-     *           expressGridDisabled: boolean,
-     *           forceTags: boolean,
-     *           longSpeed: number,
-     *           extraLongSpeed: number,
-     *           shortSpeed: number,
-     *           dayOffExtendsCutoff: boolean,
-     *           recoverCoords: boolean,
-     *           useAddressInsteadOfShopperCode: boolean,
-     *       }
-     *   } $tenant
+     * @param WarehouseMetadataArray $tenant
      */
     public function save(string $key, array $tenant): void
     {

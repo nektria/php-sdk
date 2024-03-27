@@ -11,7 +11,8 @@ use Nektria\Infrastructure\SharedRedisCache;
  *     id: string,
  *     tenantId: string,
  *     role: string,
- *     warehouses: string[]
+ *     warehouses: string[],
+ *     apiKey: string,
  * }>
  */
 class SharedUserCache extends SharedRedisCache
@@ -21,7 +22,8 @@ class SharedUserCache extends SharedRedisCache
      *      id: string,
      *      tenantId: string,
      *      role: string,
-     *      warehouses: string[]
+     *      warehouses: string[],
+     *      apiKey: string,
      *  }|null
      */
     public function read(string $key): ?array
@@ -33,6 +35,8 @@ class SharedUserCache extends SharedRedisCache
         }
 
         if ($data['id'] === $key) {
+            $this->save($key, $data);
+
             return $data;
         }
 
@@ -44,7 +48,8 @@ class SharedUserCache extends SharedRedisCache
      *     id: string,
      *     tenantId: string,
      *     role: string,
-     *     warehouses: string[]
+     *     warehouses: string[],
+     *     apiKey: string,
      * } $user
      */
     public function save(string $key, array $user): void
