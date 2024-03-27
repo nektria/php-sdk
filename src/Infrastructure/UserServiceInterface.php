@@ -15,6 +15,8 @@ interface UserServiceInterface
 
     public function authenticateUser(string $apiKey): void;
 
+    public function authenticateApi(string $apiKey): void;
+
     public function authenticateAdmin(string $apiKey, string $tenantId): void;
 
     public function clearAuthentication(): void;
