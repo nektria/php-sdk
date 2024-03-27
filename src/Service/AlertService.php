@@ -138,6 +138,7 @@ class AlertService
         $inputString = JsonUtil::encode($input, true);
         $documentString = JsonUtil::encode($document->toArray('dev'), true);
         $content = "‎\n" .
+            "**{$this->contextService->project()}**\n" .
             "**{$tenantName}**\n" .
             "**{$method}** _{$path}_" .
             "```json\n" .
@@ -151,6 +152,7 @@ class AlertService
 
         if (strlen($content) >= $maxLength) {
             $content = "‎\n" .
+                "**{$this->contextService->project()}**\n" .
                 "**{$tenantName}**\n" .
                 "**{$method}** _{$path}_" .
                 "```json\n" .
