@@ -48,6 +48,14 @@ class DocumentCollection implements Document
     }
 
     /**
+     * @return T
+     */
+    public function opt(int $key): ?Document
+    {
+        return $this->items[$key];
+    }
+
+    /**
      * @return T[]
      */
     public function items(): array
