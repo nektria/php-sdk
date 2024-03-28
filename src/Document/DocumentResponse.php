@@ -9,12 +9,12 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 
 class DocumentResponse extends JsonResponse
 {
-    private Document $document;
+    public readonly Document $document;
 
-    public function __construct(Document $document, ContextService $context, string $env, int $status = 200)
+    public function __construct(Document $document, ContextService $context, int $status = 200)
     {
         if ($document instanceof ThrowableDocument) {
-            parent::__construct($document->toArray($env), $document->status);
+            parent::__construct($document->toArray($context->env()), $document->status);
         } elseif (
             $document instanceof DocumentCollection
             && (
@@ -29,10 +29,5 @@ class DocumentResponse extends JsonResponse
         }
 
         $this->document = $document;
-    }
-
-    public function document(): Document
-    {
-        return $this->document;
     }
 }

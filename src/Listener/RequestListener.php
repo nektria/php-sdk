@@ -177,7 +177,6 @@ class RequestListener implements EventSubscriberInterface
         $event->setResponse(new DocumentResponse(
             $document,
             $this->contextService,
-            $this->env,
             $document->status
         ));
 
@@ -187,16 +186,16 @@ class RequestListener implements EventSubscriberInterface
     public function onKernelResponse(ResponseEvent $event): void
     {
         $response = $event->getResponse();
-        if ($response instanceof DocumentResponse && $response->document() instanceof FileDocument) {
+        if ($response instanceof DocumentResponse && $response->document instanceof FileDocument) {
             $this->originalResponse = $response;
             $fileResponse = new BinaryFileResponse(
-                $response->document()->file
+                $response->document->file
             );
             $fileResponse->deleteFileAfterSend();
-            $fileResponse->headers->set('Content-Type', $response->document()->mime);
+            $fileResponse->headers->set('Content-Type', $response->document->mime);
             $fileResponse->setContentDisposition(
                 ResponseHeaderBag::DISPOSITION_ATTACHMENT,
-                $response->document()->filename
+                $response->document->filename
             );
             $event->setResponse($fileResponse);
         }
@@ -217,7 +216,7 @@ class RequestListener implements EventSubscriberInterface
         $status = $response->getStatusCode();
         $document = null;
         if ($response instanceof DocumentResponse) {
-            $document = $response->document();
+            $document = $response->document;
 
             if (!($document instanceof ThrowableDocument)) {
                 $status = $response->getStatusCode();
@@ -258,9 +257,9 @@ class RequestListener implements EventSubscriberInterface
         $length = 0;
         if (
             $event->getResponse() instanceof DocumentResponse
-            && $event->getResponse()->document() instanceof DocumentCollection
+            && $event->getResponse()->document instanceof DocumentCollection
         ) {
-            $length = $event->getResponse()->document()->count();
+            $length = $event->getResponse()->document->count();
         }
 
         if ($responseContentRaw === false || $responseContentRaw === '') {
@@ -372,7 +371,7 @@ class RequestListener implements EventSubscriberInterface
         }
 
         if ($response instanceof DocumentResponse) {
-            $document = $response->document();
+            $document = $response->document;
 
             if (!($document instanceof ThrowableDocument)) {
                 return;
