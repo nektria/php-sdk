@@ -385,7 +385,7 @@ class RequestListener implements EventSubscriberInterface
             );
 
             if (($document->status >= 500) && $this->variableCache->refreshKey($route)) {
-                $tenantName = $this->userService->retrieveTenantName();
+                $tenantName = $this->userService->user()?->tenant->name ?? 'none';
                 $method = $event->getRequest()->getMethod();
                 $path = $event->getRequest()->getPathInfo();
                 $this->alertService->sendThrowable($tenantName, $method, $path, $requestContent, $document);

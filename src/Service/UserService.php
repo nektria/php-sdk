@@ -74,24 +74,17 @@ class UserService implements UserServiceInterface
         $this->user = null;
     }
 
-    public function retrieveTenantName(): string
+    public function user(): ?User
     {
-        $name = $this->user?->tenant->name;
+        return $this->user;
+    }
 
-        if ($name === null) {
+    public function retrieveUser(): User
+    {
+        if ($this->user === null) {
             throw new InvalidAuthorizationException();
         }
 
-        return $name;
-    }
-
-    public function getTenantName(): ?string
-    {
-        return $this->user?->tenant->name;
-    }
-
-    public function user(): User
-    {
         return $this->user;
     }
 }

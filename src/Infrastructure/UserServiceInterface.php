@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Nektria\Infrastructure;
 
+use Nektria\Document\User;
+
 interface UserServiceInterface
 {
     /**
@@ -19,7 +21,7 @@ interface UserServiceInterface
 
     public function clearAuthentication(): void;
 
-    public function retrieveTenantName(): string;
+    public function user(): ?User;
 
-    public function getTenantName(): ?string;
+    public function retrieveUser(): User;
 }

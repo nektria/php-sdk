@@ -170,11 +170,7 @@ abstract class MessageListener implements EventSubscriberInterface
                 ]
             ]);
 
-            $tenantName = 'none';
-            if ($this->contextService->tenantId() !== null) {
-                $tenantName = $this->userService->retrieveTenantName();
-            }
-
+            $tenantName = $this->userService->user()?->tenant->name ?? 'none';
             $value = $this->variableCache->hasKey("{$tenantName}-messenger-{$classHash}");
 
             if (!$value) {
