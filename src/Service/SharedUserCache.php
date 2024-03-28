@@ -4,29 +4,31 @@ declare(strict_types=1);
 
 namespace Nektria\Service;
 
+use Nektria\Document\User;
 use Nektria\Infrastructure\SharedRedisCache;
 
 /**
  * @extends SharedRedisCache<array{
  *     id: string,
  *     tenantId: string,
+ *     email: string,
  *     role: string,
  *     warehouses: string[],
  *     apiKey: string,
+ *     dniNie: string|null,
  * }>
  */
 class SharedUserCache extends SharedRedisCache
 {
-    /**
-     * @return array{
-     *      id: string,
-     *      tenantId: string,
-     *      role: string,
-     *      warehouses: string[],
-     *      apiKey: string,
-     *  }|null
-     */
-    public function read(string $key): ?array
+    public function __construct(
+        private readonly SharedTenantCache $sharedTenantCache,
+        string $redisDsn,
+        string $env
+    ) {
+        parent::__construct($redisDsn, $env);
+    }
+
+    public function read(string $key): ?User
     {
         $data = $this->getItem($key);
 
@@ -35,37 +37,60 @@ class SharedUserCache extends SharedRedisCache
         }
 
         if ($data['id'] === $key) {
-            $this->save($key, $data);
+            $tenant = $this->sharedTenantCache->read($data['tenantId']);
 
-            return $data;
+            if ($tenant === null) {
+                return null;
+            }
+
+            $user = new User(
+                $data['id'],
+                $data['email'],
+                $data['warehouses'],
+                $data['apiKey'],
+                $data['role'],
+                $tenant,
+                $data['dniNie'],
+            );
+
+            $this->save($key, $user);
+
+            return $user;
         }
 
-        return $this->read($data['id']);
+        $user = $this->read($data['id']);
+
+        if ($user !== null) {
+            $this->save($key, $user);
+        }
+
+        return $user;
     }
 
-    /**
-     * @param array{
-     *     id: string,
-     *     tenantId: string,
-     *     role: string,
-     *     warehouses: string[],
-     *     apiKey: string,
-     * } $user
-     */
-    public function save(string $key, array $user): void
+    public function save(string $key, User $user): void
     {
-        $this->setItem(
-            $key,
-            $user,
-            1209600
-        );
+        $data = [
+            'id' => $user->id,
+            'tenantId' => $user->tenant->id,
+            'email' => $user->email,
+            'role' => $user->role,
+            'warehouses' => $user->warehouses,
+            'apiKey' => $user->apiKey,
+            'dniNie' => $user->dniNie,
+        ];
 
-        if ($key !== $user['id']) {
+        if ($key !== $user->id) {
             $this->setItem(
-                $user['id'],
-                $user,
+                $user->id,
+                $data,
                 1209600
             );
         }
+
+        $this->setItem(
+            $key,
+            $data,
+            1209600
+        );
     }
 }

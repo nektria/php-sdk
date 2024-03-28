@@ -15,6 +15,7 @@ use Nektria\Service\AlertService;
 use Nektria\Service\Bus;
 use Nektria\Service\ContextService;
 use Nektria\Service\LogService;
+use Nektria\Service\RoleManager;
 use Nektria\Service\VariableCache;
 use Nektria\Util\JsonUtil;
 use Nektria\Util\Validate;
@@ -119,7 +120,7 @@ class RequestListener implements EventSubscriberInterface
         $header = '';
         if ($request->headers->has('X-Authorization')) {
             $header = 'X-Authorization';
-        } elseif ($request->headers->has('X-API-ID')) {
+        } elseif ($request->headers->has('X-Api-Id')) {
             $header = 'X-API-ID';
         }
 
@@ -134,7 +135,9 @@ class RequestListener implements EventSubscriberInterface
                 throw new InsufficientCredentialsException();
             }
 
-            $this->userService->authenticateAdmin($token, $tenantId);
+            $this->userService->authenticateUser($token);
+            $this->userService->validateRole([RoleManager::ROLE_ADMIN]);
+            $this->userService->authenticateSystem($tenantId);
         } else {
             $this->userService->authenticateUser($token);
         }

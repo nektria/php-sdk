@@ -17,9 +17,9 @@ interface UserServiceInterface
 
     public function authenticateApi(string $apiKey): void;
 
-    public function authenticateAdmin(string $apiKey, string $tenantId): void;
-
     public function clearAuthentication(): void;
 
     public function retrieveTenantName(): string;
+
+    public function getTenantName(): ?string;
 }

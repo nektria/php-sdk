@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Nektria\Service;
 
+use Nektria\Document\Tenant;
+use Nektria\Dto\TenantMetadata;
 use Nektria\Infrastructure\SharedRedisCache;
 
 /**
@@ -48,30 +50,29 @@ use Nektria\Infrastructure\SharedRedisCache;
  */
 class SharedTenantCache extends SharedRedisCache
 {
-    /**
-     * @return array{
-     *      id: string,
-     *      name: string,
-     *      metadata: WarehouseMetadataArray
-     *  }|null
-     */
-    public function read(string $key): ?array
+    public function read(string $key): ?Tenant
     {
-        return $this->getItem($key);
+        $data = $this->getItem($key);
+        if ($data === null) {
+            return null;
+        }
+
+        return new Tenant(
+            $data['id'],
+            $data['name'],
+            new TenantMetadata($data['metadata'])
+        );
     }
 
-    /**
-     * @param array{
-     *       id: string,
-     *       name: string,
-     *       metadata: WarehouseMetadataArray
-     *   } $tenant
-     */
-    public function save(string $key, array $tenant): void
+    public function save(string $key, Tenant $tenant): void
     {
         $this->setItem(
             $key,
-            $tenant,
+            [
+                'id' => $tenant->id,
+                'name' => $tenant->name,
+                'metadata' => $tenant->metadata->toArray()
+            ],
             1209600
         );
     }
