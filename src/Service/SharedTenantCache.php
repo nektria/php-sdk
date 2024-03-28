@@ -64,10 +64,10 @@ class SharedTenantCache extends SharedRedisCache
         );
     }
 
-    public function save(string $key, Tenant $tenant): void
+    public function save(Tenant $tenant): void
     {
         $this->setItem(
-            $key,
+            $tenant->id,
             [
                 'id' => $tenant->id,
                 'name' => $tenant->name,
