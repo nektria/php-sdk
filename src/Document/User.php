@@ -24,6 +24,7 @@ class User implements Document
         public readonly array $warehouses,
         public readonly string $apiKey,
         public readonly string $role,
+        public readonly string $tenantId,
         public readonly Tenant $tenant,
         public readonly ?string $dniNie
     ) {

@@ -49,6 +49,7 @@ class SharedUserCache extends SharedRedisCache
                 $data['warehouses'],
                 $data['apiKey'],
                 $data['role'],
+                $tenant->id,
                 $tenant,
                 $data['dniNie'],
             );
