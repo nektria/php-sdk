@@ -11,12 +11,15 @@ class DocumentResponse extends JsonResponse
 {
     private Document $document;
 
-    public function __construct(Document $document, ContextService $context, string $env, int $status = 200)
+    public function __construct(Document $document, \App\Service\ContextService $context, string $env, int $status = 200)
     {
         if ($document instanceof ThrowableDocument) {
             parent::__construct($document->toArray($env), $document->status);
         } elseif (
             $document instanceof DocumentCollection
+            && (
+                $context->context() === ContextService::PUBLIC_V2
+            )
         ) {
             parent::__construct([
                 'list' => $document->toArray($context->context())
