@@ -89,4 +89,9 @@ class UserService implements UserServiceInterface
     {
         return $this->user?->tenant->name;
     }
+
+    public function user(): User
+    {
+        return $this->user;
+    }
 }
