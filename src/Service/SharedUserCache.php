@@ -93,4 +93,9 @@ class SharedUserCache extends SharedRedisCache
             1209600
         );
     }
+
+    public function remove(string $id): void
+    {
+        $this->removeItem($id);
+    }
 }
