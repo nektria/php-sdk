@@ -13,6 +13,7 @@ class UserService implements UserServiceInterface
     private ?User $user;
 
     public function __construct(
+        private readonly ContextService $contextService,
         private readonly SharedUserCache $sharedUserCache,
         private readonly RoleManager $roleManager,
     ) {
@@ -33,30 +34,41 @@ class UserService implements UserServiceInterface
 
     public function authenticateSystem(string $tenantId): void
     {
+        $this->clearAuthentication();
+
         $user = $this->sharedUserCache->read("SYSTEM_{$tenantId}");
         if ($user === null) {
             $user = $this->sharedUserCache->read("ADMIN_{$tenantId}");
         }
-
         $this->user = $user;
 
         if ($user === null) {
             throw new InvalidAuthorizationException();
         }
+
+        $this->contextService->setTenantId($user->tenantId);
+        $this->contextService->setUserId($user->id);
     }
 
     public function authenticateUser(string $apiKey): void
     {
+        $this->clearAuthentication();
+
         $user = $this->sharedUserCache->read($apiKey);
         $this->user = $user;
 
         if ($user === null) {
             throw new InvalidAuthorizationException();
         }
+
+        $this->contextService->setTenantId($user->tenantId);
+        $this->contextService->setUserId($user->id);
     }
 
     public function authenticateApi(string $apiKey): void
     {
+        $this->clearAuthentication();
+
         $user = $this->sharedUserCache->read("API_{$apiKey}");
         if ($user === null) {
             $user = $this->sharedUserCache->read($apiKey);
@@ -67,10 +79,15 @@ class UserService implements UserServiceInterface
         if ($user === null) {
             throw new InvalidAuthorizationException();
         }
+
+        $this->contextService->setTenantId($user->tenantId);
+        $this->contextService->setUserId($user->id);
     }
 
     public function clearAuthentication(): void
     {
+        $this->contextService->setTenantId(null);
+        $this->contextService->setUserId(null);
         $this->user = null;
     }
 
