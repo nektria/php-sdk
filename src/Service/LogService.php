@@ -26,7 +26,7 @@ class LogService
     public function __construct(
         private readonly ContextService $contextService,
         private readonly string $env,
-        private readonly string $defaultLogLevel
+        private readonly string $defaultLogLevel,
     ) {
         $this->channel = fopen('php://stderr', 'wb');
 
@@ -174,7 +174,7 @@ class LogService
                 'severity' => $asWarning ? 'WARNING' : 'EMERGENCY',
                 'logging.googleapis.com/labels' => [
                     'env' => $this->env,
-                    'app' => 'yieldmanager',
+                    'app' => $this->contextService->project(),
                     'tenant' => $this->contextService->tenantId(),
                     'user' => $this->contextService->userId(),
                     'name' => 'error',
@@ -214,7 +214,7 @@ class LogService
             'logging.googleapis.com/labels' => [
                 'context' => $this->contextService->context(),
                 'env' => $this->env,
-                'app' => 'yieldmanager',
+                'app' => $this->contextService->project(),
                 'tenant' => $this->contextService->tenantId(),
                 'user' => $this->contextService->userId(),
             ],

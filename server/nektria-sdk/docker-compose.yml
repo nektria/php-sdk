@@ -1,8 +1,8 @@
 version: '3'
 services:
-  yieldmanager:
+  php-sdk:
     image: eu.gcr.io/nektria/php:8.1
-    container_name: nektria-sdk
+    container_name: php-sdk
     restart: 'no'
     networks:
       - default

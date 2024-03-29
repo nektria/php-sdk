@@ -11,6 +11,14 @@ use Nektria\Infrastructure\SharedRedisCache;
  */
 class SharedTemporalConsumptionCache extends SharedRedisCache
 {
+    public function __construct(
+        private readonly ContextService $contextService,
+        string $redisDsn,
+        string $env
+    ) {
+        parent::__construct($redisDsn, $env);
+    }
+
     /**
      * @return array<string, array<string, int>>
      */
@@ -27,8 +35,8 @@ class SharedTemporalConsumptionCache extends SharedRedisCache
     public function increase(string $tenantId, string $path): void
     {
         $data = $this->read($tenantId);
-        $data['yieldmanager'][$path] ??= 0;
-        ++$data['yieldmanager'][$path];
+        $data[$this->contextService->project()][$path] ??= 0;
+        ++$data[$this->contextService->project()][$path];
         $this->setItem($tenantId, $data);
     }
 }
