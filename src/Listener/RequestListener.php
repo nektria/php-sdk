@@ -220,8 +220,7 @@ abstract class RequestListener implements EventSubscriberInterface
             return;
         }
 
-        $ignoredList = $this->ignoreLogRoutes();
-        $ignoreRoute = in_array($route, $ignoredList, true);
+        $ignoreRoute = $this->ignoreRoute($route);
 
         $responseContentRaw = ($this->originalResponse ?? $event->getResponse())->getContent();
         $length = 0;
@@ -405,8 +404,5 @@ abstract class RequestListener implements EventSubscriberInterface
         return $request->headers->get($header) ?? '';
     }
 
-    /**
-     * @return string[]
-     */
-    abstract protected function ignoreLogRoutes(): array;
+    abstract protected function ignoreRoute(string $route): bool;
 }
