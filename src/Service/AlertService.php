@@ -67,44 +67,87 @@ class AlertService
      *     }>
      * } $message
      */
-    public function sendMessage(string $channel, array $message): void
+    private function makeRequest(string $channel, array $message): void
     {
         if ($this->contextService->env() === 'test') {
             return;
         }
 
+        $channel = $this->parseChannel($channel);
+        $this->requestClient->post(
+            "https://discord.com/api/channels/{$channel}/messages",
+            $message,
+            [
+                'Authorization' => "Bot {$this->token}"
+            ]
+        );
+    }
+
+    /**
+     * @param array{
+     *     content?: string,
+     *     embeds?: array<array{
+     *         title?: string,
+     *         type?: string,
+     *         description?: string,
+     *         url?: string,
+     *         timestamp?: string,
+     *         color?: int,
+     *         footer?: array{
+     *             text?: string,
+     *             icon_url?: string
+     *         },
+     *         image?: array{
+     *             url?: string,
+     *             height?: int,
+     *             width?: int
+     *         },
+     *         thumbnail?: array{
+     *             url?: string,
+     *             height?: int,
+     *             width?: int
+     *         },
+     *         author?: array{
+     *             name?: string,
+     *         },
+     *         fields?: array<array{
+     *             name?: string,
+     *             value?: string,
+     *             inline?: bool
+     *         }>,
+     *     }>,
+     *     components?: array<array{
+     *         type: int,
+     *         components: array<array{
+     *             type: int,
+     *             style: int,
+     *             label: string,
+     *             custom_id: string
+     *         }>
+     *     }>
+     * } $message
+     */
+    public function sendMessage(string $channel, array $message): void
+    {
         try {
-            $channel = $this->parseChannel($channel);
-            $this->requestClient->post(
-                "https://discord.com/api/channels/{$channel}/messages",
-                $message,
-                [
-                    'Authorization' => "Bot {$this->token}"
-                ]
-            );
+            $this->makeRequest($channel, $message);
         } catch (Throwable $e) {
-            $content = "‎\n" .
-                '**Discord Api Error**' .
-                "```json\n" .
-                JsonUtil::encode(JsonUtil::decode($e->getMessage()), true) .
-                "\n```" .
-                "Trace: {$this->contextService->traceId()}\n" .
-                "‎\n‎";
-
-            if (str_contains($content, 'You are being rate limited.')) {
-                return;
-            }
-
             try {
-                $this->requestClient->post(
-                    "https://discord.com/api/channels/{$channel}/messages",
-                    [
-                        'content' => $content
-                    ],
-                    [
-                        'Authorization' => "Bot {$this->token}"
-                    ]
-                );
+                $content = "‎\n" .
+                    '**Discord Api Error**' .
+                    "```json\n" .
+                    JsonUtil::encode(JsonUtil::decode($e->getMessage()), true) .
+                    "\n```" .
+                    "Trace: {$this->contextService->traceId()}\n" .
+                    "‎\n‎";
+
+                if (str_contains($content, 'You are being rate limited.')) {
+                    return;
+                }
+
+                $this->makeRequest($channel, [
+                    'content' => $content
+                ]);
             } catch (Throwable) {
             }
         }
@@ -168,12 +211,22 @@ class AlertService
         $content = str_replace(['\/', '/app/'], ['/', ''], $content);
         $content = html_entity_decode(preg_replace('/\\\u([\da-fA-F]{4})/', '&#x\1;', $content) ?? '');
 
-        $this->sendMessage(
-            'bugs',
-            [
+        try {
+            $this->makeRequest('bugs', [
                 'content' => $content
-            ]
-        );
+            ]);
+        } catch (Throwable) {
+            $content = "‎\n" .
+                "**{$this->contextService->project()}**\n" .
+                "**{$tenantName}**\n" .
+                "**{$method}** _{$path}_" .
+                "Trace: {$this->contextService->traceId()}\n" .
+                "‎\n‎";
+
+            $this->makeRequest('bugs', [
+                'content' => $content
+            ]);
+        }
     }
 
     private function parseChannel(string $channelId): string

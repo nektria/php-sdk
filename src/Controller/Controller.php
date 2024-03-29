@@ -59,7 +59,7 @@ class Controller
 
     /**
      * @template T of Document
-     * @param Document $document
+     * @param T $document
      */
     protected function documentResponse(Document $document): JsonResponse
     {
