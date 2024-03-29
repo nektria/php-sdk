@@ -268,7 +268,11 @@ abstract class RequestListener implements EventSubscriberInterface
         $rawHeadersKeys = $event->getRequest()->headers->keys();
         $headers = [];
         foreach ($rawHeadersKeys as $key) {
-            if ($key === 'x-authorization' || $key === 'x-api-id') {
+            $header = strtolower($key);
+
+            if ($header === 'x-authorization' || $header === 'x-api-id') {
+                $headers[$key] = '********';
+
                 continue;
             }
 
@@ -290,52 +294,53 @@ abstract class RequestListener implements EventSubscriberInterface
         }
 
         if (!$ignoreRoute) {
-        if ($status < 400) {
-            $this->logService->default([
-                'headers' => $headers,
-                'context' => 'request',
-                'route_name' => $route,
-                'ref' => $this->contextService->userId() ?? 'anonymous',
-                'request' => $requestContent,
-                'size' => $length,
-                'response' => $responseContent,
-                'httpRequest' => [
-                    'requestMethod' => $event->getRequest()->getMethod(),
-                    'requestUrl' => $path,
-                    'status' => ($this->originalResponse ?? $event->getResponse())->getStatusCode(),
-                    'latency' => round($this->executionTime, 3) . 's'
-                ]
-            ], $resume);
-        } elseif ($status < 500) {
-            $this->logService->warning([
-                'headers' => $headers,
-                'context' => 'request',
-                'route_name' => $route,
-                'ref' => $this->contextService->userId() ?? 'anonymous',
-                'request' => $requestContent,
-                'response' => $responseContent,
-                'httpRequest' => [
-                    'requestMethod' => $event->getRequest()->getMethod(),
-                    'requestUrl' => $path,
-                    'status' => ($this->originalResponse ?? $event->getResponse())->getStatusCode(),
-                    'latency' => round($this->executionTime, 3) . 's'
-                ]
-            ], $resume);
-        } else {
-            $this->logService->error([
-                'headers' => $headers,
-                'context' => 'request',
-                'route_name' => $route,
-                'ref' => $this->contextService->userId() ?? 'anonymous',
-                'request' => $requestContent,
-                'response' => $responseContent,
-                'httpRequest' => [
-                    'requestMethod' => $event->getRequest()->getMethod(),
-                    'requestUrl' => $path,
-                    'status' => ($this->originalResponse ?? $event->getResponse())->getStatusCode(),
-                    'latency' => round($this->executionTime, 3) . 's'
-                ]
-            ], $resume);
+            if ($status < 400) {
+                $this->logService->default([
+                    'headers' => $headers,
+                    'context' => 'request',
+                    'route_name' => $route,
+                    'ref' => $this->contextService->userId() ?? 'anonymous',
+                    'request' => $requestContent,
+                    'size' => $length,
+                    'response' => $responseContent,
+                    'httpRequest' => [
+                        'requestMethod' => $event->getRequest()->getMethod(),
+                        'requestUrl' => $path,
+                        'status' => ($this->originalResponse ?? $event->getResponse())->getStatusCode(),
+                        'latency' => round($this->executionTime, 3) . 's'
+                    ]
+                ], $resume);
+            } elseif ($status < 500) {
+                $this->logService->warning([
+                    'headers' => $headers,
+                    'context' => 'request',
+                    'route_name' => $route,
+                    'ref' => $this->contextService->userId() ?? 'anonymous',
+                    'request' => $requestContent,
+                    'response' => $responseContent,
+                    'httpRequest' => [
+                        'requestMethod' => $event->getRequest()->getMethod(),
+                        'requestUrl' => $path,
+                        'status' => ($this->originalResponse ?? $event->getResponse())->getStatusCode(),
+                        'latency' => round($this->executionTime, 3) . 's'
+                    ]
+                ], $resume);
+            } else {
+                $this->logService->error([
+                    'headers' => $headers,
+                    'context' => 'request',
+                    'route_name' => $route,
+                    'ref' => $this->contextService->userId() ?? 'anonymous',
+                    'request' => $requestContent,
+                    'response' => $responseContent,
+                    'httpRequest' => [
+                        'requestMethod' => $event->getRequest()->getMethod(),
+                        'requestUrl' => $path,
+                        'status' => ($this->originalResponse ?? $event->getResponse())->getStatusCode(),
+                        'latency' => round($this->executionTime, 3) . 's'
+                    ]
+                ], $resume);
+            }
         }
 
         if ($response instanceof DocumentResponse) {
