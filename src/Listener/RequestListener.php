@@ -221,10 +221,7 @@ abstract class RequestListener implements EventSubscriberInterface
         }
 
         $ignoredList = $this->ignoreLogRoutes();
-
-        if (in_array($route, $ignoredList, true)) {
-            return;
-        }
+        $ignoreRoute = in_array($route, $ignoredList, true);
 
         $responseContentRaw = ($this->originalResponse ?? $event->getResponse())->getContent();
         $length = 0;
@@ -292,6 +289,7 @@ abstract class RequestListener implements EventSubscriberInterface
             $this->temporalConsumptionCache->increase($this->contextService->tenantId(), $route);
         }
 
+        if (!$ignoreRoute) {
         if ($status < 400) {
             $this->logService->default([
                 'headers' => $headers,
