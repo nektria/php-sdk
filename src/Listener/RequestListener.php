@@ -16,9 +16,9 @@ use Nektria\Service\Bus;
 use Nektria\Service\ContextService;
 use Nektria\Service\LogService;
 use Nektria\Service\RoleManager;
+use Nektria\Service\SharedTemporalConsumptionCache;
 use Nektria\Service\VariableCache;
 use Nektria\Util\JsonUtil;
-use Nektria\Util\Validate;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
@@ -33,10 +33,9 @@ use Symfony\Component\HttpKernel\Event\TerminateEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 use Throwable;
 
-use function array_slice;
 use function in_array;
 
-class RequestListener implements EventSubscriberInterface
+abstract class RequestListener implements EventSubscriberInterface
 {
     private float $executionTime;
 
@@ -52,6 +51,7 @@ class RequestListener implements EventSubscriberInterface
         private readonly AlertService $alertService,
         private readonly VariableCache $variableCache,
         private readonly UserServiceInterface $userService,
+        private readonly SharedTemporalConsumptionCache $temporalConsumptionCache,
         private readonly string $env,
         ContainerInterface $container
     ) {
@@ -80,6 +80,7 @@ class RequestListener implements EventSubscriberInterface
     {
         $request = $event->getRequest();
         $method = $request->getMethod();
+        $route = $request->attributes->get('_route') ?? '';
 
         if (
             $method === 'GET'
@@ -98,48 +99,45 @@ class RequestListener implements EventSubscriberInterface
                     $data = JsonUtil::decode($request->getContent());
                     $request->request->replace($data);
                 }
-            } catch (Throwable $e) {
-                throw new DomainException('Bad request body.', $e->getCode(), $e);
+            } catch (Throwable) {
+                throw new DomainException('Bad request body.');
             }
-        }
-
-        $route = $request->attributes->get('_route') ?? '';
-
-        if (str_starts_with('app_admin_private', $route)) {
-            return;
-        }
-
-        if (str_contains($request->getPathInfo(), 'cache:full-empty')) {
-            return;
         }
 
         if (str_starts_with($route, 'app_common_')) {
+            try {
+                $apiKey = $this->readApiKey($request);
+            } catch (InsufficientCredentialsException) {
+                $apiKey = null;
+            }
+
+            if ($apiKey !== null) {
+                $this->userService->authenticateUser($apiKey);
+            }
+
             return;
         }
 
-        $header = '';
-        if ($request->headers->has('X-Authorization')) {
-            $header = 'X-Authorization';
-        } elseif ($request->headers->has('X-Api-Id')) {
-            $header = 'X-API-ID';
-        }
-
-        $token = $this->readHeader($request, $header);
+        $apiKey = $this->readApiKey($request);
 
         if (str_starts_with($route, 'app_admin_')) {
-            $tenantId = (string) ($request->attributes->get('tenantId') ?? '');
+            $this->contextService->setContext(ContextService::ADMIN);
+            $this->userService->authenticateUser($apiKey);
 
             try {
-                Validate::uuid4($tenantId);
-            } catch (Throwable) {
-                throw new InsufficientCredentialsException();
+                $this->userService->validateRole([RoleManager::ROLE_ADMIN]);
+            } catch (InsufficientCredentialsException) {
+                $this->userService->clearAuthentication();
             }
-
-            $this->userService->authenticateUser($token);
-            $this->userService->validateRole([RoleManager::ROLE_ADMIN]);
-            $this->userService->authenticateSystem($tenantId);
-        } else {
-            $this->userService->authenticateUser($token);
+        } elseif (str_starts_with($route, 'app_api_')) {
+            $this->contextService->setContext(ContextService::PUBLIC);
+            $this->userService->authenticateUser($apiKey);
+        } elseif (str_starts_with($route, 'app_api2_')) {
+            $this->contextService->setContext(ContextService::PUBLIC_V2);
+            $this->userService->authenticateUser($apiKey);
+        } elseif (str_starts_with($route, 'app_web_')) {
+            $this->contextService->setContext(ContextService::INTERNAL);
+            $this->userService->authenticateUser($apiKey);
         }
     }
 
@@ -158,14 +156,9 @@ class RequestListener implements EventSubscriberInterface
             $event->setResponse($response);
         }
 
-        $tracer = $request->headers->get('x-trace');
+        $tracer = $request->headers->get('X-Trace');
         if ($tracer !== null) {
             $this->contextService->setTraceId($tracer);
-        }
-
-        $tenant = $request->headers->get('x-tenant');
-        if ($tenant !== null) {
-            $this->contextService->setTenantId($tenant);
         }
     }
 
@@ -227,27 +220,7 @@ class RequestListener implements EventSubscriberInterface
             return;
         }
 
-        if (
-            !str_contains($route, 'app_admin')
-            && !str_contains($route, 'app_api2')
-            && !str_contains($route, 'app_api')
-            && !str_contains($route, 'app_web')
-            && !str_contains($route, 'app_common_ping_throwexception')
-        ) {
-            return;
-        }
-
-        $ignoredList = [
-            'app_admin_tools_command',
-            'app_admin_tools_telegram',
-            'app_api_area_deprecated',
-            'app_api_area_getwarehouse',
-            'app_common_ping_ping',
-            'app_common_ping_prometheus',
-            'app_common_security_login',
-            'app_web_user_me',
-            //  'app_admin_private_synclostorders'
-        ];
+        $ignoredList = $this->ignoreLogRoutes();
 
         if (in_array($route, $ignoredList, true)) {
             return;
@@ -276,23 +249,13 @@ class RequestListener implements EventSubscriberInterface
         if ($document === null) {
             try {
                 $responseContent = JsonUtil::decode($responseContentRaw);
-
-                if ($route === 'app_api_grid_get' && $status < 400) {
-                    $responseContent = array_slice($responseContent, 0, 120);
-                }
-
-                if ($route === 'app_api2_grid_get' && $status < 400) {
-                    $responseContent = array_slice($responseContent['list'], 0, 120);
-                }
             } catch (Throwable) {
                 $responseContent = [];
             }
+        } elseif ($document instanceof ThrowableDocument) {
+            $responseContent = $document->toArray(ContextService::DEV);
         } else {
-            $responseContent = $document->toArray(ContextService::SYSTEM);
-
-            if ($route === 'app_api2_grid_get' && $status < 400) {
-                $responseContent = array_slice($responseContent['list'], 0, 120);
-            }
+            $responseContent = $document->toArray(ContextService::INTERNAL);
         }
 
         $queryBody = [];
@@ -325,11 +288,16 @@ class RequestListener implements EventSubscriberInterface
             $requestContent['dniNie'] = '********';
         }
 
+        if ($this->contextService->tenantId() !== null) {
+            $this->temporalConsumptionCache->increase($this->contextService->tenantId(), $route);
+        }
+
         if ($status < 400) {
             $this->logService->default([
                 'headers' => $headers,
                 'context' => 'request',
                 'route_name' => $route,
+                'ref' => $this->contextService->userId() ?? 'anonymous',
                 'request' => $requestContent,
                 'size' => $length,
                 'response' => $responseContent,
@@ -345,6 +313,7 @@ class RequestListener implements EventSubscriberInterface
                 'headers' => $headers,
                 'context' => 'request',
                 'route_name' => $route,
+                'ref' => $this->contextService->userId() ?? 'anonymous',
                 'request' => $requestContent,
                 'response' => $responseContent,
                 'httpRequest' => [
@@ -359,6 +328,7 @@ class RequestListener implements EventSubscriberInterface
                 'headers' => $headers,
                 'context' => 'request',
                 'route_name' => $route,
+                'ref' => $this->contextService->userId() ?? 'anonymous',
                 'request' => $requestContent,
                 'response' => $responseContent,
                 'httpRequest' => [
@@ -377,13 +347,7 @@ class RequestListener implements EventSubscriberInterface
                 return;
             }
 
-            $this->logService->exception(
-                $document->throwable,
-                [],
-                $document->status < 500
-            );
-
-            if (($document->status >= 500) && $this->variableCache->refreshKey($route)) {
+            if ($document->status >= 500 && $this->variableCache->refreshKey($route)) {
                 $tenantName = $this->userService->user()?->tenant->name ?? 'none';
                 $method = $event->getRequest()->getMethod();
                 $path = $event->getRequest()->getPathInfo();
@@ -425,8 +389,21 @@ class RequestListener implements EventSubscriberInterface
         return in_array('*', $this->allowedCors, true) || in_array($origin, $this->allowedCors, true);
     }
 
-    private function readHeader(Request $request, string $header): string
+    private function readApiKey(Request $request): string
     {
+        if ($request->headers->has('X-Authorization')) {
+            $header = 'X-Authorization';
+        } elseif ($request->headers->has('X-Api-Id')) {
+            $header = 'X-Api-Id';
+        } else {
+            throw new InsufficientCredentialsException();
+        }
+
         return $request->headers->get($header) ?? '';
     }
+
+    /**
+     * @return string[]
+     */
+    abstract protected function ignoreLogRoutes(): array;
 }
