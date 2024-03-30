@@ -7,7 +7,6 @@ namespace Nektria\Service;
 use Nektria\Document\Document;
 use Nektria\Exception\NektriaException;
 use Nektria\Infrastructure\BusInterface;
-use Nektria\Infrastructure\UserServiceInterface;
 use Nektria\Message\Command;
 use Nektria\Message\Event;
 use Nektria\Message\Query;
@@ -22,6 +21,7 @@ use Symfony\Component\Messenger\Stamp\TransportNamesStamp;
 use Throwable;
 
 use function count;
+use function in_array;
 
 class Bus implements BusInterface
 {
@@ -31,7 +31,7 @@ class Bus implements BusInterface
     public function __construct(
         private readonly MessageBusInterface $bus,
         private readonly ContextService $contextService,
-        private readonly UserServiceInterface $userRoleValidator,
+        private readonly UserService $userService
     ) {
         $this->delayedEvents = [];
     }
@@ -43,9 +43,9 @@ class Bus implements BusInterface
      */
     final public function dispatchQuery(Query $query): Document
     {
-        $this->validateAccess($query);
-
         try {
+            $this->validateAccess($query);
+
             $result = $this->bus->dispatch($query, [
                 new ContextStamp(
                     $this->contextService->context(),
@@ -110,7 +110,7 @@ class Bus implements BusInterface
                 new ContextStamp(
                     $this->contextService->context(),
                     $this->contextService->traceId(),
-                    $this->contextService->tenantId()
+                    $this->contextService->tenantId(),
                 )
             ]);
         } catch (HandlerFailedException $e) {
@@ -134,7 +134,7 @@ class Bus implements BusInterface
         $this->delayedEvents = [];
     }
 
-    final public function addEvent(Event $event): void
+    final public function addDelayedEvent(Event $event): void
     {
         $this->delayedEvents[] = $event;
     }
@@ -158,7 +158,11 @@ class Bus implements BusInterface
             /** @var RolesRequired $instance */
             $instance = $attributes[0]->newInstance();
 
-            $this->userRoleValidator->validateRole($instance->roles);
+            if (in_array(RoleManager::ROLE_ANY, $instance->roles, true)) {
+                return;
+            }
+
+            $this->userService->validateRole($instance->roles);
         } catch (Throwable $e) {
             throw NektriaException::new($e);
         }

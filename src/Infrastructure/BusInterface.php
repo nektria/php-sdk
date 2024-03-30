@@ -21,7 +21,7 @@ interface BusInterface
 
     public function dispatchEvent(Event $event): void;
 
-    public function addEvent(Event $event): void;
+    public function addDelayedEvent(Event $event): void;
 
     public function dispatchDelayedEvents(): void;
 }
