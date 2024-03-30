@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Nektria\Service;
 
+use Nektria\Document\Tenant;
 use Nektria\Document\User;
 use Nektria\Exception\InvalidAuthorizationException;
 use Nektria\Infrastructure\UserServiceInterface;
@@ -103,5 +104,10 @@ class UserService implements UserServiceInterface
         }
 
         return $this->user;
+    }
+
+    public function retrieveTenant(): Tenant
+    {
+        return $this->retrieveUser()->tenant;
     }
 }
