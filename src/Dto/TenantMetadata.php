@@ -280,9 +280,9 @@ class TenantMetadata
         return $this->data['sendRoutesAtPickingShiftClosesAt'];
     }
 
-    public function configurationsChannel(): string
+    public function configurationsChannel(): ?string
     {
-        $this->data['configurationsChannel'] ??= '1223571661421412352';
+        $this->data['configurationsChannel'] ??= null;
 
         return $this->data['configurationsChannel'];
     }

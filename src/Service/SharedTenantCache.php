@@ -40,7 +40,7 @@ use Nektria\Infrastructure\SharedRedisCache;
  *     syncRMShift: bool,
  *     syncRMWarehouse: bool,
  *     useAddressInsteadOfShopperCode: bool,
- *     configurationsChannel: string
+ *     configurationsChannel: ?string
  * }
  *
  * @extends SharedRedisCache<array{
