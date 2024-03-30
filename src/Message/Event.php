@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Nektria\Message;
 
-abstract class Event
+interface Event
 {
-    abstract public function ref(): string;
+    public function ref(): string;
 }

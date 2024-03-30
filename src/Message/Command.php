@@ -6,4 +6,5 @@ namespace Nektria\Message;
 
 interface Command
 {
+    public function ref(): string;
 }

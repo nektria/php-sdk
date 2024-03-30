@@ -18,6 +18,7 @@ use RuntimeException;
 use Symfony\Component\Messenger\Exception\HandlerFailedException;
 use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\Messenger\Stamp\HandledStamp;
+use Symfony\Component\Messenger\Stamp\TransportNamesStamp;
 use Throwable;
 
 use function count;
@@ -42,9 +43,9 @@ class Bus implements BusInterface
      */
     final public function dispatchQuery(Query $query): Document
     {
-        try {
-            $this->validateAccess($query);
+        $this->validateAccess($query);
 
+        try {
             $result = $this->bus->dispatch($query, [
                 new ContextStamp(
                     $this->contextService->context(),
@@ -71,16 +72,24 @@ class Bus implements BusInterface
     /**
      * @throws Throwable
      */
-    final public function dispatchCommand(Command $command): void
+    final public function dispatchCommand(Command $command, ?string $transport = null): void
     {
+        $this->validateAccess($command);
+
+        $stamps = [
+            new ContextStamp(
+                $this->contextService->context(),
+                $this->contextService->traceId(),
+                $this->contextService->tenantId()
+            )
+        ];
+
+        if ($transport !== null) {
+            $stamps[] = new TransportNamesStamp([$transport]);
+        }
+
         try {
-            $this->bus->dispatch($command, [
-                new ContextStamp(
-                    $this->contextService->context(),
-                    $this->contextService->traceId(),
-                    $this->contextService->tenantId()
-                )
-            ]);
+            $this->bus->dispatch($command, $stamps);
         } catch (HandlerFailedException $e) {
             $previous = $e->getPrevious();
             if ($previous !== null) {
