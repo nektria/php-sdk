@@ -56,6 +56,37 @@ class ThrowableDocument implements Document
         $this->throwable = $throwable;
     }
 
+    /**
+     * @return array{
+     *     file: string,
+     *     line: int
+     * }[]
+     */
+    public function trace(): array
+    {
+        $trace = $this->throwable->getTrace();
+        $finalTrace = [];
+        foreach ($trace as $item) {
+            $file = $item['file'] ?? '';
+            $line = $item['line'] ?? 0;
+            if (str_starts_with($file, '/app/src')) {
+                $finalTrace[] = [
+                    'file' => str_replace('/app/', '', $file),
+                    'line' => $line,
+                ];
+            }
+
+            if (str_starts_with($file, '/app/vendor/nektria/php-sdk/src')) {
+                $finalTrace[] = [
+                    'file' => str_replace('/app/vendor/nektria/php-sdk/', '', $file),
+                    'line' => $line,
+                ];
+            }
+        }
+
+        return $finalTrace;
+    }
+
     public function toArray(string $model): mixed
     {
         $exception = $this->throwable;
@@ -76,30 +107,12 @@ class ThrowableDocument implements Document
             'message' => $message
         ];
 
-        $trace = $exception->getTrace();
-        $finalTrace = [];
-        foreach ($trace as $item) {
-            $file = $item['file'] ?? '';
-            $line = $item['line'] ?? 0;
-            if (str_starts_with($file, '/app/src')) {
-                $finalTrace[] = [
-                    'file' => str_replace('/app/', '', $file),
-                    'line' => $line,
-                ];
-            }
-
-            if (str_starts_with($file, '/app/vendor/nektria/php-sdk/src')) {
-                $finalTrace[] = [
-                    'file' => str_replace('/app/vendor/nektria/php-sdk/', '', $file),
-                    'line' => $line,
-                ];
-            }
-        }
+        $trace = $this->trace();
 
         if ($model === 'dev' || $model === 'test' || $model === 'qa') {
             $data['file'] = str_replace('/app/', '', $exception->getFile());
             $data['line'] = $exception->getLine();
-            $data['trace'] = $finalTrace;
+            $data['trace'] = $this->trace();
         }
 
         return $data;

@@ -4,17 +4,13 @@ declare(strict_types=1);
 
 namespace Nektria\Service;
 
-use Nektria\Document\Document;
-use Nektria\Dto\Clock;
-use Nektria\Entity\EntityInterface;
+use Nektria\Document\ThrowableDocument;
 use Nektria\Util\JsonUtil;
 use Symfony\Component\Messenger\Exception\RecoverableMessageHandlingException;
 use Symfony\Component\Messenger\Exception\RejectRedeliveredMessageException;
 use Throwable;
 
 use function in_array;
-use function is_array;
-use function is_object;
 
 use const PHP_EOL;
 
@@ -128,44 +124,8 @@ class LogService
             return;
         }
 
-        $traces = $exception->getTrace();
-        $clearTrace = [];
-
-        foreach ($traces as $trace) {
-            $args = [];
-            foreach ($trace['args'] ?? [] as $arg) {
-                if ($arg instanceof EntityInterface) {
-                    $args[] = $arg::class . '::' . $arg->id();
-                } elseif ($arg instanceof Document && method_exists($arg, 'id')) {
-                    $args[] = $arg::class . '::' . $arg->id();
-                } elseif ($arg instanceof Clock) {
-                    $args[] = $arg::class . '::' . $arg->dateTimeString();
-                } elseif (is_object($arg)) {
-                    try {
-                        if (method_exists($arg, '__toString')) {
-                            $args[] = $arg::class . '::' . $arg->__toString();
-                        } else {
-                            $args[] = $arg::class;
-                        }
-                    } catch (Throwable) {
-                        $args[] = $arg::class;
-                    }
-                } elseif (is_array($arg)) {
-                    $args[] = 'array';
-                } else {
-                    $args[] = '?';
-                }
-            }
-
-            $clearTrace[] = [
-                'file' => $trace['file'] ?? '',
-                'line' => $trace['line'] ?? '',
-                'function' => $trace['function'],
-                'class' => $trace['class'] ?? '',
-                'type' => $trace['type'] ?? '',
-                'args' => $args,
-            ];
-        }
+        $tmp = new ThrowableDocument($exception);
+        $clearTrace = $tmp->trace();
 
         try {
             $data = [
