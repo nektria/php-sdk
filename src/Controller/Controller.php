@@ -6,6 +6,7 @@ namespace Nektria\Controller;
 
 use Nektria\Document\Document;
 use Nektria\Document\DocumentResponse;
+use Nektria\Document\Tenant;
 use Nektria\Document\User;
 use Nektria\Infrastructure\BusInterface;
 use Nektria\Message\Command;
@@ -52,6 +53,16 @@ class Controller
         return $this->userService->retrieveUser();
     }
 
+    protected function retrieveTenant(): Tenant
+    {
+        return $this->userService->retrieveUser()->tenant;
+    }
+
+    protected function retrieveTenantId(): string
+    {
+        return $this->retrieveUser()->tenantId;
+    }
+
     protected function response(Document $document, int $status = 200): DocumentResponse
     {
         return new DocumentResponse($document, $this->context, $status);
@@ -75,20 +86,12 @@ class Controller
         return $this->documentResponse($this->bus->dispatchQuery($query));
     }
 
-    protected function commandResponse(Command $command): JsonResponse
+    protected function emptyResponse(?Command $command = null, ?string $transport = null): JsonResponse
     {
-        $this->bus->dispatchCommand($command);
+        if ($command !== null) {
+            $this->bus->dispatchCommand($command, $transport);
+        }
 
-        return $this->emptyResponse();
-    }
-
-    protected function emptyResponse(): JsonResponse
-    {
         return new JsonResponse([], Response::HTTP_NO_CONTENT);
-    }
-
-    protected function retrieveTenantId(): string
-    {
-        return $this->retrieveUser()->tenantId;
     }
 }
