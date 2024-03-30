@@ -279,6 +279,13 @@ class TenantMetadata
         return $this->data['sendRoutesAtPickingShiftClosesAt'];
     }
 
+    public function configurationsChannel(): string
+    {
+        $this->data['configurationsChannel'] ??= '1223571661421412352';
+
+        return $this->data['configurationsChannel'];
+    }
+
     /**
      * @return WarehouseMetadataArray
      */
@@ -315,6 +322,7 @@ class TenantMetadata
             'syncRMShift' => $this->syncRMShift(),
             'syncRMWarehouse' => $this->syncRMWarehouse(),
             'useAddressInsteadOfShopperCode' => $this->useAddressInsteadOfShopperCode(),
+            'configurationsChannel' => $this->configurationsChannel(),
         ];
     }
 }
