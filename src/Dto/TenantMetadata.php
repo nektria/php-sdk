@@ -58,6 +58,7 @@ class TenantMetadata
         $this->syncRMShift();
         $this->syncRMWarehouse();
         $this->useAddressInsteadOfShopperCode();
+        $this->configurationsChannel();
     }
 
     public function ecoMode(): string
