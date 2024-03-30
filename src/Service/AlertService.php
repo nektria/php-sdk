@@ -231,7 +231,13 @@ class AlertService
 
     private function parseChannel(string $channelId): string
     {
-        $defaultChannels = ['bugs', 'operations', 'updates', 'pickingshifts'];
+        $defaultChannels = [
+            'bugs',
+            'operations',
+            'updates',
+            'pickingshifts',
+            'configurations'
+        ];
 
         if (!in_array($channelId, $defaultChannels, true)) {
             return $channelId;
