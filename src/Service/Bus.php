@@ -39,6 +39,7 @@ class Bus implements BusInterface
     /**
      * @template T of Document
      * @param Query<T> $query
+     * @return T
      * @throws Throwable
      */
     final public function dispatchQuery(Query $query): Document
