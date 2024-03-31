@@ -14,6 +14,7 @@ interface BusInterface
     /**
      * @template T of Document
      * @param Query<T> $query
+     * @return T
      */
     public function dispatchQuery(Query $query): Document;
 
