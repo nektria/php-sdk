@@ -13,6 +13,16 @@ use function strlen;
 
 class AlertService
 {
+    public const CHANNEL_BUGS = 'bugs';
+
+    public const CHANNEL_OPERATIONS = 'operations';
+
+    public const CHANNEL_UPDATES = 'updates';
+
+    public const CHANNEL_PICKING_SHIFTS = 'pickingshifts';
+
+    public const CHANNEL_CONFIGURATIONS = 'configurations';
+
     private string $token;
 
     public function __construct(
