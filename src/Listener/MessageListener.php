@@ -203,6 +203,8 @@ class MessageListener implements EventSubscriberInterface
                         $times
                     );
                 }
+
+                $this->variableCache->saveInt($key2, 0);
             } else {
                 $times = $this->variableCache->readInt($key2, 0);
                 $this->variableCache->saveInt($key2, $times + 1);

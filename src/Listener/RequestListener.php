@@ -363,6 +363,7 @@ abstract class RequestListener implements EventSubscriberInterface
                     $method = $event->getRequest()->getMethod();
                     $path = $event->getRequest()->getPathInfo();
                     $this->alertService->sendThrowable($tenantName, $method, $path, $requestContent, $document, $times);
+                    $this->variableCache->saveInt($key2, 0);
                 } else {
                     $times = $this->variableCache->readInt($key2, 0);
                     $this->variableCache->saveInt($key2, $times + 1);
