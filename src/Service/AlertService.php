@@ -219,7 +219,7 @@ class AlertService
             $content = "‎\n" .
                 "**{$this->contextService->project()}**\n" .
                 "**{$tenantName}**\n" .
-                "**{$method}** _{$path}_" .
+                "**{$method}** _{$path}_ \n" .
                 "Trace: {$this->contextService->traceId()}\n" .
                 "‎\n‎";
 

@@ -24,7 +24,8 @@
         "symfony/messenger": ">=6.0",
         "doctrine/orm": ">=2.19 <3.0",
         "symfony/framework-bundle": "^6.4",
-        "symfony/serializer": "^6.4"
+        "symfony/serializer": "^6.4",
+        "symfony/lock": "^6.4"
     },
     "require-dev": {
         "friendsofphp/php-cs-fixer": "dev-master",
