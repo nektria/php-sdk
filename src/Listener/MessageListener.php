@@ -184,10 +184,14 @@ class MessageListener implements EventSubscriberInterface
 
             $tenantName = $this->userService->user()?->tenant->name ?? 'none';
 
-            if ($this->variableCache->refreshKey("{$tenantName}-messenger-{$classHash}")) {
+            $key = "{$tenantName}-messenger-{$classHash}";
+            $key2 = "{$tenantName}-messenger-{$classHash}_count";
+            if ($this->variableCache->refreshKey($key)) {
                 $ignoreMessages = [
                     'Redelivered message from AMQP detected that will be rejected and trigger the retry logic.'
                 ];
+
+                $times = $this->variableCache->readInt($key2, 1);
 
                 if (!in_array($originalException->getMessage(), $ignoreMessages, true)) {
                     $this->alertService->sendThrowable(
@@ -195,9 +199,13 @@ class MessageListener implements EventSubscriberInterface
                         'RABBIT',
                         "/{$messageClass}/{$message->ref()}",
                         $data,
-                        $exception
+                        $exception,
+                        $times
                     );
                 }
+            } else {
+                $times = $this->variableCache->readInt($key2, 0);
+                $this->variableCache->saveInt($key2, $times + 1);
             }
         }
 

@@ -161,7 +161,8 @@ class AlertService
         string $method,
         string $path,
         array $input,
-        ThrowableDocument $document
+        ThrowableDocument $document,
+        int $times = 1
     ): void {
         if ($this->contextService->env() === 'test') {
             return;
@@ -184,6 +185,7 @@ class AlertService
             "**{$this->contextService->project()}**\n" .
             "**{$tenantName}**\n" .
             "**{$method}** _{$path}_" .
+            " (x{$times})" .
             "```json\n" .
             $inputString .
             "\n```" .

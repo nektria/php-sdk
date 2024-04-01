@@ -353,11 +353,20 @@ abstract class RequestListener implements EventSubscriberInterface
                 return;
             }
 
-            if ($document->status >= 500 && $this->variableCache->refreshKey($route)) {
-                $tenantName = $this->userService->user()?->tenant->name ?? 'none';
-                $method = $event->getRequest()->getMethod();
-                $path = $event->getRequest()->getPathInfo();
-                $this->alertService->sendThrowable($tenantName, $method, $path, $requestContent, $document);
+
+            if ($document->status >= 500) {
+                $key = "{$route}_request_500";
+                $key2 = "{$route}_count";
+                if ($this->variableCache->refreshKey($key)) {
+                    $times = $this->variableCache->readInt($key2, 1);
+                    $tenantName = $this->userService->user()?->tenant->name ?? 'none';
+                    $method = $event->getRequest()->getMethod();
+                    $path = $event->getRequest()->getPathInfo();
+                    $this->alertService->sendThrowable($tenantName, $method, $path, $requestContent, $document, $times);
+                } else {
+                    $times = $this->variableCache->readInt($key2, 0);
+                    $this->variableCache->saveInt($key2, $times + 1);
+                }
             }
         }
     }
