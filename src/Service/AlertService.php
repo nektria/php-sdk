@@ -229,21 +229,12 @@ class AlertService
         }
     }
 
-    private function parseChannel(string $channelId): string
+    /**
+     * @return array<string, array<string, string>>
+     */
+    public function channels(): array
     {
-        $defaultChannels = [
-            'bugs',
-            'operations',
-            'updates',
-            'pickingshifts',
-            'configurations'
-        ];
-
-        if (!in_array($channelId, $defaultChannels, true)) {
-            return $channelId;
-        }
-
-        $configuration = [
+        return [
             'dev' => [
                 'operations' => '1221387322755383356',
                 'updates' => '1221387427000750120',
@@ -273,6 +264,23 @@ class AlertService
                 'configurations' => '1223571661421412352',
             ]
         ];
+    }
+
+    private function parseChannel(string $channelId): string
+    {
+        $defaultChannels = [
+            'bugs',
+            'operations',
+            'updates',
+            'pickingshifts',
+            'configurations'
+        ];
+
+        if (!in_array($channelId, $defaultChannels, true)) {
+            return $channelId;
+        }
+
+        $configuration = $this->channels();
 
         return $configuration[$this->contextService->env()][$channelId];
     }
