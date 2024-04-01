@@ -200,6 +200,7 @@ class AlertService
                 "**{$this->contextService->project()}**\n" .
                 "**{$tenantName}**\n" .
                 "**{$method}** _{$path}_ " .
+                " (x{$times})" .
                 "```json\n" .
                 $inputString .
                 "\n```" .
@@ -222,6 +223,7 @@ class AlertService
                 "**{$this->contextService->project()}**\n" .
                 "**{$tenantName}**\n" .
                 "**{$method}** _{$path}_ \n" .
+                " (x{$times})" .
                 "Trace: {$this->contextService->traceId()}\n" .
                 "‎\n‎";
 
