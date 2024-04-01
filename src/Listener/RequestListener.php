@@ -209,6 +209,11 @@ abstract class RequestListener implements EventSubscriberInterface
     {
         $this->bus->dispatchDelayedEvents();
         $route = $event->getRequest()->attributes->get('_route') ?? '';
+
+        if ($route === '') {
+            return;
+        }
+
         $response = $this->originalResponse ?? $event->getResponse();
         $status = $response->getStatusCode();
         $document = null;
