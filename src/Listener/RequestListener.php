@@ -112,7 +112,7 @@ abstract class RequestListener implements EventSubscriberInterface
             }
 
             if ($apiKey !== null) {
-                $this->userService->authenticateUser($apiKey);
+                // $this->userService->authenticateUser($apiKey);
             }
 
             return;
