@@ -10,6 +10,7 @@ use Nektria\Document\DocumentResponse;
 use Nektria\Document\FileDocument;
 use Nektria\Document\ThrowableDocument;
 use Nektria\Exception\InsufficientCredentialsException;
+use Nektria\Exception\InvalidAuthorizationException;
 use Nektria\Infrastructure\UserServiceInterface;
 use Nektria\Service\AlertService;
 use Nektria\Service\Bus;
@@ -112,7 +113,10 @@ abstract class RequestListener implements EventSubscriberInterface
             }
 
             if ($apiKey !== null) {
-                // $this->userService->authenticateUser($apiKey);
+                try {
+                    $this->userService->authenticateUser($apiKey);
+                } catch (InvalidAuthorizationException) {
+                }
             }
 
             return;
