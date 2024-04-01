@@ -225,7 +225,7 @@ class AlertService
         $content = html_entity_decode(preg_replace('/\\\u([\da-fA-F]{4})/', '&#x\1;', $content) ?? '');
 
         try {
-            $this->makeRequest('bugs', [
+            $this->makeRequest(self::CHANNEL_BUGS, [
                 'content' => $content
             ]);
         } catch (Throwable) {
@@ -237,7 +237,7 @@ class AlertService
                 "Trace: {$this->contextService->traceId()}\n" .
                 "‎\n‎";
 
-            $this->makeRequest('bugs', [
+            $this->makeRequest(self::CHANNEL_BUGS, [
                 'content' => $content
             ]);
         }
