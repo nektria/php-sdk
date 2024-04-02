@@ -9,6 +9,7 @@ use Doctrine\DBAL\Exception\DriverException;
 use Doctrine\ORM\EntityManagerInterface;
 use Nektria\Document\ThrowableDocument;
 use Nektria\Dto\Clock;
+use Nektria\Infrastructure\BusInterface;
 use Nektria\Infrastructure\UserServiceInterface;
 use Nektria\Message\Command;
 use Nektria\Message\Event;
@@ -51,6 +52,7 @@ class MessageListener implements EventSubscriberInterface
         private readonly LogService $logService,
         private readonly UserServiceInterface $userService,
         private readonly VariableCache $variableCache,
+        private readonly BusInterface $bus
     ) {
         $this->executionTime = microtime(true);
         $this->messageCompletedAt = Clock::new()->iso8601String();
@@ -103,6 +105,7 @@ class MessageListener implements EventSubscriberInterface
 
     public function onWorkerMessageHandled(WorkerMessageHandledEvent $event): void
     {
+        $this->bus->dispatchDelayedEvents();
         $this->messageCompletedAt = Clock::new()->iso8601String();
         $message = $event->getEnvelope()->getMessage();
 
