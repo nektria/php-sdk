@@ -1,3 +1,3 @@
 #!/bin/bash
 
-docker exec -it nektria-sdk bin/console "$@"
+docker exec -it php-sdk bin/console "$@"

@@ -1,6 +1,6 @@
 #!/bin/bash
 trap "exit 1" ERR
 
-DOCKER_IMAGE='nektria-sdk'
+DOCKER_IMAGE='php-sdk'
 
 docker exec -i "$DOCKER_IMAGE" composer update

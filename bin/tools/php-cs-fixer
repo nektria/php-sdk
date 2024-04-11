@@ -2,7 +2,7 @@
 trap "exit 1" ERR
 
 USE_GOOGLE=''
-DOCKER_IMAGE='nektria-sdk'
+DOCKER_IMAGE='php-sdk'
 
 print_usage() {
   printf "Usage: bin/tools/php-cs-fixer [-l|g] \n"
@@ -17,8 +17,8 @@ while getopts 'lg' flag; do
 done
 
 if [ "$USE_GOOGLE" = '1' ]; then
-  php -d memory_limit=-1 vendor/bin/php-cs-fixer fix src --allow-risky=yes --using-cache=no --dry-run --config=server/nektria-sdk/php-cs-fixer.dist.php
+  php -d memory_limit=-1 vendor/bin/php-cs-fixer fix src --allow-risky=yes --using-cache=no --dry-run --config=server/php-sdk/php-cs-fixer.dist.php
 else
-  docker exec -i "$DOCKER_IMAGE" php -d memory_limit=-1 vendor/bin/php-cs-fixer fix src --allow-risky=yes --using-cache=no --config=server/nektria-sdk/php-cs-fixer.dist.php
+  docker exec -i "$DOCKER_IMAGE" php -d memory_limit=-1 vendor/bin/php-cs-fixer fix src --allow-risky=yes --using-cache=no --config=server/php-sdk/php-cs-fixer.dist.php
 fi
 

@@ -2,7 +2,7 @@
 trap "exit 1" ERR
 
 PIPELINE=''
-DOCKER_IMAGE='nektria-sdk'
+DOCKER_IMAGE='php-sdk'
 
 print_usage() {
   printf "Usage: bin/tools/phpstan [-l|g] \n"
@@ -17,8 +17,8 @@ while getopts 'p' flag; do
 done
 
 if [ "$PIPELINE" = '1' ]; then
-  php -d memory_limit=-1 vendor/bin/phpstan analyze -c server/nektria-sdk/phpstan.neon --no-progress
+  php -d memory_limit=-1 vendor/bin/phpstan analyze -c server/php-sdk/phpstan.neon --no-progress
 else
-  docker exec -i "$DOCKER_IMAGE" php -d memory_limit=-1 vendor/bin/phpstan analyze -c server/nektria-sdk/phpstan.neon --no-progress
+  docker exec -i "$DOCKER_IMAGE" php -d memory_limit=-1 vendor/bin/phpstan analyze -c server/php-sdk/phpstan.neon --no-progress
 fi
 

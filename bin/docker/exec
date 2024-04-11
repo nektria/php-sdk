@@ -1,2 +1,2 @@
 #!/bin/sh
-docker exec -t nektria-sdk "$@"
+docker exec -t php-sdk "$@"
