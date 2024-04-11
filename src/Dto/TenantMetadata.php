@@ -28,37 +28,6 @@ class TenantMetadata
     public function __construct(array $data)
     {
         $this->data = $data;
-        $this->autoDuplicateLastWeek();
-        $this->availableTags();
-        $this->blockWarehouse();
-        $this->dayOffExtendsCutoff();
-        $this->deliveryTime();
-        $this->ecoMode();
-        $this->expressGridDisabled();
-        $this->extendPickingShiftsDisabled();
-        $this->extraLongSpeed();
-        $this->forceDriverAssignation();
-        $this->forceTags();
-        $this->gridMode();
-        $this->gridVesion();
-        $this->gridViewerOrdersPrefix();
-        $this->ignoreRoutesOnLogsList();
-        $this->importOrdersFromFileByProxy();
-        $this->longSpeed();
-        $this->nextStepEnabled();
-        $this->parkingTime();
-        $this->proxyHost();
-        $this->proxyToken();
-        $this->recoverCoords();
-        $this->sendNewOrderToProxy();
-        $this->sendRoutesAtPickingShiftClosesAt();
-        $this->sendRoutesByProxy();
-        $this->shortSpeed();
-        $this->syncRMOrder();
-        $this->syncRMShift();
-        $this->syncRMWarehouse();
-        $this->useAddressInsteadOfShopperCode();
-        $this->configurationsChannel();
     }
 
     public function ecoMode(): string
@@ -287,6 +256,13 @@ class TenantMetadata
         return $this->data['configurationsChannel'];
     }
 
+    public function countComplementaryOrders(): bool
+    {
+        $this->data['countComplementaryOrders'] ??= true;
+
+        return $this->data['countComplementaryOrders'];
+    }
+
     /**
      * @return WarehouseMetadataArray
      */
@@ -296,6 +272,7 @@ class TenantMetadata
             'autoDuplicateLastWeek' => $this->autoDuplicateLastWeek(),
             'availableTags' => $this->availableTags(),
             'blockWarehouse' => $this->blockWarehouse(),
+            'countComplementaryOrders' => $this->countComplementaryOrders(),
             'dayOffExtendsCutoff' => $this->dayOffExtendsCutoff(),
             'deliveryTime' => $this->deliveryTime(),
             'ecoMode' => $this->ecoMode(),
