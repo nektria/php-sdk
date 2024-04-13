@@ -40,7 +40,9 @@ class RequestClient
                     $method,
                     $url,
                     [
-                        'headers' => $headers
+                        'headers' => $headers,
+                        'verify_peer' => false,
+                        'verify_host' => false
                     ]
                 );
             } elseif ($body === '[]') {
@@ -48,7 +50,9 @@ class RequestClient
                     $method,
                     $url,
                     [
-                        'headers' => $headers
+                        'headers' => $headers,
+                        'verify_peer' => false,
+                        'verify_host' => false
                     ]
                 );
             } else {
@@ -58,6 +62,8 @@ class RequestClient
                     [
                         'headers' => $headers,
                         'body' => $body,
+                        'verify_peer' => false,
+                        'verify_host' => false
                     ]
                 );
             }
