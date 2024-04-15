@@ -39,7 +39,7 @@ class MicroClockType extends Type
 
     public function getSQLDeclaration(array $column, AbstractPlatform $platform): string
     {
-        return 'TIMESTAMP(14) WITHOUT TIME ZONE';
+        return 'TIMESTAMP(6) WITHOUT TIME ZONE';
     }
 
     public function requiresSQLCommentHint(AbstractPlatform $platform): bool
