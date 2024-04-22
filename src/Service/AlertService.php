@@ -96,6 +96,7 @@ class AlertService
         }
 
         $channelId = $this->parseChannel($channel);
+        $this->sharedDiscordCache->addMessage($channel, $message);
         $this->requestClient->post(
             "https://discord.com/api/channels/{$channelId}/messages",
             $message,
@@ -103,7 +104,7 @@ class AlertService
                 'Authorization' => "Bot {$this->token}"
             ]
         );
-        $this->sharedDiscordCache->addMessage($channel, $message);
+        $this->sharedDiscordCache->removeLastMessage($channel);
     }
 
     /**

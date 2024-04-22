@@ -37,6 +37,13 @@ class SharedDiscordCache extends SharedRedisCache
         $this->setItem($channel, $items, 3600);
     }
 
+    public function removeLastMessage(string $channel): void
+    {
+        $items = $this->read($channel);
+        array_pop($items);
+        $this->setItem($channel, $items, 3600);
+    }
+
     public function remove(string $channel): void
     {
         $this->removeItem($channel);
