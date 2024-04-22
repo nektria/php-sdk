@@ -79,6 +79,14 @@ class AlertService
     }
 
     /**
+     * @return string[]
+     */
+    public function channelsList(): array
+    {
+        return array_keys($this->channels()[$this->contextService->env()]);
+    }
+
+    /**
      * @param AlertMessage $message
      */
     private function makeRequest(string $channel, array $message): void
