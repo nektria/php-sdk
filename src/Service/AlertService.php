@@ -11,6 +11,50 @@ use Throwable;
 use function in_array;
 use function strlen;
 
+/**
+ * @phpstan-type AlertMessage array{
+ *      content?: string,
+ *      embeds?: array<array{
+ *          title?: string,
+ *          type?: string,
+ *          description?: string,
+ *          url?: string,
+ *          timestamp?: string,
+ *          color?: int,
+ *          footer?: array{
+ *              text?: string,
+ *              icon_url?: string
+ *          },
+ *          image?: array{
+ *              url?: string,
+ *              height?: int,
+ *              width?: int
+ *          },
+ *          thumbnail?: array{
+ *              url?: string,
+ *              height?: int,
+ *              width?: int
+ *          },
+ *          author?: array{
+ *              name?: string,
+ *          },
+ *          fields?: array<array{
+ *              name?: string,
+ *              value?: string,
+ *              inline?: bool
+ *          }>,
+ *      }>,
+ *      components?: array<array{
+ *          type: int,
+ *          components: array<array{
+ *              type: int,
+ *              style: int,
+ *              label: string,
+ *              custom_id: string
+ *          }>
+ *      }>
+ *  }
+ */
 class AlertService
 {
     public const CHANNEL_BUGS = 'bugs';
@@ -29,53 +73,13 @@ class AlertService
         private readonly string $alertsToken,
         private readonly ContextService $contextService,
         private readonly RequestClient $requestClient,
+        private readonly SharedDiscordCache $sharedDiscordCache
     ) {
         $this->token = $this->alertsToken;
     }
 
     /**
-     * @param array{
-     *     content?: string,
-     *     embeds?: array<array{
-     *         title?: string,
-     *         type?: string,
-     *         description?: string,
-     *         url?: string,
-     *         timestamp?: string,
-     *         color?: int,
-     *         footer?: array{
-     *             text?: string,
-     *             icon_url?: string
-     *         },
-     *         image?: array{
-     *             url?: string,
-     *             height?: int,
-     *             width?: int
-     *         },
-     *         thumbnail?: array{
-     *             url?: string,
-     *             height?: int,
-     *             width?: int
-     *         },
-     *         author?: array{
-     *             name?: string,
-     *         },
-     *         fields?: array<array{
-     *             name?: string,
-     *             value?: string,
-     *             inline?: bool
-     *         }>,
-     *     }>,
-     *     components?: array<array{
-     *         type: int,
-     *         components: array<array{
-     *             type: int,
-     *             style: int,
-     *             label: string,
-     *             custom_id: string
-     *         }>
-     *     }>
-     * } $message
+     * @param AlertMessage $message
      */
     private function makeRequest(string $channel, array $message): void
     {
@@ -83,59 +87,19 @@ class AlertService
             return;
         }
 
-        $channel = $this->parseChannel($channel);
+        $channelId = $this->parseChannel($channel);
         $this->requestClient->post(
-            "https://discord.com/api/channels/{$channel}/messages",
+            "https://discord.com/api/channels/{$channelId}/messages",
             $message,
             [
                 'Authorization' => "Bot {$this->token}"
             ]
         );
+        $this->sharedDiscordCache->addMessage($channel, $message);
     }
 
     /**
-     * @param array{
-     *     content?: string,
-     *     embeds?: array<array{
-     *         title?: string,
-     *         type?: string,
-     *         description?: string,
-     *         url?: string,
-     *         timestamp?: string,
-     *         color?: int,
-     *         footer?: array{
-     *             text?: string,
-     *             icon_url?: string
-     *         },
-     *         image?: array{
-     *             url?: string,
-     *             height?: int,
-     *             width?: int
-     *         },
-     *         thumbnail?: array{
-     *             url?: string,
-     *             height?: int,
-     *             width?: int
-     *         },
-     *         author?: array{
-     *             name?: string,
-     *         },
-     *         fields?: array<array{
-     *             name?: string,
-     *             value?: string,
-     *             inline?: bool
-     *         }>,
-     *     }>,
-     *     components?: array<array{
-     *         type: int,
-     *         components: array<array{
-     *             type: int,
-     *             style: int,
-     *             label: string,
-     *             custom_id: string
-     *         }>
-     *     }>
-     * } $message
+     * @param AlertMessage $message
      */
     public function sendMessage(string $channel, array $message): void
     {
@@ -278,6 +242,19 @@ class AlertService
                 'configurations' => '1223571661421412352',
             ]
         ];
+    }
+
+    /**
+     * @return AlertMessage[]
+     */
+    public function readMessagesFromCache(string $channel): array
+    {
+        return $this->sharedDiscordCache->read($channel);
+    }
+
+    public function cleanMessagesFromCache(string $channel): void
+    {
+        $this->sharedDiscordCache->remove($channel);
     }
 
     private function parseChannel(string $channelId): string
