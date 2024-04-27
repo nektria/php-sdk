@@ -20,14 +20,13 @@ class RequestClient
     /**
      * @param mixed[] $data
      * @param array<string, string> $headers
-     * @return mixed[]
      */
     private function request(
         string $method,
         string $url,
         array $data,
         array $headers
-    ): array {
+    ): mixed {
         $body = JsonUtil::encode($data);
         $headers = array_merge([
             'Content-Type' => 'application/json',
@@ -89,9 +88,8 @@ class RequestClient
 
     /**
      * @param array<string, string> $headers
-     * @return mixed[]
      */
-    public function get(string $url, array $headers = []): array
+    public function get(string $url, array $headers = []): mixed
     {
         return $this->request('GET', $url, [], $headers);
     }
