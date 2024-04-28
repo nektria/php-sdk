@@ -152,7 +152,7 @@ class RequestClient
     public function lastResponse(): RequestResponse
     {
         if ($this->response === null) {
-            throw new DomainException('No response available');
+            throw new DomainException('No response available.');
         }
 
         return $this->response;
