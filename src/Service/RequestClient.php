@@ -83,13 +83,20 @@ class RequestClient
         }
 
         if ($status >= 300) {
+            $errorContent = $content;
+
             try {
-                $this->logService->error(JsonUtil::decode($content), "{$method} {$url} failed with status {$status}");
+                $errorContent = JsonUtil::decode($content);
             } catch (Throwable) {
-                $this->logService->error([
-                    'content' => $content
-                ], "{$method} {$url} failed with status {$status}");
             }
+
+            $this->logService->error([
+                'request' => $data,
+                'response' => $errorContent,
+                'method' => $method,
+                'url' => $url,
+                'status' => $status
+            ], "{$method} {$url} failed with status {$status}");
 
             throw new NektriaException($content, $status);
         }
