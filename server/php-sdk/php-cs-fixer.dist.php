@@ -32,7 +32,7 @@ $config
         'method_argument_space' => [
             'on_multiline' => 'ensure_fully_multiline'
         ],
-        'no_extra_blank_lines' => [],
+        'no_extra_blank_lines' => true,
         'ordered_imports' => ['sort_algorithm' => 'alpha', 'imports_order' => ['class', 'function', 'const']],
         'phpdoc_align' => false,
         'phpdoc_separation' => false,

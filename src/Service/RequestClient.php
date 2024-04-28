@@ -21,12 +21,14 @@ class RequestClient
     /**
      * @param mixed[] $data
      * @param array<string, string> $headers
+     * @param array<string, string> $options
      */
     private function request(
         string $method,
         string $url,
         array $data,
-        array $headers
+        array $headers,
+        array $options = []
     ): mixed {
         $body = JsonUtil::encode($data);
         $headers = array_merge([
@@ -34,37 +36,29 @@ class RequestClient
             'User-Agent' => 'Nektria/1.0',
         ], $headers);
 
+        $options['verify_peer'] = false;
+        $options['verify_host'] = false;
+        $options['headers'] = $headers;
+
         try {
             if ($method === 'GET') {
                 $response = $this->client->request(
                     $method,
                     $url,
-                    [
-                        'headers' => $headers,
-                        'verify_peer' => false,
-                        'verify_host' => false
-                    ]
+                    $options
                 );
             } elseif ($body === '[]') {
                 $response = $this->client->request(
                     $method,
                     $url,
-                    [
-                        'headers' => $headers,
-                        'verify_peer' => false,
-                        'verify_host' => false
-                    ]
+                    $options
                 );
             } else {
+                $options['body'] = $body;
                 $response = $this->client->request(
                     $method,
                     $url,
-                    [
-                        'headers' => $headers,
-                        'body' => $body,
-                        'verify_peer' => false,
-                        'verify_host' => false
-                    ]
+                    $options
                 );
             }
 
@@ -97,48 +91,53 @@ class RequestClient
 
     /**
      * @param array<string, string> $headers
+     * @param array<string, string> $options
      */
-    public function get(string $url, array $headers = []): mixed
+    public function get(string $url, array $headers = [], array $options = []): mixed
     {
-        return $this->request('GET', $url, [], $headers);
+        return $this->request('GET', $url, [], $headers, $options);
     }
 
     /**
      * @param mixed[] $data
      * @param array<string, string> $headers
+     * @param array<string, string> $options
      * @return mixed[]
      */
-    public function put(string $url, array $data, array $headers): array
+    public function put(string $url, array $data, array $headers, array $options = []): array
     {
-        return $this->request('PUT', $url, $data, $headers);
+        return $this->request('PUT', $url, $data, $headers, $options);
     }
 
     /**
      * @param array<string, string> $headers
+     * @param array<string, string> $options
      * @return mixed[]
      */
-    public function delete(string $url, array $headers = []): array
+    public function delete(string $url, array $headers = [], array $options = []): array
     {
-        return $this->request('DELETE', $url, [], $headers);
-    }
-
-    /**
-     * @param mixed[] $data
-     * @param array<string, string> $headers
-     * @return mixed[]
-     */
-    public function patch(string $url, array $data, array $headers): array
-    {
-        return $this->request('PATCH', $url, $data, $headers);
+        return $this->request('DELETE', $url, [], $headers, $options);
     }
 
     /**
      * @param mixed[] $data
      * @param array<string, string> $headers
+     * @param array<string, string> $options
      * @return mixed[]
      */
-    public function post(string $url, array $data, array $headers): array
+    public function patch(string $url, array $data, array $headers, array $options = []): array
     {
-        return $this->request('POST', $url, $data, $headers);
+        return $this->request('PATCH', $url, $data, $headers, $options);
+    }
+
+    /**
+     * @param mixed[] $data
+     * @param array<string, string> $headers
+     * @param array<string, string> $options
+     * @return mixed[]
+     */
+    public function post(string $url, array $data, array $headers, array $options = []): array
+    {
+        return $this->request('POST', $url, $data, $headers, $options);
     }
 }
