@@ -35,6 +35,7 @@ class RequestClient
         array $headers,
         array $options = []
     ): mixed {
+        $this->response = null;
         $body = JsonUtil::encode($data);
         $headers = array_merge([
             'Content-Type' => 'application/json',
