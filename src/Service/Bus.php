@@ -16,6 +16,7 @@ use ReflectionClass;
 use RuntimeException;
 use Symfony\Component\Messenger\Exception\HandlerFailedException;
 use Symfony\Component\Messenger\MessageBusInterface;
+use Symfony\Component\Messenger\Stamp\DelayStamp;
 use Symfony\Component\Messenger\Stamp\HandledStamp;
 use Symfony\Component\Messenger\Stamp\TransportNamesStamp;
 use Throwable;
@@ -73,7 +74,7 @@ class Bus implements BusInterface
     /**
      * @throws Throwable
      */
-    final public function dispatchCommand(Command $command, ?string $transport = null): void
+    final public function dispatchCommand(Command $command, ?string $transport = null, ?int $msDelay = null): void
     {
         $this->validateAccess($command);
 
@@ -87,6 +88,10 @@ class Bus implements BusInterface
 
         if ($transport !== null) {
             $stamps[] = new TransportNamesStamp([$transport]);
+        }
+
+        if ($msDelay !== null) {
+            $stamps[] = new DelayStamp($msDelay);
         }
 
         try {
