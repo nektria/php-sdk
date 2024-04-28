@@ -18,7 +18,7 @@ interface BusInterface
      */
     public function dispatchQuery(Query $query): Document;
 
-    public function dispatchCommand(Command $command, ?string $transport = null): void;
+    public function dispatchCommand(Command $command, ?string $transport = null, ?int $msDelay = null): void;
 
     public function dispatchEvent(Event $event): void;
 
