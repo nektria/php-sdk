@@ -10,6 +10,8 @@ use Throwable;
 class RequestResponse
 {
     public function __construct(
+        public readonly string $method,
+        public readonly string $url,
         public readonly int $status,
         public readonly string $body
     ) {

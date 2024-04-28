@@ -71,7 +71,7 @@ class RequestClient
             $content = $response->getContent(false);
             $status = $response->getStatusCode();
 
-            $this->response = new RequestResponse($status, $content);
+            $this->response = new RequestResponse($method, $url, $status, $content);
 
             if ($status === Response::HTTP_NO_CONTENT) {
                 $parsedContent = [];
