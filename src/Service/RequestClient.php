@@ -91,11 +91,11 @@ class RequestClient
             }
 
             $this->logService->error([
+                'method' => $method,
                 'request' => $data,
                 'response' => $errorContent,
-                'method' => $method,
+                'status' => $status,
                 'url' => $url,
-                'status' => $status
             ], "{$method} {$url} failed with status {$status}");
 
             throw new NektriaException($content, $status);
