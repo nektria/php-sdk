@@ -13,7 +13,8 @@ use Throwable;
 class RequestClient
 {
     public function __construct(
-        private readonly HttpClientInterface $client
+        private readonly HttpClientInterface $client,
+        private readonly LogService $logService
     ) {
     }
 
@@ -80,6 +81,14 @@ class RequestClient
         }
 
         if ($status >= 300) {
+            try {
+                $this->logService->error(JsonUtil::decode($content), "{$method} {$url} failed with status {$status}");
+            } catch (Throwable) {
+                $this->logService->error([
+                    'content' => $content
+                ], "{$method} {$url} failed with status {$status}");
+            }
+
             throw new NektriaException($content, $status);
         }
 
