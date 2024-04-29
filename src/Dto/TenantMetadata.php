@@ -30,6 +30,11 @@ class TenantMetadata
         $this->data = $data;
     }
 
+    public function getDiscordChannelFor(string $channel): ?string
+    {
+        return $this->data["{$channel}Channel"] ?? null;
+    }
+
     public function ecoMode(): string
     {
         $this->data['ecoMode'] ??= self::ECHO_MODE_DEFAULT;

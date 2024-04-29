@@ -67,13 +67,16 @@ class AlertService
 
     public const CHANNEL_CONFIGURATIONS = 'configurations';
 
+    public const EMPTY_LINE = "‎\n‎";
+
     private string $token;
 
     public function __construct(
         private readonly string $alertsToken,
         private readonly ContextService $contextService,
         private readonly RequestClient $requestClient,
-        private readonly SharedDiscordCache $sharedDiscordCache
+        private readonly SharedDiscordCache $sharedDiscordCache,
+        private readonly UserService $userService
     ) {
         $this->token = $this->alertsToken;
     }
@@ -164,7 +167,7 @@ class AlertService
         $maxLength = 2000;
         $inputString = JsonUtil::encode($input, true);
         $documentString = JsonUtil::encode($document->toArray('dev'), true);
-        $content = "‎\n" .
+        $content = self::EMPTY_LINE .
             "**{$this->contextService->project()}**\n" .
             "**{$tenantName}**\n" .
             "**{$method}** _{$path}_" .
@@ -176,10 +179,10 @@ class AlertService
             $documentString .
             "\n```" .
             "Trace: [{$this->contextService->traceId()}]($traceUrl)\n" .
-            "‎\n‎";
+            self::EMPTY_LINE;
 
         if (strlen($content) >= $maxLength) {
-            $content = "‎\n" .
+            $content = self::EMPTY_LINE .
                 "**{$this->contextService->project()}**\n" .
                 "**{$tenantName}**\n" .
                 "**{$method}** _{$path}_ " .
@@ -191,7 +194,7 @@ class AlertService
                 $documentString .
                 "\n```" .
                 "Trace: {$this->contextService->traceId()}\n" .
-                "‎\n‎";
+                self::EMPTY_LINE;
         }
 
         $content = str_replace(['\/', '/app/'], ['/', ''], $content);
@@ -202,13 +205,13 @@ class AlertService
                 'content' => $content
             ]);
         } catch (Throwable) {
-            $content = "‎\n" .
+            $content = self::EMPTY_LINE .
                 "**{$this->contextService->project()}**\n" .
                 "**{$tenantName}**\n" .
                 "**{$method}** _{$path}_ \n" .
                 ($times === 1 ? '' : " (x{$times})") .
                 "Trace: {$this->contextService->traceId()}\n" .
-                "‎\n‎";
+                self::EMPTY_LINE;
 
             $this->makeRequest(self::CHANNEL_BUGS, [
                 'content' => $content
@@ -268,6 +271,12 @@ class AlertService
 
     private function parseChannel(string $channelId): string
     {
+        $channel = $this->userService->user()?->tenant->metadata->getDiscordChannelFor($channelId);
+
+        if ($channel !== null) {
+            return $channel;
+        }
+
         $defaultChannels = [
             'bugs',
             'operations',
