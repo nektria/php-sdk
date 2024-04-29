@@ -168,9 +168,9 @@ abstract class MessageListener implements EventSubscriberInterface
                 if ($message instanceof Command) {
                     $this->bus->dispatchCommand(
                         $message,
-                        $transport,
-                        $nextTry,
-                        [
+                        transport: $transport,
+                        delayMs: $retryStamp->intervalMs,
+                        retryOptions: [
                             'currentTry' => $nextTry,
                             'maxTries' => $retryStamp->maxRetries,
                             'interval' => $retryStamp->intervalMs
