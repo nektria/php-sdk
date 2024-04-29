@@ -230,7 +230,7 @@ abstract class MessageListener implements EventSubscriberInterface
 
             $key = "{$tenantName}-messenger-{$classHash}_t{$try}";
             $key2 = "{$tenantName}-messenger-{$classHash}_t{$try}_count";
-            if ($this->variableCache->refreshKey($key)) {
+            if ($this->contextService->env() === ContextService::DEV || $this->variableCache->refreshKey($key)) {
                 $ignoreMessages = [
                     'Redelivered message from AMQP detected that will be rejected and trigger the retry logic.'
                 ];
