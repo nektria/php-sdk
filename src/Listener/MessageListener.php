@@ -6,7 +6,6 @@ namespace Nektria\Listener;
 
 use Doctrine\DBAL\ConnectionException;
 use Doctrine\DBAL\Exception\DriverException;
-use Doctrine\ORM\EntityManagerInterface;
 use Nektria\Document\ThrowableDocument;
 use Nektria\Dto\Clock;
 use Nektria\Infrastructure\BusInterface;
@@ -49,7 +48,6 @@ abstract class MessageListener implements EventSubscriberInterface
     public function __construct(
         private readonly AlertService $alertService,
         private readonly ContextService $contextService,
-        private readonly EntityManagerInterface $entityManager,
         private readonly LockMessageService $lock,
         private readonly LogService $logService,
         private readonly UserServiceInterface $userService,
@@ -61,7 +59,7 @@ abstract class MessageListener implements EventSubscriberInterface
         $this->messageStartedAt = $this->messageCompletedAt;
     }
 
-    protected abstract function cleanMemory(): void;
+    abstract protected function cleanMemory(): void;
 
     /**
      * @return array<string, string>
@@ -143,7 +141,6 @@ abstract class MessageListener implements EventSubscriberInterface
         $this->cleanMemory();
 
         try {
-            $this->entityManager->clear();
             $this->lock->releaseAll();
         } catch (Throwable) {
         }
@@ -248,7 +245,7 @@ abstract class MessageListener implements EventSubscriberInterface
 
                 $this->variableCache->saveInt($key2, 0);
             } else {
-                $times = $this->variableCache->readInt($key2, 0);
+                $times = $this->variableCache->readInt($key2);
                 $this->variableCache->saveInt($key2, $times + 1);
             }
         }
@@ -258,7 +255,6 @@ abstract class MessageListener implements EventSubscriberInterface
         $this->cleanMemory();
 
         try {
-            $this->entityManager->clear();
             $this->lock->releaseAll();
         } catch (Throwable) {
         }
@@ -271,7 +267,6 @@ abstract class MessageListener implements EventSubscriberInterface
         $this->cleanMemory();
 
         try {
-            $this->entityManager->clear();
             $this->lock->releaseAll();
         } catch (Throwable) {
         }
