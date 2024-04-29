@@ -86,10 +86,37 @@ class Controller
         return $this->documentResponse($this->bus->dispatchQuery($query));
     }
 
-    protected function emptyResponse(?Command $command = null, ?string $transport = null): JsonResponse
-    {
+    /**
+     * @param array{
+     *     currentTry: int,
+     *     maxTries: int,
+     *     interval: int,
+     * }|null $retryOptions
+     */
+    protected function command(
+        Command $command,
+        ?string $transport = null,
+        ?int $delayMs = null,
+        ?array $retryOptions = null
+    ): void {
+        $this->bus->dispatchCommand($command, $transport, $delayMs, $retryOptions);
+    }
+
+    /**
+     * @param array{
+     *     currentTry: int,
+     *     maxTries: int,
+     *     interval: int,
+     * }|null $retryOptions
+     */
+    protected function emptyResponse(
+        ?Command $command = null,
+        ?string $transport = null,
+        ?int $delayMs = null,
+        ?array $retryOptions = null
+    ): JsonResponse {
         if ($command !== null) {
-            $this->bus->dispatchCommand($command, $transport);
+            $this->command($command, $transport, $delayMs, $retryOptions);
         }
 
         return new JsonResponse([], Response::HTTP_NO_CONTENT);
