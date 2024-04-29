@@ -83,7 +83,7 @@ class Bus implements BusInterface
     final public function dispatchCommand(
         Command $command,
         ?string $transport = null,
-        ?int $msDelay = null,
+        ?int $delayMs = null,
         ?array $retryOptions = null
     ): void {
         $this->validateAccess($command);
@@ -116,8 +116,8 @@ class Bus implements BusInterface
             }
         }
 
-        if ($msDelay !== null) {
-            $stamps[] = new DelayStamp($msDelay);
+        if ($delayMs !== null) {
+            $stamps[] = new DelayStamp($delayMs);
         }
 
         try {

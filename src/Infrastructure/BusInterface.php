@@ -28,7 +28,7 @@ interface BusInterface
     public function dispatchCommand(
         Command $command,
         ?string $transport = null,
-        ?int $msDelay = null,
+        ?int $delayMs = null,
         ?array $retryOptions = null
     ): void;
 
