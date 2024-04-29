@@ -117,7 +117,12 @@ abstract class MessageListener implements EventSubscriberInterface
             $serializer = new Serializer($normalizers, $encoders);
             $data = JsonUtil::decode($serializer->serialize($message, 'json'));
             $messageClass = StringUtil::className($message);
-            $resume = "/{$messageClass}/{$message->ref()}";
+            $try = 1;
+            $retryStamp = $event->getEnvelope()->last(RetryStamp::class);
+            if ($retryStamp !== null) {
+                $try = $retryStamp->currentTry;
+            }
+            $resume = "/{$messageClass}/{$message->ref()}/{$try}";
             $time = max(0.001, round(microtime(true) - $this->executionTime, 3)) . 's';
 
             $this->logService->info([
@@ -128,7 +133,7 @@ abstract class MessageListener implements EventSubscriberInterface
                 'messageReceivedAt' => $this->messageStartedAt,
                 'messageCompletedAt' => $this->messageCompletedAt,
                 'httpRequest' => [
-                    'requestUrl' => "/{$messageClass}/{$message->ref()}",
+                    'requestUrl' => $resume,
                     'requestMethod' => 'QUEUE',
                     'status' => 200,
                     'latency' => $time
@@ -214,7 +219,7 @@ abstract class MessageListener implements EventSubscriberInterface
                 'try' => $try,
                 'maxRetries' => $maxRetries,
                 'httpRequest' => [
-                    'requestUrl' => "/{$messageClass}/{$message->ref()}",
+                    'requestUrl' => "/{$messageClass}/{$message->ref()}/{$try}",
                     'requestMethod' => 'QUEUE',
                     'status' => 500,
                     'latency' => max(0.001, round(microtime(true) - $this->executionTime, 3)) . 's'
@@ -236,7 +241,7 @@ abstract class MessageListener implements EventSubscriberInterface
                     $this->alertService->sendThrowable(
                         $this->userService->user()?->tenant->name ?? 'none',
                         'RABBIT',
-                        "/{$messageClass}/{$message->ref()}",
+                        "/{$messageClass}/{$message->ref()}/{$try}",
                         $data,
                         $exception,
                         $times
