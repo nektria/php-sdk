@@ -20,6 +20,7 @@ use Nektria\Service\LogService;
 use Nektria\Service\VariableCache;
 use Nektria\Util\JsonUtil;
 use Nektria\Util\MessageStamp\ContextStamp;
+use Nektria\Util\MessageStamp\RetryStamp;
 use Nektria\Util\StringUtil;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\Messenger\Event\WorkerMessageFailedEvent;
@@ -27,6 +28,7 @@ use Symfony\Component\Messenger\Event\WorkerMessageHandledEvent;
 use Symfony\Component\Messenger\Event\WorkerMessageReceivedEvent;
 use Symfony\Component\Messenger\Event\WorkerStoppedEvent;
 use Symfony\Component\Messenger\Exception\HandlerFailedException;
+use Symfony\Component\Messenger\Stamp\TransportNamesStamp;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use Symfony\Component\Serializer\Normalizer\DateTimeNormalizer;
 use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
@@ -83,10 +85,10 @@ class MessageListener implements EventSubscriberInterface
             /** @var ContextStamp|null $contextStamp */
             $contextStamp = $event->getEnvelope()->last(ContextStamp::class);
             if ($contextStamp !== null) {
-                $this->contextService->setContext($contextStamp->context());
-                $this->contextService->setTraceId($contextStamp->traceId());
-                if ($contextStamp->tenantId() !== null) {
-                    $this->userService->authenticateSystem($contextStamp->tenantId());
+                $this->contextService->setContext($contextStamp->context);
+                $this->contextService->setTraceId($contextStamp->traceId);
+                if ($contextStamp->tenantId !== null) {
+                    $this->userService->authenticateSystem($contextStamp->tenantId);
                 }
             }
 
@@ -146,8 +148,39 @@ class MessageListener implements EventSubscriberInterface
 
     public function onMessengerException(WorkerMessageFailedEvent $event): void
     {
+        $retryStamp = $event->getEnvelope()->last(RetryStamp::class);
+        $transportStamp = $event->getEnvelope()->last(TransportNamesStamp::class);
         $this->messageCompletedAt = Clock::new()->iso8601String();
         $message = $event->getEnvelope()->getMessage();
+        $try = 1;
+        $maxRetries = 1;
+        if ($retryStamp !== null) {
+            $try = $retryStamp->currentTry;
+            $maxRetries = $retryStamp->maxRetries;
+            $nextTry = $retryStamp->currentTry + 1;
+            if ($nextTry <= $retryStamp->maxRetries) {
+                $transport = null;
+                if ($transportStamp !== null) {
+                    $transport = $transportStamp->getTransportNames()[0];
+                }
+
+                if ($message instanceof Command) {
+                    $this->bus->dispatchCommand(
+                        $message,
+                        $transport,
+                        $nextTry,
+                        [
+                            'currentTry' => $nextTry,
+                            'maxTries' => $retryStamp->maxRetries,
+                            'interval' => $retryStamp->intervalMs
+                        ]
+                    );
+                } elseif ($message instanceof Event) {
+                    $this->bus->dispatchEvent($message);
+                }
+            }
+        }
+
         if ($message instanceof Command || $message instanceof Event) {
             $encoders = [new JsonEncoder()];
             $normalizers = [new PropertyNormalizer(), new DateTimeNormalizer(), new ObjectNormalizer()];
@@ -177,6 +210,8 @@ class MessageListener implements EventSubscriberInterface
                 'body' => $data,
                 'messageReceivedAt' => $this->messageStartedAt,
                 'messageCompletedAt' => $this->messageCompletedAt,
+                'try' => $try,
+                'maxRetries' => $maxRetries,
                 'httpRequest' => [
                     'requestUrl' => "/{$messageClass}/{$message->ref()}",
                     'requestMethod' => 'QUEUE',

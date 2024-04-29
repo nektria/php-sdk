@@ -12,6 +12,7 @@ use Nektria\Message\Event;
 use Nektria\Message\Query;
 use Nektria\Util\Annotation\RolesRequired;
 use Nektria\Util\MessageStamp\ContextStamp;
+use Nektria\Util\MessageStamp\RetryStamp;
 use ReflectionClass;
 use RuntimeException;
 use Symfony\Component\Messenger\Exception\HandlerFailedException;
@@ -72,10 +73,19 @@ class Bus implements BusInterface
     }
 
     /**
+     * @param array{
+     *     currentTry: int,
+     *     maxTries: int,
+     *     interval: int,
+     * }|null $retryOptions
      * @throws Throwable
      */
-    final public function dispatchCommand(Command $command, ?string $transport = null, ?int $msDelay = null): void
-    {
+    final public function dispatchCommand(
+        Command $command,
+        ?string $transport = null,
+        ?int $msDelay = null,
+        ?array $retryOptions = null
+    ): void {
         $this->validateAccess($command);
 
         $stamps = [
@@ -88,6 +98,22 @@ class Bus implements BusInterface
 
         if ($transport !== null) {
             $stamps[] = new TransportNamesStamp([$transport]);
+        }
+
+        if ($retryOptions !== null) {
+            if ($this->contextService->env() === ContextService::DEV) {
+                $stamps[] = new RetryStamp(
+                    max(1, $retryOptions['currentTry']),
+                    min(10, $retryOptions['maxTries']),
+                    min(10_000, $retryOptions['interval'])
+                );
+            } else {
+                $stamps[] = new RetryStamp(
+                    max(1, $retryOptions['currentTry']),
+                    $retryOptions['maxTries'],
+                    $retryOptions['interval']
+                );
+            }
         }
 
         if ($msDelay !== null) {
