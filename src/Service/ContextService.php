@@ -21,6 +21,8 @@ class ContextService
 
     public const SYSTEM = 'system';
 
+    public const TEST = 'test';
+
     public const DEV = 'dev';
 
     public const QA = 'qa';
