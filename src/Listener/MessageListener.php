@@ -38,7 +38,7 @@ use Throwable;
 
 use function in_array;
 
-class MessageListener implements EventSubscriberInterface
+abstract class MessageListener implements EventSubscriberInterface
 {
     private float $executionTime;
 
@@ -60,6 +60,8 @@ class MessageListener implements EventSubscriberInterface
         $this->messageCompletedAt = Clock::new()->iso8601String();
         $this->messageStartedAt = $this->messageCompletedAt;
     }
+
+    protected abstract function cleanMemory(): void;
 
     /**
      * @return array<string, string>
@@ -137,6 +139,8 @@ class MessageListener implements EventSubscriberInterface
 
             $this->userService->clearAuthentication();
         }
+
+        $this->cleanMemory();
 
         try {
             $this->entityManager->clear();
@@ -251,6 +255,8 @@ class MessageListener implements EventSubscriberInterface
 
         $this->userService->clearAuthentication();
 
+        $this->cleanMemory();
+
         try {
             $this->entityManager->clear();
             $this->lock->releaseAll();
@@ -262,10 +268,14 @@ class MessageListener implements EventSubscriberInterface
 
     public function onWorkerStoppedEvent(): void
     {
+        $this->cleanMemory();
+
         try {
             $this->entityManager->clear();
             $this->lock->releaseAll();
         } catch (Throwable) {
         }
+
+        gc_collect_cycles();
     }
 }
