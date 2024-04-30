@@ -116,4 +116,34 @@ class ContextService
     {
         return $this->userId !== null;
     }
+
+    public function isDev(): bool
+    {
+        return $this->env === self::DEV;
+    }
+
+    public function isTest(): bool
+    {
+        return $this->env === self::TEST;
+    }
+
+    public function isProd(): bool
+    {
+        return $this->env === self::PROD;
+    }
+
+    public function isStaging(): bool
+    {
+        return $this->env === self::STAGING;
+    }
+
+    public function isQA(): bool
+    {
+        return $this->env === self::QA;
+    }
+
+    public function isPlayEnvironment(): bool
+    {
+        return $this->isDev() || $this->isTest() || $this->isQA();
+    }
 }
