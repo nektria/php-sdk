@@ -49,6 +49,7 @@ class RequestClient
         $encodeBody = true;
         if (isset($options['encodeBody'])) {
             $encodeBody = (bool) $options['encodeBody'];
+            unset($options['encodeBody']);
         }
 
         try {
