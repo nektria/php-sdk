@@ -69,6 +69,8 @@ class AlertService
 
     public const EMPTY_LINE = "‎\n‎";
 
+    public const FLAG_SUPPRESS_NOTIFICATIONS = 1 << 12;
+
     private string $token;
 
     public function __construct(
@@ -148,7 +150,8 @@ class AlertService
         string $path,
         array $input,
         ThrowableDocument $document,
-        int $times = 1
+        int $times = 1,
+        ?int $flags = null
     ): void {
         if ($this->contextService->env() === 'test') {
             return;
@@ -214,7 +217,8 @@ class AlertService
                 self::EMPTY_LINE;
 
             $this->makeRequest(self::CHANNEL_BUGS, [
-                'content' => $content
+                'content' => $content,
+                'flags' => $flags
             ]);
         }
     }

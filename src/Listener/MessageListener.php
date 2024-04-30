@@ -244,7 +244,8 @@ abstract class MessageListener implements EventSubscriberInterface
                         "/{$messageClass}/{$message->ref()}/{$try}",
                         $data,
                         $exception,
-                        $times
+                        $times,
+                        $try > 1 ? AlertService::FLAG_SUPPRESS_NOTIFICATIONS : null
                     );
                 }
 
