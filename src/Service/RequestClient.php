@@ -106,7 +106,7 @@ class RequestClient
 
     /**
      * @param array<string, string> $headers
-     * @param array<string, string> $options
+     * @param array<string, string|bool|number> $options
      */
     public function get(string $url, array $headers = [], array $options = []): RequestResponse
     {
@@ -116,7 +116,7 @@ class RequestClient
     /**
      * @param mixed[] $data
      * @param array<string, string> $headers
-     * @param array<string, string> $options
+     * @param array<string, string|bool|number> $options
      */
     public function put(string $url, array $data, array $headers, array $options = []): RequestResponse
     {
@@ -125,7 +125,7 @@ class RequestClient
 
     /**
      * @param array<string, string> $headers
-     * @param array<string, string> $options
+     * @param array<string, string|bool|number> $options
      */
     public function delete(string $url, array $headers = [], array $options = []): RequestResponse
     {
@@ -135,7 +135,7 @@ class RequestClient
     /**
      * @param mixed[] $data
      * @param array<string, string> $headers
-     * @param array<string, string> $options
+     * @param array<string, string|bool|number> $options
      */
     public function patch(string $url, array $data, array $headers, array $options = []): RequestResponse
     {
@@ -145,7 +145,7 @@ class RequestClient
     /**
      * @param mixed[] $data
      * @param array<string, string> $headers
-     * @param array<string, string> $options
+     * @param array<string, string|bool|number> $options
      */
     public function post(string $url, array $data, array $headers, array $options = []): RequestResponse
     {
