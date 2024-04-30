@@ -76,7 +76,18 @@ class RequestClient
             if ($status === Response::HTTP_NO_CONTENT) {
                 $parsedContent = [];
             } else {
-                $parsedContent = JsonUtil::decode($content);
+                try {
+                    $parsedContent = JsonUtil::decode($content);
+                } catch (Throwable $e) {
+                    $this->logService->error([
+                        'url' => $url,
+                        'method' => $method,
+                        'status' => $status,
+                        'content' => $content
+                    ], 'SyntaxError2');
+
+                    throw $e;
+                }
             }
         } catch (Throwable $e) {
             throw NektriaException::new($e);
