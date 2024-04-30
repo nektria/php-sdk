@@ -360,4 +360,12 @@ class Clock
 
         return "$count {$name}s ago";
     }
+
+    /**
+     * @deprecated do not use it unless there is no other options
+     */
+    public function format(string $format): string
+    {
+        return $this->dateTime->format($format);
+    }
 }
