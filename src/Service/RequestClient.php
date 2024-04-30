@@ -7,6 +7,7 @@ namespace Nektria\Service;
 use DomainException;
 use Nektria\Dto\RequestResponse;
 use Nektria\Exception\NektriaException;
+use Nektria\Exception\RequestException;
 use Nektria\Util\JsonUtil;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
@@ -104,7 +105,7 @@ class RequestClient
                 'url' => $url,
             ], "{$method} {$url} failed with status {$status}");
 
-            throw new NektriaException($content, $status);
+            throw new RequestException($this->response);
         }
 
         return $parsedContent;
