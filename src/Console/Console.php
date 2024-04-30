@@ -5,9 +5,11 @@ declare(strict_types=1);
 namespace Nektria\Console;
 
 use Nektria\Document\Document;
+use Nektria\Document\ThrowableDocument;
 use Nektria\Infrastructure\UserServiceInterface;
 use Nektria\Message\Command as CommandMessage;
 use Nektria\Message\Query;
+use Nektria\Service\AlertService;
 use Nektria\Service\Bus;
 use Nektria\Util\StringUtil;
 use Nektria\Utils\Console\OutputFormatterStyle;
@@ -17,6 +19,7 @@ use Symfony\Component\Console\Helper\QuestionHelper;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\Question;
+use Throwable;
 
 use function count;
 use function in_array;
@@ -33,6 +36,8 @@ abstract class Console extends BaseCommand
 
     private UserServiceInterface $userService;
 
+    private AlertService $alertService;
+
     private bool $lockMode = false;
 
     abstract protected function play(): void;
@@ -40,9 +45,11 @@ abstract class Console extends BaseCommand
     public function inject(
         Bus $bus,
         UserServiceInterface $userService,
+        AlertService $alertService,
     ): void {
         $this->bus = $bus;
         $this->userService = $userService;
+        $this->alertService = $alertService;
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
@@ -125,7 +132,19 @@ abstract class Console extends BaseCommand
         $output->getFormatter()->setStyle('white5', new OutputFormatterStyle('white', null, ['blink']));
         $output->getFormatter()->setStyle('white6', new OutputFormatterStyle('white', null, ['reverse']));
 
-        $this->play();
+        try {
+            $this->play();
+        } catch (Throwable $e) {
+            $this->alertService->sendThrowable(
+                $this->userService->user()?->tenant->name ?? 'none',
+                'COMMAND',
+                $this->getName() ?? '',
+                [
+                    'args' => $_SERVER['argv']
+                ],
+                new ThrowableDocument($e),
+            );
+        }
 
         if ($this->lockMode) {
             $this->unlockScreen();

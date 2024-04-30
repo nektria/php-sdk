@@ -4,25 +4,14 @@ declare(strict_types=1);
 
 namespace Nektria\Exception;
 
-use Nektria\Util\JsonUtil;
+use Nektria\Dto\RequestResponse;
 use RuntimeException;
 
 class RequestClientException extends RuntimeException
 {
     public function __construct(
-        private readonly string $content,
-        private readonly int $status
+        public readonly RequestResponse $response
     ) {
-        parent::__construct($content, $status);
-    }
-
-    public function status(): int
-    {
-        return $this->status;
-    }
-
-    public function response(): mixed
-    {
-        return JsonUtil::decode($this->content);
+        parent::__construct($response->body, $response->status);
     }
 }
