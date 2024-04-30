@@ -10,7 +10,6 @@ print_usage() {
   printf "Usage: bin/validate [-l|g] \n"
 }
 
-
 while getopts 'p' flag; do
   case "$flag" in
     p) PIPELINE='1';;
