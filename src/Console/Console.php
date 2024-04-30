@@ -6,6 +6,7 @@ namespace Nektria\Console;
 
 use Nektria\Document\Document;
 use Nektria\Document\ThrowableDocument;
+use Nektria\Infrastructure\BusInterface;
 use Nektria\Infrastructure\UserServiceInterface;
 use Nektria\Message\Command as CommandMessage;
 use Nektria\Message\Query;
@@ -32,7 +33,7 @@ abstract class Console extends BaseCommand
 
     private ?OutputInterface $output;
 
-    private Bus $bus;
+    private BusInterface $bus;
 
     private UserServiceInterface $userService;
 
@@ -276,13 +277,23 @@ abstract class Console extends BaseCommand
         return StringUtil::trim($response);
     }
 
+    /**
+     * @param array{
+     *     currentTry: int,
+     *     maxTries: int,
+     *     interval: int,
+     * }|null $retryOptions
+     */
     protected function dispatchCommand(
         CommandMessage $command,
-        string $tenantId
+        string $tenantId,
+        ?string $transport = null,
+        ?int $delayMs = null,
+        ?array $retryOptions = null
     ): void {
         $bus = $this->bus;
         $this->userService->authenticateSystem($tenantId);
-        $bus->dispatchCommand($command);
+        $bus->dispatchCommand($command, $transport, $delayMs, $retryOptions);
         $this->userService->clearAuthentication();
     }
 
