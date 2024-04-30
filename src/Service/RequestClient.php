@@ -9,7 +9,6 @@ use Nektria\Dto\RequestResponse;
 use Nektria\Exception\NektriaException;
 use Nektria\Exception\RequestException;
 use Nektria\Util\JsonUtil;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 use Throwable;
 
@@ -35,7 +34,7 @@ class RequestClient
         array $data,
         array $headers,
         array $options = []
-    ): mixed {
+    ): RequestResponse {
         $this->response = null;
         $body = JsonUtil::encode($data);
         $headers = array_merge([
@@ -79,12 +78,6 @@ class RequestClient
             $status = $response->getStatusCode();
 
             $this->response = new RequestResponse($method, $url, $status, $content);
-
-            if ($status === Response::HTTP_NO_CONTENT || $content === '') {
-                $parsedContent = [];
-            } else {
-                $parsedContent = JsonUtil::decode($content);
-            }
         } catch (Throwable $e) {
             throw NektriaException::new($e);
         }
@@ -108,14 +101,14 @@ class RequestClient
             throw new RequestException($this->response);
         }
 
-        return $parsedContent;
+        return $this->response;
     }
 
     /**
      * @param array<string, string> $headers
      * @param array<string, string> $options
      */
-    public function get(string $url, array $headers = [], array $options = []): mixed
+    public function get(string $url, array $headers = [], array $options = []): RequestResponse
     {
         return $this->request('GET', $url, [], $headers, $options);
     }
@@ -124,9 +117,8 @@ class RequestClient
      * @param mixed[] $data
      * @param array<string, string> $headers
      * @param array<string, string> $options
-     * @return mixed[]
      */
-    public function put(string $url, array $data, array $headers, array $options = []): array
+    public function put(string $url, array $data, array $headers, array $options = []): RequestResponse
     {
         return $this->request('PUT', $url, $data, $headers, $options);
     }
@@ -134,9 +126,8 @@ class RequestClient
     /**
      * @param array<string, string> $headers
      * @param array<string, string> $options
-     * @return mixed[]
      */
-    public function delete(string $url, array $headers = [], array $options = []): array
+    public function delete(string $url, array $headers = [], array $options = []): RequestResponse
     {
         return $this->request('DELETE', $url, [], $headers, $options);
     }
@@ -145,9 +136,8 @@ class RequestClient
      * @param mixed[] $data
      * @param array<string, string> $headers
      * @param array<string, string> $options
-     * @return mixed[]
      */
-    public function patch(string $url, array $data, array $headers, array $options = []): array
+    public function patch(string $url, array $data, array $headers, array $options = []): RequestResponse
     {
         return $this->request('PATCH', $url, $data, $headers, $options);
     }
@@ -156,9 +146,8 @@ class RequestClient
      * @param mixed[] $data
      * @param array<string, string> $headers
      * @param array<string, string> $options
-     * @return mixed[]
      */
-    public function post(string $url, array $data, array $headers, array $options = []): array
+    public function post(string $url, array $data, array $headers, array $options = []): RequestResponse
     {
         return $this->request('POST', $url, $data, $headers, $options);
     }
