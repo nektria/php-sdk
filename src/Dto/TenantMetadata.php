@@ -261,6 +261,27 @@ class TenantMetadata
         return $this->data['configurationsChannel'];
     }
 
+    public function pickingshiftsChannel(): ?string
+    {
+        $this->data['pickingshiftsChannel'] ??= null;
+
+        return $this->data['pickingshiftsChannel'];
+    }
+
+    public function operationsChannel(): ?string
+    {
+        $this->data['operationsChannel'] ??= null;
+
+        return $this->data['operationsChannel'];
+    }
+
+    public function updatesChannel(): ?string
+    {
+        $this->data['updatesChannel'] ??= null;
+
+        return $this->data['updatesChannel'];
+    }
+
     public function countComplementaryOrders(): bool
     {
         $this->data['countComplementaryOrders'] ??= true;
@@ -306,6 +327,9 @@ class TenantMetadata
             'syncRMWarehouse' => $this->syncRMWarehouse(),
             'useAddressInsteadOfShopperCode' => $this->useAddressInsteadOfShopperCode(),
             'configurationsChannel' => $this->configurationsChannel(),
+            'updatesChannel' => $this->updatesChannel(),
+            'pickingshiftsChannel' => $this->pickingshiftsChannel(),
+            'operationsChannel' => $this->operationsChannel(),
         ];
     }
 }

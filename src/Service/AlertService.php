@@ -275,10 +275,7 @@ class AlertService
 
     private function parseChannel(string $channelId): string
     {
-        $channel = null;
-        if ($this->contextService->env() === ContextService::PROD) {
-            $channel = $this->userService->user()?->tenant->metadata->getDiscordChannelFor($channelId);
-        }
+        $channel = $this->userService->user()?->tenant->metadata->getDiscordChannelFor($channelId);
 
         if ($channel !== null) {
             return $channel;
