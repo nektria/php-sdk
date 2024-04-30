@@ -26,7 +26,7 @@ class RequestClient
     /**
      * @param mixed[] $data
      * @param array<string, string> $headers
-     * @param array<string, string> $options
+     * @param array<string, string|bool|number> $options
      */
     private function request(
         string $method,
@@ -46,6 +46,11 @@ class RequestClient
         $options['verify_host'] = false;
         $options['headers'] = $headers;
 
+        $encodeBody = true;
+        if (isset($options['encodeBody'])) {
+            $encodeBody = (bool) $options['encodeBody'];
+        }
+
         try {
             if ($method === 'GET') {
                 $response = $this->client->request(
@@ -60,7 +65,7 @@ class RequestClient
                     $options
                 );
             } else {
-                $options['body'] = $body;
+                $options['body'] = $encodeBody ? $body : $data;
                 $response = $this->client->request(
                     $method,
                     $url,
