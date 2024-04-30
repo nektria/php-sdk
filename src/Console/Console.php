@@ -134,7 +134,13 @@ abstract class Console extends BaseCommand
 
         try {
             $this->play();
+            if ($this->lockMode) {
+                $this->unlockScreen();
+            }
         } catch (Throwable $e) {
+            if ($this->lockMode) {
+                $this->unlockScreen();
+            }
             $this->alertService->sendThrowable(
                 $this->userService->user()?->tenant->name ?? 'none',
                 'COMMAND',
@@ -144,10 +150,8 @@ abstract class Console extends BaseCommand
                 ],
                 new ThrowableDocument($e),
             );
-        }
 
-        if ($this->lockMode) {
-            $this->unlockScreen();
+            throw $e;
         }
 
         return 0;
