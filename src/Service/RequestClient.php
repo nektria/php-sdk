@@ -99,13 +99,13 @@ class RequestClient
     }
 
     /**
-     * @param array<string, string|int|bool|float> $body
+     * @param array<string, string|int|bool|float> $data
      * @param array<string, string> $headers
      * @param array<string, string|bool|number> $options
      */
-    public function get(string $url, array $body, array $headers, array $options = []): RequestResponse
+    public function get(string $url, array $data, array $headers, array $options = []): RequestResponse
     {
-        return $this->request('GET', $url, $body, $headers, $options);
+        return $this->request('GET', $url, $data, $headers, $options);
     }
 
     /**
@@ -124,12 +124,13 @@ class RequestClient
     }
 
     /**
+     * @param array<string, string|int|bool|float> $data
      * @param array<string, string> $headers
      * @param array<string, string|bool|number> $options
      */
-    public function delete(string $url, array $headers = [], array $options = []): RequestResponse
+    public function delete(string $url, array $data, array $headers = [], array $options = []): RequestResponse
     {
-        return $this->request('DELETE', $url, [], $headers, $options);
+        return $this->request('DELETE', $url, $data, $headers, $options);
     }
 
     /**
