@@ -78,7 +78,6 @@ class AlertService
         private readonly ContextService $contextService,
         private readonly RequestClient $requestClient,
         private readonly SharedDiscordCache $sharedDiscordCache,
-        private readonly UserService $userService
     ) {
         $this->token = $this->alertsToken;
     }
@@ -275,12 +274,6 @@ class AlertService
 
     private function parseChannel(string $channelId): string
     {
-        $channel = $this->userService->user()?->tenant->metadata->getDiscordChannelFor($channelId);
-
-        if ($channel !== null) {
-            return $channel;
-        }
-
         $defaultChannels = [
             'bugs',
             'operations',
