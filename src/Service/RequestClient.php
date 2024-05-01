@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Nektria\Service;
 
-use DomainException;
 use Nektria\Dto\RequestResponse;
 use Nektria\Exception\NektriaException;
 use Nektria\Exception\RequestException;
@@ -14,13 +13,10 @@ use Throwable;
 
 class RequestClient
 {
-    private ?RequestResponse $response;
-
     public function __construct(
         private readonly HttpClientInterface $client,
         private readonly LogService $logService
     ) {
-        $this->response = null;
     }
 
     /**
@@ -33,9 +29,9 @@ class RequestClient
         string $url,
         array $data,
         array $headers,
-        array $options = []
+        array $options = [],
+        bool $sendBodyAsObject = false
     ): RequestResponse {
-        $this->response = null;
         $body = JsonUtil::encode($data);
         $headers = array_merge([
             'Content-Type' => 'application/json',
@@ -46,10 +42,8 @@ class RequestClient
         $options['verify_host'] = false;
         $options['headers'] = $headers;
 
-        $encodeBody = true;
-        if (isset($options['encodeBody'])) {
-            $encodeBody = (bool) $options['encodeBody'];
-            unset($options['encodeBody']);
+        if ($sendBodyAsObject) {
+            $body = $data;
         }
 
         try {
@@ -66,7 +60,7 @@ class RequestClient
                     $options
                 );
             } else {
-                $options['body'] = $encodeBody ? $body : $data;
+                $options['body'] = $body;
                 $response = $this->client->request(
                     $method,
                     $url,
@@ -77,7 +71,7 @@ class RequestClient
             $content = $response->getContent(false);
             $status = $response->getStatusCode();
 
-            $this->response = new RequestResponse($method, $url, $status, $content);
+            $response = new RequestResponse($method, $url, $status, $content);
         } catch (Throwable $e) {
             throw NektriaException::new($e);
         }
@@ -98,10 +92,10 @@ class RequestClient
                 'url' => $url,
             ], "{$method} {$url} failed with status {$status}");
 
-            throw new RequestException($this->response);
+            throw new RequestException($response);
         }
 
-        return $this->response;
+        return $response;
     }
 
     /**
@@ -118,9 +112,14 @@ class RequestClient
      * @param array<string, string> $headers
      * @param array<string, string|bool|number> $options
      */
-    public function put(string $url, array $data, array $headers, array $options = []): RequestResponse
-    {
-        return $this->request('PUT', $url, $data, $headers, $options);
+    public function put(
+        string $url,
+        array $data,
+        array $headers,
+        array $options = [],
+        bool $sendBodyAsObject = false
+    ): RequestResponse {
+        return $this->request('PUT', $url, $data, $headers, $options, $sendBodyAsObject);
     }
 
     /**
@@ -137,9 +136,14 @@ class RequestClient
      * @param array<string, string> $headers
      * @param array<string, string|bool|number> $options
      */
-    public function patch(string $url, array $data, array $headers, array $options = []): RequestResponse
-    {
-        return $this->request('PATCH', $url, $data, $headers, $options);
+    public function patch(
+        string $url,
+        array $data,
+        array $headers,
+        array $options = [],
+        bool $sendBodyAsObject = false
+    ): RequestResponse {
+        return $this->request('PATCH', $url, $data, $headers, $options, $sendBodyAsObject);
     }
 
     /**
@@ -147,17 +151,13 @@ class RequestClient
      * @param array<string, string> $headers
      * @param array<string, string|bool|number> $options
      */
-    public function post(string $url, array $data, array $headers, array $options = []): RequestResponse
-    {
-        return $this->request('POST', $url, $data, $headers, $options);
-    }
-
-    public function lastResponse(): RequestResponse
-    {
-        if ($this->response === null) {
-            throw new DomainException('No response available.');
-        }
-
-        return $this->response;
+    public function post(
+        string $url,
+        array $data,
+        array $headers,
+        array $options = [],
+        bool $sendBodyAsObject = false
+    ): RequestResponse {
+        return $this->request('POST', $url, $data, $headers, $options, $sendBodyAsObject);
     }
 }
