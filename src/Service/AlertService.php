@@ -78,6 +78,7 @@ class AlertService
         private readonly ContextService $contextService,
         private readonly RequestClient $requestClient,
         private readonly SharedDiscordCache $sharedDiscordCache,
+        private readonly UserService $userService,
     ) {
         $this->token = $this->alertsToken;
     }
@@ -116,6 +117,16 @@ class AlertService
      */
     public function sendMessage(string $channel, array $message): void
     {
+        $eol = self::EMPTY_LINE;
+        $tenantName = $this->userService->user()?->tenant->name ?? 'none';
+        $message['content'] ??= '';
+        $message['content'] =
+            $eol .
+            "**{$this->contextService->project()}**{$eol}" .
+            "**{$tenantName}**{$eol}" .
+            $eol .
+            $message['content'];
+
         try {
             $this->makeRequest($channel, $message);
         } catch (Throwable $e) {
@@ -169,11 +180,14 @@ class AlertService
         $maxLength = 2000;
         $inputString = JsonUtil::encode($input, true);
         $documentString = JsonUtil::encode($document->toArray('dev'), true);
-        $content = self::EMPTY_LINE .
-            "**{$this->contextService->project()}**\n" .
-            "**{$tenantName}**\n" .
-            "**{$method}** _{$path}_" .
-            ($times === 1 ? '' : " (x{$times})") .
+        $eol = self::EMPTY_LINE;
+        $manyTimes = $times === 1 ? '' : " (x{$times})";
+        $content =
+            $eol .
+            "**{$this->contextService->project()}**{$eol}" .
+            "**{$tenantName}**{$eol}" .
+            $eol .
+            "**{$method}** _{$path}_ {$manyTimes}\n" .
             "```json\n" .
             $inputString .
             "\n```" .
@@ -185,10 +199,11 @@ class AlertService
 
         if (strlen($content) >= $maxLength) {
             $content = self::EMPTY_LINE .
-                "**{$this->contextService->project()}**\n" .
-                "**{$tenantName}**\n" .
-                "**{$method}** _{$path}_ " .
-                ($times === 1 ? '' : " (x{$times})") .
+                $eol .
+                "**{$this->contextService->project()}**{$eol}" .
+                "**{$tenantName}**{$eol}" .
+                $eol .
+                "**{$method}** _{$path}_ {$manyTimes}\n" .
                 "```json\n" .
                 $inputString .
                 "\n```" .
@@ -208,10 +223,11 @@ class AlertService
             ]);
         } catch (Throwable) {
             $content = self::EMPTY_LINE .
-                "**{$this->contextService->project()}**\n" .
-                "**{$tenantName}**\n" .
-                "**{$method}** _{$path}_ \n" .
-                ($times === 1 ? '' : " (x{$times})") .
+                $eol .
+                "**{$this->contextService->project()}**{$eol}" .
+                "**{$tenantName}**{$eol}" .
+                $eol .
+                "**{$method}** _{$path}_ {$manyTimes}\n" .
                 "Trace: {$this->contextService->traceId()}\n" .
                 self::EMPTY_LINE;
 
