@@ -102,6 +102,7 @@ class RequestClient
      * @param array<string, string|int|bool|float> $body
      * @param array<string, string> $headers
      * @param array<string, string|bool|number> $options
+     *
      */
     public function get(string $url, array $body, array $headers, array $options = []): RequestResponse
     {
