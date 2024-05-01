@@ -116,8 +116,13 @@ class AlertService
     /**
      * @param AlertMessage $message
      */
-    public function sendMessage(string $channel, array $message): void
+    public function sendMessage(string $channel, array $message, ?int $flags = null): void
     {
+        $hour = Clock::new()->setTimezone('Europe/Madrid')->hour();
+        if ($hour < 8 || $hour > 23) {
+            $flags |= self::FLAG_SUPPRESS_NOTIFICATIONS;
+        }
+
         $eol = self::EMPTY_LINE;
         $tenantName = $this->userService->user()?->tenant->name ?? 'none';
         $message['content'] ??= '';
@@ -145,7 +150,8 @@ class AlertService
                 }
 
                 $this->makeRequest($channel, [
-                    'content' => $content
+                    'content' => $content,
+                    'flags' => $flags
                 ]);
             } catch (Throwable) {
             }
