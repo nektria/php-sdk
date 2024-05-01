@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Nektria\Service;
 
 use Nektria\Document\ThrowableDocument;
+use Nektria\Dto\Clock;
 use Nektria\Util\JsonUtil;
 use Throwable;
 
@@ -165,6 +166,11 @@ class AlertService
     ): void {
         if ($this->contextService->env() === 'test') {
             return;
+        }
+
+        $hour = Clock::new()->setTimezone('Europe/Madrid')->hour();
+        if ($hour < 8 || $hour > 23) {
+            $flags |= self::FLAG_SUPPRESS_NOTIFICATIONS;
         }
 
         $traceUrl = 'https://console.cloud.google.com/logs/analytics;' .
