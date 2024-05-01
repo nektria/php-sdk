@@ -6,6 +6,7 @@ namespace Nektria\Console;
 
 use Nektria\Document\Document;
 use Nektria\Document\ThrowableDocument;
+use Nektria\Dto\Clock;
 use Nektria\Infrastructure\BusInterface;
 use Nektria\Infrastructure\UserServiceInterface;
 use Nektria\Message\Command as CommandMessage;
@@ -151,8 +152,14 @@ abstract class Console extends BaseCommand
                 new ThrowableDocument($e),
             );
 
+            $now = Clock::new();
+            $this->output()->writeln("\n\n<red>{$now->dateTimeString('Europe/Madrid')}</red>\n\n");
+
             throw $e;
         }
+
+        $now = Clock::new();
+        $this->output()->writeln("\n\n<green>{$now->dateTimeString('Europe/Madrid')}</green>\n\n");
 
         return 0;
     }
