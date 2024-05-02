@@ -72,7 +72,7 @@ class ContextService
 
     public function debugMode(): bool
     {
-        return $this->isPlayEnvironment() || $this->sharedVariableCache->hasKey('_debug_');
+        return $this->isPlayEnvironment() || $this->sharedVariableCache->hasKey('debug_bbf6c8f');
     }
 
     public function setDebugMode(bool $enable, int $ttl): void
