@@ -64,8 +64,16 @@ class RequestClient
 
             $content = $response->getContent(false);
             $status = $response->getStatusCode();
+            $respHeaders = $response->getHeaders(false);
 
-            $response = new RequestResponse($method, $url, $status, $content);
+            $response = new RequestResponse(
+                $method,
+                $url,
+                $status,
+                $content,
+                $headers,
+                $respHeaders
+            );
         } catch (Throwable $e) {
             throw NektriaException::new($e);
         }
