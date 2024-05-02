@@ -16,17 +16,28 @@ use const PHP_EOL;
 
 class LogService
 {
+    public const DEFAULT = 'DEFAULT';
+
+    public const INFO = 'INFO';
+
+    public const WARNING = 'WARNING';
+
+    public const DEBUG = 'DEBUG';
+
+    public const ERROR = 'ERROR';
+
+    public const EMERGENCY = 'EMERGENCY';
+
     /** @var resource|false */
     private $channel;
 
     public function __construct(
         private readonly ContextService $contextService,
         private readonly string $env,
-        private readonly string $defaultLogLevel,
     ) {
         $this->channel = fopen('php://stderr', 'wb');
 
-        if ($env === 'dev' || $env === 'test') {
+        if ($this->contextService->isLocalEnvironament()) {
             $this->channel = false;
         }
     }
@@ -39,7 +50,7 @@ class LogService
         if ($this->channel === false) {
             return;
         }
-        $data = $this->build($payload, $message, 'DEFAULT');
+        $data = $this->build($payload, $message, self::DEFAULT);
         fwrite($this->channel, JsonUtil::encode($data) . PHP_EOL);
     }
 
@@ -51,7 +62,7 @@ class LogService
         if ($this->channel === false) {
             return;
         }
-        $data = $this->build($payload, $message, $this->defaultLogLevel);
+        $data = $this->build($payload, $message, self::DEFAULT);
         fwrite($this->channel, JsonUtil::encode($data) . PHP_EOL);
     }
 
@@ -63,7 +74,7 @@ class LogService
         if ($this->channel === false) {
             return;
         }
-        $data = $this->build($payload, $message, 'INFO');
+        $data = $this->build($payload, $message, self::INFO);
         fwrite($this->channel, JsonUtil::encode($data) . PHP_EOL);
     }
 
@@ -75,7 +86,7 @@ class LogService
         if ($this->channel === false) {
             return;
         }
-        $data = $this->build($payload, $message, 'WARNING');
+        $data = $this->build($payload, $message, self::WARNING);
         fwrite($this->channel, JsonUtil::encode($data) . PHP_EOL);
     }
 
@@ -84,14 +95,12 @@ class LogService
      */
     public function debug(array $payload, string $message): void
     {
-        if ($this->channel === false) {
+        if ($this->channel === false || !$this->contextService->debugMode()) {
             return;
         }
 
-        if ($this->contextService->debug()) {
-            $data = $this->build($payload, $message, 'DEBUG');
-            fwrite($this->channel, JsonUtil::encode($data) . PHP_EOL);
-        }
+        $data = $this->build($payload, $message, self::DEBUG);
+        fwrite($this->channel, JsonUtil::encode($data) . PHP_EOL);
     }
 
     /**
@@ -102,7 +111,7 @@ class LogService
         if ($this->channel === false) {
             return;
         }
-        $data = $this->build($payload, $message, 'ERROR');
+        $data = $this->build($payload, $message, self::ERROR);
         fwrite($this->channel, JsonUtil::encode($data) . PHP_EOL);
     }
 
@@ -131,7 +140,7 @@ class LogService
             $data = [
                 'message' => $exception->getMessage(),
                 'logName' => 'projects/nektria/logs/error',
-                'severity' => $asWarning ? 'WARNING' : 'EMERGENCY',
+                'severity' => $asWarning ? self::WARNING : self::EMERGENCY,
                 'logging.googleapis.com/labels' => [
                     'env' => $this->env,
                     'app' => $this->contextService->project(),
@@ -160,9 +169,27 @@ class LogService
 
     /**
      * @param mixed[] $payload
+     */
+    public function send(
+        string $level,
+        array $payload,
+        string $message,
+    ): void {
+        match ($level) {
+            self::INFO => $this->info($payload, $message),
+            self::WARNING => $this->warning($payload, $message),
+            self::DEBUG => $this->debug($payload, $message),
+            self::ERROR => $this->error($payload, $message),
+            self::DEFAULT => $this->default($payload, $message),
+            default => false,
+        };
+    }
+
+    /**
+     * @param mixed[] $payload
      * @return mixed[]
      */
-    public function build(
+    private function build(
         array $payload,
         string $message,
         string $level

@@ -39,18 +39,13 @@ class ContextService
 
     private ?string $userId;
 
-    private string $project;
-
-    private string $env;
-
     public function __construct(
-        string $env,
-        string $project
+        private readonly SharedVariableCache $sharedVariableCache,
+        private readonly string $env,
+        private readonly string $project
     ) {
-        $this->env = $env;
         $this->context = self::COMMON;
         $this->traceId = StringUtil::uuid4();
-        $this->project = $project;
         $this->userId = null;
         $this->tenantId = null;
     }
@@ -75,9 +70,18 @@ class ContextService
         return $this->project;
     }
 
-    public function debug(): bool
+    public function debugMode(): bool
     {
-        return $this->env === 'dev';
+        return $this->isPlayEnvironment() || $this->sharedVariableCache->hasKey('_debug_');
+    }
+
+    public function setDebugMode(bool $enable, int $ttl): void
+    {
+        if ($enable) {
+            $this->sharedVariableCache->saveKey('debug_bbf6c8f', $ttl);
+        } else {
+            $this->sharedVariableCache->deleteKey('debug_bbf6c8f');
+        }
     }
 
     public function setContext(string $context): void
@@ -142,8 +146,18 @@ class ContextService
         return $this->env === self::QA;
     }
 
+    public function isLocalEnvironament(): bool
+    {
+        return $this->env === self::DEV;
+    }
+
     public function isPlayEnvironment(): bool
     {
         return $this->isDev() || $this->isTest() || $this->isQA();
+    }
+
+    public function isRealEnvironament(): bool
+    {
+        return $this->isStaging() || $this->isProd();
     }
 }

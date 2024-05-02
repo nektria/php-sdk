@@ -78,6 +78,16 @@ class RequestClient
             throw NektriaException::new($e);
         }
 
+        $this->logService->debug([
+            'method' => $response->method,
+            'request' => $data,
+            'requestHeaders' => $headers,
+            'response' => $response->json(),
+            'responseHeaders' => $respHeaders,
+            'status' => $response->status,
+            'url' => $url,
+        ], "{$status} {$method} {$url}");
+
         if ($status >= 300) {
             $errorContent = $content;
 
