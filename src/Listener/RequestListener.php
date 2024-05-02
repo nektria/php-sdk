@@ -90,19 +90,26 @@ abstract class RequestListener implements EventSubscriberInterface
             || $method === 'PATCH'
             || $method === 'POST'
         ) {
+            $content = $request->getContent();
+
             try {
-                $content = $request->getContent();
                 if ($content === '') {
                     $request->request->replace();
                 } elseif ($content[0] === '[') {
-                    $data = JsonUtil::decode($request->getContent());
+                    $data = JsonUtil::decode($content);
                     $request->request->replace(['*' => $data]);
                 } else {
-                    $data = JsonUtil::decode($request->getContent());
+                    $data = JsonUtil::decode($content);
                     $request->request->replace($data);
                 }
             } catch (Throwable) {
-                throw new DomainException('Bad request body.');
+                try {
+                    $out = [];
+                    parse_str($content, $out);
+                    $request->request->replace($out);
+                } catch (Throwable) {
+                    throw new DomainException('Bad request body.');
+                }
             }
         }
 
