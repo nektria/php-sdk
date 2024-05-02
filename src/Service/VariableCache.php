@@ -11,20 +11,22 @@ use Nektria\Infrastructure\InternalRedisCache;
  */
 class VariableCache extends InternalRedisCache
 {
+    public const DEFAULT_TTL = 300;
+
     public const DEFAULT = '1';
 
-    public function saveKey(string $key, int $lifetime = 300): void
+    public function saveKey(string $key, int $ttl = self::DEFAULT_TTL): void
     {
-        $this->setItem($key, self::DEFAULT, $lifetime);
+        $this->setItem($key, self::DEFAULT, $ttl);
     }
 
-    public function executeIfNotExists(string $key, callable $callback, int $lifetime = 300): void
+    public function executeIfNotExists(string $key, callable $callback, int $ttl = self::DEFAULT_TTL): void
     {
         if ($this->hasKey($key)) {
             return;
         }
 
-        $this->saveKey($key, $lifetime);
+        $this->saveKey($key, $ttl);
         $callback();
     }
 
@@ -35,12 +37,12 @@ class VariableCache extends InternalRedisCache
         return $value !== null;
     }
 
-    public function refreshKey(string $key, int $lifetime = 300): bool
+    public function refreshKey(string $key, int $ttl = self::DEFAULT_TTL): bool
     {
         $isNew = !$this->hasKey($key);
         $value = $this->getItem($key) ?? self::DEFAULT;
         if ($isNew) {
-            $this->setItem($key, $value, $lifetime);
+            $this->setItem($key, $value, $ttl);
         }
 
         return $isNew;
@@ -51,9 +53,9 @@ class VariableCache extends InternalRedisCache
         $this->removeItem($key);
     }
 
-    public function saveInt(string $key, int $value, int $lifetime = 300): void
+    public function saveInt(string $key, int $value, int $ttl = self::DEFAULT_TTL): void
     {
-        $this->setItem($key, $value, $lifetime);
+        $this->setItem($key, $value, $ttl);
     }
 
     /**
@@ -76,9 +78,9 @@ class VariableCache extends InternalRedisCache
         return (int) ($this->getItem($key) ?? $default);
     }
 
-    public function saveString(string $key, string $value): void
+    public function saveString(string $key, string $value, int $ttl = self::DEFAULT_TTL): void
     {
-        $this->setItem($key, $value, 604800);
+        $this->setItem($key, $value, $ttl);
     }
 
     public function readString(string $key, string $default = ''): string
