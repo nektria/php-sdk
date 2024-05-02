@@ -48,25 +48,19 @@ class RequestClient
 
         try {
             if ($method === 'GET') {
-                $response = $this->client->request(
-                    $method,
-                    $url,
-                    $options
-                );
-            } elseif ($body === '[]') {
-                $response = $this->client->request(
-                    $method,
-                    $url,
-                    $options
-                );
+                $params = http_build_query($data);
+                if ($params !== '') {
+                    $url .= "?{$params}";
+                }
             } else {
                 $options['body'] = $body;
-                $response = $this->client->request(
-                    $method,
-                    $url,
-                    $options
-                );
             }
+
+            $response = $this->client->request(
+                $method,
+                $url,
+                $options
+            );
 
             $content = $response->getContent(false);
             $status = $response->getStatusCode();
@@ -84,13 +78,15 @@ class RequestClient
             } catch (Throwable) {
             }
 
-            $this->logService->error([
-                'method' => $method,
-                'request' => $data,
-                'response' => $errorContent,
-                'status' => $status,
-                'url' => $url,
-            ], "{$method} {$url} failed with status {$status}");
+            if (!str_starts_with($url, 'https://discord.com')) {
+                $this->logService->error([
+                    'method' => $method,
+                    'request' => $data,
+                    'response' => $errorContent,
+                    'status' => $status,
+                    'url' => $url,
+                ], "{$method} {$url} failed with status {$status}");
+            }
 
             throw new RequestException($response);
         }
