@@ -27,8 +27,8 @@ class RequestClient
     private function request(
         string $method,
         string $url,
-        array $data,
-        array $headers,
+        array $data = [],
+        array $headers = [],
         array $options = [],
         bool $sendBodyAsObject = false
     ): RequestResponse {
@@ -103,8 +103,12 @@ class RequestClient
      * @param array<string, string> $headers
      * @param array<string, string|bool|number> $options
      */
-    public function get(string $url, array $data, array $headers, array $options = []): RequestResponse
-    {
+    public function get(
+        string $url,
+        array $data = [],
+        array $headers = [],
+        array $options = []
+    ): RequestResponse {
         return $this->request('GET', $url, $data, $headers, $options);
     }
 
@@ -115,8 +119,8 @@ class RequestClient
      */
     public function put(
         string $url,
-        array $data,
-        array $headers,
+        array $data = [],
+        array $headers = [],
         array $options = [],
         bool $sendBodyAsObject = false
     ): RequestResponse {
@@ -128,8 +132,12 @@ class RequestClient
      * @param array<string, string> $headers
      * @param array<string, string|bool|number> $options
      */
-    public function delete(string $url, array $data, array $headers = [], array $options = []): RequestResponse
-    {
+    public function delete(
+        string $url,
+        array $data = [],
+        array $headers = [],
+        array $options = []
+    ): RequestResponse {
         return $this->request('DELETE', $url, $data, $headers, $options);
     }
 
@@ -140,8 +148,8 @@ class RequestClient
      */
     public function patch(
         string $url,
-        array $data,
-        array $headers,
+        array $data = [],
+        array $headers = [],
         array $options = [],
         bool $sendBodyAsObject = false
     ): RequestResponse {
@@ -155,8 +163,8 @@ class RequestClient
      */
     public function post(
         string $url,
-        array $data,
-        array $headers,
+        array $data = [],
+        array $headers = [],
         array $options = [],
         bool $sendBodyAsObject = false
     ): RequestResponse {
