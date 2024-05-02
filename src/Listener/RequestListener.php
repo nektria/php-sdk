@@ -328,7 +328,7 @@ abstract class RequestListener implements EventSubscriberInterface
 
         if (!$ignoreRoute) {
             if ($status < 400) {
-                $this->logService->default([
+                $this->logService->info([
                     'headers' => $headers,
                     'context' => 'request',
                     'route_name' => $route,
