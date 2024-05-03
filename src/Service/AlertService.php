@@ -102,8 +102,7 @@ class AlertService
             return;
         }
 
-        $token = array_rand($this->tokens);
-
+        $token = $this->tokens[array_rand($this->tokens)];
         $channelId = $this->parseChannel($channel);
         $this->sharedDiscordCache->addMessage($channel, $message);
         $this->requestClient->post(
