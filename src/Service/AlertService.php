@@ -72,7 +72,8 @@ class AlertService
 
     public const FLAG_SUPPRESS_NOTIFICATIONS = 1 << 12;
 
-    private string $token;
+    /** @var string[] */
+    private array $tokens;
 
     public function __construct(
         private readonly string $alertsToken,
@@ -81,7 +82,7 @@ class AlertService
         private readonly SharedDiscordCache $sharedDiscordCache,
         private readonly UserService $userService,
     ) {
-        $this->token = $this->alertsToken;
+        $this->tokens = explode(',', $this->alertsToken);
     }
 
     /**
@@ -101,13 +102,15 @@ class AlertService
             return;
         }
 
+        $token = array_rand($this->tokens);
+
         $channelId = $this->parseChannel($channel);
         $this->sharedDiscordCache->addMessage($channel, $message);
         $this->requestClient->post(
             "https://discord.com/api/channels/{$channelId}/messages",
             $message,
             [
-                'Authorization' => "Bot {$this->token}"
+                'Authorization' => "Bot {$token}"
             ]
         );
         $this->sharedDiscordCache->removeLastMessage($channel);
@@ -150,6 +153,55 @@ class AlertService
                 }
 
                 $this->makeRequest($channel, [
+                    'content' => $content,
+                    'flags' => $flags
+                ]);
+            } catch (Throwable) {
+            }
+        }
+    }
+
+    /**
+     * @param AlertMessage $message
+     */
+    public function debugMessage(array $message, ?int $flags = null): void
+    {
+        if (!$this->contextService->debugMode()) {
+            return;
+        }
+
+        $hour = Clock::new()->setTimezone('Europe/Madrid')->hour();
+        if ($hour < 8 || $hour > 23) {
+            $flags |= self::FLAG_SUPPRESS_NOTIFICATIONS;
+        }
+
+        $eol = self::EMPTY_LINE;
+        $tenantName = $this->userService->user()?->tenant->name ?? 'none';
+        $message['content'] ??= '';
+        $message['content'] =
+            $eol .
+            "**{$this->contextService->project()}**{$eol}" .
+            "**{$tenantName}**{$eol}" .
+            $eol .
+            $message['content'];
+
+        try {
+            $this->makeRequest('debug', $message);
+        } catch (Throwable $e) {
+            try {
+                $content = "‎\n" .
+                    '**Discord Api Error**' .
+                    "```json\n" .
+                    JsonUtil::encode(JsonUtil::decode($e->getMessage()), true) .
+                    "\n```" .
+                    "Trace: {$this->contextService->traceId()}\n" .
+                    "‎\n‎";
+
+                if (str_contains($content, 'You are being rate limited.')) {
+                    return;
+                }
+
+                $this->makeRequest('debug', [
                     'content' => $content,
                     'flags' => $flags
                 ]);
@@ -262,6 +314,7 @@ class AlertService
                 'bugs' => '1221173694878060635',
                 'pickingshifts' => '1221387354246221874',
                 'configurations' => '1223608760287760545',
+                'debug' => '1235335765550956654'
             ],
             'qa' => [
                 'operations' => '1221387486320787518',
@@ -269,6 +322,7 @@ class AlertService
                 'bugs' => '1221173866131623966',
                 'pickingshifts' => '1221387520726663208',
                 'configurations' => '1223608835256750293',
+                'debug' => '1235335567089209404'
             ],
             'staging' => [
                 'operations' => '1221387600485417000',
@@ -276,6 +330,7 @@ class AlertService
                 'bugs' => '1221173888751239198',
                 'pickingshifts' => '1221387636548309183',
                 'configurations' => '1223609089490292796',
+                'debug' => '1235335500974264350'
             ],
             'prod' => [
                 'operations' => '1221221066450669678',
@@ -283,6 +338,7 @@ class AlertService
                 'bugs' => '1221173937354833940',
                 'pickingshifts' => '1221221171161468959',
                 'configurations' => '1223571661421412352',
+                'debug' => '1235335372506923068',
             ]
         ];
     }
@@ -307,7 +363,8 @@ class AlertService
             'operations',
             'updates',
             'pickingshifts',
-            'configurations'
+            'configurations',
+            'debug'
         ];
 
         if (!in_array($channelId, $defaultChannels, true)) {
