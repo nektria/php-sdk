@@ -153,13 +153,13 @@ abstract class Console extends BaseCommand
             );
 
             $now = Clock::new();
-            $this->output()->writeln("\n\n<red>{$now->dateTimeString('Europe/Madrid')}</red>\n\n");
+            $this->output()->writeln("\n\n<red>{$now->dateTimeString('Europe/Madrid')}</red>");
 
             throw $e;
         }
 
         $now = Clock::new();
-        $this->output()->writeln("\n\n<green>{$now->dateTimeString('Europe/Madrid')}</green>\n\n");
+        $this->output()->writeln("\n\n<green>{$now->dateTimeString('Europe/Madrid')}</green>");
 
         return 0;
     }
