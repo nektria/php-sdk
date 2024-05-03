@@ -98,15 +98,13 @@ class RequestClient
             } catch (Throwable) {
             }
 
-            if (!str_starts_with($url, 'https://discord.com')) {
-                $this->logService->error([
-                    'method' => $method,
-                    'request' => $data,
-                    'response' => $errorContent,
-                    'status' => $status,
-                    'url' => $url,
-                ], "{$method} {$url} failed with status {$status}");
-            }
+            $this->logService->error([
+                'method' => $method,
+                'request' => $data,
+                'response' => $errorContent,
+                'status' => $status,
+                'url' => $url,
+            ], "{$method} {$url} failed with status {$status}");
 
             throw new RequestException($response);
         }
