@@ -10,23 +10,17 @@ namespace Nektria\Service;
  *  }
  *
  * @phpstan-type CompassAddress array{
- *      name: string,
- *      surname: string,
- *      street: string,
+ *      addressLine1: string,
+ *      postalCode: string,
  *      city: string,
- *      country: string,
+ *      countryCode: string,
  *      latitude?: ?float,
  *      longitude?: ?float,
  *  }
  *
  * @phpstan-type CompassCoordinates array{
- *      name: string,
- *      surname: string,
- *      street: string,
- *      city: string,
- *      country: string,
- *      latitude?: ?float,
- *      longitude?: ?float,
+ *      latitude: float,
+ *      longitude: float,
  *  }
  */
 class CompassClient
@@ -65,6 +59,27 @@ class CompassClient
      */
     public function getCoordinates(array $address): array
     {
+        if ($address['addressLine1'] === '') {
+            return [
+                'latitude' => 0,
+                'longitude' => 0,
+            ];
+        }
+
+        if ($address['postalCode'] === '08999') {
+            return [
+                'latitude' => 0,
+                'longitude' => 0,
+            ];
+        }
+
+        if ($this->contextService->isTest()) {
+            return [
+                'latitude' => 0,
+                'longitude' => 0,
+            ];
+        }
+
         unset($address['latitude'], $address['longitude']);
 
         return $this->requestClient->get(
