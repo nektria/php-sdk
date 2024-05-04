@@ -14,7 +14,7 @@ class DocumentResponse extends JsonResponse
     public function __construct(Document $document, ContextService $context, int $status = 200)
     {
         if ($document instanceof ThrowableDocument) {
-            parent::__construct($document->toArray($context->env()), $document->status);
+            parent::__construct($document->toArray($context), $document->status);
         } elseif (
             $document instanceof DocumentCollection
             && (
@@ -22,10 +22,10 @@ class DocumentResponse extends JsonResponse
             )
         ) {
             parent::__construct([
-                'list' => $document->toArray($context->context())
+                'list' => $document->toArray($context)
             ], $status);
         } else {
-            parent::__construct($document->toArray($context->context()), $status);
+            parent::__construct($document->toArray($context), $status);
         }
 
         $this->document = $document;

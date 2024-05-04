@@ -13,6 +13,7 @@ use Nektria\Exception\MissingFieldRequiredToCreateClassException;
 use Nektria\Exception\MissingRequestParamException;
 use Nektria\Exception\NektriaException;
 use Nektria\Exception\ResourceNotFoundException;
+use Nektria\Service\ContextService;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Throwable;
@@ -87,7 +88,7 @@ class ThrowableDocument implements Document
         return $finalTrace;
     }
 
-    public function toArray(string $model): mixed
+    public function toArray(ContextService $context): mixed
     {
         $exception = $this->throwable;
         if ($exception instanceof NektriaException) {
@@ -95,7 +96,7 @@ class ThrowableDocument implements Document
         }
 
         $message = 'Internal Server Error';
-        if ($model === 'dev' || $model === 'test' || $model === 'qa') {
+        if ($context->isPlayEnvironment()) {
             $message = $exception->getMessage();
         }
 
@@ -107,9 +108,7 @@ class ThrowableDocument implements Document
             'message' => $message
         ];
 
-        $trace = $this->trace();
-
-        if ($model === 'dev' || $model === 'test' || $model === 'qa') {
+        if ($context->isPlayEnvironment()) {
             $data['file'] = str_replace('/app/', '', $exception->getFile());
             $data['line'] = $exception->getLine();
             $data['trace'] = $this->trace();

@@ -18,9 +18,9 @@ class Tenant implements Document
     ) {
     }
 
-    public function toArray(string $model): mixed
+    public function toArray(ContextService $context): mixed
     {
-        if (in_array($model, [ContextService::ADMIN, ContextService::INTERNAL], true)) {
+        if (in_array($context->context(), [ContextService::ADMIN, ContextService::INTERNAL], true)) {
             return [
                 'id' => $this->id,
                 'name' => $this->name,

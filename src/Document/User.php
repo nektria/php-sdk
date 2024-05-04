@@ -41,9 +41,9 @@ class User implements Document
         $this->socketsToken = $token;
     }
 
-    public function toArray(string $model): mixed
+    public function toArray(ContextService $context): mixed
     {
-        if ($model === ContextService::INTERNAL) {
+        if ($context->context() === ContextService::INTERNAL) {
             return [
                 'id' => $this->id,
                 'email' => $this->email,
@@ -51,13 +51,13 @@ class User implements Document
                 'role' => $this->role,
                 'dniNie' => $this->dniNie,
                 'language' => 'en',
-                'tenant' => $this->tenant->toArray($model),
+                'tenant' => $this->tenant->toArray($context),
                 'socketsToken' => $this->socketsToken,
                 'allowedTopics' => $this->topics,
             ];
         }
 
-        if ($model === ContextService::ADMIN) {
+        if ($context->context() === ContextService::ADMIN) {
             return [
                 'id' => $this->id,
                 'email' => $this->email,
@@ -65,7 +65,7 @@ class User implements Document
                 'role' => $this->role,
                 'dniNie' => $this->dniNie,
                 'language' => 'en',
-                'tenant' => $this->tenant->toArray($model),
+                'tenant' => $this->tenant->toArray($context),
                 'socketsToken' => $this->socketsToken,
                 'allowedTopics' => $this->topics,
                 'apiKey' => $this->apiKey,
@@ -78,7 +78,7 @@ class User implements Document
             'warehouses' => $this->warehouses,
             'role' => $this->role,
             'dniNie' => $this->dniNie,
-            'tenant' => $this->tenant->toArray($model),
+            'tenant' => $this->tenant->toArray($context),
         ];
     }
 }

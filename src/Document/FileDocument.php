@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Nektria\Document;
 
+use Nektria\Service\ContextService;
+
 class FileDocument implements Document
 {
     private int | bool $size;
@@ -16,7 +18,7 @@ class FileDocument implements Document
         $this->size = filesize($file);
     }
 
-    public function toArray(string $model): mixed
+    public function toArray(ContextService $context): mixed
     {
         return [
             'path' => $this->file,

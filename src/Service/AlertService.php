@@ -242,7 +242,7 @@ class AlertService
         $traceUrl = str_replace('__TRACE__', $this->contextService->traceId(), $traceUrl);
         $maxLength = 2000;
         $inputString = JsonUtil::encode($input, true);
-        $documentString = JsonUtil::encode($document->toArray('dev'), true);
+        $documentString = JsonUtil::encode($document->toArray($this->contextService), true);
         $eol = self::EMPTY_LINE;
         $manyTimes = $times === 1 ? '' : " (x{$times})";
         $content =

@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Nektria\Document;
 
+use Nektria\Service\ContextService;
+
 use function count;
 
 /**
@@ -104,12 +106,12 @@ class DocumentCollection implements Document
     /**
      * @return mixed[]
      */
-    public function toArray(string $model): array
+    public function toArray(ContextService $context): array
     {
         $list = [];
 
         foreach ($this->items() as $item) {
-            $list[] = $item->toArray($model);
+            $list[] = $item->toArray($context);
         }
 
         return $list;
