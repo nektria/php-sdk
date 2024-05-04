@@ -357,7 +357,7 @@ abstract class RequestListener implements EventSubscriberInterface
                         'headers' => $headers,
                         'context' => 'request',
                         'route_name' => $route,
-                        'ref' => $this->contextService->userId() ?? 'anonymous',
+                        'userId' => $this->contextService->userId() ?? 'anon',
                         'request' => $requestContent,
                         'size' => $length,
                         'response' => $responseContent,

@@ -142,11 +142,10 @@ class LogService
                 'logName' => 'projects/nektria/logs/error',
                 'severity' => $asWarning ? self::WARNING : self::EMERGENCY,
                 'logging.googleapis.com/labels' => [
-                    'env' => $this->env,
                     'app' => $this->contextService->project(),
+                    'context' => $this->contextService->context(),
+                    'env' => $this->env,
                     'tenant' => $this->contextService->tenantId(),
-                    'user' => $this->contextService->userId(),
-                    'name' => 'error',
                 ],
                 'logging.googleapis.com/trace_sampled' => false
             ];
@@ -199,11 +198,10 @@ class LogService
             'logName' => "projects/nektria/logs/{$this->contextService->project()}",
             'severity' => $level,
             'logging.googleapis.com/labels' => [
+                'app' => $this->contextService->project(),
                 'context' => $this->contextService->context(),
                 'env' => $this->env,
-                'app' => $this->contextService->project(),
                 'tenant' => $this->contextService->tenantId(),
-                'user' => $this->contextService->userId(),
             ],
             'logging.googleapis.com/trace' => $this->contextService->traceId(),
             'logging.googleapis.com/trace_sampled' => false
