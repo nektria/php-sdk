@@ -283,7 +283,7 @@ abstract class RequestListener implements EventSubscriberInterface
                 $responseContent = [];
             }
         } elseif ($document instanceof ThrowableDocument) {
-            $responseContent = $document->toArray($this->contextService);
+            $responseContent = $document->toDevArray();
         } else {
             $responseContent = $document->toArray($this->contextService);
         }

@@ -116,4 +116,28 @@ class ThrowableDocument implements Document
 
         return $data;
     }
+
+    public function toDevArray(): mixed
+    {
+        $exception = $this->throwable;
+        if ($exception instanceof NektriaException) {
+            $exception = $exception->realException();
+        }
+
+        $message = $exception->getMessage();
+
+        if ($this->status !== Response::HTTP_INTERNAL_SERVER_ERROR) {
+            $message = $exception->getMessage();
+        }
+
+        $data = [
+            'message' => $message
+        ];
+
+        $data['file'] = str_replace('/app/', '', $exception->getFile());
+        $data['line'] = $exception->getLine();
+        $data['trace'] = $this->trace();
+
+        return $data;
+    }
 }
