@@ -26,10 +26,10 @@ namespace Nektria\Service;
  * @phpstan-type CompassDistance array{
  *     distance: int,
  *     travelTime: int,
- *     originLatitude: int,
- *     originLongitude: int,
- *     destinationLatitude: int,
- *     destinationLongitude: int,
+ *     originLatitude: float,
+ *     originLongitude: float,
+ *     destinationLatitude: float,
+ *     destinationLongitude: float,
  * }
  */
 class CompassClient
