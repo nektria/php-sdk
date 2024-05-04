@@ -6,22 +6,31 @@ namespace Nektria\Service;
 
 /**
  * @phpstan-type CompassPing array{
- *      response: string
- *  }
+ *     response: string
+ * }
  *
  * @phpstan-type CompassAddress array{
- *      addressLine1: string,
- *      postalCode: string,
- *      city: string,
- *      countryCode: string,
- *      latitude?: ?float,
- *      longitude?: ?float,
- *  }
+ *     addressLine1: string,
+ *     postalCode: string,
+ *     city: string,
+ *     countryCode: string,
+ *     latitude?: ?float,
+ *     longitude?: ?float,
+ * }
  *
- * @phpstan-type CompassCoordinates array{
- *      latitude: float,
- *      longitude: float,
- *  }
+ * @phpstan-type CompassCoordinate array{
+ *     latitude: float,
+ *     longitude: float,
+ * }
+ *
+ * @phpstan-type CompassDistance array{
+ *     distance: int,
+ *     travelTime: int,
+ *     originLatitude: int,
+ *     originLongitude: int,
+ *     destinationLatitude: int,
+ *     destinationLongitude: int,
+ * }
  */
 class CompassClient
 {
@@ -46,8 +55,16 @@ class CompassClient
      */
     public function saveAddress(array $address): void
     {
+        if (
+            $address['addressLine1'] === ''
+            || $address['postalCode'] === '08999'
+            || $this->contextService->isTest()
+        ) {
+            return;
+        }
+
         $this->requestClient->put(
-            "{$this->compassHost}/api/admin/address",
+            "{$this->compassHost}/api/admin/addresses",
             data: $address,
             headers: $this->getHeaders()
         );
@@ -55,25 +72,15 @@ class CompassClient
 
     /**
      * @param CompassAddress $address
-     * @return CompassCoordinates
+     * @return CompassCoordinate
      */
     public function getCoordinates(array $address): array
     {
-        if ($address['addressLine1'] === '') {
-            return [
-                'latitude' => 0,
-                'longitude' => 0,
-            ];
-        }
-
-        if ($address['postalCode'] === '08999') {
-            return [
-                'latitude' => 0,
-                'longitude' => 0,
-            ];
-        }
-
-        if ($this->contextService->isTest()) {
+        if (
+            $address['addressLine1'] === ''
+            || $address['postalCode'] === '08999'
+            || $this->contextService->isTest()
+        ) {
             return [
                 'latitude' => 0,
                 'longitude' => 0,
@@ -83,8 +90,29 @@ class CompassClient
         unset($address['latitude'], $address['longitude']);
 
         return $this->requestClient->get(
-            "{$this->compassHost}/api/admin/address/coordinates",
+            "{$this->compassHost}/api/admin/addresses/coordinates",
             data: $address,
+            headers: $this->getHeaders()
+        )->json();
+    }
+
+    /**
+     * @param CompassCoordinate[] $coordinates
+     * @return CompassDistance[]
+     */
+    public function distances(string $travelMode, array $coordinates): array
+    {
+        $list = [];
+        foreach ($coordinates as $coordinate) {
+            $list[] = "{$coordinate['latitude']},{$coordinate['longitude']}";
+        }
+
+        return $this->requestClient->get(
+            "{$this->compassHost}/api/admin/distances",
+            data: [
+                'wayPoints' => implode('|', $list),
+                'travelMode' => $travelMode,
+            ],
             headers: $this->getHeaders()
         )->json();
     }
