@@ -328,21 +328,46 @@ abstract class RequestListener implements EventSubscriberInterface
 
         if (!$ignoreRoute) {
             if ($status < 400) {
-                $this->logService->info([
-                    'headers' => $headers,
-                    'context' => 'request',
-                    'route_name' => $route,
-                    'ref' => $this->contextService->userId() ?? 'anonymous',
-                    'request' => $requestContent,
-                    'size' => $length,
-                    'response' => $responseContent,
-                    'httpRequest' => [
-                        'requestMethod' => $event->getRequest()->getMethod(),
-                        'requestUrl' => $path,
-                        'status' => ($this->originalResponse ?? $event->getResponse())->getStatusCode(),
-                        'latency' => round($this->executionTime, 3) . 's'
-                    ]
-                ], $resume);
+                $isDebug = true;
+                if ($event->getRequest()->getMethod() !== 'GET') {
+                    $isDebug = false;
+                } else {
+                    $isDebug = $this->contextService->context() === ContextService::INTERNAL;
+                }
+
+                if ($isDebug) {
+                    $this->logService->debug([
+                        'headers' => $headers,
+                        'context' => 'request',
+                        'route_name' => $route,
+                        'ref' => $this->contextService->userId() ?? 'anonymous',
+                        'request' => $requestContent,
+                        'size' => $length,
+                        'response' => $responseContent,
+                        'httpRequest' => [
+                            'requestMethod' => $event->getRequest()->getMethod(),
+                            'requestUrl' => $path,
+                            'status' => ($this->originalResponse ?? $event->getResponse())->getStatusCode(),
+                            'latency' => round($this->executionTime, 3) . 's'
+                        ]
+                    ], $resume);
+                } else {
+                    $this->logService->info([
+                        'headers' => $headers,
+                        'context' => 'request',
+                        'route_name' => $route,
+                        'ref' => $this->contextService->userId() ?? 'anonymous',
+                        'request' => $requestContent,
+                        'size' => $length,
+                        'response' => $responseContent,
+                        'httpRequest' => [
+                            'requestMethod' => $event->getRequest()->getMethod(),
+                            'requestUrl' => $path,
+                            'status' => ($this->originalResponse ?? $event->getResponse())->getStatusCode(),
+                            'latency' => round($this->executionTime, 3) . 's'
+                        ]
+                    ], $resume);
+                }
             } elseif ($status < 500) {
                 $this->logService->warning([
                     'headers' => $headers,
