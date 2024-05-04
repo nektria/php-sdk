@@ -47,7 +47,7 @@ class CompassClient
     public function saveAddress(array $address): void
     {
         $this->requestClient->put(
-            "{$this->compassHost}/admin/address",
+            "{$this->compassHost}/api/admin/address",
             data: $address,
             headers: $this->getHeaders()
         );
@@ -83,7 +83,7 @@ class CompassClient
         unset($address['latitude'], $address['longitude']);
 
         return $this->requestClient->get(
-            "{$this->compassHost}/admin/address/coordinates",
+            "{$this->compassHost}/api/admin/address/coordinates",
             data: $address,
             headers: $this->getHeaders()
         )->json();
