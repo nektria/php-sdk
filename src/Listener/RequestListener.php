@@ -332,7 +332,8 @@ abstract class RequestListener implements EventSubscriberInterface
                 if ($event->getRequest()->getMethod() !== 'GET') {
                     $isDebug = false;
                 } else {
-                    $isDebug = $this->contextService->context() === ContextService::INTERNAL;
+                    $isDebug = $this->contextService->context() === ContextService::INTERNAL
+                        || $this->contextService->context() === ContextService::ADMIN;
                 }
 
                 if ($isDebug) {
