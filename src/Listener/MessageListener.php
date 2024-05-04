@@ -22,6 +22,7 @@ use Nektria\Util\MessageStamp\ContextStamp;
 use Nektria\Util\MessageStamp\RetryStamp;
 use Nektria\Util\StringUtil;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Symfony\Component\Messenger\Bridge\Amqp\Transport\AmqpReceivedStamp;
 use Symfony\Component\Messenger\Event\WorkerMessageFailedEvent;
 use Symfony\Component\Messenger\Event\WorkerMessageHandledEvent;
 use Symfony\Component\Messenger\Event\WorkerMessageReceivedEvent;
@@ -125,13 +126,20 @@ abstract class MessageListener implements EventSubscriberInterface
             $resume = "/{$messageClass}/{$message->ref()}/{$try}";
             $time = max(0.001, round(microtime(true) - $this->executionTime, 3)) . 's';
 
-            $this->logService->info([
+            $exchangeName = '?';
+            $exchangeStamp = $event->getEnvelope()->last(AmqpReceivedStamp::class);
+            if ($exchangeStamp !== null) {
+                $exchangeName = $exchangeStamp->getAmqpEnvelope()->getExchangeName();
+            }
+
+            $this->logService->debug([
                 'context' => 'messenger',
                 'event' => $message::class,
                 'body' => $data,
                 'executionTime' => $time,
                 'messageReceivedAt' => $this->messageStartedAt,
                 'messageCompletedAt' => $this->messageCompletedAt,
+                'queue' => $exchangeName,
                 'httpRequest' => [
                     'requestUrl' => $resume,
                     'requestMethod' => 'QUEUE',
@@ -210,12 +218,19 @@ abstract class MessageListener implements EventSubscriberInterface
                 touch('/tmp/entity_manager_is_closed');
             }
 
+            $exchangeName = '?';
+            $exchangeStamp = $event->getEnvelope()->last(AmqpReceivedStamp::class);
+            if ($exchangeStamp !== null) {
+                $exchangeName = $exchangeStamp->getAmqpEnvelope()->getExchangeName();
+            }
+
             $this->logService->exception($originalException, [
                 'context' => 'messenger',
                 'event' => $class,
                 'body' => $data,
                 'messageReceivedAt' => $this->messageStartedAt,
                 'messageCompletedAt' => $this->messageCompletedAt,
+                'queue' => $exchangeName,
                 'try' => $try,
                 'maxRetries' => $maxRetries,
                 'httpRequest' => [
