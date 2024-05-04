@@ -100,7 +100,7 @@ class CompassClient
      * @param CompassCoordinate[] $coordinates
      * @return CompassDistance[]
      */
-    public function distances(string $travelMode, array $coordinates): array
+    public function getDistances(string $travelMode, array $coordinates): array
     {
         $list = [];
         foreach ($coordinates as $coordinate) {
