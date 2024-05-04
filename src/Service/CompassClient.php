@@ -24,13 +24,18 @@ namespace Nektria\Service;
  * }
  *
  * @phpstan-type CompassDistance array{
- *     distance: int,
- *     travelTime: int,
- *     originLatitude: float,
- *     originLongitude: float,
- *     destinationLatitude: float,
- *     destinationLongitude: float,
- * }
+ *      distance: int,
+ *      travelTime: int,
+ *      originLatitude: float,
+ *      originLongitude: float,
+ *      destinationLatitude: float,
+ *      destinationLongitude: float,
+ *  }
+ *
+ * @phpstan-type CompassGeoPolygon array{
+ *      distance: int,
+ *      coordinates: CompassCoordinate[],
+ *  }
  */
 class CompassClient
 {
@@ -112,6 +117,25 @@ class CompassClient
             data: [
                 'wayPoints' => implode('|', $list),
                 'travelMode' => $travelMode,
+            ],
+            headers: $this->getHeaders()
+        )->json();
+    }
+
+    /**
+     * @param CompassCoordinate $center
+     * @param int[] $distances
+     * @return CompassGeoPolygon[]
+     */
+    public function getGeoPolygons(array $center, string $travelMode, array $distances, string $type): array
+    {
+        return $this->requestClient->get(
+            "{$this->compassHost}/api/admin/geo-polygons",
+            data: [
+                'center' => "{$center['latitude']},{$center['longitude']}",
+                'distances' => implode(',', $distances),
+                'travelMode' => $travelMode,
+                'type' => $type,
             ],
             headers: $this->getHeaders()
         )->json();
