@@ -45,7 +45,7 @@ class ContextService
         private readonly string $project
     ) {
         $this->context = self::COMMON;
-        $this->traceId = StringUtil::uuid4();
+        $this->traceId = str_replace('-', '', StringUtil::uuid4());
         $this->userId = null;
         $this->tenantId = null;
     }
