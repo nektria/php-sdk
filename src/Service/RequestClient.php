@@ -80,7 +80,7 @@ class RequestClient
             throw NektriaException::new($e);
         }
 
-        if (str_starts_with($url, 'https:')) {
+        //if (str_starts_with($url, 'https:')) {
             $this->logService->debug([
                 'method' => $response->method,
                 'request' => $data,
@@ -90,7 +90,7 @@ class RequestClient
                 'status' => $response->status,
                 'url' => $url,
             ], "{$status} {$method} {$url}");
-        }
+        //}
 
         if ($status >= 300) {
             $errorContent = $content;
