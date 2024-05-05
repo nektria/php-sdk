@@ -12,7 +12,10 @@ class RequestException extends RuntimeException
     public function __construct(
         private readonly RequestResponse $response
     ) {
-        parent::__construct('Request Failed', $response->status);
+        parent::__construct(
+            "Request Failed: {$this->response->status} {$this->response->method} {$this->response->url}",
+            $response->status
+        );
     }
 
     public function response(): RequestResponse
