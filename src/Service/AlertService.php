@@ -6,6 +6,7 @@ namespace Nektria\Service;
 
 use Nektria\Document\ThrowableDocument;
 use Nektria\Dto\Clock;
+use Nektria\Exception\NektriaRuntimeException;
 use Nektria\Util\JsonUtil;
 use Throwable;
 
@@ -222,6 +223,13 @@ class AlertService
         ?int $flags = null
     ): void {
         if ($this->contextService->env() === 'test') {
+            return;
+        }
+
+        if (
+            ($document->throwable instanceof NektriaRuntimeException)
+            && $document->throwable->silent() && !$this->contextService->debugMode()
+        ) {
             return;
         }
 
