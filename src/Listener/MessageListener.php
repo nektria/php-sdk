@@ -8,6 +8,7 @@ use Doctrine\DBAL\ConnectionException;
 use Doctrine\DBAL\Exception\DriverException;
 use Nektria\Document\ThrowableDocument;
 use Nektria\Dto\Clock;
+use Nektria\Exception\ResourceNotFoundException;
 use Nektria\Infrastructure\BusInterface;
 use Nektria\Infrastructure\UserServiceInterface;
 use Nektria\Message\Command;
@@ -253,15 +254,22 @@ abstract class MessageListener implements EventSubscriberInterface
                 $times = $this->variableCache->readInt($key2, 1);
 
                 if (!in_array($originalException->getMessage(), $ignoreMessages, true)) {
-                    $this->alertService->sendThrowable(
-                        $this->userService->user()?->tenant->name ?? 'none',
-                        'RABBIT',
-                        "/{$messageClass}/{$message->ref()}/{$try}",
-                        $data,
-                        $exception,
-                        $times,
-                        $try > 1 ? AlertService::FLAG_SUPPRESS_NOTIFICATIONS : null
-                    );
+                    $sendAlert = true;
+                    if ($originalException instanceof ResourceNotFoundException) {
+                        $sendAlert = false;
+                    }
+
+                    if ($sendAlert) {
+                        $this->alertService->sendThrowable(
+                            $this->userService->user()?->tenant->name ?? 'none',
+                            'RABBIT',
+                            "/{$messageClass}/{$message->ref()}/{$try}",
+                            $data,
+                            $exception,
+                            $times,
+                            $try > 1 ? AlertService::FLAG_SUPPRESS_NOTIFICATIONS : null
+                        );
+                    }
                 }
 
                 $this->variableCache->saveInt($key2, 0);
