@@ -39,6 +39,12 @@ use function in_array;
 
 abstract class RequestListener implements EventSubscriberInterface
 {
+    public const LOG_LEVEL_DEBUG = 'DEBUG';
+
+    public const LOG_LEVEL_INFO = 'INFO';
+
+    public const LOG_LEVEL_NONE = 'NONE';
+
     private float $executionTime;
 
     /** @var string[] */
@@ -254,7 +260,7 @@ abstract class RequestListener implements EventSubscriberInterface
             return;
         }
 
-        $ignoreRoute = $this->ignoreRoute($route);
+        $logLevel = $this->assignLogLevel($route);
 
         $responseContentRaw = ($this->originalResponse ?? $event->getResponse())->getContent();
         $length = 0;
@@ -326,7 +332,7 @@ abstract class RequestListener implements EventSubscriberInterface
             $this->temporalConsumptionCache->increase($this->contextService->tenantId(), $route);
         }
 
-        if (!$ignoreRoute) {
+        if ($logLevel !== self::LOG_LEVEL_NONE) {
             if ($status < 400) {
                 $isDebug = true;
                 if ($event->getRequest()->getMethod() !== 'GET') {
@@ -334,6 +340,10 @@ abstract class RequestListener implements EventSubscriberInterface
                 } else {
                     $isDebug = $this->contextService->context() === ContextService::INTERNAL
                         || $this->contextService->context() === ContextService::ADMIN;
+                }
+
+                if ($logLevel !== null) {
+                    $isDebug = $logLevel === self::LOG_LEVEL_DEBUG;
                 }
 
                 if ($isDebug) {
@@ -480,5 +490,5 @@ abstract class RequestListener implements EventSubscriberInterface
         return $request->headers->get($header) ?? '';
     }
 
-    abstract protected function ignoreRoute(string $route): bool;
+    abstract protected function assignLogLevel(string $route): ?string;
 }
