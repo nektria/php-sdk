@@ -16,7 +16,7 @@ class RequestClient
     public function __construct(
         private readonly HttpClientInterface $client,
         private readonly LogService $logService,
-        private readonly string $project
+        private readonly ContextService $contextService,
     ) {
     }
 
@@ -37,7 +37,7 @@ class RequestClient
         $headers = array_merge([
             'Content-Type' => 'application/json',
             'User-Agent' => 'Nektria/1.0',
-            'X-Origin' => $this->project,
+            'X-Origin' => $this->contextService->project(),
         ], $headers);
 
         $options['verify_peer'] = false;
