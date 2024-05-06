@@ -4,9 +4,7 @@ declare(strict_types=1);
 
 namespace Nektria\Exception;
 
-use RuntimeException;
-
-class MissingRequestParamException extends RuntimeException
+class MissingRequestParamException extends NektriaRuntimeException
 {
     public function __construct(string $field)
     {

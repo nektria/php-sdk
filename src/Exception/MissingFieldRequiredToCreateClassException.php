@@ -4,9 +4,7 @@ declare(strict_types=1);
 
 namespace Nektria\Exception;
 
-use RuntimeException;
-
-class MissingFieldRequiredToCreateClassException extends RuntimeException
+class MissingFieldRequiredToCreateClassException extends NektriaRuntimeException
 {
     public function __construct(string $resource, string $field)
     {

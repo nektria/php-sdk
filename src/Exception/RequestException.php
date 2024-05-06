@@ -5,9 +5,8 @@ declare(strict_types=1);
 namespace Nektria\Exception;
 
 use Nektria\Dto\RequestResponse;
-use RuntimeException;
 
-class RequestException extends RuntimeException
+class RequestException extends NektriaRuntimeException
 {
     public function __construct(
         private readonly RequestResponse $response

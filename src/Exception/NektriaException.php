@@ -4,10 +4,9 @@ declare(strict_types=1);
 
 namespace Nektria\Exception;
 
-use RuntimeException;
 use Throwable;
 
-class NektriaException extends RuntimeException
+class NektriaException extends NektriaRuntimeException
 {
     public function __construct(string $message = '', int $code = 0, ?Throwable $previous = null)
     {

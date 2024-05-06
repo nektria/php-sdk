@@ -4,9 +4,7 @@ declare(strict_types=1);
 
 namespace Nektria\Exception;
 
-use RuntimeException;
-
-class InsufficientCredentialsException extends RuntimeException
+class InsufficientCredentialsException extends NektriaRuntimeException
 {
     public function __construct()
     {

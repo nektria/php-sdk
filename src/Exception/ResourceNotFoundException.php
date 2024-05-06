@@ -4,9 +4,7 @@ declare(strict_types=1);
 
 namespace Nektria\Exception;
 
-use RuntimeException;
-
-class ResourceNotFoundException extends RuntimeException
+class ResourceNotFoundException extends NektriaRuntimeException
 {
     public function __construct(string $resourceType)
     {
