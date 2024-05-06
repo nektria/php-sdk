@@ -75,19 +75,25 @@ class ContextService
         return $this->isPlayEnvironment() || $this->sharedVariableCache->hasKey("debug_bbf6c8f_{$this->project}");
     }
 
-    public function setDebugMode(bool $enable, int $ttl): void
+    /**
+     * @param string[] $projects
+     * @return array<string, bool>
+     */
+    public function debugModes(array $projects): array
     {
-        if ($enable) {
-            $this->sharedVariableCache->saveKey("debug_bbf6c8f_{$this->project}", $ttl);
-        } else {
-            $this->sharedVariableCache->deleteKey("debug_bbf6c8f_{$this->project}");
+        $data = [];
+        foreach ($projects as $project) {
+            $key = "debug_bbf6c8f_{$project}";
+            $data[$project] = $this->isPlayEnvironment() || $this->sharedVariableCache->hasKey($key);
         }
+
+        return $data;
     }
 
     /**
      * @param string[] $projects
      */
-    public function setCustomDebugMode(bool $enable, array $projects, int $ttl): void
+    public function setDebugMode(bool $enable, array $projects, int $ttl): void
     {
         foreach ($projects as $project) {
             $key = "debug_bbf6c8f_{$project}";
