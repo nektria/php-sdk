@@ -223,6 +223,19 @@ class ArrayDataFetcher
     }
 
     /**
+     * @return string[]
+     */
+    public function retrieveStringArray(string $field): array
+    {
+        $value = $this->getStringArray($field);
+        if ($value === null) {
+            throw new MissingRequestParamException($field);
+        }
+
+        return $value;
+    }
+
+    /**
      * @return mixed[]
      */
     public function retrieveArray(string $field): array
