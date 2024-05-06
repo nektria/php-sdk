@@ -60,7 +60,6 @@ abstract class RequestListener implements EventSubscriberInterface
         private readonly VariableCache $variableCache,
         private readonly UserServiceInterface $userService,
         private readonly SharedTemporalConsumptionCache $temporalConsumptionCache,
-        private readonly string $env,
         ContainerInterface $container
     ) {
         /** @var string[] $cors */
@@ -256,7 +255,7 @@ abstract class RequestListener implements EventSubscriberInterface
             }
         }
 
-        if ($this->env === 'test') {
+        if ($this->contextService->isTest()) {
             return;
         }
 
@@ -437,7 +436,7 @@ abstract class RequestListener implements EventSubscriberInterface
                     );
                     $this->variableCache->saveInt($key2, 0);
                 } else {
-                    $times = $this->variableCache->readInt($key2, 0);
+                    $times = $this->variableCache->readInt($key2);
                     $this->variableCache->saveInt($key2, $times + 1);
                 }
             }

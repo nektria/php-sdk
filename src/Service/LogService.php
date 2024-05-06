@@ -33,7 +33,6 @@ class LogService
 
     public function __construct(
         private readonly ContextService $contextService,
-        private readonly string $env,
     ) {
         $this->channel = fopen('php://stderr', 'wb');
 
@@ -144,7 +143,7 @@ class LogService
                 'logging.googleapis.com/labels' => [
                     'app' => $this->contextService->project(),
                     'context' => $this->contextService->context(),
-                    'env' => $this->env,
+                    'env' => $this->contextService->env(),
                     'tenant' => $this->contextService->tenantId(),
                 ],
                 'logging.googleapis.com/trace_sampled' => false
@@ -200,7 +199,7 @@ class LogService
             'logging.googleapis.com/labels' => [
                 'app' => $this->contextService->project(),
                 'context' => $this->contextService->context(),
-                'env' => $this->env,
+                'env' => $this->contextService->env(),
                 'tenant' => $this->contextService->tenantId(),
             ],
             'logging.googleapis.com/trace' => $this->contextService->traceId(),
