@@ -166,6 +166,10 @@ class AlertService
             $eol .
             $message['content'];
 
+        if (count($message['embeds'] ?? []) === 0) {
+            $message['content'] .= $eol;
+        }
+
         try {
             $this->makeRequest($channel, $message);
         } catch (Throwable $e) {
