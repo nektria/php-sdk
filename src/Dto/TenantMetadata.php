@@ -272,6 +272,14 @@ class TenantMetadata
     }
 
     /**
+     * @return mixed[]
+     */
+    public function data(): array
+    {
+        return $this->data;
+    }
+
+    /**
      * @return WarehouseMetadataArray
      */
     public function toArray(): array
