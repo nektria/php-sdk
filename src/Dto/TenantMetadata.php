@@ -272,6 +272,16 @@ class TenantMetadata
     }
 
     /**
+     * @return string[]
+     */
+    public function capacitiesEmailRecipients(): array
+    {
+        $this->data['capacitiesEmailRecipients'] ??= [];
+
+        return $this->data['capacitiesEmailRecipients'];
+    }
+
+    /**
      * @return mixed[]
      */
     public function data(): array
