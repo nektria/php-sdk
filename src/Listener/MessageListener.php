@@ -225,6 +225,7 @@ abstract class MessageListener implements EventSubscriberInterface
                 $exchangeName = $exchangeStamp->getAmqpEnvelope()->getExchangeName();
             }
 
+            $this->logService->temporalLogs();
             $this->logService->exception($originalException, [
                 'context' => 'messenger',
                 'event' => $class,

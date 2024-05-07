@@ -394,6 +394,7 @@ abstract class RequestListener implements EventSubscriberInterface
                     ]
                 ], $resume);
             } else {
+                $this->logService->temporalLogs();
                 $this->logService->error([
                     'headers' => $headers,
                     'context' => 'request',

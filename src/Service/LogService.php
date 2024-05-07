@@ -218,7 +218,7 @@ class LogService
         return array_merge($payload, $data);
     }
 
-    public function custom(): void
+    public function temporalLogs(): void
     {
         if ($this->channel === false) {
             return;
