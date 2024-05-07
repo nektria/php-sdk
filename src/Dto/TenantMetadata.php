@@ -49,6 +49,16 @@ class TenantMetadata
         return $this->data['syncRMOrder'];
     }
 
+    /**
+     * @return string[]
+     */
+    public function specialClients(): array
+    {
+        $this->data['specialClients'] ??= [];
+
+        return $this->data['specialClients'];
+    }
+
     public function syncRMShift(): bool
     {
         $this->data['syncRMShift'] ??= false;
