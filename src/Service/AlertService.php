@@ -129,10 +129,7 @@ class AlertService
         array $embeds = [],
         ?int $flags = null
     ): void {
-        $end = '';
-        if (count($embeds) === 0) {
-            $end = self::EMPTY_LINE;
-        } else {
+        if (count($embeds) > 0) {
             $embeds = [
                 [
                     'fields' => $embeds
@@ -141,7 +138,7 @@ class AlertService
         }
 
         $this->sendMessage($channel, [
-            'content' => $message . $end,
+            'content' => $message,
             'embeds' => $embeds
         ], $flags);
     }
