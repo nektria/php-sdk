@@ -33,6 +33,7 @@ class LogService
 
     public function __construct(
         private readonly ContextService $contextService,
+        private readonly SharedLogCache $sharedLogCache,
     ) {
         $this->channel = fopen('php://stderr', 'wb');
 
@@ -95,6 +96,14 @@ class LogService
     public function debug(array $payload, string $message): void
     {
         if ($this->channel === false || !$this->contextService->debugMode()) {
+            $this->sharedLogCache->addLog([
+                'context' => $this->contextService->context(),
+                'message' => $message,
+                'payload' => $payload,
+                'project' => $this->contextService->project(),
+                'tenantId' => $this->contextService->tenantId() ?? 'none',
+            ]);
+
             return;
         }
 
@@ -207,5 +216,33 @@ class LogService
         ];
 
         return array_merge($payload, $data);
+    }
+
+    public function custom(): void
+    {
+        if ($this->channel === false) {
+            return;
+        }
+
+        $logs = $this->sharedLogCache->getLogs();
+
+        foreach ($logs as $log) {
+            $data = [
+                'message' => $log['message'],
+                'logName' => "projects/nektria/logs/{$log['project']}",
+                'severity' => self::DEBUG,
+                'logging.googleapis.com/labels' => [
+                    'app' => $log['project'],
+                    'context' => $log['context'],
+                    'env' => $this->contextService->env(),
+                    'tenant' => $log['tenantId'],
+                ],
+                'logging.googleapis.com/trace' => $this->contextService->traceId(),
+                'logging.googleapis.com/trace_sampled' => false
+            ];
+
+            $data = array_merge($log['payload'], $data);
+            fwrite($this->channel, JsonUtil::encode($data) . PHP_EOL);
+        }
     }
 }
