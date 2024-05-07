@@ -10,6 +10,7 @@ use Nektria\Exception\NektriaRuntimeException;
 use Nektria\Util\JsonUtil;
 use Throwable;
 
+use function count;
 use function in_array;
 use function strlen;
 
@@ -114,6 +115,35 @@ class AlertService
             ]
         );
         $this->sharedDiscordCache->removeLastMessage($channel);
+    }
+
+    /**
+     * @param array{
+     *     name: string,
+     *     value: string,
+     * }[] $embeds
+     */
+    public function simpleMessage(
+        string $channel,
+        string $message,
+        array $embeds = [],
+        ?int $flags = null
+    ): void {
+        $end = '';
+        if (count($embeds) === 0) {
+            $end = self::EMPTY_LINE;
+        } else {
+            $embeds = [
+                [
+                    'fields' => $embeds
+                ]
+            ];
+        }
+
+        $this->sendMessage($channel, [
+            'content' => $message . $end,
+            'embeds' => $embeds
+        ], $flags);
     }
 
     /**
