@@ -204,44 +204,7 @@ class AlertService
             return;
         }
 
-        $hour = Clock::new()->setTimezone('Europe/Madrid')->hour();
-        if ($hour < 8 || $hour > 23) {
-            $flags |= self::FLAG_SUPPRESS_NOTIFICATIONS;
-        }
-
-        $eol = self::EMPTY_LINE;
-        $tenantName = $this->userService->user()?->tenant->name ?? 'none';
-        $message['content'] ??= '';
-        $message['content'] =
-            $eol .
-            "**{$this->contextService->project()}**{$eol}" .
-            "**{$tenantName}**{$eol}" .
-            $eol .
-            $message['content'];
-
-        try {
-            $this->makeRequest('debug', $message);
-        } catch (Throwable $e) {
-            try {
-                $content = "‎\n" .
-                    '**Discord Api Error**' .
-                    "```json\n" .
-                    JsonUtil::encode(JsonUtil::decode($e->getMessage()), true) .
-                    "\n```" .
-                    "Trace: {$this->contextService->traceId()}\n" .
-                    "‎\n‎";
-
-                if (str_contains($content, 'You are being rate limited.')) {
-                    return;
-                }
-
-                $this->makeRequest('debug', [
-                    'content' => $content,
-                    'flags' => $flags
-                ]);
-            } catch (Throwable) {
-            }
-        }
+        $this->sendMessage('debug', $message, $flags);
     }
 
     /**
