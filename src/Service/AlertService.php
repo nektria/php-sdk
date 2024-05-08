@@ -199,7 +199,6 @@ class AlertService
      * }[] $embeds
      */
     public function simpleDebugMessage(
-        string $channel,
         string $message,
         array $embeds = [],
         ?int $flags = null
