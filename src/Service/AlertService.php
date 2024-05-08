@@ -193,6 +193,32 @@ class AlertService
     }
 
     /**
+     * @param array{
+     *     name: string,
+     *     value: string,
+     * }[] $embeds
+     */
+    public function simpleDebugMessage(
+        string $channel,
+        string $message,
+        array $embeds = [],
+        ?int $flags = null
+    ): void {
+        if (count($embeds) > 0) {
+            $embeds = [
+                [
+                    'fields' => $embeds
+                ]
+            ];
+        }
+
+        $this->debugMessage([
+            'content' => $message,
+            'embeds' => $embeds
+        ], $flags);
+    }
+
+    /**
      * @param AlertMessage $message
      */
     public function debugMessage(array $message, ?int $flags = null): void
