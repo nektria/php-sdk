@@ -14,7 +14,6 @@ use Throwable;
 class RequestClient
 {
     public function __construct(
-        private readonly AlertService $alertService,
         private readonly HttpClientInterface $client,
         private readonly LogService $logService,
         private readonly ContextService $contextService,
@@ -90,40 +89,6 @@ class RequestClient
             'status' => $response->status,
             'url' => $url,
         ], "{$status} {$method} {$url}");
-
-        $this->alertService->simpleDebugMessage(
-            "{$status} {$method} {$url}",
-            [
-                [
-                    'name' => 'Status',
-                    'value' => (string) $response->status
-                ],
-                [
-                    'name' => 'Method',
-                    'value' => $response->method
-                ],
-                [
-                    'name' => 'Url',
-                    'value' => $response->url
-                ],
-                [
-                    'name' => 'Request',
-                    'value' => JsonUtil::encode($data)
-                ],
-                [
-                    'name' => 'Request Headers',
-                    'value' => JsonUtil::encode($headers)
-                ],
-                [
-                    'name' => 'Response',
-                    'value' => $response->body
-                ],
-                [
-                    'name' => 'Response Headers',
-                    'value' => JsonUtil::encode($respHeaders)
-                ]
-            ]
-        );
 
         if ($status >= 300) {
             $errorContent = $content;
