@@ -63,6 +63,18 @@ class ArrayDataFetcher
             if ($i === ($length - 1)) {
                 $value = $currentValue[$part] ?? null;
 
+                if ($value === 'null') {
+                    return null;
+                }
+
+                if ($value === 'true') {
+                    return true;
+                }
+
+                if ($value === 'false') {
+                    return false;
+                }
+
                 if (is_string($value)) {
                     return StringUtil::trim($value);
                 }
@@ -175,7 +187,7 @@ class ArrayDataFetcher
     {
         $value = $this->getValue($field);
 
-        if ($value === null || $value === 'null') {
+        if ($value === null) {
             return null;
         }
 
