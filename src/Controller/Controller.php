@@ -72,7 +72,7 @@ class Controller
      * @template T of Document
      * @param T $document
      */
-    protected function documentResponse(Document $document): JsonResponse
+    protected function documentResponse(Document $document): DocumentResponse
     {
         return $this->response($document);
     }
@@ -81,7 +81,7 @@ class Controller
      * @template T of Document
      * @param Query<T> $query
      */
-    protected function queryResponse(Query $query): JsonResponse
+    protected function queryResponse(Query $query): DocumentResponse
     {
         return $this->documentResponse($this->bus->dispatchQuery($query));
     }
