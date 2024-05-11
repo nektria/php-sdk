@@ -272,7 +272,7 @@ abstract class InternalReferenceRedisCache extends RedisCache
     protected function setListItems(string $key, array $items, Clock | int $ttl = 300): void
     {
         if ($ttl instanceof Clock) {
-            $ttl = $ttl->diff(Clock::new());
+            $ttl = $ttl->diff(Clock::now());
         }
 
         if (count($items) === 0) {
@@ -289,7 +289,7 @@ abstract class InternalReferenceRedisCache extends RedisCache
     protected function setRawItem(string $key, string $item, Clock | int $ttl = 300): void
     {
         if ($ttl instanceof Clock) {
-            $ttl = $ttl->diff(Clock::new());
+            $ttl = $ttl->diff(Clock::now());
         }
 
         try {

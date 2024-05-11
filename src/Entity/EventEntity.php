@@ -19,7 +19,7 @@ abstract class EventEntity implements EntityInterface
     public function __construct(string $tenantId)
     {
         $this->tenantId = $tenantId;
-        $this->timestamp = Clock::new();
+        $this->timestamp = Clock::now();
     }
 
     public function id(): string

@@ -94,7 +94,7 @@ abstract class InternalRedisCache extends RedisCache
     public function setItem(string $key, $item, Clock | int $ttl = 300): void
     {
         if ($ttl instanceof Clock) {
-            $ttl = $ttl->diff(Clock::new());
+            $ttl = $ttl->diff(Clock::now());
         }
         $ttl = max(1, $ttl);
 

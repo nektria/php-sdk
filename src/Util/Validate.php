@@ -245,7 +245,7 @@ class Validate
     public static function timezone(string $value): void
     {
         try {
-            Clock::new()->setTimezone($value);
+            Clock::now()->setTimezone($value);
         } catch (Throwable $e) {
             throw new InvalidArgumentException("Invalid canonical timezone '{$value}'", $e->getCode(), $e);
         }

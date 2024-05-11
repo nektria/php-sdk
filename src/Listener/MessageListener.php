@@ -57,7 +57,7 @@ abstract class MessageListener implements EventSubscriberInterface
         private readonly BusInterface $bus
     ) {
         $this->executionTime = microtime(true);
-        $this->messageCompletedAt = Clock::new()->iso8601String();
+        $this->messageCompletedAt = Clock::now()->iso8601String();
         $this->messageStartedAt = $this->messageCompletedAt;
     }
 
@@ -94,7 +94,7 @@ abstract class MessageListener implements EventSubscriberInterface
                 }
             }
 
-            $this->messageStartedAt = Clock::new()->iso8601String();
+            $this->messageStartedAt = Clock::now()->iso8601String();
             $this->executionTime = microtime(true);
         } catch (Throwable $e) {
             $this->alertService->sendThrowable(
@@ -110,7 +110,7 @@ abstract class MessageListener implements EventSubscriberInterface
     public function onWorkerMessageHandled(WorkerMessageHandledEvent $event): void
     {
         $this->bus->dispatchDelayedEvents();
-        $this->messageCompletedAt = Clock::new()->iso8601String();
+        $this->messageCompletedAt = Clock::now()->iso8601String();
         $message = $event->getEnvelope()->getMessage();
 
         if ($message instanceof Command || $message instanceof Event) {
@@ -165,7 +165,7 @@ abstract class MessageListener implements EventSubscriberInterface
     {
         $retryStamp = $event->getEnvelope()->last(RetryStamp::class);
         $transportStamp = $event->getEnvelope()->last(TransportNamesStamp::class);
-        $this->messageCompletedAt = Clock::new()->iso8601String();
+        $this->messageCompletedAt = Clock::now()->iso8601String();
         $message = $event->getEnvelope()->getMessage();
         $try = 1;
         $maxRetries = 1;

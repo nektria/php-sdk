@@ -148,7 +148,7 @@ class AlertService
      */
     public function sendMessage(string $channel, array $message, ?int $flags = null): void
     {
-        $hour = Clock::new()->setTimezone('Europe/Madrid')->hour();
+        $hour = Clock::now()->setTimezone('Europe/Madrid')->hour();
         if ($hour < 8 || $hour > 23) {
             $flags |= self::FLAG_SUPPRESS_NOTIFICATIONS;
         }
@@ -252,7 +252,7 @@ class AlertService
             return;
         }
 
-        $hour = Clock::new()->setTimezone('Europe/Madrid')->hour();
+        $hour = Clock::now()->setTimezone('Europe/Madrid')->hour();
         if ($hour < 8 || $hour > 23) {
             $flags |= self::FLAG_SUPPRESS_NOTIFICATIONS;
         }

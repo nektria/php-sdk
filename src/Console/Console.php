@@ -152,13 +152,13 @@ abstract class Console extends BaseCommand
                 new ThrowableDocument($e),
             );
 
-            $now = Clock::new();
+            $now = Clock::now();
             $this->output()->writeln("\n\n<red>{$now->dateTimeString('Europe/Madrid')}</red>");
 
             throw $e;
         }
 
-        $now = Clock::new();
+        $now = Clock::now();
         $this->output()->writeln("\n\n<green>{$now->dateTimeString('Europe/Madrid')}</green>");
 
         return 0;
