@@ -87,7 +87,7 @@ abstract class MessageListener implements EventSubscriberInterface
             /** @var ContextStamp|null $contextStamp */
             $contextStamp = $event->getEnvelope()->last(ContextStamp::class);
             if ($contextStamp !== null) {
-                $this->contextService->setContext($contextStamp->context);
+                $this->contextService->setContext('rabbit');
                 $this->contextService->setTraceId($contextStamp->traceId);
                 if ($contextStamp->tenantId !== null) {
                     $this->userService->authenticateSystem($contextStamp->tenantId);

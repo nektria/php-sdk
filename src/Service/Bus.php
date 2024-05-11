@@ -51,7 +51,6 @@ class Bus implements BusInterface
 
             $result = $this->bus->dispatch($query, [
                 new ContextStamp(
-                    $this->contextService->context(),
                     $this->contextService->traceId(),
                     $this->contextService->tenantId(),
                 )
@@ -90,7 +89,6 @@ class Bus implements BusInterface
 
         $stamps = [
             new ContextStamp(
-                $this->contextService->context(),
                 $this->contextService->traceId(),
                 $this->contextService->tenantId()
             )
@@ -140,7 +138,6 @@ class Bus implements BusInterface
         try {
             $this->bus->dispatch($event, [
                 new ContextStamp(
-                    $this->contextService->context(),
                     $this->contextService->traceId(),
                     $this->contextService->tenantId(),
                 )
