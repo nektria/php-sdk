@@ -23,6 +23,7 @@ namespace Nektria\Service;
  * @phpstan-type RMWarehouse array{
  *     address: RMAddress,
  *     id: string,
+ *     metadata: RMWarehouseMetadata,
  *     name: string,
  *     reload: bool,
  *     returnToWarehouse: bool,
@@ -36,7 +37,7 @@ namespace Nektria\Service;
  * }
  *
  * @phpstan-type RMWarehouseMetadata array{
- *     callbackUrl: string,
+ *     callbackUrl: ?string,
  *     estimatedDeliveryRefresh: ?int,
  *     expressOrdersNotificationEmails: string[],
  *     isochroneContourSizes: int[],
