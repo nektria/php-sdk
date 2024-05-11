@@ -65,7 +65,7 @@ class RouteManagerClient
     }
 
     /**
-     * @return RMWarehouse[]
+     * @return RMWarehouse
      */
     public function getWarehouse(string $id): array
     {
