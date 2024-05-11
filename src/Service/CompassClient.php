@@ -154,8 +154,8 @@ class CompassClient
             'Content-type' => 'application/json',
             'X-Api-Id' => $apiKey,
             'X-Nektria-App' => 'compass',
-            'X-Tenant' => $tenantId,
             'X-Trace' => $this->contextService->traceId(),
+            'X-Origin' => $this->contextService->project(),
         ];
     }
 }
