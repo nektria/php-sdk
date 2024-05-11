@@ -175,7 +175,7 @@ class ArrayDataFetcher
     {
         $value = $this->getValue($field);
 
-        if ($value === null) {
+        if ($value === null || $value === 'null') {
             return null;
         }
 
