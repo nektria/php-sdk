@@ -22,7 +22,7 @@ class Clock
         $this->dateTime = $dateTime ?? new DateTimeImmutable();
     }
 
-    public static function new(): self
+    public static function now(): self
     {
         return new self();
     }
