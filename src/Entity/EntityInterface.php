@@ -7,4 +7,6 @@ namespace Nektria\Entity;
 interface EntityInterface
 {
     public function id(): string;
+
+    public function refresh(): void;
 }

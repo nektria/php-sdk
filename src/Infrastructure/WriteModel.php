@@ -31,6 +31,7 @@ abstract class WriteModel
      */
     protected function saveEntity(EntityInterface $domain): void
     {
+        $domain->refresh();
         $this->manager->persist($domain);
         $this->manager->flush();
         $this->manager->detach($domain);
