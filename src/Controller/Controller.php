@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Nektria\Controller;
 
+use Nektria\Document\DatabaseValue;
 use Nektria\Document\Document;
 use Nektria\Document\DocumentResponse;
 use Nektria\Document\Tenant;
@@ -14,7 +15,6 @@ use Nektria\Message\Query;
 use Nektria\Service\ContextService;
 use Nektria\Service\UserService;
 use Nektria\Util\ArrayDataFetcher;
-use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Response;
@@ -114,11 +114,11 @@ class Controller
         ?string $transport = null,
         ?int $delayMs = null,
         ?array $retryOptions = null
-    ): JsonResponse {
+    ): DocumentResponse {
         if ($command !== null) {
             $this->command($command, $transport, $delayMs, $retryOptions);
         }
 
-        return new JsonResponse([], Response::HTTP_NO_CONTENT);
+        return new DocumentResponse(new DatabaseValue([]), $this->context, Response::HTTP_NO_CONTENT);
     }
 }
