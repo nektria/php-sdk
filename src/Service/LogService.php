@@ -16,8 +16,6 @@ use const PHP_EOL;
 
 class LogService
 {
-    public const DEFAULT = 'DEFAULT';
-
     public const INFO = 'INFO';
 
     public const WARNING = 'WARNING';
@@ -40,30 +38,6 @@ class LogService
         if ($this->contextService->isLocalEnvironament()) {
             $this->channel = false;
         }
-    }
-
-    /**
-     * @param mixed[] $payload
-     */
-    public function log(array $payload, string $message): void
-    {
-        if ($this->channel === false) {
-            return;
-        }
-        $data = $this->build($payload, $message, self::DEFAULT);
-        fwrite($this->channel, JsonUtil::encode($data) . PHP_EOL);
-    }
-
-    /**
-     * @param mixed[] $payload
-     */
-    public function default(array $payload, string $message): void
-    {
-        if ($this->channel === false) {
-            return;
-        }
-        $data = $this->build($payload, $message, self::DEFAULT);
-        fwrite($this->channel, JsonUtil::encode($data) . PHP_EOL);
     }
 
     /**
@@ -187,7 +161,6 @@ class LogService
             self::WARNING => $this->warning($payload, $message),
             self::DEBUG => $this->debug($payload, $message),
             self::ERROR => $this->error($payload, $message),
-            self::DEFAULT => $this->default($payload, $message),
             default => false,
         };
     }
