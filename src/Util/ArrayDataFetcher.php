@@ -42,6 +42,18 @@ class ArrayDataFetcher
         if (!str_contains($field, '.')) {
             $value = $this->data[$field] ?? null;
 
+            if ($value === 'null') {
+                return null;
+            }
+
+            if ($value === 'true') {
+                return true;
+            }
+
+            if ($value === 'false') {
+                return false;
+            }
+
             if (is_string($value)) {
                 return StringUtil::trim($value);
             }
