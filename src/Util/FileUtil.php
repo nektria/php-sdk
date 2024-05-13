@@ -28,9 +28,10 @@ class FileUtil
     /**
      * @param string[][] $data
      */
-    public static function createCsv(array $data): string
+    public static function createCsv(array $data, ?string $filename = null): string
     {
-        $path = '/tmp/' . StringUtil::uuid4();
+        $filename ??= StringUtil::uuid4();
+        $path = "/app/tmp/{$filename}.csv";
         touch($path);
         $temp = fopen($path, 'wb');
 
