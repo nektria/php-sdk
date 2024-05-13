@@ -131,7 +131,7 @@ abstract class ReadModel
     }
 
     /**
-     * @param array<string, mixed> $params
+     * @param mixed[] $params
      * @return T
      */
     abstract protected function buildDocument(array $params): Document;
