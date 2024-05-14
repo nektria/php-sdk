@@ -37,15 +37,15 @@ class MetricsClient
     /**
      * @param Clock $at should be local time
      */
-    public function deliverOrder(string $order, Clock $at): void
+    public function deliverOrder(string $orderNumber, Clock $at): void
     {
-        $this->requestClient->patch("{$this->metricsHost}/api/admin/orders/deliver", [
-            'json' => [
-                'orderNumber' => $order,
+        $this->requestClient->patch(
+            "{$this->metricsHost}/api/admin/orders/{$orderNumber}/deliver",
+            data: [
                 'at' => $at->dateTimeString(),
             ],
-            'headers' => $this->getHeaders(),
-        ]);
+            headers: $this->getHeaders(),
+        );
     }
 
     /**
