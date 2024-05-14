@@ -41,12 +41,13 @@ abstract class ReadModel
 
     /**
      * @param array<string, string|int|float|bool|null> $params
+     * @param string[] $groupBy
      * @return mixed[]|null
      */
-    protected function getRawResult(string $sql, array $params = []): ?array
+    protected function getRawResult(string $sql, array $params = [], array $groupBy = []): ?array
     {
         try {
-            $results = $this->getRawResults($sql, $params);
+            $results = $this->getRawResults($sql, $params, $groupBy);
 
             return $results[array_key_first($results)] ?? null;
         } catch (Throwable $e) {
@@ -60,7 +61,7 @@ abstract class ReadModel
      */
     protected function getResult(string $sql, array $params = []): ?Document
     {
-        $result = $this->getRawResult($sql, $params);
+        $result = $this->getRawResult($sql, $params, $this->groupResults());
 
         if ($result === null) {
             return null;
@@ -71,11 +72,11 @@ abstract class ReadModel
 
     /**
      * @param array<string, string|int|float|bool|string[]|null> $params
+     * @param string[] $groupBy
      * @return mixed[]
      */
-    protected function getRawResults(string $sql, array $params = []): array
+    protected function getRawResults(string $sql, array $params = [], array $groupBy = []): array
     {
-        $groupBy = $this->groupResults();
         $sql = StringUtil::trim($sql);
         if (!str_starts_with($sql, 'SELECT')) {
             $sql = "{$this->source()} {$sql}";
@@ -125,7 +126,7 @@ abstract class ReadModel
      */
     protected function getResults(string $sql, array $params = []): DocumentCollection
     {
-        $results = $this->getRawResults($sql, $params);
+        $results = $this->getRawResults($sql, $params, $this->groupResults());
         $parsed = [];
 
         foreach ($results as $item) {
