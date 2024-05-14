@@ -360,4 +360,14 @@ class Clock
 
         return "$count {$name}s ago";
     }
+
+    public function fromLocalToUTC(string $timezone): self
+    {
+        return $this->replaceTimezone($timezone);
+    }
+
+    public function fromUTCToLocal(string $timezone): self
+    {
+        return $this->setTimezone($timezone)->replaceTimezone('UTC');
+    }
 }
