@@ -382,20 +382,20 @@ class YieldManagerClient
 
     public function saveOrder(
         string $orderNumber,
-        ?string $shopperCode,
-        int $weight,
-        int $productLines,
-        Clock $startTime,
-        Clock $endTime,
-        string $addressLine1,
-        ?string $addressLine2,
-        string $postalCode,
-        string $city,
-        string $countryCode,
-        ?bool $elevator,
-        float $latitude,
-        float $longitude,
-        bool $returnal
+        ?string $shopperCode = null,
+        ?int $weight = null,
+        ?int $productLines = null,
+        ?Clock $startTime = null,
+        ?Clock $endTime = null,
+        ?string $addressLine1 = null,
+        ?string $addressLine2 = null,
+        ?string $postalCode = null,
+        ?string $city = null,
+        ?string $countryCode = null,
+        ?bool $elevator = null,
+        ?float $latitude = null,
+        ?float $longitude = null,
+        ?bool $returnal = null,
     ): void {
         $this->requestClient->put(
             "{$this->yieldManagerHost}/api/admin/orders/{$orderNumber}",
@@ -416,10 +416,12 @@ class YieldManagerClient
                 'returnal' => $returnal,
                 'weight' => $weight,
                 'shopperCode' => $shopperCode,
-                'timeRange' => [
-                    'startTime' => $startTime->dateTimeString(),
-                    'endTime' => $endTime->dateTimeString(),
-                ],
+                'timeRange' => $startTime !== null && $endTime !== null
+                    ? [
+                        'startTime' => $startTime->dateTimeString(),
+                        'endTime' => $endTime->dateTimeString(),
+                    ]
+                    : null,
             ],
             headers: $this->getHeaders(),
         );
