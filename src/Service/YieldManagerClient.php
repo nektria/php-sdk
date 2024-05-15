@@ -372,7 +372,7 @@ class YieldManagerClient
     public function saveExpressOrderStatus(string $orderNumber, string $status): void
     {
         $this->requestClient->put(
-            "{$this->yieldManagerHost}/api/admin/express-orders/{$orderNumber}",
+            "{$this->yieldManagerHost}/api/admin/express-orders/{$orderNumber}/status",
             data: [
                 'status' => $status,
             ],
