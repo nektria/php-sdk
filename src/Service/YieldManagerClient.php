@@ -49,6 +49,42 @@ use Nektria\Dto\Clock;
  *     warehouseCode: ?string
  * }
  *
+ * @phpstan-type YMWarehouseResume array{
+ *     areas: string[],
+ *     averageConvertedTransportDelayTime: int,
+ *     averageConvertedWarehouseDelayTime: int,
+ *     averageNonConvertedTransportDelayTime: int,
+ *     averageNonConvertedWarehouseDelayTime: int,
+ *     avgNonFirstWindowAddresses: int,
+ *     convertedAddresses: int,
+ *     cost: int,
+ *     costPerOrder: int,
+ *     dataUntil: string,
+ *     date: string,
+ *     firstWindowAddresses: int,
+ *     gridsWithExpressAvailable: int,
+ *     gridsWithExpressTotal: int,
+ *     gridsWithN0Available: int,
+ *     gridsWithN1Available: int,
+ *     gridsWithN2Available: int,
+ *     id: string,
+ *     lastOrder: string,
+ *     name: string,
+ *     nonComplementaryOrders: int,
+ *     orders: int,
+ *     ordersMinutes: int,
+ *     ordersWeight: int,
+ *     recentOrders: int,
+ *     saturation: int,
+ *     shifts: int,
+ *     shiftsWeight: int,
+ *     timeWindows: int,
+ *     timeWindowsMinutes: int,
+ *     timezone: string,
+ *     totalAddresses: int,
+ *     totalGrids: int,
+ * }
+ *
  * @phpstan-type YMShift array{
  *     applySecondaryAreas: bool,
  *     areas: string[],
@@ -205,6 +241,31 @@ class YieldManagerClient
     {
         return $this->requestClient->get(
             "{$this->yieldManagerHost}/api/admin/warehouses/{$warehouseId}/shifts",
+            data: [
+                'date' => $date->dateString(),
+            ],
+            headers: $this->getHeaders(),
+        )->json();
+    }
+
+    /**
+     * @return YMWarehouse[]
+     */
+    public function getWarehouse(string $warehouseId): array
+    {
+        return $this->requestClient->get(
+            "{$this->yieldManagerHost}/api/admin/warehouses/{$warehouseId}",
+            headers: $this->getHeaders(),
+        )->json();
+    }
+
+    /**
+     * @return YMWarehouseResume
+     */
+    public function getWarehouseResume(string $warehouseId, Clock $date): array
+    {
+        return $this->requestClient->get(
+            "{$this->yieldManagerHost}/api/admin/warehouses/{$warehouseId}/resume",
             data: [
                 'date' => $date->dateString(),
             ],
