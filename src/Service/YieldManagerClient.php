@@ -249,7 +249,7 @@ class YieldManagerClient
     }
 
     /**
-     * @return YMWarehouse[]
+     * @return YMWarehouse
      */
     public function getWarehouse(string $warehouseId): array
     {
