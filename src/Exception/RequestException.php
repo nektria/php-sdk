@@ -13,7 +13,7 @@ class RequestException extends NektriaRuntimeException
     ) {
         parent::__construct(
             "Request Failed: {$this->response->status} {$this->response->method} {$this->response->url}",
-            $response->status
+            $response->status,
         );
     }
 

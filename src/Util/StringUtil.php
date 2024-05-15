@@ -69,7 +69,7 @@ class StringUtil
                 random_int(0, 0x3FFF) | 0x8000,
                 random_int(0, 0xFFFF),
                 random_int(0, 0xFFFF),
-                random_int(0, 0xFFFF)
+                random_int(0, 0xFFFF),
             );
         } catch (Throwable $e) {
             throw NektriaException::new($e);

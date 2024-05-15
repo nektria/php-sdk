@@ -306,7 +306,7 @@ class Clock
             [60 * 60 * 24, 'day'],
             [60 * 60, 'hour'],
             [60, 'minute'],
-            [1, 'second']
+            [1, 'second'],
         ];
 
         $count = 0;

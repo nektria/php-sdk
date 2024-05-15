@@ -80,7 +80,7 @@ abstract class Console extends BaseCommand
             $realQuestion->setAutocompleterValues($autocomplete);
             $realQuestion->setTrimmable(true);
             $response = StringUtil::trim(
-                $helper->ask($this->input(), $this->output(), $realQuestion) ?? $default ?? ''
+                $helper->ask($this->input(), $this->output(), $realQuestion) ?? $default ?? '',
             );
 
             $valid = true;
@@ -294,7 +294,7 @@ abstract class Console extends BaseCommand
                 'COMMAND',
                 $this->getName() ?? '',
                 [
-                    'args' => $_SERVER['argv']
+                    'args' => $_SERVER['argv'],
                 ],
                 new ThrowableDocument($e),
             );

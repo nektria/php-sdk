@@ -69,7 +69,7 @@ class CompassClient
         return $this->requestClient->get(
             "{$this->compassHost}/api/admin/addresses/coordinates",
             data: $address,
-            headers: $this->getHeaders()
+            headers: $this->getHeaders(),
         )->json();
     }
 
@@ -90,7 +90,7 @@ class CompassClient
                 'wayPoints' => implode('|', $list),
                 'travelMode' => $travelMode,
             ],
-            headers: $this->getHeaders()
+            headers: $this->getHeaders(),
         )->json();
     }
 
@@ -109,7 +109,7 @@ class CompassClient
                 'travelMode' => $travelMode,
                 'type' => $type,
             ],
-            headers: $this->getHeaders()
+            headers: $this->getHeaders(),
         )->json();
     }
 
@@ -137,7 +137,7 @@ class CompassClient
         $this->requestClient->put(
             "{$this->compassHost}/api/admin/addresses",
             data: $address,
-            headers: $this->getHeaders()
+            headers: $this->getHeaders(),
         );
     }
 

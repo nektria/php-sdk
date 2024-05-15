@@ -60,7 +60,7 @@ class SharedTenantCache extends SharedRedisCache
         return new Tenant(
             $data['id'],
             $data['name'],
-            new TenantMetadata($data['metadata'])
+            new TenantMetadata($data['metadata']),
         );
     }
 
@@ -71,9 +71,9 @@ class SharedTenantCache extends SharedRedisCache
             [
                 'id' => $tenant->id,
                 'name' => $tenant->name,
-                'metadata' => $tenant->metadata->toArray()
+                'metadata' => $tenant->metadata->toArray(),
             ],
-            1209600
+            1209600,
         );
     }
 }

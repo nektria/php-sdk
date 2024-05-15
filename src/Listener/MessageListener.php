@@ -100,8 +100,8 @@ abstract class MessageListener implements EventSubscriberInterface
                         retryOptions: [
                             'currentTry' => $nextTry,
                             'maxTries' => $retryStamp->maxRetries,
-                            'interval' => $retryStamp->intervalMs
-                        ]
+                            'interval' => $retryStamp->intervalMs,
+                        ],
                     );
                 } elseif ($message instanceof Event) {
                     $this->bus->dispatchEvent($message);
@@ -152,8 +152,8 @@ abstract class MessageListener implements EventSubscriberInterface
                     'requestUrl' => "/{$messageClass}/{$message->ref()}/{$try}",
                     'requestMethod' => 'QUEUE',
                     'status' => 500,
-                    'latency' => max(0.001, round(microtime(true) - $this->executionTime, 3)) . 's'
-                ]
+                    'latency' => max(0.001, round(microtime(true) - $this->executionTime, 3)) . 's',
+                ],
             ]);
 
             $tenantName = $this->userService->user()?->tenant->name ?? 'none';
@@ -162,7 +162,7 @@ abstract class MessageListener implements EventSubscriberInterface
             $key2 = "{$tenantName}-messenger-{$classHash}_t{$try}_count";
             if ($this->contextService->env() === ContextService::DEV || $this->variableCache->refreshKey($key)) {
                 $ignoreMessages = [
-                    'Redelivered message from AMQP detected that will be rejected and trigger the retry logic.'
+                    'Redelivered message from AMQP detected that will be rejected and trigger the retry logic.',
                 ];
 
                 $times = $this->variableCache->readInt($key2, 1);
@@ -181,7 +181,7 @@ abstract class MessageListener implements EventSubscriberInterface
                             $data,
                             $exception,
                             $times,
-                            $try > 1 ? AlertService::FLAG_SUPPRESS_NOTIFICATIONS : null
+                            $try > 1 ? AlertService::FLAG_SUPPRESS_NOTIFICATIONS : null,
                         );
                     }
                 }
@@ -243,8 +243,8 @@ abstract class MessageListener implements EventSubscriberInterface
                     'requestUrl' => $resume,
                     'requestMethod' => 'QUEUE',
                     'status' => 200,
-                    'latency' => $time
-                ]
+                    'latency' => $time,
+                ],
             ], $resume);
 
             $this->userService->clearAuthentication();
@@ -285,7 +285,7 @@ abstract class MessageListener implements EventSubscriberInterface
                 'RABBIT',
                 '',
                 [],
-                new ThrowableDocument($e)
+                new ThrowableDocument($e),
             );
         }
     }

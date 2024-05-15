@@ -22,7 +22,7 @@ class DocumentResponse extends JsonResponse
             )
         ) {
             parent::__construct([
-                'list' => $document->toArray($context)
+                'list' => $document->toArray($context),
             ], $status);
         } else {
             parent::__construct($document->toArray($context), $status);

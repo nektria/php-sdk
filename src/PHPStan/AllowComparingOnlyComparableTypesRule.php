@@ -83,14 +83,14 @@ class AllowComparingOnlyComparableTypesRule implements Rule
         if (!$this->isComparable($leftType) || !$this->isComparable($rightType)) {
             return [RuleErrorBuilder::message(
                 "Comparison {$leftTypeDescribed} {$node->getOperatorSigil()} {$rightTypeDescribed} contains " .
-                'non-comparable type, only int|float|string|DateTimeInterface is allowed.'
+                'non-comparable type, only int|float|string|DateTimeInterface is allowed.',
             )->identifier('nektria.comparation')->build()];
         }
 
         if (!$this->isComparableTogether($leftType, $rightType)) {
             return [RuleErrorBuilder::message(
                 "Cannot compare different types in {$leftTypeDescribed} {$node->getOperatorSigil()} " .
-                "{$rightTypeDescribed}."
+                "{$rightTypeDescribed}.",
             )->identifier('nektria.comparation')->build()];
         }
 
@@ -144,15 +144,15 @@ class AllowComparingOnlyComparableTypesRule implements Rule
 
         return ($this->containsOnlyTypes($leftType, [$intType, $floatType]) && $this->containsOnlyTypes(
             $rightType,
-            [$intType, $floatType]
+            [$intType, $floatType],
         ))
             || ($this->containsOnlyTypes($leftType, [$stringType]) && $this->containsOnlyTypes(
                 $rightType,
-                [$stringType]
+                [$stringType],
             ))
             || ($this->containsOnlyTypes($leftType, [$dateTimeType]) && $this->containsOnlyTypes(
                 $rightType,
-                [$dateTimeType]
+                [$dateTimeType],
             ));
     }
 }

@@ -24,14 +24,14 @@ class Tenant implements Document
             return [
                 'id' => $this->id,
                 'name' => $this->name,
-                'metadata' => $this->metadata->toArray()
+                'metadata' => $this->metadata->toArray(),
             ];
         }
 
         return [
             'id' => $this->id,
             'name' => $this->name,
-            'availableTags' => $this->metadata->availableTags()
+            'availableTags' => $this->metadata->availableTags(),
         ];
     }
 }

@@ -74,7 +74,7 @@ class ThrowableDocument implements Document
         }
 
         $data = [
-            'message' => $message
+            'message' => $message,
         ];
 
         if ($context->isPlayEnvironment()) {
@@ -100,7 +100,7 @@ class ThrowableDocument implements Document
         }
 
         $data = [
-            'message' => $message
+            'message' => $message,
         ];
 
         $data['file'] = str_replace('/app/', '', $exception->getFile());

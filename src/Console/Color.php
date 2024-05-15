@@ -74,8 +74,8 @@ final class Color
                     sprintf(
                         'Invalid option specified: "%s". Expected one of (%s).',
                         $option,
-                        implode(', ', array_keys(self::AVAILABLE_OPTIONS))
-                    )
+                        implode(', ', array_keys(self::AVAILABLE_OPTIONS)),
+                    ),
                 );
             }
 
@@ -195,8 +195,8 @@ final class Color
             sprintf(
                 'Invalid "%s" color; expected one of (%s).',
                 $color,
-                implode(', ', array_merge(array_keys(self::COLORS), array_keys(self::BRIGHT_COLORS)))
-            )
+                implode(', ', array_merge(array_keys(self::COLORS), array_keys(self::BRIGHT_COLORS))),
+            ),
         );
     }
 }

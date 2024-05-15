@@ -84,7 +84,7 @@ class RoleManager
             self::ROLE_MARKETING,
         ],
         self::ROLE_WAREHOUSE_SUPERVISOR => [self::ROLE_GRID_VIEWER],
-        self::ROLE_MARKETING => []
+        self::ROLE_MARKETING => [],
     ];
 
     /**

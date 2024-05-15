@@ -105,7 +105,7 @@ class LogService
                     'env' => $this->contextService->env(),
                     'tenant' => $this->contextService->tenantId(),
                 ],
-                'logging.googleapis.com/trace_sampled' => false
+                'logging.googleapis.com/trace_sampled' => false,
             ];
 
             $data['logging.googleapis.com/trace'] = $this->contextService->traceId();
@@ -173,7 +173,7 @@ class LogService
                     'tenant' => $log['tenantId'],
                 ],
                 'logging.googleapis.com/trace' => $this->contextService->traceId(),
-                'logging.googleapis.com/trace_sampled' => false
+                'logging.googleapis.com/trace_sampled' => false,
             ];
 
             $data = array_merge($log['payload'], $data);
@@ -213,7 +213,7 @@ class LogService
                 'tenant' => $this->contextService->tenantId(),
             ],
             'logging.googleapis.com/trace' => $this->contextService->traceId(),
-            'logging.googleapis.com/trace_sampled' => false
+            'logging.googleapis.com/trace_sampled' => false,
         ];
 
         return array_merge($payload, $data);

@@ -62,8 +62,8 @@ class Bus implements BusInterface
         $stamps = [
             new ContextStamp(
                 $this->contextService->traceId(),
-                $this->contextService->tenantId()
-            )
+                $this->contextService->tenantId(),
+            ),
         ];
 
         if ($transport !== null) {
@@ -75,13 +75,13 @@ class Bus implements BusInterface
                 $stamps[] = new RetryStamp(
                     max(1, $retryOptions['currentTry']),
                     min(10, $retryOptions['maxTries']),
-                    min(10_000, $retryOptions['interval'])
+                    min(10_000, $retryOptions['interval']),
                 );
             } else {
                 $stamps[] = new RetryStamp(
                     max(1, $retryOptions['currentTry']),
                     $retryOptions['maxTries'],
-                    $retryOptions['interval']
+                    $retryOptions['interval'],
                 );
             }
         }
@@ -123,7 +123,7 @@ class Bus implements BusInterface
                 new ContextStamp(
                     $this->contextService->traceId(),
                     $this->contextService->tenantId(),
-                )
+                ),
             ]);
         } catch (HandlerFailedException $e) {
             $previous = $e->getPrevious();
@@ -150,7 +150,7 @@ class Bus implements BusInterface
                 new ContextStamp(
                     $this->contextService->traceId(),
                     $this->contextService->tenantId(),
-                )
+                ),
             ])->last(HandledStamp::class);
 
             if ($result === null) {

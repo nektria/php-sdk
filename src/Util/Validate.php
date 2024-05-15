@@ -68,7 +68,7 @@ class Validate
     {
         if (filter_var($value, FILTER_VALIDATE_EMAIL) === false) {
             throw new InvalidArgumentException(
-                "Invalid email '{$value}'."
+                "Invalid email '{$value}'.",
             );
         }
     }
@@ -101,7 +101,7 @@ class Validate
         $fixedDocNumber = strtoupper($docNumber);
         $isValidFormat = self::respectsDocPattern(
             $fixedDocNumber,
-            '/^[XYZT][0-9][0-9][0-9][0-9][0-9][0-9][0-9][A-Z0-9]/'
+            '/^[XYZT][0-9][0-9][0-9][0-9][0-9][0-9][0-9][A-Z0-9]/',
         );
 
         if ($isValidFormat) {
@@ -126,7 +126,7 @@ class Validate
         $writtenDigit = strtoupper($docNumber[strlen($docNumber) - 1]);
         $isValidFormat = self::respectsDocPattern(
             $fixedDocNumber,
-            '/^[KLM0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][a-zA-Z0-9]/'
+            '/^[KLM0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][a-zA-Z0-9]/',
         );
 
         if ($isValidFormat) {
@@ -165,7 +165,7 @@ class Validate
     {
         if (strlen($value) > $length) {
             throw new InvalidArgumentException(
-                "Invalid string '{$value}', must be as maximum {$length} characters long."
+                "Invalid string '{$value}', must be as maximum {$length} characters long.",
             );
         }
     }
@@ -184,7 +184,7 @@ class Validate
     {
         if (strlen($value) < $length) {
             throw new InvalidArgumentException(
-                "Invalid string '{$value}', must be be at least {$length} characters long."
+                "Invalid string '{$value}', must be be at least {$length} characters long.",
             );
         }
     }
@@ -289,7 +289,7 @@ class Validate
 
         $isValid = self::respectsDocPattern(
             $fixedDocNumber,
-            '/^[KLM0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][a-zA-Z0-9]/'
+            '/^[KLM0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][a-zA-Z0-9]/',
         );
 
         if ($isValid) {

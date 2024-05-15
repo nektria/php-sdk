@@ -99,7 +99,7 @@ class AlertService
                 'bugs' => '1221173694878060635',
                 'pickingshifts' => '1221387354246221874',
                 'configurations' => '1223608760287760545',
-                'debug' => '1235335765550956654'
+                'debug' => '1235335765550956654',
             ],
             'qa' => [
                 'operations' => '1221387486320787518',
@@ -107,7 +107,7 @@ class AlertService
                 'bugs' => '1221173866131623966',
                 'pickingshifts' => '1221387520726663208',
                 'configurations' => '1223608835256750293',
-                'debug' => '1235335567089209404'
+                'debug' => '1235335567089209404',
             ],
             'staging' => [
                 'operations' => '1221387600485417000',
@@ -115,7 +115,7 @@ class AlertService
                 'bugs' => '1221173888751239198',
                 'pickingshifts' => '1221387636548309183',
                 'configurations' => '1223609089490292796',
-                'debug' => '1235335500974264350'
+                'debug' => '1235335500974264350',
             ],
             'prod' => [
                 'operations' => '1221221066450669678',
@@ -124,7 +124,7 @@ class AlertService
                 'pickingshifts' => '1221221171161468959',
                 'configurations' => '1223571661421412352',
                 'debug' => '1235335372506923068',
-            ]
+            ],
         ];
     }
 
@@ -203,7 +203,7 @@ class AlertService
 
                 $this->makeRequest($channel, [
                     'content' => $content,
-                    'flags' => $flags
+                    'flags' => $flags,
                 ]);
             } catch (Throwable) {
             }
@@ -290,7 +290,7 @@ class AlertService
 
         try {
             $this->makeRequest(self::CHANNEL_BUGS, [
-                'content' => $content
+                'content' => $content,
             ]);
         } catch (Throwable) {
             $content = self::EMPTY_LINE .
@@ -304,7 +304,7 @@ class AlertService
 
             $this->makeRequest(self::CHANNEL_BUGS, [
                 'content' => $content,
-                'flags' => $flags
+                'flags' => $flags,
             ]);
         }
     }
@@ -323,14 +323,14 @@ class AlertService
         if (count($embeds) > 0) {
             $embeds = [
                 [
-                    'fields' => $embeds
-                ]
+                    'fields' => $embeds,
+                ],
             ];
         }
 
         $this->debugMessage([
             'content' => $message,
-            'embeds' => $embeds
+            'embeds' => $embeds,
         ], $flags);
     }
 
@@ -349,14 +349,14 @@ class AlertService
         if (count($embeds) > 0) {
             $embeds = [
                 [
-                    'fields' => $embeds
-                ]
+                    'fields' => $embeds,
+                ],
             ];
         }
 
         $this->sendMessage($channel, [
             'content' => $message,
-            'embeds' => $embeds
+            'embeds' => $embeds,
         ], $flags);
     }
 
@@ -376,8 +376,8 @@ class AlertService
             "https://discord.com/api/channels/{$channelId}/messages",
             $message,
             [
-                'Authorization' => "Bot {$token}"
-            ]
+                'Authorization' => "Bot {$token}",
+            ],
         );
         $this->sharedDiscordCache->removeLastMessage($channel);
     }
@@ -390,7 +390,7 @@ class AlertService
             'updates',
             'pickingshifts',
             'configurations',
-            'debug'
+            'debug',
         ];
 
         if (!in_array($channelId, $defaultChannels, true)) {

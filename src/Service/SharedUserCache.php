@@ -89,14 +89,14 @@ class SharedUserCache extends SharedRedisCache
             $this->setItem(
                 $user->id,
                 $data,
-                1209600
+                1209600,
             );
         }
 
         $this->setItem(
             $key,
             $data,
-            1209600
+            1209600,
         );
     }
 }

@@ -11,7 +11,7 @@ class ResourceNotFoundException extends NektriaRuntimeException
         parent::__construct(
             $ref === null
                 ? "{$resourceType} not found."
-                : "{$resourceType} '{$ref}' not found."
+                : "{$resourceType} '{$ref}' not found.",
         );
     }
 }

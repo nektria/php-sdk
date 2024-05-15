@@ -7,6 +7,7 @@ namespace Nektria\Util;
 class ValidateEach
 {
     // dates
+
     /**
      * @param string[] $values
      */

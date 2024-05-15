@@ -63,7 +63,7 @@ class RouteManagerClient
     {
         return $this->requestClient->get(
             "{$this->routeManagerHost}/api/admin/warehouses/{$id}",
-            headers: $this->getHeaders()
+            headers: $this->getHeaders(),
         )->json();
     }
 

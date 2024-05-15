@@ -79,7 +79,7 @@ abstract class RequestListener implements EventSubscriberInterface
             KernelEvents::TERMINATE => 'onKernelTerminate',
             KernelEvents::RESPONSE => ['onKernelResponse', 4096],
             KernelEvents::EXCEPTION => ['onKernelException', 4096],
-            KernelEvents::CONTROLLER => ['onKernelController', 4096]
+            KernelEvents::CONTROLLER => ['onKernelController', 4096],
         ];
     }
 
@@ -178,7 +178,7 @@ abstract class RequestListener implements EventSubscriberInterface
         $event->setResponse(new DocumentResponse(
             $document,
             $this->contextService,
-            $document->status
+            $document->status,
         ));
 
         $this->setHeaders($event);
@@ -211,13 +211,13 @@ abstract class RequestListener implements EventSubscriberInterface
         if ($response instanceof DocumentResponse && $response->document instanceof FileDocument) {
             $this->originalResponse = $response;
             $fileResponse = new BinaryFileResponse(
-                $response->document->file
+                $response->document->file,
             );
             $fileResponse->deleteFileAfterSend();
             $fileResponse->headers->set('Content-Type', $response->document->mime);
             $fileResponse->setContentDisposition(
                 ResponseHeaderBag::DISPOSITION_ATTACHMENT,
-                $response->document->filename
+                $response->document->filename,
             );
             $event->setResponse($fileResponse);
         }
@@ -353,8 +353,8 @@ abstract class RequestListener implements EventSubscriberInterface
                             'requestMethod' => $event->getRequest()->getMethod(),
                             'requestUrl' => $path,
                             'status' => ($this->originalResponse ?? $event->getResponse())->getStatusCode(),
-                            'latency' => round($this->executionTime, 3) . 's'
-                        ]
+                            'latency' => round($this->executionTime, 3) . 's',
+                        ],
                     ], $resume);
                 } else {
                     $this->logService->info([
@@ -369,8 +369,8 @@ abstract class RequestListener implements EventSubscriberInterface
                             'requestMethod' => $event->getRequest()->getMethod(),
                             'requestUrl' => $path,
                             'status' => ($this->originalResponse ?? $event->getResponse())->getStatusCode(),
-                            'latency' => round($this->executionTime, 3) . 's'
-                        ]
+                            'latency' => round($this->executionTime, 3) . 's',
+                        ],
                     ], $resume);
                 }
             } elseif ($status < 500) {
@@ -385,8 +385,8 @@ abstract class RequestListener implements EventSubscriberInterface
                         'requestMethod' => $event->getRequest()->getMethod(),
                         'requestUrl' => $path,
                         'status' => ($this->originalResponse ?? $event->getResponse())->getStatusCode(),
-                        'latency' => round($this->executionTime, 3) . 's'
-                    ]
+                        'latency' => round($this->executionTime, 3) . 's',
+                    ],
                 ], $resume);
             } else {
                 $this->logService->temporalLogs();
@@ -401,8 +401,8 @@ abstract class RequestListener implements EventSubscriberInterface
                         'requestMethod' => $event->getRequest()->getMethod(),
                         'requestUrl' => $path,
                         'status' => ($this->originalResponse ?? $event->getResponse())->getStatusCode(),
-                        'latency' => round($this->executionTime, 3) . 's'
-                    ]
+                        'latency' => round($this->executionTime, 3) . 's',
+                    ],
                 ], $resume);
             }
         }
@@ -428,7 +428,7 @@ abstract class RequestListener implements EventSubscriberInterface
                         $path,
                         $requestContent,
                         $document,
-                        $times
+                        $times,
                     );
                     $this->variableCache->saveInt($key2, 0);
                 } else {
@@ -487,7 +487,7 @@ abstract class RequestListener implements EventSubscriberInterface
                 'Accept', 'Accept-Encoding', 'Accept-Language', 'Access-Control-Request-Headers',
                 'Access-Control-Request-Method', 'Connection', 'Content-Length', 'Content-Type', 'Host', 'Origin',
                 'Referer', 'User-Agent', 'X-Authorization', 'X-Api-Id', 'X-Nektria-App', 'Cross-Origin-Embedder-Policy',
-                'Cross-Origin-Opener-Policy', 'X-Tenant', 'X-Api-Version', 'X-Origin'
+                'Cross-Origin-Opener-Policy', 'X-Tenant', 'X-Api-Version', 'X-Origin',
             ]));
         }
     }

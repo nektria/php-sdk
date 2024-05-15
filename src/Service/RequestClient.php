@@ -134,7 +134,7 @@ class RequestClient
             $response = $this->client->request(
                 $method,
                 $url,
-                $options
+                $options,
             );
 
             $content = $response->getContent(false);
@@ -147,7 +147,7 @@ class RequestClient
                 $status,
                 $content,
                 $headers,
-                $respHeaders
+                $respHeaders,
             );
         } catch (Throwable $e) {
             throw NektriaException::new($e);

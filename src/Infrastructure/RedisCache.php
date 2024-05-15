@@ -74,7 +74,7 @@ abstract class RedisCache
                 $parts['host'] ?? 'localhost',
                 $parts['port'] ?? 6379,
                 0,
-                (string) getenv('HOSTNAME')
+                (string) getenv('HOSTNAME'),
             );
 
             if (isset($parts['pass'])) {
