@@ -174,6 +174,17 @@ class YieldManagerClient
     }
 
     /**
+     * @return YMOrder
+     */
+    public function getOrder(string $orderNumber): array
+    {
+        return $this->requestClient->get(
+            "{$this->yieldManagerHost}/api/admin/orders/{$orderNumber}",
+            headers: $this->getHeaders(),
+        )->json();
+    }
+
+    /**
      * @return YMOrder[]
      */
     public function getOrdersFromWarehouseAndDate(string $warehouseId, Clock $date): array
