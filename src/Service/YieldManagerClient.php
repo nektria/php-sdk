@@ -7,6 +7,45 @@ namespace Nektria\Service;
 use Nektria\Dto\Clock;
 
 /**
+ * @phpstan-type YMTimeWindow array{
+ *     areas: string,
+ *     children: string[],
+ *     createdAt: string,
+ *     id: string,
+ *     multiplier: int,
+ *     name: string,
+ *     nextConnectivityTime: int,
+ *     orderCount: int,
+ *     parent: string|null,
+ *     previousConnectivityTime: int,
+ *     price: int,
+ *     secondaryAreas: string[],
+ *     shiftId: string,
+ *     status: string,
+ *     tags: string[],
+ *     timeCapacity: int,
+ *     timeOrderRestrictions: array{
+ *         maxCapacity: number,
+ *         threshold: number,
+ *     }[],
+ *     timeRange: array{
+ *         endTime: string,
+ *         startTime: string,
+ *     },
+ *     updatedAt: string,
+ *     usedTimeCapacity: int,
+ *     zone: array{
+ *         enabled: bool,
+ *         createdAt: string,
+ *         id: string,
+ *         name: string,
+ *         points: array<array<float>>,
+ *         tenantId: string,
+ *         updatedAt: string,
+ *         warehouseId: string,
+ *     }|null,
+ * }
+ *
  * @phpstan-type YMWarehouse array{
  *     address: YMAddress,
  *     applyIncentives: bool,
@@ -101,6 +140,7 @@ use Nektria\Dto\Clock;
  *     showInMap: bool,
  *     status: string,
  *     tags: string[],
+ *     timeWindows: YMTimeWindow[],
  *     updatedAt: string,
  *     usedWeightCapacity: int,
  *     warehouseId: string,
