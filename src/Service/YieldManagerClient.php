@@ -233,17 +233,17 @@ class YieldManagerClient
 
     public function saveExpressOrder(
         string $orderNumber,
-        ?string $shopperCode,
-        int $weight,
-        int $productLines,
-        string $addressLine1,
-        ?string $addressLine2,
-        string $postalCode,
-        string $city,
-        string $countryCode,
-        ?bool $elevator,
-        float $latitude,
-        float $longitude
+        ?string $shopperCode = null,
+        ?int $weight = null,
+        ?int $productLines = null,
+        ?string $addressLine1 = null,
+        ?string $addressLine2 = null,
+        ?string $postalCode = null,
+        ?string $city = null,
+        ?string $countryCode = null,
+        ?bool $elevator = null,
+        ?float $latitude = null,
+        ?float $longitude = null
     ): void {
         $this->requestClient->put(
             "{$this->yieldManagerHost}/api/admin/express-orders/{$orderNumber}",
