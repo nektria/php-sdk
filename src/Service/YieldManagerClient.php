@@ -11,6 +11,7 @@ use Nektria\Dto\Clock;
  *     address: YMAddress,
  *     applyIncentives: bool,
  *     areas: string[],
+ *     createdAt: string,
  *     dailyInfo: array{
  *         countdownCutoff: string|null,
  *         countdownMaxOrders: int|null,
@@ -51,22 +52,23 @@ use Nektria\Dto\Clock;
  * @phpstan-type YMShift array{
  *     applySecondaryAreas: bool,
  *     areas: string[],
- *     id: string,
  *     color: string,
- *     showInMap: bool,
  *     createdAt: string,
  *     cutoff: string,
- *     localCutoff: string,
  *     date: string,
+ *     id: string,
+ *     localCutoff: string,
  *     name: string,
+ *     nonComplementaryOrders: int,
+ *     orders: int,
  *     penalty: int,
+ *     showInMap: bool,
  *     status: string,
  *     tags: string[],
+ *     updatedAt: string,
  *     usedWeightCapacity: int,
  *     warehouseId: string,
  *     weightCapacity: int,
- *     orders: int,
- *     nonComplementaryOrders: int
  * }
  *
  * @phpstan-type YMOrder array{
@@ -105,12 +107,12 @@ use Nektria\Dto\Clock;
  *     addressLine2: string,
  *     city: string,
  *     countryCode: string,
+ *     createdAt: string,
  *     elevator: ?bool,
  *     latitude: float,
  *     longitude: float,
  *     postalCode: string,
- *     createdAt: string,
- *     updatedAt: string
+ *     updatedAt: string,
  * }
  *
  * @phpstan-type YMExpressOrder array{
