@@ -12,36 +12,6 @@ use Doctrine\DBAL\Types\JsonType as DoctrineJsonType;
  */
 abstract class JsonType extends DoctrineJsonType
 {
-    abstract protected function getTypeName(): string;
-
-    /**
-     * @return T
-     */
-    abstract protected function convertToPhp(string $databaseValue);
-
-    /**
-     * @param T $phpValue
-     */
-    abstract protected function convertToDatabase($phpValue): string;
-
-    public function getName(): string
-    {
-        return $this->getTypeName();
-    }
-
-    public function requiresSQLCommentHint(AbstractPlatform $platform): bool
-    {
-        return true;
-    }
-
-    /**
-     * @param mixed[] $column
-     */
-    public function getSQLDeclaration(array $column, AbstractPlatform $platform): string
-    {
-        return 'JSONB';
-    }
-
     /**
      * @param T|null $value
      * @return ($value is null ? null : string)
@@ -67,4 +37,34 @@ abstract class JsonType extends DoctrineJsonType
 
         return $this->convertToPhp($value);
     }
+
+    public function getName(): string
+    {
+        return $this->getTypeName();
+    }
+
+    /**
+     * @param mixed[] $column
+     */
+    public function getSQLDeclaration(array $column, AbstractPlatform $platform): string
+    {
+        return 'JSONB';
+    }
+
+    public function requiresSQLCommentHint(AbstractPlatform $platform): bool
+    {
+        return true;
+    }
+
+    /**
+     * @param T $phpValue
+     */
+    abstract protected function convertToDatabase($phpValue): string;
+
+    /**
+     * @return T
+     */
+    abstract protected function convertToPhp(string $databaseValue);
+
+    abstract protected function getTypeName(): string;
 }

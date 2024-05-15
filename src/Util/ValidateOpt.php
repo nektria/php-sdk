@@ -8,84 +8,19 @@ class ValidateOpt
 {
     // dates
 
-    public static function date(?string $date): void
+    public static function color(?string $value): void
     {
-        if ($date !== null) {
-            Validate::date($date);
+        if ($value !== null) {
+            Validate::color($value);
         }
     }
 
     // numbers
 
-    public static function naturalNumber(int | float | null $number): void
+    public static function date(?string $date): void
     {
-        if ($number !== null) {
-            Validate::naturalNumber($number);
-        }
-    }
-
-    public static function greaterThan(int | float | null $number, int | float $limit): void
-    {
-        if ($number !== null) {
-            Validate::greaterThan($number, $limit);
-        }
-    }
-
-    public static function lessThan(int | float | null $number, int | float $limit): void
-    {
-        if ($number !== null) {
-            Validate::lessThan($number, $limit);
-        }
-    }
-
-    public static function percentileNumber(int | float | null $number): void
-    {
-        if ($number !== null) {
-            Validate::percentileNumber($number);
-        }
-    }
-
-    // Strings
-
-    public static function notEmpty(?string $value): void
-    {
-        if ($value !== null) {
-            Validate::notEmpty($value);
-        }
-    }
-
-    public static function regexp(?string $value, string $regexp): void
-    {
-        if ($value !== null) {
-            Validate::regexp($value, $regexp);
-        }
-    }
-
-    public static function minLength(?string $value, int $length): void
-    {
-        if ($value !== null) {
-            Validate::minLength($value, $length);
-        }
-    }
-
-    public static function maxLength(?string $value, int $length): void
-    {
-        if ($value !== null) {
-            Validate::maxLength($value, $length);
-        }
-    }
-
-    public static function email(?string $value): void
-    {
-        if ($value !== null) {
-            Validate::email($value);
-        }
-    }
-
-    public static function uuid4(?string $value): void
-    {
-        if ($value !== null) {
-            Validate::uuid4($value);
+        if ($date !== null) {
+            Validate::date($date);
         }
     }
 
@@ -96,21 +31,21 @@ class ValidateOpt
         }
     }
 
-    // coordinates
-
-    public static function latitude(?float $value): void
+    public static function email(?string $value): void
     {
         if ($value !== null) {
-            Validate::latitude($value);
+            Validate::email($value);
         }
     }
 
-    public static function longitude(?float $value): void
+    public static function greaterThan(int | float | null $number, int | float $limit): void
     {
-        if ($value !== null) {
-            Validate::longitude($value);
+        if ($number !== null) {
+            Validate::greaterThan($number, $limit);
         }
     }
+
+    // Strings
 
     /**
      * @param string[] $validValues
@@ -122,10 +57,78 @@ class ValidateOpt
         }
     }
 
-    public static function color(?string $value): void
+    public static function latitude(?float $value): void
     {
         if ($value !== null) {
-            Validate::color($value);
+            Validate::latitude($value);
+        }
+    }
+
+    public static function lessThan(int | float | null $number, int | float $limit): void
+    {
+        if ($number !== null) {
+            Validate::lessThan($number, $limit);
+        }
+    }
+
+    public static function longitude(?float $value): void
+    {
+        if ($value !== null) {
+            Validate::longitude($value);
+        }
+    }
+
+    public static function maxLength(?string $value, int $length): void
+    {
+        if ($value !== null) {
+            Validate::maxLength($value, $length);
+        }
+    }
+
+    /**
+     * @param mixed[]|null $list
+     */
+    public static function minArrayLength(?array $list, int $length): void
+    {
+        if ($list !== null) {
+            Validate::minArrayLength($list, $length);
+        }
+    }
+
+    public static function minLength(?string $value, int $length): void
+    {
+        if ($value !== null) {
+            Validate::minLength($value, $length);
+        }
+    }
+
+    // coordinates
+
+    public static function naturalNumber(int | float | null $number): void
+    {
+        if ($number !== null) {
+            Validate::naturalNumber($number);
+        }
+    }
+
+    public static function notEmpty(?string $value): void
+    {
+        if ($value !== null) {
+            Validate::notEmpty($value);
+        }
+    }
+
+    public static function percentileNumber(int | float | null $number): void
+    {
+        if ($number !== null) {
+            Validate::percentileNumber($number);
+        }
+    }
+
+    public static function regexp(?string $value, string $regexp): void
+    {
+        if ($value !== null) {
+            Validate::regexp($value, $regexp);
         }
     }
 
@@ -140,13 +143,10 @@ class ValidateOpt
 
     // array
 
-    /**
-     * @param mixed[]|null $list
-     */
-    public static function minArrayLength(?array $list, int $length): void
+    public static function uuid4(?string $value): void
     {
-        if ($list !== null) {
-            Validate::minArrayLength($list, $length);
+        if ($value !== null) {
+            Validate::uuid4($value);
         }
     }
 }

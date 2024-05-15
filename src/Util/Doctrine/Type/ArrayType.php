@@ -11,9 +11,12 @@ use Nektria\Util\JsonUtil;
  */
 class ArrayType extends JsonType
 {
-    protected function getTypeName(): string
+    /**
+     * @param array<mixed> $phpValue
+     */
+    protected function convertToDatabase($phpValue): string
     {
-        return 'array_item';
+        return JsonUtil::encode($phpValue);
     }
 
     /**
@@ -24,11 +27,8 @@ class ArrayType extends JsonType
         return JsonUtil::decode($databaseValue);
     }
 
-    /**
-     * @param array<mixed> $phpValue
-     */
-    protected function convertToDatabase($phpValue): string
+    protected function getTypeName(): string
     {
-        return JsonUtil::encode($phpValue);
+        return 'array_item';
     }
 }

@@ -10,12 +10,12 @@ use Nektria\Util\StringUtil;
 
 abstract class Entity implements EntityInterface
 {
+    #[ORM\Column(type: 'clock')]
+    protected Clock $createdAt;
+
     #[ORM\Id]
     #[ORM\Column(type: 'guid')]
     protected string $id;
-
-    #[ORM\Column(type: 'clock')]
-    protected Clock $createdAt;
 
     #[ORM\Column(type: 'clock')]
     protected Clock $updatedAt;
@@ -27,23 +27,23 @@ abstract class Entity implements EntityInterface
         $this->updatedAt = $this->createdAt;
     }
 
-    public function id(): string
-    {
-        return $this->id;
-    }
-
     public function createdAt(): Clock
     {
         return $this->createdAt;
     }
 
-    public function updatedAt(): Clock
+    public function id(): string
     {
-        return $this->updatedAt;
+        return $this->id;
     }
 
     public function refresh(): void
     {
         $this->updatedAt = Clock::now();
+    }
+
+    public function updatedAt(): Clock
+    {
+        return $this->updatedAt;
     }
 }

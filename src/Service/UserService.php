@@ -21,16 +21,23 @@ class UserService implements UserServiceInterface
         $this->user = null;
     }
 
-    /**
-     * @param string[] $roles
-     */
-    public function validateRole(array $roles): void
+    public function authenticateApi(string $apiKey): void
     {
-        if ($this->user === null) {
-            $this->roleManager->checkAtLeast(RoleManager::ROLE_ANY, $roles);
-        } else {
-            $this->roleManager->checkAtLeast($this->user->role, $roles);
+        $this->clearAuthentication();
+
+        $user = $this->sharedUserCache->read("API_{$apiKey}");
+        if ($user === null) {
+            $user = $this->sharedUserCache->read($apiKey);
         }
+
+        $this->user = $user;
+
+        if ($user === null) {
+            throw new InvalidAuthorizationException();
+        }
+
+        $this->contextService->setTenantId($user->tenantId);
+        $this->contextService->setUserId($user->id);
     }
 
     public function authenticateSystem(string $tenantId): void
@@ -66,35 +73,11 @@ class UserService implements UserServiceInterface
         $this->contextService->setUserId($user->id);
     }
 
-    public function authenticateApi(string $apiKey): void
-    {
-        $this->clearAuthentication();
-
-        $user = $this->sharedUserCache->read("API_{$apiKey}");
-        if ($user === null) {
-            $user = $this->sharedUserCache->read($apiKey);
-        }
-
-        $this->user = $user;
-
-        if ($user === null) {
-            throw new InvalidAuthorizationException();
-        }
-
-        $this->contextService->setTenantId($user->tenantId);
-        $this->contextService->setUserId($user->id);
-    }
-
     public function clearAuthentication(): void
     {
         $this->contextService->setTenantId(null);
         $this->contextService->setUserId(null);
         $this->user = null;
-    }
-
-    public function user(): ?User
-    {
-        return $this->user;
     }
 
     public function retrieveUser(): User
@@ -104,6 +87,23 @@ class UserService implements UserServiceInterface
         }
 
         return $this->user;
+    }
+
+    public function user(): ?User
+    {
+        return $this->user;
+    }
+
+    /**
+     * @param string[] $roles
+     */
+    public function validateRole(array $roles): void
+    {
+        if ($this->user === null) {
+            $this->roleManager->checkAtLeast(RoleManager::ROLE_ANY, $roles);
+        } else {
+            $this->roleManager->checkAtLeast($this->user->role, $roles);
+        }
     }
 
     public function retrieveTenant(): Tenant

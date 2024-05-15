@@ -25,6 +25,36 @@ abstract class InternalRedisCache extends RedisCache
         }
     }
 
+    public function empty(): void
+    {
+        try {
+            $this->init()->eval("for _,k in ipairs(redis.call('keys','{$this->fqn}:*')) do redis.call('del',k) end");
+
+            if ($this->init()->getLastError() !== null) {
+                $lastError = $this->init()->getLastError();
+                $this->init()->clearLastError();
+
+                throw new RuntimeException($lastError);
+            }
+        } catch (Throwable) {
+        }
+    }
+
+    public function fullRedisEmpty(): void
+    {
+        try {
+            $this->init()->flushDB();
+
+            if ($this->init()->getLastError() !== null) {
+                $lastError = $this->init()->getLastError();
+                $this->init()->clearLastError();
+
+                throw new RuntimeException($lastError);
+            }
+        } catch (Throwable) {
+        }
+    }
+
     /**
      * @return T|null
      */
@@ -88,29 +118,6 @@ abstract class InternalRedisCache extends RedisCache
         return $results;
     }
 
-    /**
-     * @param T $item
-     */
-    public function setItem(string $key, $item, Clock | int $ttl = 300): void
-    {
-        if ($ttl instanceof Clock) {
-            $ttl = $ttl->diff(Clock::now());
-        }
-        $ttl = max(1, $ttl);
-
-        try {
-            $this->init()->set("{$this->fqn}:{$key}", serialize($item), $ttl);
-
-            if ($this->init()->getLastError() !== null) {
-                $lastError = $this->init()->getLastError();
-                $this->init()->clearLastError();
-
-                throw new RuntimeException($lastError);
-            }
-        } catch (Throwable) {
-        }
-    }
-
     public function removeItem(string $key): void
     {
         try {
@@ -126,25 +133,18 @@ abstract class InternalRedisCache extends RedisCache
         }
     }
 
-    public function empty(): void
+    /**
+     * @param T $item
+     */
+    public function setItem(string $key, $item, Clock | int $ttl = 300): void
     {
-        try {
-            $this->init()->eval("for _,k in ipairs(redis.call('keys','{$this->fqn}:*')) do redis.call('del',k) end");
-
-            if ($this->init()->getLastError() !== null) {
-                $lastError = $this->init()->getLastError();
-                $this->init()->clearLastError();
-
-                throw new RuntimeException($lastError);
-            }
-        } catch (Throwable) {
+        if ($ttl instanceof Clock) {
+            $ttl = $ttl->diff(Clock::now());
         }
-    }
+        $ttl = max(1, $ttl);
 
-    public function fullRedisEmpty(): void
-    {
         try {
-            $this->init()->flushDB();
+            $this->init()->set("{$this->fqn}:{$key}", serialize($item), $ttl);
 
             if ($this->init()->getLastError() !== null) {
                 $lastError = $this->init()->getLastError();

@@ -45,10 +45,10 @@ abstract class RequestListener implements EventSubscriberInterface
 
     public const LOG_LEVEL_NONE = 'NONE';
 
-    private float $executionTime;
-
     /** @var string[] */
     private readonly array $allowedCors;
+
+    private float $executionTime;
 
     private ?Response $originalResponse;
 
@@ -170,9 +170,18 @@ abstract class RequestListener implements EventSubscriberInterface
         }
     }
 
-    protected function validateUser(User $user): bool
+    public function onKernelException(ExceptionEvent $event): void
     {
-        return true;
+        $this->bus->dispatchDelayedEvents();
+        $document = new ThrowableDocument($event->getThrowable());
+
+        $event->setResponse(new DocumentResponse(
+            $document,
+            $this->contextService,
+            $document->status
+        ));
+
+        $this->setHeaders($event);
     }
 
     public function onKernelRequest(RequestEvent $event): void
@@ -194,20 +203,6 @@ abstract class RequestListener implements EventSubscriberInterface
         if ($tracer !== null) {
             $this->contextService->setTraceId($tracer);
         }
-    }
-
-    public function onKernelException(ExceptionEvent $event): void
-    {
-        $this->bus->dispatchDelayedEvents();
-        $document = new ThrowableDocument($event->getThrowable());
-
-        $event->setResponse(new DocumentResponse(
-            $document,
-            $this->contextService,
-            $document->status
-        ));
-
-        $this->setHeaders($event);
     }
 
     public function onKernelResponse(ResponseEvent $event): void
@@ -444,26 +439,11 @@ abstract class RequestListener implements EventSubscriberInterface
         }
     }
 
-    private function setHeaders(RequestEvent | ResponseEvent $event): void
+    abstract protected function assignLogLevel(string $route): ?string;
+
+    protected function validateUser(User $user): bool
     {
-        $response = $event->getResponse();
-
-        if (!$this->isCorsNeeded($event)) {
-            return;
-        }
-
-        if ($response !== null) {
-            $response->headers->set('Access-Control-Allow-Origin', $event->getRequest()->server->get('HTTP_ORIGIN'));
-            $response->headers->set('Access-Control-Allow-Credentials', 'true');
-            $response->headers->set('Access-Control-Expose-Headers', 'X-Authorization,Link');
-            $response->headers->set('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS');
-            $response->headers->set('Access-Control-Allow-Headers', implode(', ', [
-                'Accept', 'Accept-Encoding', 'Accept-Language', 'Access-Control-Request-Headers',
-                'Access-Control-Request-Method', 'Connection', 'Content-Length', 'Content-Type', 'Host', 'Origin',
-                'Referer', 'User-Agent', 'X-Authorization', 'X-Api-Id', 'X-Nektria-App', 'Cross-Origin-Embedder-Policy',
-                'Cross-Origin-Opener-Policy', 'X-Tenant', 'X-Api-Version', 'X-Origin'
-            ]));
-        }
+        return true;
     }
 
     private function isCorsNeeded(RequestEvent | ResponseEvent $event): bool
@@ -490,5 +470,25 @@ abstract class RequestListener implements EventSubscriberInterface
         return $request->headers->get($header) ?? '';
     }
 
-    abstract protected function assignLogLevel(string $route): ?string;
+    private function setHeaders(RequestEvent | ResponseEvent $event): void
+    {
+        $response = $event->getResponse();
+
+        if (!$this->isCorsNeeded($event)) {
+            return;
+        }
+
+        if ($response !== null) {
+            $response->headers->set('Access-Control-Allow-Origin', $event->getRequest()->server->get('HTTP_ORIGIN'));
+            $response->headers->set('Access-Control-Allow-Credentials', 'true');
+            $response->headers->set('Access-Control-Expose-Headers', 'X-Authorization,Link');
+            $response->headers->set('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS');
+            $response->headers->set('Access-Control-Allow-Headers', implode(', ', [
+                'Accept', 'Accept-Encoding', 'Accept-Language', 'Access-Control-Request-Headers',
+                'Access-Control-Request-Method', 'Connection', 'Content-Length', 'Content-Type', 'Host', 'Origin',
+                'Referer', 'User-Agent', 'X-Authorization', 'X-Api-Id', 'X-Nektria-App', 'Cross-Origin-Embedder-Policy',
+                'Cross-Origin-Opener-Policy', 'X-Tenant', 'X-Api-Version', 'X-Origin'
+            ]));
+        }
+    }
 }

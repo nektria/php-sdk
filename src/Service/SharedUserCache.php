@@ -68,6 +68,11 @@ class SharedUserCache extends SharedRedisCache
         return $user;
     }
 
+    public function remove(string $id): void
+    {
+        $this->removeItem($id);
+    }
+
     public function save(string $key, User $user): void
     {
         $data = [
@@ -93,10 +98,5 @@ class SharedUserCache extends SharedRedisCache
             $data,
             1209600
         );
-    }
-
-    public function remove(string $id): void
-    {
-        $this->removeItem($id);
     }
 }

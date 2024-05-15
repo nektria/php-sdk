@@ -12,25 +12,25 @@ class RoleManager
 {
     public const ROLE_ADMIN = 'ROLE_ADMIN';
 
-    public const ROLE_SYSTEM = 'ROLE_SYSTEM';
-
-    public const ROLE_USER = 'ROLE_USER';
+    public const ROLE_ANY = 'ROLE_ANY';
 
     public const ROLE_API = 'ROLE_API';
 
+    public const ROLE_DRIVER = 'ROLE_DRIVER';
+
     public const ROLE_GRID_VIEWER = 'ROLE_GRID_VIEWER';
 
-    public const ROLE_DRIVER = 'ROLE_DRIVER';
+    public const ROLE_MARKETING = 'ROLE_MARKETING';
+
+    public const ROLE_SYSTEM = 'ROLE_SYSTEM';
 
     public const ROLE_TRAFFIC_CHIEF = 'ROLE_TRAFFIC_CHIEF';
 
     public const ROLE_TRAFFIC_CHIEF_EXPRESS = 'ROLE_TRAFFIC_CHIEF_EXPRESS';
 
+    public const ROLE_USER = 'ROLE_USER';
+
     public const ROLE_WAREHOUSE_SUPERVISOR = 'ROLE_WAREHOUSE_SUPERVISOR';
-
-    public const ROLE_MARKETING = 'ROLE_MARKETING';
-
-    public const ROLE_ANY = 'ROLE_ANY';
 
     private const HIERARCHY = [
         self::ROLE_SYSTEM => [
@@ -88,14 +88,6 @@ class RoleManager
     ];
 
     /**
-     * @return string[]
-     */
-    public function roles(): array
-    {
-        return array_keys(self::HIERARCHY);
-    }
-
-    /**
      * @param string[] $targetRoles
      */
     public function checkAtLeast(string $role, array $targetRoles): bool
@@ -129,5 +121,13 @@ class RoleManager
         }
 
         throw new InsufficientCredentialsException();
+    }
+
+    /**
+     * @return string[]
+     */
+    public function roles(): array
+    {
+        return array_keys(self::HIERARCHY);
     }
 }

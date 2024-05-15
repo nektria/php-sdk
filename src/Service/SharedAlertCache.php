@@ -13,14 +13,6 @@ use function count;
  */
 class SharedAlertCache extends SharedRedisCache
 {
-    /**
-     * @return string[]
-     */
-    public function read(string $channel): array
-    {
-        return $this->getItem($channel) ?? [];
-    }
-
     public function addMessage(string $channel, string $message): void
     {
         $items = $this->read($channel);
@@ -31,5 +23,13 @@ class SharedAlertCache extends SharedRedisCache
 
         $items[] = $message;
         $this->setItem($channel, $items, 3600);
+    }
+
+    /**
+     * @return string[]
+     */
+    public function read(string $channel): array
+    {
+        return $this->getItem($channel) ?? [];
     }
 }

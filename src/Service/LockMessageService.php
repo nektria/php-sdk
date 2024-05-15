@@ -23,30 +23,18 @@ class LockMessageService
     ) {
     }
 
-    private function init(): LockFactory
+    public function acquire(string $name, float $ttl = 300): void
     {
-        $this->lock ??= new LockFactory(new RedisStore(RedisAdapter::createConnection($this->redisDsn)));
-
-        return $this->lock;
+        $this->locks[$name] = $this->init()->createLock($name, $ttl);
+        if ($this->locks[$name]->isAcquired()) {
+            throw new RecoverableMessageHandlingException('');
+        }
+        $this->locks[$name]->acquire(true);
     }
 
     public function create(string $name, float $ttl = 300): LockInterface
     {
         return $this->init()->createLock($name, $ttl);
-    }
-
-    public function wait(string $name, float $ttl = 300): void
-    {
-        $realTtl = $ttl / 1000;
-        $origin = microtime(true);
-        $this->locks[$name] = $this->init()->createLock($name, $ttl);
-        while ($this->locks[$name]->isAcquired()) {
-            $timesamp = microtime(true) - $origin;
-            if ($timesamp > $realTtl) {
-                break;
-            }
-        }
-        $this->locks[$name]->acquire(true);
     }
 
     public function release(string $name): void
@@ -65,12 +53,24 @@ class LockMessageService
         }
     }
 
-    public function acquire(string $name, float $ttl = 300): void
+    public function wait(string $name, float $ttl = 300): void
     {
+        $realTtl = $ttl / 1000;
+        $origin = microtime(true);
         $this->locks[$name] = $this->init()->createLock($name, $ttl);
-        if ($this->locks[$name]->isAcquired()) {
-            throw new RecoverableMessageHandlingException('');
+        while ($this->locks[$name]->isAcquired()) {
+            $timesamp = microtime(true) - $origin;
+            if ($timesamp > $realTtl) {
+                break;
+            }
         }
         $this->locks[$name]->acquire(true);
+    }
+
+    private function init(): LockFactory
+    {
+        $this->lock ??= new LockFactory(new RedisStore(RedisAdapter::createConnection($this->redisDsn)));
+
+        return $this->lock;
     }
 }

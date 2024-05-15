@@ -9,12 +9,12 @@ use Nektria\Dto\Clock;
 
 abstract class EventEntity implements EntityInterface
 {
+    #[ORM\Column(type: 'guid')]
+    protected string $tenantId;
+
     #[ORM\Id]
     #[ORM\Column(type: 'micro_clock')]
     protected Clock $timestamp;
-
-    #[ORM\Column(type: 'guid')]
-    protected string $tenantId;
 
     public function __construct(string $tenantId)
     {
@@ -27,6 +27,10 @@ abstract class EventEntity implements EntityInterface
         return (string) $this->timestamp;
     }
 
+    public function refresh(): void
+    {
+    }
+
     public function tenantId(): string
     {
         return $this->tenantId;
@@ -35,9 +39,5 @@ abstract class EventEntity implements EntityInterface
     public function timestamp(): Clock
     {
         return $this->timestamp;
-    }
-
-    public function refresh(): void
-    {
     }
 }

@@ -13,18 +13,6 @@ class SharedVariableCache extends SharedRedisCache
 {
     public const DEFAULT = '1';
 
-    public function saveKey(string $key, int $lifetime = 300): void
-    {
-        $this->setItem($key, self::DEFAULT, $lifetime);
-    }
-
-    public function hasKey(string $key): bool
-    {
-        $value = $this->getItem($key);
-
-        return $value !== null;
-    }
-
     public function deleteKey(string $key): void
     {
         $this->removeItem($key);
@@ -38,6 +26,23 @@ class SharedVariableCache extends SharedRedisCache
 
         $this->saveKey($key, $lifetime);
         $callback();
+    }
+
+    public function hasKey(string $key): bool
+    {
+        $value = $this->getItem($key);
+
+        return $value !== null;
+    }
+
+    public function readInt(string $key, int $default = 0): int
+    {
+        return (int) ($this->getItem($key) ?? $default);
+    }
+
+    public function readString(string $key, string $default = ''): string
+    {
+        return (string) ($this->getItem($key) ?? $default);
     }
 
     public function refreshKey(string $key, int $lifetime = 300): bool
@@ -54,18 +59,13 @@ class SharedVariableCache extends SharedRedisCache
         $this->setItem($key, $value, 604800);
     }
 
-    public function readInt(string $key, int $default = 0): int
+    public function saveKey(string $key, int $lifetime = 300): void
     {
-        return (int) ($this->getItem($key) ?? $default);
+        $this->setItem($key, self::DEFAULT, $lifetime);
     }
 
     public function saveString(string $key, string $value): void
     {
         $this->setItem($key, $value, 604800);
-    }
-
-    public function readString(string $key, string $default = ''): string
-    {
-        return (string) ($this->getItem($key) ?? $default);
     }
 }

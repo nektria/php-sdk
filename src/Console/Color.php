@@ -20,16 +20,14 @@ use function strlen;
 
 final class Color
 {
-    private const COLORS = [
-        'black' => 0,
-        'red' => 1,
-        'green' => 2,
-        'yellow' => 3,
-        'blue' => 4,
-        'magenta' => 5,
-        'cyan' => 6,
-        'white' => 7,
-        'default' => 9,
+    private const AVAILABLE_OPTIONS = [
+        'bold' => ['set' => 1, 'unset' => 22],
+        'dim' => ['set' => 2, 'unset' => 22],
+        'italic' => ['set' => 3, 'unset' => 23],
+        'underscore' => ['set' => 4, 'unset' => 24],
+        'blink' => ['set' => 5, 'unset' => 25],
+        'reverse' => ['set' => 7, 'unset' => 27],
+        'conceal' => ['set' => 8, 'unset' => 28],
     ];
 
     private const BRIGHT_COLORS = [
@@ -43,19 +41,21 @@ final class Color
         'bright-white' => 7,
     ];
 
-    private const AVAILABLE_OPTIONS = [
-        'bold' => ['set' => 1, 'unset' => 22],
-        'dim' => ['set' => 2, 'unset' => 22],
-        'italic' => ['set' => 3, 'unset' => 23],
-        'underscore' => ['set' => 4, 'unset' => 24],
-        'blink' => ['set' => 5, 'unset' => 25],
-        'reverse' => ['set' => 7, 'unset' => 27],
-        'conceal' => ['set' => 8, 'unset' => 28],
+    private const COLORS = [
+        'black' => 0,
+        'red' => 1,
+        'green' => 2,
+        'yellow' => 3,
+        'blue' => 4,
+        'magenta' => 5,
+        'cyan' => 6,
+        'white' => 7,
+        'default' => 9,
     ];
 
-    private string $foreground;
-
     private string $background;
+
+    private string $foreground;
 
     /** @var array<string, array{set: int, unset:int}> */
     private array $options = [];
@@ -126,43 +126,6 @@ final class Color
         return sprintf("\033[%sm", implode(';', $unsetCodes));
     }
 
-    private function parseColor(string $color, bool $background = false): string
-    {
-        if ('' === $color) {
-            return '';
-        }
-
-        if ('#' === $color[0]) {
-            $color = substr($color, 1);
-
-            if (3 === strlen($color)) {
-                $color = $color[0] . $color[0] . $color[1] . $color[1] . $color[2] . $color[2];
-            }
-
-            if (6 !== strlen($color)) {
-                throw new InvalidArgumentException(sprintf('Invalid "%s" color.', $color));
-            }
-
-            return ($background ? '4' : '3') . $this->convertHexColorToAnsi((int) hexdec($color));
-        }
-
-        if (isset(self::COLORS[$color])) {
-            return ($background ? '4' : '3') . self::COLORS[$color];
-        }
-
-        if (isset(self::BRIGHT_COLORS[$color])) {
-            return ($background ? '10' : '9') . self::BRIGHT_COLORS[$color];
-        }
-
-        throw new InvalidArgumentException(
-            sprintf(
-                'Invalid "%s" color; expected one of (%s).',
-                $color,
-                implode(', ', array_merge(array_keys(self::COLORS), array_keys(self::BRIGHT_COLORS)))
-            )
-        );
-    }
-
     private function convertHexColorToAnsi(int $color): string
     {
         $r = ($color >> 16) & 255;
@@ -198,5 +161,42 @@ final class Color
         }
 
         return (int) ($diff * 100 / $v);
+    }
+
+    private function parseColor(string $color, bool $background = false): string
+    {
+        if ('' === $color) {
+            return '';
+        }
+
+        if ('#' === $color[0]) {
+            $color = substr($color, 1);
+
+            if (3 === strlen($color)) {
+                $color = $color[0] . $color[0] . $color[1] . $color[1] . $color[2] . $color[2];
+            }
+
+            if (6 !== strlen($color)) {
+                throw new InvalidArgumentException(sprintf('Invalid "%s" color.', $color));
+            }
+
+            return ($background ? '4' : '3') . $this->convertHexColorToAnsi((int) hexdec($color));
+        }
+
+        if (isset(self::COLORS[$color])) {
+            return ($background ? '4' : '3') . self::COLORS[$color];
+        }
+
+        if (isset(self::BRIGHT_COLORS[$color])) {
+            return ($background ? '10' : '9') . self::BRIGHT_COLORS[$color];
+        }
+
+        throw new InvalidArgumentException(
+            sprintf(
+                'Invalid "%s" color; expected one of (%s).',
+                $color,
+                implode(', ', array_merge(array_keys(self::COLORS), array_keys(self::BRIGHT_COLORS)))
+            )
+        );
     }
 }

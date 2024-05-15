@@ -29,19 +29,88 @@ use const PHP_EOL;
 
 abstract class Console extends BaseCommand
 {
-    private ?InputInterface $input;
-
-    private ?OutputInterface $output;
+    private AlertService $alertService;
 
     private BusInterface $bus;
 
-    private UserServiceInterface $userService;
-
-    private AlertService $alertService;
+    private ?InputInterface $input;
 
     private bool $lockMode = false;
 
-    abstract protected function play(): void;
+    private ?OutputInterface $output;
+
+    private UserServiceInterface $userService;
+
+    /**
+     * @param string[]|null $validResponses
+     * @param string[] $autocomplete
+     * @param callable(string): bool|null $cb
+     */
+    public function ask(
+        string $question,
+        ?array $validResponses = null,
+        ?string $default = null,
+        array $autocomplete = [],
+        ?callable $cb = null
+    ): string {
+        $pre = '';
+        if (count($validResponses ?? []) > 0) {
+            $group = implode(',', $validResponses);
+            $pre = " [{$group}]";
+            if ($default !== '') {
+                $pre .= "({$default}) ";
+            }
+        } elseif ($default !== '' && $default !== null) {
+            $pre .= "({$default}) ";
+        } else {
+            $pre = ' ';
+        }
+
+        $repeatQuestion = true;
+        do {
+            if ($repeatQuestion && $question !== '') {
+                $this->output()->write($question . PHP_EOL . ' <white2>></white2>' . $pre);
+            } else {
+                $this->output()->write(' <white2>></white2>' . $pre);
+            }
+
+            /** @var QuestionHelper $helper */
+            $helper = $this->getHelper('question');
+            $realQuestion = new Question('', $default);
+            $realQuestion->setAutocompleterValues($autocomplete);
+            $realQuestion->setTrimmable(true);
+            $response = StringUtil::trim(
+                $helper->ask($this->input(), $this->output(), $realQuestion) ?? $default ?? ''
+            );
+
+            $valid = true;
+            $validCb = true;
+
+            if ($cb !== null) {
+                $validCb = $cb($response);
+            }
+            if ($validResponses !== null) {
+                $valid = in_array($response, $validResponses, true);
+            }
+
+            if ($default === null && $response === '') {
+                $valid = false;
+            }
+            $repeatQuestion = $response === '?';
+        } while (!($valid && $validCb));
+
+        return StringUtil::trim($response);
+    }
+
+    public function forceEnterToContinue(): void
+    {
+        $this->output()->write('<white2>[ENTER to continue]</white2>');
+        /** @var QuestionHelper $helper */
+        $helper = $this->getHelper('question');
+        $realQuestion = new Question('');
+        $realQuestion->setTrimmable(true);
+        $helper->ask($this->input(), $this->output(), $realQuestion);
+    }
 
     public function inject(
         Bus $bus,
@@ -51,6 +120,84 @@ abstract class Console extends BaseCommand
         $this->bus = $bus;
         $this->userService = $userService;
         $this->alertService = $alertService;
+    }
+
+    public function input(): InputInterface
+    {
+        if ($this->input === null) {
+            throw new RuntimeException('play method has not been executed');
+        }
+
+        return $this->input;
+    }
+
+    public function output(): OutputInterface
+    {
+        if ($this->output === null) {
+            throw new RuntimeException('play method has not been executed');
+        }
+
+        return $this->output;
+    }
+
+    public function readArgument(string $name): string
+    {
+        return $this->input()->getArgument($name);
+    }
+
+    public function setLockMode(): void
+    {
+        $this->lockMode = true;
+    }
+
+    protected function beep(): void
+    {
+        $this->output()->write("\007");
+    }
+
+    protected function clear(): void
+    {
+        if ($this->lockMode) {
+            $this->output()->write("\33[H\33[2J");
+        } else {
+            $this->output()->write("\033\143");
+        }
+    }
+
+    /**
+     * @param array{
+     *     currentTry: int,
+     *     maxTries: int,
+     *     interval: int,
+     * }|null $retryOptions
+     */
+    protected function dispatchCommand(
+        CommandMessage $command,
+        string $tenantId,
+        ?string $transport = null,
+        ?int $delayMs = null,
+        ?array $retryOptions = null
+    ): void {
+        $bus = $this->bus;
+        $this->userService->authenticateSystem($tenantId);
+        $bus->dispatchCommand($command, $transport, $delayMs, $retryOptions);
+        $this->userService->clearAuthentication();
+    }
+
+    /**
+     * @template T of Document
+     * @param Query<T> $query
+     */
+    protected function dispatchQuery(
+        Query $query,
+        string $tenantId,
+    ): Document {
+        $bus = $this->bus;
+        $this->userService->authenticateSystem($tenantId);
+        $document = $bus->dispatchQuery($query);
+        $this->userService->clearAuthentication();
+
+        return $document;
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
@@ -164,162 +311,15 @@ abstract class Console extends BaseCommand
         return 0;
     }
 
-    public function input(): InputInterface
-    {
-        if ($this->input === null) {
-            throw new RuntimeException('play method has not been executed');
-        }
-
-        return $this->input;
-    }
-
-    public function output(): OutputInterface
-    {
-        if ($this->output === null) {
-            throw new RuntimeException('play method has not been executed');
-        }
-
-        return $this->output;
-    }
-
-    public function readArgument(string $name): string
-    {
-        return $this->input()->getArgument($name);
-    }
-
-    protected function beep(): void
-    {
-        $this->output()->write("\007");
-    }
-
-    protected function clear(): void
-    {
-        if ($this->lockMode) {
-            $this->output()->write("\33[H\33[2J");
-        } else {
-            $this->output()->write("\033\143");
-        }
-    }
-
     protected function lockScreen(): void
     {
         $this->output()->write("\033[?1049h\033[H");
     }
 
+    abstract protected function play(): void;
+
     protected function unlockScreen(): void
     {
         $this->output()->write("\033[?1049l");
-    }
-
-    public function setLockMode(): void
-    {
-        $this->lockMode = true;
-    }
-
-    public function forceEnterToContinue(): void
-    {
-        $this->output()->write('<white2>[ENTER to continue]</white2>');
-        /** @var QuestionHelper $helper */
-        $helper = $this->getHelper('question');
-        $realQuestion = new Question('');
-        $realQuestion->setTrimmable(true);
-        $helper->ask($this->input(), $this->output(), $realQuestion);
-    }
-
-    /**
-     * @param string[]|null $validResponses
-     * @param string[] $autocomplete
-     * @param callable(string): bool|null $cb
-     */
-    public function ask(
-        string $question,
-        ?array $validResponses = null,
-        ?string $default = null,
-        array $autocomplete = [],
-        ?callable $cb = null
-    ): string {
-        $pre = '';
-        if (count($validResponses ?? []) > 0) {
-            $group = implode(',', $validResponses);
-            $pre = " [{$group}]";
-            if ($default !== '') {
-                $pre .= "({$default}) ";
-            }
-        } elseif ($default !== '' && $default !== null) {
-            $pre .= "({$default}) ";
-        } else {
-            $pre = ' ';
-        }
-
-        $repeatQuestion = true;
-        do {
-            if ($repeatQuestion && $question !== '') {
-                $this->output()->write($question . PHP_EOL . ' <white2>></white2>' . $pre);
-            } else {
-                $this->output()->write(' <white2>></white2>' . $pre);
-            }
-
-            /** @var QuestionHelper $helper */
-            $helper = $this->getHelper('question');
-            $realQuestion = new Question('', $default);
-            $realQuestion->setAutocompleterValues($autocomplete);
-            $realQuestion->setTrimmable(true);
-            $response = StringUtil::trim(
-                $helper->ask($this->input(), $this->output(), $realQuestion) ?? $default ?? ''
-            );
-
-            $valid = true;
-            $validCb = true;
-
-            if ($cb !== null) {
-                $validCb = $cb($response);
-            }
-            if ($validResponses !== null) {
-                $valid = in_array($response, $validResponses, true);
-            }
-
-            if ($default === null && $response === '') {
-                $valid = false;
-            }
-            $repeatQuestion = $response === '?';
-        } while (!($valid && $validCb));
-
-        return StringUtil::trim($response);
-    }
-
-    /**
-     * @param array{
-     *     currentTry: int,
-     *     maxTries: int,
-     *     interval: int,
-     * }|null $retryOptions
-     */
-    protected function dispatchCommand(
-        CommandMessage $command,
-        string $tenantId,
-        ?string $transport = null,
-        ?int $delayMs = null,
-        ?array $retryOptions = null
-    ): void {
-        $bus = $this->bus;
-        $this->userService->authenticateSystem($tenantId);
-        $bus->dispatchCommand($command, $transport, $delayMs, $retryOptions);
-        $this->userService->clearAuthentication();
-    }
-
-    /**
-     * @template T of Document
-     * @param Query<T> $query
-     */
-    protected function dispatchQuery(
-        Query $query,
-        string $tenantId,
-    ): Document {
-        $bus = $this->bus;
-        $this->userService->authenticateSystem($tenantId);
-        $document = $bus->dispatchQuery($query);
-        $this->userService->clearAuthentication();
-
-        return $document;
     }
 }

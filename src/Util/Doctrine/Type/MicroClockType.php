@@ -10,20 +10,6 @@ use Nektria\Dto\Clock;
 
 class MicroClockType extends Type
 {
-    public function getName(): string
-    {
-        return 'micro_clock';
-    }
-
-    public function convertToPHPValue($value, AbstractPlatform $platform): ?Clock
-    {
-        if ($value === null) {
-            return null;
-        }
-
-        return Clock::fromString($value);
-    }
-
     public function convertToDatabaseValue($value, AbstractPlatform $platform): ?string
     {
         if ($value === null) {
@@ -35,6 +21,20 @@ class MicroClockType extends Type
         }
 
         return null;
+    }
+
+    public function convertToPHPValue($value, AbstractPlatform $platform): ?Clock
+    {
+        if ($value === null) {
+            return null;
+        }
+
+        return Clock::fromString($value);
+    }
+
+    public function getName(): string
+    {
+        return 'micro_clock';
     }
 
     public function getSQLDeclaration(array $column, AbstractPlatform $platform): string

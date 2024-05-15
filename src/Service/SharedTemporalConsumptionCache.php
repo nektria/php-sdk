@@ -19,6 +19,14 @@ class SharedTemporalConsumptionCache extends SharedRedisCache
         parent::__construct($redisDsn, $env);
     }
 
+    public function increase(string $tenantId, string $path): void
+    {
+        $data = $this->read($tenantId);
+        $data[$this->contextService->project()][$path] ??= 0;
+        ++$data[$this->contextService->project()][$path];
+        $this->setItem($tenantId, $data);
+    }
+
     /**
      * @return array<string, array<string, int>>
      */
@@ -30,13 +38,5 @@ class SharedTemporalConsumptionCache extends SharedRedisCache
     public function remove(string $tenantId): void
     {
         $this->removeItem($tenantId);
-    }
-
-    public function increase(string $tenantId, string $path): void
-    {
-        $data = $this->read($tenantId);
-        $data[$this->contextService->project()][$path] ??= 0;
-        ++$data[$this->contextService->project()][$path];
-        $this->setItem($tenantId, $data);
     }
 }

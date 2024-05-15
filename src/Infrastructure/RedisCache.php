@@ -14,9 +14,9 @@ abstract class RedisCache
 {
     public readonly string $fqn;
 
-    private readonly string $redisDsn;
-
     private static ?Redis $connection = null;
+
+    private readonly string $redisDsn;
 
     public function __construct(
         string $redisDsn,
@@ -27,37 +27,6 @@ abstract class RedisCache
         $name = substr(end($parts), 0, -5);
         $this->fqn = "{$prefix}_{$name}_{$env}";
         $this->redisDsn = $redisDsn;
-    }
-
-    protected function init(): Redis
-    {
-        if (self::$connection !== null) {
-            return self::$connection;
-        }
-
-        try {
-            $parts = parse_url($this->redisDsn);
-            $redis = new Redis();
-
-            $redis->pconnect(
-                $parts['host'] ?? 'localhost',
-                $parts['port'] ?? 6379,
-                0,
-                (string) getenv('HOSTNAME')
-            );
-
-            if (isset($parts['pass'])) {
-                $redis->auth($parts['pass']);
-            }
-
-            $redis->select(0);
-        } catch (Throwable $e) {
-            throw NektriaException::new($e);
-        }
-
-        self::$connection = $redis;
-
-        return self::$connection;
     }
 
     /**
@@ -89,5 +58,36 @@ abstract class RedisCache
         } catch (Throwable $e) {
             throw NektriaException::new($e);
         }
+    }
+
+    protected function init(): Redis
+    {
+        if (self::$connection !== null) {
+            return self::$connection;
+        }
+
+        try {
+            $parts = parse_url($this->redisDsn);
+            $redis = new Redis();
+
+            $redis->pconnect(
+                $parts['host'] ?? 'localhost',
+                $parts['port'] ?? 6379,
+                0,
+                (string) getenv('HOSTNAME')
+            );
+
+            if (isset($parts['pass'])) {
+                $redis->auth($parts['pass']);
+            }
+
+            $redis->select(0);
+        } catch (Throwable $e) {
+            throw NektriaException::new($e);
+        }
+
+        self::$connection = $redis;
+
+        return self::$connection;
     }
 }

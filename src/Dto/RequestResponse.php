@@ -23,6 +23,11 @@ class RequestResponse
     ) {
     }
 
+    public function isSuccessful(): bool
+    {
+        return $this->status < 400;
+    }
+
     public function json(): mixed
     {
         try {
@@ -32,10 +37,5 @@ class RequestResponse
                 '_response' => $this->body,
             ];
         }
-    }
-
-    public function isSuccessful(): bool
-    {
-        return $this->status < 400;
     }
 }

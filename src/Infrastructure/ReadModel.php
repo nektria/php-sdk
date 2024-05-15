@@ -26,11 +26,6 @@ abstract class ReadModel
         $this->manager = $manager;
     }
 
-    public function manager(): EntityManagerInterface
-    {
-        return $this->manager;
-    }
-
     /**
      * @return string[]
      */
@@ -38,6 +33,17 @@ abstract class ReadModel
     {
         return [];
     }
+
+    public function manager(): EntityManagerInterface
+    {
+        return $this->manager;
+    }
+
+    /**
+     * @param mixed[] $params
+     * @return T
+     */
+    abstract protected function buildDocument(array $params): Document;
 
     /**
      * @param array<string, string|int|float|bool|null> $params
@@ -53,21 +59,6 @@ abstract class ReadModel
         } catch (Throwable $e) {
             throw NektriaException::new($e);
         }
-    }
-
-    /**
-     * @param array<string, string|int|float|bool|null> $params
-     * @return T|null
-     */
-    protected function getResult(string $sql, array $params = []): ?Document
-    {
-        $result = $this->getRawResult($sql, $params, $this->groupResults());
-
-        if ($result === null) {
-            return null;
-        }
-
-        return $this->buildDocument($result);
     }
 
     /**
@@ -121,6 +112,21 @@ abstract class ReadModel
     }
 
     /**
+     * @param array<string, string|int|float|bool|null> $params
+     * @return T|null
+     */
+    protected function getResult(string $sql, array $params = []): ?Document
+    {
+        $result = $this->getRawResult($sql, $params, $this->groupResults());
+
+        if ($result === null) {
+            return null;
+        }
+
+        return $this->buildDocument($result);
+    }
+
+    /**
      * @param array<string, string|int|float|bool|string[]|null> $params
      * @return DocumentCollection<T>
      */
@@ -135,12 +141,6 @@ abstract class ReadModel
 
         return new DocumentCollection($parsed);
     }
-
-    /**
-     * @param mixed[] $params
-     * @return T
-     */
-    abstract protected function buildDocument(array $params): Document;
 
     abstract protected function source(): string;
 }

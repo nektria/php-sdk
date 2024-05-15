@@ -31,6 +31,11 @@ class ValidateClassFieldsReturnsNotNullExtension implements TypeSpecifierAwareEx
         return $staticMethodReflection->getName() === 'classFieldReturnsNotNull' && $context->null();
     }
 
+    public function setTypeSpecifier(TypeSpecifier $typeSpecifier): void
+    {
+        $this->typeSpecifier = $typeSpecifier;
+    }
+
     public function specifyTypes(
         MethodReflection $staticMethodReflection,
         StaticCall $node,
@@ -42,10 +47,5 @@ class ValidateClassFieldsReturnsNotNullExtension implements TypeSpecifierAwareEx
         $type = TypeCombinator::removeNull($typeBefore);
 
         return $this->typeSpecifier->create($expr, $type, TypeSpecifierContext::createTruthy());
-    }
-
-    public function setTypeSpecifier(TypeSpecifier $typeSpecifier): void
-    {
-        $this->typeSpecifier = $typeSpecifier;
     }
 }

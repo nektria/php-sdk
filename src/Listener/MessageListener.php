@@ -43,9 +43,9 @@ abstract class MessageListener implements EventSubscriberInterface
 {
     private float $executionTime;
 
-    private string $messageStartedAt;
-
     private string $messageCompletedAt;
+
+    private string $messageStartedAt;
 
     public function __construct(
         private readonly AlertService $alertService,
@@ -61,8 +61,6 @@ abstract class MessageListener implements EventSubscriberInterface
         $this->messageStartedAt = $this->messageCompletedAt;
     }
 
-    abstract protected function cleanMemory(): void;
-
     /**
      * @return array<string, string>
      */
@@ -74,91 +72,6 @@ abstract class MessageListener implements EventSubscriberInterface
             WorkerMessageFailedEvent::class => 'onMessengerException',
             WorkerStoppedEvent::class => 'onWorkerStoppedEvent',
         ];
-    }
-
-    public function onWorkerMessageReceived(WorkerMessageReceivedEvent $event): void
-    {
-        $message = $event->getEnvelope()->getMessage();
-        if ($message instanceof Event) {
-            $this->lock->acquire($message->ref(), 10);
-        }
-
-        try {
-            /** @var ContextStamp|null $contextStamp */
-            $contextStamp = $event->getEnvelope()->last(ContextStamp::class);
-            if ($contextStamp !== null) {
-                $this->contextService->setContext('rabbit');
-                $this->contextService->setTraceId($contextStamp->traceId);
-                if ($contextStamp->tenantId !== null) {
-                    $this->userService->authenticateSystem($contextStamp->tenantId);
-                }
-            }
-
-            $this->messageStartedAt = Clock::now()->iso8601String();
-            $this->executionTime = microtime(true);
-        } catch (Throwable $e) {
-            $this->alertService->sendThrowable(
-                $this->userService->user()?->tenant->name ?? 'none',
-                'RABBIT',
-                '',
-                [],
-                new ThrowableDocument($e)
-            );
-        }
-    }
-
-    public function onWorkerMessageHandled(WorkerMessageHandledEvent $event): void
-    {
-        $this->bus->dispatchDelayedEvents();
-        $this->messageCompletedAt = Clock::now()->iso8601String();
-        $message = $event->getEnvelope()->getMessage();
-
-        if ($message instanceof Command || $message instanceof Event) {
-            $encoders = [new JsonEncoder()];
-            $normalizers = [new PropertyNormalizer(), new DateTimeNormalizer(), new ObjectNormalizer()];
-            $serializer = new Serializer($normalizers, $encoders);
-            $data = JsonUtil::decode($serializer->serialize($message, 'json'));
-            $messageClass = StringUtil::className($message);
-            $try = 1;
-            $retryStamp = $event->getEnvelope()->last(RetryStamp::class);
-            if ($retryStamp !== null) {
-                $try = $retryStamp->currentTry;
-            }
-            $resume = "/{$messageClass}/{$message->ref()}/{$try}";
-            $time = max(0.001, round(microtime(true) - $this->executionTime, 3)) . 's';
-
-            $exchangeName = '?';
-            $exchangeStamp = $event->getEnvelope()->last(AmqpReceivedStamp::class);
-            if ($exchangeStamp !== null) {
-                $exchangeName = $exchangeStamp->getAmqpEnvelope()->getExchangeName();
-            }
-
-            $this->logService->debug([
-                'context' => 'messenger',
-                'event' => $message::class,
-                'body' => $data,
-                'executionTime' => $time,
-                'messageReceivedAt' => $this->messageStartedAt,
-                'messageCompletedAt' => $this->messageCompletedAt,
-                'queue' => $exchangeName,
-                'httpRequest' => [
-                    'requestUrl' => $resume,
-                    'requestMethod' => 'QUEUE',
-                    'status' => 200,
-                    'latency' => $time
-                ]
-            ], $resume);
-
-            $this->userService->clearAuthentication();
-        }
-
-        $this->cleanMemory();
-
-        try {
-            $this->lock->releaseAll();
-        } catch (Throwable) {
-        }
-        gc_collect_cycles();
     }
 
     public function onMessengerException(WorkerMessageFailedEvent $event): void
@@ -292,6 +205,91 @@ abstract class MessageListener implements EventSubscriberInterface
         gc_collect_cycles();
     }
 
+    public function onWorkerMessageHandled(WorkerMessageHandledEvent $event): void
+    {
+        $this->bus->dispatchDelayedEvents();
+        $this->messageCompletedAt = Clock::now()->iso8601String();
+        $message = $event->getEnvelope()->getMessage();
+
+        if ($message instanceof Command || $message instanceof Event) {
+            $encoders = [new JsonEncoder()];
+            $normalizers = [new PropertyNormalizer(), new DateTimeNormalizer(), new ObjectNormalizer()];
+            $serializer = new Serializer($normalizers, $encoders);
+            $data = JsonUtil::decode($serializer->serialize($message, 'json'));
+            $messageClass = StringUtil::className($message);
+            $try = 1;
+            $retryStamp = $event->getEnvelope()->last(RetryStamp::class);
+            if ($retryStamp !== null) {
+                $try = $retryStamp->currentTry;
+            }
+            $resume = "/{$messageClass}/{$message->ref()}/{$try}";
+            $time = max(0.001, round(microtime(true) - $this->executionTime, 3)) . 's';
+
+            $exchangeName = '?';
+            $exchangeStamp = $event->getEnvelope()->last(AmqpReceivedStamp::class);
+            if ($exchangeStamp !== null) {
+                $exchangeName = $exchangeStamp->getAmqpEnvelope()->getExchangeName();
+            }
+
+            $this->logService->debug([
+                'context' => 'messenger',
+                'event' => $message::class,
+                'body' => $data,
+                'executionTime' => $time,
+                'messageReceivedAt' => $this->messageStartedAt,
+                'messageCompletedAt' => $this->messageCompletedAt,
+                'queue' => $exchangeName,
+                'httpRequest' => [
+                    'requestUrl' => $resume,
+                    'requestMethod' => 'QUEUE',
+                    'status' => 200,
+                    'latency' => $time
+                ]
+            ], $resume);
+
+            $this->userService->clearAuthentication();
+        }
+
+        $this->cleanMemory();
+
+        try {
+            $this->lock->releaseAll();
+        } catch (Throwable) {
+        }
+        gc_collect_cycles();
+    }
+
+    public function onWorkerMessageReceived(WorkerMessageReceivedEvent $event): void
+    {
+        $message = $event->getEnvelope()->getMessage();
+        if ($message instanceof Event) {
+            $this->lock->acquire($message->ref(), 10);
+        }
+
+        try {
+            /** @var ContextStamp|null $contextStamp */
+            $contextStamp = $event->getEnvelope()->last(ContextStamp::class);
+            if ($contextStamp !== null) {
+                $this->contextService->setContext('rabbit');
+                $this->contextService->setTraceId($contextStamp->traceId);
+                if ($contextStamp->tenantId !== null) {
+                    $this->userService->authenticateSystem($contextStamp->tenantId);
+                }
+            }
+
+            $this->messageStartedAt = Clock::now()->iso8601String();
+            $this->executionTime = microtime(true);
+        } catch (Throwable $e) {
+            $this->alertService->sendThrowable(
+                $this->userService->user()?->tenant->name ?? 'none',
+                'RABBIT',
+                '',
+                [],
+                new ThrowableDocument($e)
+            );
+        }
+    }
+
     public function onWorkerStoppedEvent(): void
     {
         $this->cleanMemory();
@@ -303,4 +301,6 @@ abstract class MessageListener implements EventSubscriberInterface
 
         gc_collect_cycles();
     }
+
+    abstract protected function cleanMemory(): void;
 }

@@ -27,14 +27,6 @@ class MetricsClient
     }
 
     /**
-     * @return MetricsPing
-     */
-    public function ping(): array
-    {
-        return $this->requestClient->get("{$this->metricsHost}/ping")->json();
-    }
-
-    /**
      * @param Clock $at should be local time
      */
     public function deliverOrder(string $orderNumber, Clock $at): void
@@ -46,6 +38,14 @@ class MetricsClient
             ],
             headers: $this->getHeaders(),
         );
+    }
+
+    /**
+     * @return MetricsPing
+     */
+    public function ping(): array
+    {
+        return $this->requestClient->get("{$this->metricsHost}/ping")->json();
     }
 
     /**

@@ -12,15 +12,27 @@ use const STR_PAD_LEFT;
 
 class StringUtil
 {
-    public static function trim(string $input): string
+    public static function className(object $class): string
     {
-        $result = preg_replace('/\s+/', ' ', trim($input)) ?? '';
+        $path = explode('\\', $class::class);
 
-        if ($result === ' ') {
-            return '';
+        return array_pop($path);
+    }
+
+    public static function fit(string $value, int $length): string
+    {
+        $value .= '00000000000000000000000000000000';
+
+        return substr($value, 0, $length);
+    }
+
+    public static function randomColor(): string
+    {
+        try {
+            return '#' . str_pad(dechex(random_int(0, 0xFFFFFF)), 6, '0', STR_PAD_LEFT);
+        } catch (Throwable) {
+            return '#000000';
         }
-
-        return $result;
     }
 
     public static function slug(string $input, bool $trimFirst = true): string
@@ -32,6 +44,17 @@ class StringUtil
         $slugger = new AsciiSlugger();
 
         return strtolower($slugger->slug($input)->toString());
+    }
+
+    public static function trim(string $input): string
+    {
+        $result = preg_replace('/\s+/', ' ', trim($input)) ?? '';
+
+        if ($result === ' ') {
+            return '';
+        }
+
+        return $result;
     }
 
     public static function uuid4(): string
@@ -51,28 +74,5 @@ class StringUtil
         } catch (Throwable $e) {
             throw NektriaException::new($e);
         }
-    }
-
-    public static function fit(string $value, int $length): string
-    {
-        $value .= '00000000000000000000000000000000';
-
-        return substr($value, 0, $length);
-    }
-
-    public static function randomColor(): string
-    {
-        try {
-            return '#' . str_pad(dechex(random_int(0, 0xFFFFFF)), 6, '0', STR_PAD_LEFT);
-        } catch (Throwable) {
-            return '#000000';
-        }
-    }
-
-    public static function className(object $class): string
-    {
-        $path = explode('\\', $class::class);
-
-        return array_pop($path);
     }
 }

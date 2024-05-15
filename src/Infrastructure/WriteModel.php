@@ -21,20 +21,9 @@ abstract class WriteModel
         $this->manager = $manager;
     }
 
-    /**
-     * @return class-string<T>
-     */
-    abstract protected function getClassName(): string;
-
-    /**
-     * @param T $domain
-     */
-    protected function saveEntity(EntityInterface $domain): void
+    public function manager(): EntityManagerInterface
     {
-        $domain->refresh();
-        $this->manager->persist($domain);
-        $this->manager->flush();
-        $this->manager->detach($domain);
+        return $this->manager;
     }
 
     /**
@@ -55,6 +44,16 @@ abstract class WriteModel
     }
 
     /**
+     * @param mixed[] $criteria
+     * @param mixed[]|null $orderBy
+     * @return T[]
+     */
+    protected function findBy(array $criteria, ?array $orderBy = null, int $limit = 10000, int $offset = 0): array
+    {
+        return $this->getRepository()->findBy($criteria, $orderBy, $limit, $offset);
+    }
+
+    /**
      * @return T|null
      */
     protected function findEntity(string $id): ?EntityInterface
@@ -72,19 +71,9 @@ abstract class WriteModel
     }
 
     /**
-     * @param mixed[] $criteria
-     * @param mixed[]|null $orderBy
-     * @return T[]
+     * @return class-string<T>
      */
-    protected function findBy(array $criteria, ?array $orderBy = null, int $limit = 10000, int $offset = 0): array
-    {
-        return $this->getRepository()->findBy($criteria, $orderBy, $limit, $offset);
-    }
-
-    public function manager(): EntityManagerInterface
-    {
-        return $this->manager;
-    }
+    abstract protected function getClassName(): string;
 
     /**
      * @return EntityRepository<T>
@@ -92,5 +81,16 @@ abstract class WriteModel
     protected function getRepository(): EntityRepository
     {
         return $this->manager->getRepository($this->getClassName());
+    }
+
+    /**
+     * @param T $domain
+     */
+    protected function saveEntity(EntityInterface $domain): void
+    {
+        $domain->refresh();
+        $this->manager->persist($domain);
+        $this->manager->flush();
+        $this->manager->detach($domain);
     }
 }

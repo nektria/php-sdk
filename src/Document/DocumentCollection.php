@@ -14,6 +14,14 @@ use function count;
 class DocumentCollection implements Document
 {
     /**
+     * @param T[] $items
+     */
+    public function __construct(
+        private readonly array $items
+    ) {
+    }
+
+    /**
      * @template X of Document
      * @param DocumentCollection<X> $a
      * @param DocumentCollection<X> $b
@@ -26,64 +34,11 @@ class DocumentCollection implements Document
 
     /**
      * @param T[] $items
-     */
-    public function __construct(
-        private readonly array $items
-    ) {
-    }
-
-    /**
-     * @param T[] $items
      * @return DocumentCollection<T>
      */
     public static function new(array $items): self
     {
         return new self($items);
-    }
-
-    /**
-     * @return T
-     */
-    public function get(int $key): Document
-    {
-        return $this->items[$key];
-    }
-
-    /**
-     * @return T
-     */
-    public function opt(int $key): ?Document
-    {
-        return $this->items[$key];
-    }
-
-    /**
-     * @return T[]
-     */
-    public function items(): array
-    {
-        return $this->items;
-    }
-
-    public function count(): int
-    {
-        return count($this->items);
-    }
-
-    /**
-     * @return T|null
-     */
-    public function first()
-    {
-        return $this->items[0] ?? null;
-    }
-
-    /**
-     * @return T|null
-     */
-    public function last()
-    {
-        return $this->items[$this->count() - 1] ?? null;
     }
 
     /**
@@ -101,6 +56,51 @@ class DocumentCollection implements Document
         }
 
         return $result;
+    }
+
+    public function count(): int
+    {
+        return count($this->items);
+    }
+
+    /**
+     * @return T|null
+     */
+    public function first()
+    {
+        return $this->items[0] ?? null;
+    }
+
+    /**
+     * @return T
+     */
+    public function get(int $key): Document
+    {
+        return $this->items[$key];
+    }
+
+    /**
+     * @return T[]
+     */
+    public function items(): array
+    {
+        return $this->items;
+    }
+
+    /**
+     * @return T|null
+     */
+    public function last()
+    {
+        return $this->items[$this->count() - 1] ?? null;
+    }
+
+    /**
+     * @return T
+     */
+    public function opt(int $key): ?Document
+    {
+        return $this->items[$key];
     }
 
     /**

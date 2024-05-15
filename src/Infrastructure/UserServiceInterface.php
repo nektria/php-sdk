@@ -8,20 +8,20 @@ use Nektria\Document\User;
 
 interface UserServiceInterface
 {
-    /**
-     * @param string[] $roles
-     */
-    public function validateRole(array $roles): void;
+    public function authenticateApi(string $apiKey): void;
 
     public function authenticateSystem(string $tenantId): void;
 
     public function authenticateUser(string $apiKey): void;
 
-    public function authenticateApi(string $apiKey): void;
-
     public function clearAuthentication(): void;
+
+    public function retrieveUser(): User;
 
     public function user(): ?User;
 
-    public function retrieveUser(): User;
+    /**
+     * @param string[] $roles
+     */
+    public function validateRole(array $roles): void;
 }

@@ -15,14 +15,6 @@ use function count;
 class SharedDiscordCache extends SharedRedisCache
 {
     /**
-     * @return AlertMessage[]
-     */
-    public function read(string $channel): array
-    {
-        return $this->getItem($channel) ?? [];
-    }
-
-    /**
      * @param AlertMessage $message
      */
     public function addMessage(string $channel, array $message): void
@@ -37,15 +29,23 @@ class SharedDiscordCache extends SharedRedisCache
         $this->setItem($channel, $items, 3600);
     }
 
-    public function removeLastMessage(string $channel): void
+    /**
+     * @return AlertMessage[]
+     */
+    public function read(string $channel): array
     {
-        $items = $this->read($channel);
-        array_pop($items);
-        $this->setItem($channel, $items, 3600);
+        return $this->getItem($channel) ?? [];
     }
 
     public function remove(string $channel): void
     {
         $this->removeItem($channel);
+    }
+
+    public function removeLastMessage(string $channel): void
+    {
+        $items = $this->read($channel);
+        array_pop($items);
+        $this->setItem($channel, $items, 3600);
     }
 }

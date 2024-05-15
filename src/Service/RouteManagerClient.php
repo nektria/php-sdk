@@ -57,14 +57,6 @@ class RouteManagerClient
     }
 
     /**
-     * @return RMPing
-     */
-    public function ping(): array
-    {
-        return $this->requestClient->get("{$this->routeManagerHost}/ping")->json();
-    }
-
-    /**
      * @return RMWarehouse
      */
     public function getWarehouse(string $id): array
@@ -73,6 +65,14 @@ class RouteManagerClient
             "{$this->routeManagerHost}/api/admin/warehouses/{$id}",
             headers: $this->getHeaders()
         )->json();
+    }
+
+    /**
+     * @return RMPing
+     */
+    public function ping(): array
+    {
+        return $this->requestClient->get("{$this->routeManagerHost}/ping")->json();
     }
 
     /**

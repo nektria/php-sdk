@@ -8,23 +8,6 @@ use RuntimeException;
 
 class FileUtil
 {
-    public static function read(string $file): string
-    {
-        $content = file_get_contents($file);
-        if ($content === false) {
-            throw new RuntimeException('Cannot read file');
-        }
-
-        return $content;
-    }
-
-    public static function write(string $file, string $content): void
-    {
-        if (file_put_contents($file, $content) === false) {
-            throw new RuntimeException('Cannot write file');
-        }
-    }
-
     /**
      * @param string[][] $data
      */
@@ -47,5 +30,22 @@ class FileUtil
         fclose($temp);
 
         return $path;
+    }
+
+    public static function read(string $file): string
+    {
+        $content = file_get_contents($file);
+        if ($content === false) {
+            throw new RuntimeException('Cannot read file');
+        }
+
+        return $content;
+    }
+
+    public static function write(string $file, string $content): void
+    {
+        if (file_put_contents($file, $content) === false) {
+            throw new RuntimeException('Cannot write file');
+        }
     }
 }

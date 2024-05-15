@@ -22,9 +22,9 @@ use Throwable;
 
 class Controller
 {
-    protected Request $request;
-
     protected BusInterface $bus;
+
+    protected Request $request;
 
     protected ArrayDataFetcher $requestData;
 
@@ -48,44 +48,6 @@ class Controller
         $this->context = $context;
     }
 
-    protected function retrieveUser(): User
-    {
-        return $this->userService->retrieveUser();
-    }
-
-    protected function retrieveTenant(): Tenant
-    {
-        return $this->userService->retrieveUser()->tenant;
-    }
-
-    protected function retrieveTenantId(): string
-    {
-        return $this->retrieveUser()->tenantId;
-    }
-
-    protected function response(Document $document, int $status = 200): DocumentResponse
-    {
-        return new DocumentResponse($document, $this->context, $status);
-    }
-
-    /**
-     * @template T of Document
-     * @param T $document
-     */
-    protected function documentResponse(Document $document): DocumentResponse
-    {
-        return $this->response($document);
-    }
-
-    /**
-     * @template T of Document
-     * @param Query<T> $query
-     */
-    protected function queryResponse(Query $query): DocumentResponse
-    {
-        return $this->documentResponse($this->bus->dispatchQuery($query));
-    }
-
     /**
      * @param array{
      *     currentTry: int,
@@ -100,6 +62,15 @@ class Controller
         ?array $retryOptions = null
     ): void {
         $this->bus->dispatchCommand($command, $transport, $delayMs, $retryOptions);
+    }
+
+    /**
+     * @template T of Document
+     * @param T $document
+     */
+    protected function documentResponse(Document $document): DocumentResponse
+    {
+        return $this->response($document);
     }
 
     /**
@@ -120,5 +91,34 @@ class Controller
         }
 
         return new DocumentResponse(new DatabaseValue([]), $this->context, Response::HTTP_NO_CONTENT);
+    }
+
+    /**
+     * @template T of Document
+     * @param Query<T> $query
+     */
+    protected function queryResponse(Query $query): DocumentResponse
+    {
+        return $this->documentResponse($this->bus->dispatchQuery($query));
+    }
+
+    protected function response(Document $document, int $status = 200): DocumentResponse
+    {
+        return new DocumentResponse($document, $this->context, $status);
+    }
+
+    protected function retrieveTenant(): Tenant
+    {
+        return $this->userService->retrieveUser()->tenant;
+    }
+
+    protected function retrieveTenantId(): string
+    {
+        return $this->retrieveUser()->tenantId;
+    }
+
+    protected function retrieveUser(): User
+    {
+        return $this->userService->retrieveUser();
     }
 }

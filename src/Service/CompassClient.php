@@ -48,34 +48,6 @@ class CompassClient
     }
 
     /**
-     * @return CompassPing
-     */
-    public function ping(): array
-    {
-        return $this->requestClient->get("{$this->compassHost}/ping")->json();
-    }
-
-    /**
-     * @param CompassAddress $address
-     */
-    public function saveAddress(array $address): void
-    {
-        if (
-            $address['addressLine1'] === ''
-            || $address['postalCode'] === '08999'
-            || $this->contextService->isTest()
-        ) {
-            return;
-        }
-
-        $this->requestClient->put(
-            "{$this->compassHost}/api/admin/addresses",
-            data: $address,
-            headers: $this->getHeaders()
-        );
-    }
-
-    /**
      * @param CompassAddress $address
      * @return CompassCoordinate
      */
@@ -139,6 +111,34 @@ class CompassClient
             ],
             headers: $this->getHeaders()
         )->json();
+    }
+
+    /**
+     * @return CompassPing
+     */
+    public function ping(): array
+    {
+        return $this->requestClient->get("{$this->compassHost}/ping")->json();
+    }
+
+    /**
+     * @param CompassAddress $address
+     */
+    public function saveAddress(array $address): void
+    {
+        if (
+            $address['addressLine1'] === ''
+            || $address['postalCode'] === '08999'
+            || $this->contextService->isTest()
+        ) {
+            return;
+        }
+
+        $this->requestClient->put(
+            "{$this->compassHost}/api/admin/addresses",
+            data: $address,
+            headers: $this->getHeaders()
+        );
     }
 
     /**

@@ -10,6 +10,18 @@ class ValidateEach
     /**
      * @param string[] $values
      */
+    public static function color(array $values): void
+    {
+        foreach ($values as $item) {
+            Validate::color($item);
+        }
+    }
+
+    // numbers
+
+    /**
+     * @param string[] $values
+     */
     public static function date(array $values): void
     {
         foreach ($values as $item) {
@@ -17,87 +29,13 @@ class ValidateEach
         }
     }
 
-    // numbers
-
-    /**
-     * @param int[]|float[] $values
-     */
-    public static function naturalNumber(array $values): void
-    {
-        foreach ($values as $item) {
-            Validate::naturalNumber($item);
-        }
-    }
-
-    /**
-     * @param int[]|float[]|string[] $values
-     */
-    public static function greaterThan(array $values, int | float | string $limit): void
-    {
-        foreach ($values as $item) {
-            Validate::greaterThan($item, $limit);
-        }
-    }
-
-    /**
-     * @param int[]|float[] $values
-     */
-    public static function lessThan(array $values, int | float $limit): void
-    {
-        foreach ($values as $item) {
-            Validate::lessThan($item, $limit);
-        }
-    }
-
-    /**
-     * @param int[]|float[] $values
-     */
-    public static function percentileNumber(array $values): void
-    {
-        foreach ($values as $item) {
-            Validate::percentileNumber($item);
-        }
-    }
-
-    // Strings
-
     /**
      * @param string[] $values
      */
-    public static function notEmpty(array $values): void
+    public static function dniNie(array $values): void
     {
         foreach ($values as $item) {
-            Validate::notEmpty($item);
-        }
-    }
-
-    /**
-     * @param string[] $values
-     */
-    public static function regexp(array $values, string $regexp): void
-    {
-        foreach ($values as $item) {
-            Validate::regexp($item, $regexp);
-        }
-    }
-
-    /**
-     * @param string[] $values
-     */
-    public static function minLength(array $values, int $length): void
-    {
-        foreach ($values as $item) {
-            Validate::minLength($item, $length);
-        }
-    }
-
-    /**
-     * @param string[] $values
-     */
-    public static function maxLength(array $values, int $length): void
-    {
-        foreach ($values as $item) {
-            Validate::maxLength($item, $length);
+            Validate::dniNie($item);
         }
     }
 
@@ -112,26 +50,27 @@ class ValidateEach
     }
 
     /**
-     * @param string[] $values
+     * @param int[]|float[]|string[] $values
      */
-    public static function uuid4(array $values): void
+    public static function greaterThan(array $values, int | float | string $limit): void
     {
         foreach ($values as $item) {
-            Validate::uuid4($item);
+            Validate::greaterThan($item, $limit);
         }
     }
+
+    // Strings
 
     /**
      * @param string[] $values
+     * @param string[] $validValues
      */
-    public static function dniNie(array $values): void
+    public static function inStringList(array $values, array $validValues): void
     {
         foreach ($values as $item) {
-            Validate::dniNie($item);
+            Validate::inStringList($item, $validValues);
         }
     }
-
-    // coordinates
 
     /**
      * @param float[] $values
@@ -140,6 +79,16 @@ class ValidateEach
     {
         foreach ($values as $item) {
             Validate::latitude($item);
+        }
+    }
+
+    /**
+     * @param int[]|float[] $values
+     */
+    public static function lessThan(array $values, int | float $limit): void
+    {
+        foreach ($values as $item) {
+            Validate::lessThan($item, $limit);
         }
     }
 
@@ -155,22 +104,73 @@ class ValidateEach
 
     /**
      * @param string[] $values
-     * @param string[] $validValues
      */
-    public static function inStringList(array $values, array $validValues): void
+    public static function maxLength(array $values, int $length): void
     {
         foreach ($values as $item) {
-            Validate::inStringList($item, $validValues);
+            Validate::maxLength($item, $length);
+        }
+    }
+
+    /**
+     * @param mixed[][] $values
+     */
+    public static function minArrayLength(array $values, int $length): void
+    {
+        foreach ($values as $item) {
+            Validate::minArrayLength($item, $length);
         }
     }
 
     /**
      * @param string[] $values
      */
-    public static function color(array $values): void
+    public static function minLength(array $values, int $length): void
     {
         foreach ($values as $item) {
-            Validate::color($item);
+            Validate::minLength($item, $length);
+        }
+    }
+
+    // coordinates
+
+    /**
+     * @param int[]|float[] $values
+     */
+    public static function naturalNumber(array $values): void
+    {
+        foreach ($values as $item) {
+            Validate::naturalNumber($item);
+        }
+    }
+
+    /**
+     * @param string[] $values
+     */
+    public static function notEmpty(array $values): void
+    {
+        foreach ($values as $item) {
+            Validate::notEmpty($item);
+        }
+    }
+
+    /**
+     * @param int[]|float[] $values
+     */
+    public static function percentileNumber(array $values): void
+    {
+        foreach ($values as $item) {
+            Validate::percentileNumber($item);
+        }
+    }
+
+    /**
+     * @param string[] $values
+     */
+    public static function regexp(array $values, string $regexp): void
+    {
+        foreach ($values as $item) {
+            Validate::regexp($item, $regexp);
         }
     }
 
@@ -189,12 +189,12 @@ class ValidateEach
     // array
 
     /**
-     * @param mixed[][] $values
+     * @param string[] $values
      */
-    public static function minArrayLength(array $values, int $length): void
+    public static function uuid4(array $values): void
     {
         foreach ($values as $item) {
-            Validate::minArrayLength($item, $length);
+            Validate::uuid4($item);
         }
     }
 }

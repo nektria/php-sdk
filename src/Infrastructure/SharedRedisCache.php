@@ -19,6 +19,14 @@ abstract class SharedRedisCache extends RedisCache
         parent::__construct($redisDsn, $env, 'shared');
     }
 
+    public function empty(): void
+    {
+        try {
+            $this->init()->eval("for _,k in ipairs(redis.call('keys','{$this->fqn}:*')) do redis.call('del',k) end");
+        } catch (Throwable) {
+        }
+    }
+
     /**
      * @return T|null
      */
@@ -37,6 +45,14 @@ abstract class SharedRedisCache extends RedisCache
         }
     }
 
+    protected function removeItem(string $key): void
+    {
+        try {
+            $this->init()->del("{$this->fqn}:{$key}");
+        } catch (Throwable) {
+        }
+    }
+
     /**
      * @param T $item
      */
@@ -48,22 +64,6 @@ abstract class SharedRedisCache extends RedisCache
 
         try {
             $this->init()->set("{$this->fqn}:{$key}", serialize($item), $ttl);
-        } catch (Throwable) {
-        }
-    }
-
-    protected function removeItem(string $key): void
-    {
-        try {
-            $this->init()->del("{$this->fqn}:{$key}");
-        } catch (Throwable) {
-        }
-    }
-
-    public function empty(): void
-    {
-        try {
-            $this->init()->eval("for _,k in ipairs(redis.call('keys','{$this->fqn}:*')) do redis.call('del',k) end");
         } catch (Throwable) {
         }
     }

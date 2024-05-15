@@ -62,13 +62,13 @@ class AlertService
 {
     public const CHANNEL_BUGS = 'bugs';
 
-    public const CHANNEL_OPERATIONS = 'operations';
+    public const CHANNEL_CONFIGURATIONS = 'configurations';
 
-    public const CHANNEL_UPDATES = 'updates';
+    public const CHANNEL_OPERATIONS = 'operations';
 
     public const CHANNEL_PICKING_SHIFTS = 'pickingshifts';
 
-    public const CHANNEL_CONFIGURATIONS = 'configurations';
+    public const CHANNEL_UPDATES = 'updates';
 
     public const EMPTY_LINE = "‎\n‎";
 
@@ -88,6 +88,47 @@ class AlertService
     }
 
     /**
+     * @return array<string, array<string, string>>
+     */
+    public function channels(): array
+    {
+        return [
+            'dev' => [
+                'operations' => '1221387322755383356',
+                'updates' => '1221387427000750120',
+                'bugs' => '1221173694878060635',
+                'pickingshifts' => '1221387354246221874',
+                'configurations' => '1223608760287760545',
+                'debug' => '1235335765550956654'
+            ],
+            'qa' => [
+                'operations' => '1221387486320787518',
+                'updates' => '1221387553375260714',
+                'bugs' => '1221173866131623966',
+                'pickingshifts' => '1221387520726663208',
+                'configurations' => '1223608835256750293',
+                'debug' => '1235335567089209404'
+            ],
+            'staging' => [
+                'operations' => '1221387600485417000',
+                'updates' => '1221387669410680893',
+                'bugs' => '1221173888751239198',
+                'pickingshifts' => '1221387636548309183',
+                'configurations' => '1223609089490292796',
+                'debug' => '1235335500974264350'
+            ],
+            'prod' => [
+                'operations' => '1221221066450669678',
+                'updates' => '1221224077482528908',
+                'bugs' => '1221173937354833940',
+                'pickingshifts' => '1221221171161468959',
+                'configurations' => '1223571661421412352',
+                'debug' => '1235335372506923068',
+            ]
+        ];
+    }
+
+    /**
      * @return string[]
      */
     public function channelsList(): array
@@ -95,52 +136,29 @@ class AlertService
         return array_keys($this->channels()[$this->contextService->env()]);
     }
 
-    /**
-     * @param AlertMessage $message
-     */
-    private function makeRequest(string $channel, array $message): void
+    public function cleanMessagesFromCache(string $channel): void
     {
-        if ($this->contextService->env() === 'test') {
-            return;
-        }
-
-        $token = $this->tokens[array_rand($this->tokens)];
-        $channelId = $this->parseChannel($channel);
-        $this->sharedDiscordCache->addMessage($channel, $message);
-        $this->requestClient->post(
-            "https://discord.com/api/channels/{$channelId}/messages",
-            $message,
-            [
-                'Authorization' => "Bot {$token}"
-            ]
-        );
-        $this->sharedDiscordCache->removeLastMessage($channel);
+        $this->sharedDiscordCache->remove($channel);
     }
 
     /**
-     * @param array{
-     *     name: string,
-     *     value: string,
-     * }[] $embeds
+     * @param AlertMessage $message
      */
-    public function simpleMessage(
-        string $channel,
-        string $message,
-        array $embeds = [],
-        ?int $flags = null
-    ): void {
-        if (count($embeds) > 0) {
-            $embeds = [
-                [
-                    'fields' => $embeds
-                ]
-            ];
+    public function debugMessage(array $message, ?int $flags = null): void
+    {
+        if (!$this->contextService->debugMode()) {
+            return;
         }
 
-        $this->sendMessage($channel, [
-            'content' => $message,
-            'embeds' => $embeds
-        ], $flags);
+        $this->sendMessage('debug', $message, $flags);
+    }
+
+    /**
+     * @return AlertMessage[]
+     */
+    public function readMessagesFromCache(string $channel): array
+    {
+        return $this->sharedDiscordCache->read($channel);
     }
 
     /**
@@ -190,43 +208,6 @@ class AlertService
             } catch (Throwable) {
             }
         }
-    }
-
-    /**
-     * @param array{
-     *     name: string,
-     *     value: string,
-     * }[] $embeds
-     */
-    public function simpleDebugMessage(
-        string $message,
-        array $embeds = [],
-        ?int $flags = null
-    ): void {
-        if (count($embeds) > 0) {
-            $embeds = [
-                [
-                    'fields' => $embeds
-                ]
-            ];
-        }
-
-        $this->debugMessage([
-            'content' => $message,
-            'embeds' => $embeds
-        ], $flags);
-    }
-
-    /**
-     * @param AlertMessage $message
-     */
-    public function debugMessage(array $message, ?int $flags = null): void
-    {
-        if (!$this->contextService->debugMode()) {
-            return;
-        }
-
-        $this->sendMessage('debug', $message, $flags);
     }
 
     /**
@@ -329,57 +310,76 @@ class AlertService
     }
 
     /**
-     * @return array<string, array<string, string>>
+     * @param array{
+     *     name: string,
+     *     value: string,
+     * }[] $embeds
      */
-    public function channels(): array
-    {
-        return [
-            'dev' => [
-                'operations' => '1221387322755383356',
-                'updates' => '1221387427000750120',
-                'bugs' => '1221173694878060635',
-                'pickingshifts' => '1221387354246221874',
-                'configurations' => '1223608760287760545',
-                'debug' => '1235335765550956654'
-            ],
-            'qa' => [
-                'operations' => '1221387486320787518',
-                'updates' => '1221387553375260714',
-                'bugs' => '1221173866131623966',
-                'pickingshifts' => '1221387520726663208',
-                'configurations' => '1223608835256750293',
-                'debug' => '1235335567089209404'
-            ],
-            'staging' => [
-                'operations' => '1221387600485417000',
-                'updates' => '1221387669410680893',
-                'bugs' => '1221173888751239198',
-                'pickingshifts' => '1221387636548309183',
-                'configurations' => '1223609089490292796',
-                'debug' => '1235335500974264350'
-            ],
-            'prod' => [
-                'operations' => '1221221066450669678',
-                'updates' => '1221224077482528908',
-                'bugs' => '1221173937354833940',
-                'pickingshifts' => '1221221171161468959',
-                'configurations' => '1223571661421412352',
-                'debug' => '1235335372506923068',
-            ]
-        ];
+    public function simpleDebugMessage(
+        string $message,
+        array $embeds = [],
+        ?int $flags = null
+    ): void {
+        if (count($embeds) > 0) {
+            $embeds = [
+                [
+                    'fields' => $embeds
+                ]
+            ];
+        }
+
+        $this->debugMessage([
+            'content' => $message,
+            'embeds' => $embeds
+        ], $flags);
     }
 
     /**
-     * @return AlertMessage[]
+     * @param array{
+     *     name: string,
+     *     value: string,
+     * }[] $embeds
      */
-    public function readMessagesFromCache(string $channel): array
-    {
-        return $this->sharedDiscordCache->read($channel);
+    public function simpleMessage(
+        string $channel,
+        string $message,
+        array $embeds = [],
+        ?int $flags = null
+    ): void {
+        if (count($embeds) > 0) {
+            $embeds = [
+                [
+                    'fields' => $embeds
+                ]
+            ];
+        }
+
+        $this->sendMessage($channel, [
+            'content' => $message,
+            'embeds' => $embeds
+        ], $flags);
     }
 
-    public function cleanMessagesFromCache(string $channel): void
+    /**
+     * @param AlertMessage $message
+     */
+    private function makeRequest(string $channel, array $message): void
     {
-        $this->sharedDiscordCache->remove($channel);
+        if ($this->contextService->env() === 'test') {
+            return;
+        }
+
+        $token = $this->tokens[array_rand($this->tokens)];
+        $channelId = $this->parseChannel($channel);
+        $this->sharedDiscordCache->addMessage($channel, $message);
+        $this->requestClient->post(
+            "https://discord.com/api/channels/{$channelId}/messages",
+            $message,
+            [
+                'Authorization' => "Bot {$token}"
+            ]
+        );
+        $this->sharedDiscordCache->removeLastMessage($channel);
     }
 
     private function parseChannel(string $channelId): string

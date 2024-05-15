@@ -9,33 +9,33 @@ use Nektria\Util\ValidateOpt;
 
 class ContextService
 {
-    public const PUBLIC = 'public';
-
-    public const PUBLIC_V2 = 'public_v2';
-
-    public const INTERNAL = 'internal';
+    public const ADMIN = 'admin';
 
     public const COMMON = 'common';
 
-    public const ADMIN = 'admin';
-
-    public const SYSTEM = 'system';
-
-    public const TEST = 'test';
-
     public const DEV = 'dev';
+
+    public const INTERNAL = 'internal';
+
+    public const PROD = 'prod';
+
+    public const PUBLIC = 'public';
+
+    public const PUBLIC_V2 = 'public_v2';
 
     public const QA = 'qa';
 
     public const STAGING = 'staging';
 
-    public const PROD = 'prod';
+    public const SYSTEM = 'system';
+
+    public const TEST = 'test';
 
     private string $context;
 
-    private string $traceId;
-
     private ?string $tenantId;
+
+    private string $traceId;
 
     private ?string $userId;
 
@@ -53,21 +53,6 @@ class ContextService
     public function context(): string
     {
         return $this->context;
-    }
-
-    public function traceId(): string
-    {
-        return $this->traceId;
-    }
-
-    public function env(): string
-    {
-        return $this->env;
-    }
-
-    public function project(): string
-    {
-        return $this->project;
     }
 
     public function debugMode(): bool
@@ -93,6 +78,66 @@ class ContextService
         return $data;
     }
 
+    public function env(): string
+    {
+        return $this->env;
+    }
+
+    public function isAuthenticated(): bool
+    {
+        return $this->userId !== null;
+    }
+
+    public function isDev(): bool
+    {
+        return $this->env === self::DEV;
+    }
+
+    public function isLocalEnvironament(): bool
+    {
+        return $this->env === self::DEV;
+    }
+
+    public function isPlayEnvironment(): bool
+    {
+        return $this->isDev() || $this->isTest() || $this->isQA();
+    }
+
+    public function isProd(): bool
+    {
+        return $this->env === self::PROD;
+    }
+
+    public function isQA(): bool
+    {
+        return $this->env === self::QA;
+    }
+
+    public function isRealEnvironament(): bool
+    {
+        return $this->isStaging() || $this->isProd();
+    }
+
+    public function isStaging(): bool
+    {
+        return $this->env === self::STAGING;
+    }
+
+    public function isTest(): bool
+    {
+        return $this->env === self::TEST;
+    }
+
+    public function project(): string
+    {
+        return $this->project;
+    }
+
+    public function setContext(string $context): void
+    {
+        $this->context = $context;
+    }
+
     /**
      * @param string[] $projects
      */
@@ -108,30 +153,15 @@ class ContextService
         }
     }
 
-    public function setContext(string $context): void
-    {
-        $this->context = $context;
-    }
-
-    public function setTraceId(string $traceId): void
-    {
-        $this->traceId = $traceId;
-    }
-
-    public function tenantId(): ?string
-    {
-        return $this->tenantId;
-    }
-
     public function setTenantId(?string $tenantId): void
     {
         ValidateOpt::uuid4($tenantId);
         $this->tenantId = $tenantId;
     }
 
-    public function userId(): ?string
+    public function setTraceId(string $traceId): void
     {
-        return $this->userId;
+        $this->traceId = $traceId;
     }
 
     public function setUserId(?string $userId): void
@@ -140,48 +170,18 @@ class ContextService
         $this->userId = $userId;
     }
 
-    public function isAuthenticated(): bool
+    public function tenantId(): ?string
     {
-        return $this->userId !== null;
+        return $this->tenantId;
     }
 
-    public function isDev(): bool
+    public function traceId(): string
     {
-        return $this->env === self::DEV;
+        return $this->traceId;
     }
 
-    public function isTest(): bool
+    public function userId(): ?string
     {
-        return $this->env === self::TEST;
-    }
-
-    public function isProd(): bool
-    {
-        return $this->env === self::PROD;
-    }
-
-    public function isStaging(): bool
-    {
-        return $this->env === self::STAGING;
-    }
-
-    public function isQA(): bool
-    {
-        return $this->env === self::QA;
-    }
-
-    public function isLocalEnvironament(): bool
-    {
-        return $this->env === self::DEV;
-    }
-
-    public function isPlayEnvironment(): bool
-    {
-        return $this->isDev() || $this->isTest() || $this->isQA();
-    }
-
-    public function isRealEnvironament(): bool
-    {
-        return $this->isStaging() || $this->isProd();
+        return $this->userId;
     }
 }

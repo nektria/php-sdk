@@ -12,20 +12,6 @@ use function is_string;
 
 class ClockType extends Type
 {
-    public function getName(): string
-    {
-        return 'clock';
-    }
-
-    public function convertToPHPValue($value, AbstractPlatform $platform): ?Clock
-    {
-        if ($value === null) {
-            return null;
-        }
-
-        return Clock::fromString($value);
-    }
-
     public function convertToDatabaseValue($value, AbstractPlatform $platform): ?string
     {
         if ($value === null) {
@@ -41,6 +27,20 @@ class ClockType extends Type
         }
 
         return (string) $value;
+    }
+
+    public function convertToPHPValue($value, AbstractPlatform $platform): ?Clock
+    {
+        if ($value === null) {
+            return null;
+        }
+
+        return Clock::fromString($value);
+    }
+
+    public function getName(): string
+    {
+        return 'clock';
     }
 
     public function getSQLDeclaration(array $column, AbstractPlatform $platform): string

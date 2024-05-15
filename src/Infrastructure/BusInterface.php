@@ -11,12 +11,7 @@ use Nektria\Message\Query;
 
 interface BusInterface
 {
-    /**
-     * @template T of Document
-     * @param Query<T> $query
-     * @return T
-     */
-    public function dispatchQuery(Query $query): Document;
+    public function addDelayedEvent(Event $event): void;
 
     /**
      * @param array{
@@ -32,9 +27,14 @@ interface BusInterface
         ?array $retryOptions = null
     ): void;
 
+    public function dispatchDelayedEvents(): void;
+
     public function dispatchEvent(Event $event): void;
 
-    public function addDelayedEvent(Event $event): void;
-
-    public function dispatchDelayedEvents(): void;
+    /**
+     * @template T of Document
+     * @param Query<T> $query
+     * @return T
+     */
+    public function dispatchQuery(Query $query): Document;
 }

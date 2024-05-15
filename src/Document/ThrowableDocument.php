@@ -57,37 +57,6 @@ class ThrowableDocument implements Document
         $this->throwable = $throwable;
     }
 
-    /**
-     * @return array{
-     *     file: string,
-     *     line: int
-     * }[]
-     */
-    public function trace(): array
-    {
-        $trace = $this->throwable->getTrace();
-        $finalTrace = [];
-        foreach ($trace as $item) {
-            $file = $item['file'] ?? '';
-            $line = $item['line'] ?? 0;
-            if (str_starts_with($file, '/app/src')) {
-                $finalTrace[] = [
-                    'file' => str_replace('/app/', '', $file),
-                    'line' => $line,
-                ];
-            }
-
-            if (str_starts_with($file, '/app/vendor/nektria/php-sdk/src')) {
-                $finalTrace[] = [
-                    'file' => str_replace('/app/vendor/nektria/php-sdk/', '', $file),
-                    'line' => $line,
-                ];
-            }
-        }
-
-        return $finalTrace;
-    }
-
     public function toArray(ContextService $context): mixed
     {
         $exception = $this->throwable;
@@ -139,5 +108,36 @@ class ThrowableDocument implements Document
         $data['trace'] = $this->trace();
 
         return $data;
+    }
+
+    /**
+     * @return array{
+     *     file: string,
+     *     line: int
+     * }[]
+     */
+    public function trace(): array
+    {
+        $trace = $this->throwable->getTrace();
+        $finalTrace = [];
+        foreach ($trace as $item) {
+            $file = $item['file'] ?? '';
+            $line = $item['line'] ?? 0;
+            if (str_starts_with($file, '/app/src')) {
+                $finalTrace[] = [
+                    'file' => str_replace('/app/', '', $file),
+                    'line' => $line,
+                ];
+            }
+
+            if (str_starts_with($file, '/app/vendor/nektria/php-sdk/src')) {
+                $finalTrace[] = [
+                    'file' => str_replace('/app/vendor/nektria/php-sdk/', '', $file),
+                    'line' => $line,
+                ];
+            }
+        }
+
+        return $finalTrace;
     }
 }

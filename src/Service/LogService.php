@@ -16,15 +16,15 @@ use const PHP_EOL;
 
 class LogService
 {
-    public const INFO = 'INFO';
-
-    public const WARNING = 'WARNING';
-
     public const DEBUG = 'DEBUG';
+
+    public const EMERGENCY = 'EMERGENCY';
 
     public const ERROR = 'ERROR';
 
-    public const EMERGENCY = 'EMERGENCY';
+    public const INFO = 'INFO';
+
+    public const WARNING = 'WARNING';
 
     /** @var resource|false */
     private $channel;
@@ -38,30 +38,6 @@ class LogService
         if ($this->contextService->isLocalEnvironament()) {
             $this->channel = false;
         }
-    }
-
-    /**
-     * @param mixed[] $payload
-     */
-    public function info(array $payload, string $message): void
-    {
-        if ($this->channel === false) {
-            return;
-        }
-        $data = $this->build($payload, $message, self::INFO);
-        fwrite($this->channel, JsonUtil::encode($data) . PHP_EOL);
-    }
-
-    /**
-     * @param mixed[] $payload
-     */
-    public function warning(array $payload, string $message): void
-    {
-        if ($this->channel === false) {
-            return;
-        }
-        $data = $this->build($payload, $message, self::WARNING);
-        fwrite($this->channel, JsonUtil::encode($data) . PHP_EOL);
     }
 
     /**
@@ -151,6 +127,18 @@ class LogService
     /**
      * @param mixed[] $payload
      */
+    public function info(array $payload, string $message): void
+    {
+        if ($this->channel === false) {
+            return;
+        }
+        $data = $this->build($payload, $message, self::INFO);
+        fwrite($this->channel, JsonUtil::encode($data) . PHP_EOL);
+    }
+
+    /**
+     * @param mixed[] $payload
+     */
     public function send(
         string $level,
         array $payload,
@@ -163,32 +151,6 @@ class LogService
             self::ERROR => $this->error($payload, $message),
             default => false,
         };
-    }
-
-    /**
-     * @param mixed[] $payload
-     * @return mixed[]
-     */
-    private function build(
-        array $payload,
-        string $message,
-        string $level
-    ): array {
-        $data = [
-            'message' => $message,
-            'logName' => "projects/nektria/logs/{$this->contextService->project()}",
-            'severity' => $level,
-            'logging.googleapis.com/labels' => [
-                'app' => $this->contextService->project(),
-                'context' => $this->contextService->context(),
-                'env' => $this->contextService->env(),
-                'tenant' => $this->contextService->tenantId(),
-            ],
-            'logging.googleapis.com/trace' => $this->contextService->traceId(),
-            'logging.googleapis.com/trace_sampled' => false
-        ];
-
-        return array_merge($payload, $data);
     }
 
     public function temporalLogs(): void
@@ -217,5 +179,43 @@ class LogService
             $data = array_merge($log['payload'], $data);
             fwrite($this->channel, JsonUtil::encode($data) . PHP_EOL);
         }
+    }
+
+    /**
+     * @param mixed[] $payload
+     */
+    public function warning(array $payload, string $message): void
+    {
+        if ($this->channel === false) {
+            return;
+        }
+        $data = $this->build($payload, $message, self::WARNING);
+        fwrite($this->channel, JsonUtil::encode($data) . PHP_EOL);
+    }
+
+    /**
+     * @param mixed[] $payload
+     * @return mixed[]
+     */
+    private function build(
+        array $payload,
+        string $message,
+        string $level
+    ): array {
+        $data = [
+            'message' => $message,
+            'logName' => "projects/nektria/logs/{$this->contextService->project()}",
+            'severity' => $level,
+            'logging.googleapis.com/labels' => [
+                'app' => $this->contextService->project(),
+                'context' => $this->contextService->context(),
+                'env' => $this->contextService->env(),
+                'tenant' => $this->contextService->tenantId(),
+            ],
+            'logging.googleapis.com/trace' => $this->contextService->traceId(),
+            'logging.googleapis.com/trace_sampled' => false
+        ];
+
+        return array_merge($payload, $data);
     }
 }

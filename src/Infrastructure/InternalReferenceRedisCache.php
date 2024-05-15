@@ -27,18 +27,27 @@ abstract class InternalReferenceRedisCache extends RedisCache
         parent::__construct($redisDsn, $env, $redisPrefix);
     }
 
-    protected function getRawItem(string $key): ?string
+    public function empty(): void
     {
         try {
-            $item = $this->init()->get("{$this->fqn}:{$key}");
-
-            if ($item === false) {
-                return null;
-            }
-
-            return $item;
+            $this->init()->eval("for _,k in ipairs(redis.call('keys','{$this->fqn}:*')) do redis.call('del',k) end");
         } catch (Throwable) {
-            return null;
+        }
+    }
+
+    public function fullRedisEmpty(): void
+    {
+        try {
+            $this->init()->flushDB();
+        } catch (Throwable) {
+        }
+    }
+
+    public function removeItem(string $key): void
+    {
+        try {
+            $this->init()->del("{$this->fqn}:{$key}");
+        } catch (Throwable) {
         }
     }
 
@@ -266,6 +275,21 @@ abstract class InternalReferenceRedisCache extends RedisCache
         }
     }
 
+    protected function getRawItem(string $key): ?string
+    {
+        try {
+            $item = $this->init()->get("{$this->fqn}:{$key}");
+
+            if ($item === false) {
+                return null;
+            }
+
+            return $item;
+        } catch (Throwable) {
+            return null;
+        }
+    }
+
     /**
      * @param string[] $items
      */
@@ -294,30 +318,6 @@ abstract class InternalReferenceRedisCache extends RedisCache
 
         try {
             $this->init()->set("{$this->fqn}:{$key}", $item, $ttl);
-        } catch (Throwable) {
-        }
-    }
-
-    public function removeItem(string $key): void
-    {
-        try {
-            $this->init()->del("{$this->fqn}:{$key}");
-        } catch (Throwable) {
-        }
-    }
-
-    public function empty(): void
-    {
-        try {
-            $this->init()->eval("for _,k in ipairs(redis.call('keys','{$this->fqn}:*')) do redis.call('del',k) end");
-        } catch (Throwable) {
-        }
-    }
-
-    public function fullRedisEmpty(): void
-    {
-        try {
-            $this->init()->flushDB();
         } catch (Throwable) {
         }
     }

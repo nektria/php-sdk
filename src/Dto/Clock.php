@@ -22,11 +22,6 @@ class Clock
         $this->dateTime = $dateTime ?? new DateTimeImmutable();
     }
 
-    public static function now(): self
-    {
-        return new self();
-    }
-
     public static function fromPhpDateTime(DateTimeImmutable $dateTime): self
     {
         return new self($dateTime);
@@ -41,14 +36,19 @@ class Clock
         }
     }
 
+    public static function max(self $a, self $b): self
+    {
+        return $a->isAfter($b) ? $a : $b;
+    }
+
     public static function min(self $a, self $b): self
     {
         return $a->isBefore($b) ? $a : $b;
     }
 
-    public static function max(self $a, self $b): self
+    public static function now(): self
     {
-        return $a->isAfter($b) ? $a : $b;
+        return new self();
     }
 
     /**
@@ -72,9 +72,9 @@ class Clock
         return $ret;
     }
 
-    public function setTimestamp(int $timestamp): self
+    public function __toString(): string
     {
-        return new self($this->dateTime->setTimestamp($timestamp));
+        return $this->dateTimeString();
     }
 
     /**
@@ -95,47 +95,15 @@ class Clock
         return new self($this->dateTime->modify("- {$amount} {$in}"));
     }
 
-    public function setTimezone(string $timeZone): self
+    /**
+     * @param CtTimeFormat $in
+     */
+    public function compare(self $to, string $in = 'seconds'): int
     {
-        try {
-            return new self($this->dateTime->setTimezone(new DateTimeZone($timeZone)));
-        } catch (Throwable $e) {
-            throw NektriaException::new($e);
-        }
+        return $this->timestamp($in) <=> $to->timestamp($in);
     }
 
     // still is UTC but the hour is the same as the timezone selected
-    public function replaceTimezone(string $timeZone): self
-    {
-        try {
-            $dateTime = (new DateTimeImmutable($this->dateTimeString(), new DateTimeZone($timeZone)))
-                ->setTimezone(new DateTimeZone('UTC'));
-
-            return new self($dateTime);
-        } catch (Throwable $e) {
-            throw new DomainException($e->getMessage(), $e->getCode(), $e);
-        }
-    }
-
-    public function setTime(int $hour, int $minutes = 0): self
-    {
-        return new self($this->dateTime->setTime($hour, $minutes));
-    }
-
-    public function setYearAndWeek(int $year, int $week): self
-    {
-        return new self($this->dateTime->setISODate($year, $week));
-    }
-
-    public function removeTimeZone(): self
-    {
-        return self::fromString($this->dateTimeString());
-    }
-
-    public function getPHPDateTime(): DateTimeImmutable
-    {
-        return $this->dateTime;
-    }
 
     public function dateString(?string $timeZone = null): string
     {
@@ -146,20 +114,6 @@ class Clock
             }
 
             return $dateTime->format('Y-m-d');
-        } catch (Throwable $e) {
-            throw NektriaException::new($e);
-        }
-    }
-
-    public function timeString(?string $timeZone = null): string
-    {
-        try {
-            $dateTime = $this->dateTime;
-            if ($timeZone !== null) {
-                $dateTime = $dateTime->setTimezone(new DateTimeZone($timeZone));
-            }
-
-            return $dateTime->format('H:i');
         } catch (Throwable $e) {
             throw NektriaException::new($e);
         }
@@ -177,51 +131,6 @@ class Clock
         } catch (Throwable $e) {
             throw NektriaException::new($e);
         }
-    }
-
-    public function microDateTimeString(?string $timeZone = null): string
-    {
-        try {
-            $dateTime = $this->dateTime;
-            if ($timeZone !== null) {
-                $dateTime = $dateTime->setTimezone(new DateTimeZone($timeZone));
-            }
-
-            return $dateTime->format('Y-m-d\TH:i:s.u');
-        } catch (Throwable $e) {
-            throw NektriaException::new($e);
-        }
-    }
-
-    public function iso8601String(?string $timeZone = null): string
-    {
-        try {
-            $dateTime = $this->dateTime;
-            if ($timeZone !== null) {
-                $dateTime = $dateTime->setTimezone(new DateTimeZone($timeZone));
-            }
-
-            return $dateTime->format(DateTimeImmutable::ATOM);
-        } catch (Throwable $e) {
-            throw NektriaException::new($e);
-        }
-    }
-
-    /**
-     * @param CtTimeFormat $in
-     */
-    public function timestamp(string $in = 'seconds'): int
-    {
-        $ts = $this->dateTime->getTimestamp();
-
-        return match ($in) {
-            'seconds' => $ts,
-            'minutes' => (int) ($ts / 60),
-            'hours' => (int) ($ts / 3600),
-            'days' => (int) ($ts / 86400),
-            'weeks' => (int) ($ts / 604800),
-            default => throw new DomainException("Invalid time format: {$in}"),
-        };
     }
 
     /**
@@ -244,19 +153,24 @@ class Clock
         return $diff->invert === 1 ? $absDiff : -$absDiff;
     }
 
+    public function fromLocalToUTC(string $timezone): self
+    {
+        return $this->replaceTimezone($timezone);
+    }
+
+    public function fromUTCToLocal(string $timezone): self
+    {
+        return $this->setTimezone($timezone)->replaceTimezone('UTC');
+    }
+
+    public function getPHPDateTime(): DateTimeImmutable
+    {
+        return $this->dateTime;
+    }
+
     public function hour(): int
     {
         return (int) $this->dateTime->format('H');
-    }
-
-    public function year(): int
-    {
-        return (int) $this->dateTime->format('Y');
-    }
-
-    public function week(): int
-    {
-        return (int) $this->dateTime->format('W');
     }
 
     /**
@@ -307,12 +221,32 @@ class Clock
         return $this->timestamp($in) !== $to->timestamp($in);
     }
 
-    /**
-     * @param CtTimeFormat $in
-     */
-    public function compare(self $to, string $in = 'seconds'): int
+    public function iso8601String(?string $timeZone = null): string
     {
-        return $this->timestamp($in) <=> $to->timestamp($in);
+        try {
+            $dateTime = $this->dateTime;
+            if ($timeZone !== null) {
+                $dateTime = $dateTime->setTimezone(new DateTimeZone($timeZone));
+            }
+
+            return $dateTime->format(DateTimeImmutable::ATOM);
+        } catch (Throwable $e) {
+            throw NektriaException::new($e);
+        }
+    }
+
+    public function microDateTimeString(?string $timeZone = null): string
+    {
+        try {
+            $dateTime = $this->dateTime;
+            if ($timeZone !== null) {
+                $dateTime = $dateTime->setTimezone(new DateTimeZone($timeZone));
+            }
+
+            return $dateTime->format('Y-m-d\TH:i:s.u');
+        } catch (Throwable $e) {
+            throw NektriaException::new($e);
+        }
     }
 
     public function modify(string $modifier): self
@@ -320,9 +254,45 @@ class Clock
         return new self($this->dateTime->modify($modifier));
     }
 
-    public function __toString(): string
+    public function removeTimeZone(): self
     {
-        return $this->dateTimeString();
+        return self::fromString($this->dateTimeString());
+    }
+
+    public function replaceTimezone(string $timeZone): self
+    {
+        try {
+            $dateTime = (new DateTimeImmutable($this->dateTimeString(), new DateTimeZone($timeZone)))
+                ->setTimezone(new DateTimeZone('UTC'));
+
+            return new self($dateTime);
+        } catch (Throwable $e) {
+            throw new DomainException($e->getMessage(), $e->getCode(), $e);
+        }
+    }
+
+    public function setTime(int $hour, int $minutes = 0): self
+    {
+        return new self($this->dateTime->setTime($hour, $minutes));
+    }
+
+    public function setTimestamp(int $timestamp): self
+    {
+        return new self($this->dateTime->setTimestamp($timestamp));
+    }
+
+    public function setTimezone(string $timeZone): self
+    {
+        try {
+            return new self($this->dateTime->setTimezone(new DateTimeZone($timeZone)));
+        } catch (Throwable $e) {
+            throw NektriaException::new($e);
+        }
+    }
+
+    public function setYearAndWeek(int $year, int $week): self
+    {
+        return new self($this->dateTime->setISODate($year, $week));
     }
 
     public function sinceString(): string
@@ -361,13 +331,44 @@ class Clock
         return "$count {$name}s ago";
     }
 
-    public function fromLocalToUTC(string $timezone): self
+    public function timeString(?string $timeZone = null): string
     {
-        return $this->replaceTimezone($timezone);
+        try {
+            $dateTime = $this->dateTime;
+            if ($timeZone !== null) {
+                $dateTime = $dateTime->setTimezone(new DateTimeZone($timeZone));
+            }
+
+            return $dateTime->format('H:i');
+        } catch (Throwable $e) {
+            throw NektriaException::new($e);
+        }
     }
 
-    public function fromUTCToLocal(string $timezone): self
+    /**
+     * @param CtTimeFormat $in
+     */
+    public function timestamp(string $in = 'seconds'): int
     {
-        return $this->setTimezone($timezone)->replaceTimezone('UTC');
+        $ts = $this->dateTime->getTimestamp();
+
+        return match ($in) {
+            'seconds' => $ts,
+            'minutes' => (int) ($ts / 60),
+            'hours' => (int) ($ts / 3600),
+            'days' => (int) ($ts / 86400),
+            'weeks' => (int) ($ts / 604800),
+            default => throw new DomainException("Invalid time format: {$in}"),
+        };
+    }
+
+    public function week(): int
+    {
+        return (int) $this->dateTime->format('W');
+    }
+
+    public function year(): int
+    {
+        return (int) $this->dateTime->format('Y');
     }
 }

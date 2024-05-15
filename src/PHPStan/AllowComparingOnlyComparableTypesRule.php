@@ -97,6 +97,34 @@ class AllowComparingOnlyComparableTypesRule implements Rule
         return [];
     }
 
+    /**
+     * @param Type[] $allowedTypes
+     */
+    private function containsOnlyTypes(Type $checkedType, array $allowedTypes): bool
+    {
+        $typesToCheck = $checkedType instanceof UnionType
+            ? $checkedType->getTypes()
+            : [$checkedType];
+
+        foreach ($typesToCheck as $typeToCheck) {
+            $isWithinAllowed = false;
+
+            foreach ($allowedTypes as $allowedType) {
+                if ($allowedType->isSuperTypeOf($typeToCheck)->yes()) {
+                    $isWithinAllowed = true;
+
+                    break;
+                }
+            }
+
+            if (!$isWithinAllowed) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
     private function isComparable(Type $type): bool
     {
         $intType = new IntegerType();
@@ -126,33 +154,5 @@ class AllowComparingOnlyComparableTypesRule implements Rule
                 $rightType,
                 [$dateTimeType]
             ));
-    }
-
-    /**
-     * @param Type[] $allowedTypes
-     */
-    private function containsOnlyTypes(Type $checkedType, array $allowedTypes): bool
-    {
-        $typesToCheck = $checkedType instanceof UnionType
-            ? $checkedType->getTypes()
-            : [$checkedType];
-
-        foreach ($typesToCheck as $typeToCheck) {
-            $isWithinAllowed = false;
-
-            foreach ($allowedTypes as $allowedType) {
-                if ($allowedType->isSuperTypeOf($typeToCheck)->yes()) {
-                    $isWithinAllowed = true;
-
-                    break;
-                }
-            }
-
-            if (!$isWithinAllowed) {
-                return false;
-            }
-        }
-
-        return true;
     }
 }

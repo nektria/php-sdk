@@ -38,37 +38,9 @@ class Bus implements BusInterface
         $this->delayedEvents = [];
     }
 
-    /**
-     * @template T of Document
-     * @param Query<T> $query
-     * @return T
-     * @throws Throwable
-     */
-    final public function dispatchQuery(Query $query): Document
+    final public function addDelayedEvent(Event $event): void
     {
-        try {
-            $this->validateAccess($query);
-
-            $result = $this->bus->dispatch($query, [
-                new ContextStamp(
-                    $this->contextService->traceId(),
-                    $this->contextService->tenantId(),
-                )
-            ])->last(HandledStamp::class);
-
-            if ($result === null) {
-                throw new RuntimeException('Query does not return a Document');
-            }
-
-            return $result->getResult();
-        } catch (HandlerFailedException $e) {
-            $previous = $e->getPrevious();
-            if ($previous !== null) {
-                throw $previous;
-            }
-
-            throw $e;
-        }
+        $this->delayedEvents[] = $event;
     }
 
     /**
@@ -130,6 +102,17 @@ class Bus implements BusInterface
         }
     }
 
+    final public function dispatchDelayedEvents(): void
+    {
+        foreach ($this->delayedEvents as $event) {
+            try {
+                $this->dispatchEvent($event);
+            } catch (Throwable) {
+            }
+        }
+        $this->delayedEvents = [];
+    }
+
     /**
      * @throws Throwable
      */
@@ -152,20 +135,37 @@ class Bus implements BusInterface
         }
     }
 
-    final public function dispatchDelayedEvents(): void
+    /**
+     * @template T of Document
+     * @param Query<T> $query
+     * @return T
+     * @throws Throwable
+     */
+    final public function dispatchQuery(Query $query): Document
     {
-        foreach ($this->delayedEvents as $event) {
-            try {
-                $this->dispatchEvent($event);
-            } catch (Throwable) {
-            }
-        }
-        $this->delayedEvents = [];
-    }
+        try {
+            $this->validateAccess($query);
 
-    final public function addDelayedEvent(Event $event): void
-    {
-        $this->delayedEvents[] = $event;
+            $result = $this->bus->dispatch($query, [
+                new ContextStamp(
+                    $this->contextService->traceId(),
+                    $this->contextService->tenantId(),
+                )
+            ])->last(HandledStamp::class);
+
+            if ($result === null) {
+                throw new RuntimeException('Query does not return a Document');
+            }
+
+            return $result->getResult();
+        } catch (HandlerFailedException $e) {
+            $previous = $e->getPrevious();
+            if ($previous !== null) {
+                throw $previous;
+            }
+
+            throw $e;
+        }
     }
 
     /**
