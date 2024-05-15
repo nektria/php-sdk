@@ -8,7 +8,7 @@ use Nektria\Dto\Clock;
 
 /**
  * @phpstan-type YMTimeWindow array{
- *     areas: string,
+ *     areas: string[],
  *     children: string[],
  *     createdAt: string,
  *     id: string,
