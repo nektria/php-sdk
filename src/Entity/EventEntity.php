@@ -22,6 +22,12 @@ abstract class EventEntity implements EntityInterface
         $this->timestamp = Clock::now();
     }
 
+    public function fixTimeStamp(): void
+    {
+        usleep(2);
+        $this->timestamp = Clock::now();
+    }
+
     public function id(): string
     {
         return (string) $this->timestamp;

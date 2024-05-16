@@ -7,6 +7,7 @@ namespace Nektria\Infrastructure;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\EntityRepository;
 use Nektria\Entity\EntityInterface;
+use Nektria\Entity\EventEntity;
 use Throwable;
 
 /**
@@ -88,9 +89,21 @@ abstract class WriteModel
      */
     protected function saveEntity(EntityInterface $domain): void
     {
-        $domain->refresh();
-        $this->manager->persist($domain);
-        $this->manager->flush();
-        $this->manager->detach($domain);
+        try {
+            $domain->refresh();
+            $this->manager->persist($domain);
+            $this->manager->flush();
+            $this->manager->detach($domain);
+        } catch (Throwable $e) {
+            if (
+                $domain instanceof EventEntity
+                && str_contains($e->getMessage(), 'duplicate key value violates unique constraint')
+            ) {
+                $domain->fixTimeStamp();
+                $this->manager->persist($domain);
+                $this->manager->flush();
+                $this->manager->detach($domain);
+            }
+        }
     }
 }
