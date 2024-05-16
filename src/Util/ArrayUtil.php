@@ -38,7 +38,7 @@ class ArrayUtil
      * @param T[] $list
      * @return T[]
      */
-    public function unique(array $list): array
+    public static function unique(array $list): array
     {
         return array_values(array_unique($list));
     }
