@@ -4,12 +4,13 @@ declare(strict_types=1);
 
 namespace Nektria\Infrastructure;
 
+use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
-use Doctrine\Persistence\ObjectManager;
 use Nektria\Entity\EntityInterface;
 use Nektria\Entity\EventEntity;
 use Nektria\Exception\NektriaException;
+use RuntimeException;
 use Throwable;
 
 /**
@@ -17,15 +18,19 @@ use Throwable;
  */
 abstract class WriteModel
 {
-    private ObjectManager $manager;
+    private EntityManager $manager;
 
     public function __construct(
         private readonly ManagerRegistry $managerRegistry
     ) {
-        $this->manager = $this->managerRegistry->getManager();
+        $manager = $this->managerRegistry->getManager();
+        if (!($manager instanceof EntityManager)) {
+            throw new RuntimeException('Unable to restart the manager.');
+        }
+        $this->manager = $manager;
     }
 
-    public function manager(): ObjectManager
+    public function manager(): EntityManager
     {
         return $this->manager;
     }
@@ -98,8 +103,7 @@ abstract class WriteModel
             $this->manager->flush();
             $this->manager->detach($domain);
         } catch (Throwable $e) {
-            $this->managerRegistry->resetManager();
-            $this->manager = $this->managerRegistry->getManager();
+            $this->resetManager();
 
             if (
                 $domain instanceof EventEntity
@@ -113,8 +117,7 @@ abstract class WriteModel
 
                     return;
                 } catch (Throwable) {
-                    $this->managerRegistry->resetManager();
-                    $this->manager = $this->managerRegistry->getManager();
+                    $this->resetManager();
 
                     throw NektriaException::new($e);
                 }
@@ -122,5 +125,16 @@ abstract class WriteModel
 
             throw NektriaException::new($e);
         }
+    }
+
+    private function resetManager(): void
+    {
+        $this->managerRegistry->resetManager();
+        $manager = $this->managerRegistry->getManager();
+        if (!($manager instanceof EntityManager)) {
+            throw new RuntimeException('Unable to restart the manager.');
+        }
+
+        $this->manager = $manager;
     }
 }
