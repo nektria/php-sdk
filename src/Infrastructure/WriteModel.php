@@ -110,6 +110,8 @@ abstract class WriteModel
                     $this->manager->persist($domain);
                     $this->manager->flush();
                     $this->manager->detach($domain);
+
+                    return;
                 } catch (Throwable) {
                     $this->managerRegistry->resetManager();
                     $this->manager = $this->managerRegistry->getManager();
@@ -117,6 +119,8 @@ abstract class WriteModel
                     throw NektriaException::new($e);
                 }
             }
+
+            throw NektriaException::new($e);
         }
     }
 }
