@@ -104,7 +104,6 @@ abstract class WriteModel
             $this->manager->detach($domain);
         } catch (Throwable $e) {
             $this->resetManager();
-
             if (
                 $domain instanceof EventEntity
                 && str_contains($e->getMessage(), 'duplicate key value violates unique constraint')
