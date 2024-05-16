@@ -4,10 +4,12 @@ declare(strict_types=1);
 
 namespace Nektria\Infrastructure;
 
-use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\EntityRepository;
+use Doctrine\Persistence\ManagerRegistry;
+use Doctrine\Persistence\ObjectManager;
 use Nektria\Entity\EntityInterface;
 use Nektria\Entity\EventEntity;
+use Nektria\Exception\NektriaException;
 use Throwable;
 
 /**
@@ -15,14 +17,15 @@ use Throwable;
  */
 abstract class WriteModel
 {
-    private EntityManagerInterface $manager;
+    private ObjectManager $manager;
 
-    public function __construct(EntityManagerInterface $manager)
-    {
-        $this->manager = $manager;
+    public function __construct(
+        private readonly ManagerRegistry $managerRegistry
+    ) {
+        $this->manager = $this->managerRegistry->getManager();
     }
 
-    public function manager(): EntityManagerInterface
+    public function manager(): ObjectManager
     {
         return $this->manager;
     }
@@ -95,15 +98,24 @@ abstract class WriteModel
             $this->manager->flush();
             $this->manager->detach($domain);
         } catch (Throwable $e) {
-            $this->manager()->getConnection()->rollBack();
+            $this->managerRegistry->resetManager();
+            $this->manager = $this->managerRegistry->getManager();
+
             if (
                 $domain instanceof EventEntity
                 && str_contains($e->getMessage(), 'duplicate key value violates unique constraint')
             ) {
-                $domain->fixTimeStamp();
-                $this->manager->persist($domain);
-                $this->manager->flush();
-                $this->manager->detach($domain);
+                try {
+                    $domain->fixTimeStamp();
+                    $this->manager->persist($domain);
+                    $this->manager->flush();
+                    $this->manager->detach($domain);
+                } catch (Throwable) {
+                    $this->managerRegistry->resetManager();
+                    $this->manager = $this->managerRegistry->getManager();
+
+                    throw NektriaException::new($e);
+                }
             }
         }
     }
