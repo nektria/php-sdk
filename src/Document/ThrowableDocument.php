@@ -99,15 +99,13 @@ class ThrowableDocument implements Document
             $message = $exception->getMessage();
         }
 
-        $data = [
+        return [
             'message' => $message,
+            'type' => $exception::class,
+            'file' => str_replace('/app/', '', $exception->getFile()),
+            'line' => $exception->getLine(),
+            'trace' => $this->trace(),
         ];
-
-        $data['file'] = str_replace('/app/', '', $exception->getFile());
-        $data['line'] = $exception->getLine();
-        $data['trace'] = $this->trace();
-
-        return $data;
     }
 
     /**
