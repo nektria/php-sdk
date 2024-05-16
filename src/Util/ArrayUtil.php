@@ -32,4 +32,14 @@ class ArrayUtil
             'removed' => array_diff($old, $new),
         ];
     }
+
+    /**
+     * @template T
+     * @param T[] $list
+     * @return T[]
+     */
+    public function unique(array $list): array
+    {
+        return array_values(array_unique($list));
+    }
 }
