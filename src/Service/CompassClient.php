@@ -23,6 +23,12 @@ namespace Nektria\Service;
  *     longitude: float,
  * }
  *
+ * @phpstan-type CompassCoordinateWithHash array{
+ *     hash: string,
+ *     latitude: float,
+ *     longitude: float,
+ * }
+ *
  * @phpstan-type CompassDistance array{
  *      distance: int,
  *      travelTime: int,
@@ -30,12 +36,17 @@ namespace Nektria\Service;
  *      originLongitude: float,
  *      destinationLatitude: float,
  *      destinationLongitude: float,
- *  }
+ * }
+ *
+ * @phpstan-type CompassDistanceMatrix array<string, array<string, array{
+ *      distance: int,
+ *      travelTime: int,
+ * }>>
  *
  * @phpstan-type CompassGeoPolygon array{
  *      distance: int,
  *      coordinates: CompassCoordinate[],
- *  }
+ * }
  */
 class CompassClient
 {
@@ -74,6 +85,51 @@ class CompassClient
     }
 
     /**
+     * @param CompassCoordinateWithHash[] $coordinates
+     * @return CompassDistanceMatrix
+     */
+    public function getDistanceMatrix(string $travelMode, array $coordinates): array
+    {
+        $list = [];
+        $hashMap = [];
+        foreach ($coordinates as $coordinate) {
+            $list[] = "{$coordinate['latitude']},{$coordinate['longitude']}";
+            $hashMap["{$coordinate['latitude']},{$coordinate['longitude']}"] = $coordinate['hash'];
+        }
+
+        /** @var CompassDistance[] $data */
+        $data = $this->requestClient->get(
+            "{$this->compassHost}/api/admin/distances",
+            data: [
+                'wayPoints' => implode('|', $list),
+                'travelMode' => $travelMode,
+            ],
+            headers: $this->getHeaders(),
+        )->json();
+
+        $matrix = [];
+
+        foreach ($data as $distance) {
+            $fromHash = "{$distance['originLatitude']},{$distance['originLongitude']}";
+            $toHash = "{$distance['destinationLatitude']},{$distance['destinationLongitude']}";
+
+            $matrix[$fromHash] ??= [];
+            $matrix[$toHash] ??= [];
+            $matrix[$fromHash][$toHash] = [
+                'distance' => $distance['distance'],
+                'travelTime' => $distance['travelTime'],
+            ];
+            $matrix[$toHash][$fromHash] = [
+                'distance' => $distance['distance'],
+                'travelTime' => $distance['travelTime'],
+            ];
+        }
+
+        return $matrix;
+    }
+
+    /**
+     * @deprecated Use getDistanceMatrix instead
      * @param CompassCoordinate[] $coordinates
      * @return CompassDistance[]
      */

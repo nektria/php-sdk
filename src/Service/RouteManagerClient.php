@@ -56,6 +56,14 @@ class RouteManagerClient
     ) {
     }
 
+    public function deleteOrder(string $orderNumber): void
+    {
+        $this->requestClient->delete(
+            "{$this->routeManagerHost}/api/admin/orders/{$orderNumber}",
+            headers: $this->getHeaders(),
+        );
+    }
+
     /**
      * @return RMWarehouse
      */
