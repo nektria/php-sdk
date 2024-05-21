@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace Nektria\Service;
 
+use Nektria\Dto\Clock;
+use Throwable;
+
 /**
  * @phpstan-type RMAddress array{
  *      addressLine1: string,
@@ -54,6 +57,20 @@ class RouteManagerClient
         private readonly RequestClient $requestClient,
         private readonly string $routeManagerHost
     ) {
+    }
+
+    public function checkProxyPickingShiftAssignation(string $orderNumber): void
+    {
+        try {
+            $this->requestClient->patch(
+                "{$this->routeManagerHost}/api/admin/orders/{$orderNumber}/check-proxy-assignation",
+                data: [
+                    'at' => Clock::now()->dateTimeString()
+                ],
+                headers: $this->getHeaders()
+            );
+        } catch (Throwable) {
+        }
     }
 
     public function deleteOrder(string $orderNumber): void
