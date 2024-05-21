@@ -12,7 +12,6 @@ use Throwable;
 
 use function count;
 use function in_array;
-use function strlen;
 
 /**
  * @phpstan-type AlertMessage array{
@@ -238,16 +237,6 @@ class AlertService
             $flags |= self::FLAG_SUPPRESS_NOTIFICATIONS;
         }
 
-        $traceUrl = 'https://console.cloud.google.com/logs/analytics;' .
-            'queryHandle=%7B%22Jbc%22:%7B%22viewResourceNames%22:%5B%22projects%2Fnektria%2Flocations' .
-            '%2Fglobal%2Fbuckets%2F_Default%2Fviews%2F_Default%22%5D,%22queryType%22:%22LOGS_ANALYTICS_' .
-            'QUERY_TYPE_SOURCE%22%7D,%22query%22:%22SELECT%5Cn%20%20timestamp,%20JSON_VALUE%2528labels.' .
-            'app%2529,%20http_request.request_method%20as%20method,%20JSON_VALUE%2528json_payload.message' .
-            '%2529%20as%20path,%20json_payload.request,%20json_payload.response,%20trace%5CnFROM%5Cn%20' .
-            "%20%60nektria.global._Default._Default%60%5CnWHERE%5Cn%20%20trace%3D'__TRACE__'" .
-            '%5CnORDER%20BY%20timestamp%20DESC%5Cn%22%7D;';
-
-        $traceUrl = str_replace('__TRACE__', $this->contextService->traceId(), $traceUrl);
         $maxLength = 2000;
         $inputString = JsonUtil::encode($input, true);
         $documentString = JsonUtil::encode($document->toDevArray(), true);
@@ -265,25 +254,8 @@ class AlertService
             "```json\n" .
             $documentString .
             "\n```" .
-            "Trace: [{$this->contextService->traceId()}]($traceUrl)\n" .
+            "Trace: {$this->contextService->traceId()}\n" .
             self::EMPTY_LINE;
-
-        if (strlen($content) >= $maxLength) {
-            $content = self::EMPTY_LINE .
-                $eol .
-                "**{$this->contextService->project()}**{$eol}" .
-                "**{$tenantName}**{$eol}" .
-                $eol .
-                "**{$method}** _{$path}_ {$manyTimes}\n" .
-                "```json\n" .
-                $inputString .
-                "\n```" .
-                "```json\n" .
-                $documentString .
-                "\n```" .
-                "Trace: {$this->contextService->traceId()}\n" .
-                self::EMPTY_LINE;
-        }
 
         $content = str_replace(['\/', '/app/'], ['/', ''], $content);
         $content = html_entity_decode(preg_replace('/\\\u([\da-fA-F]{4})/', '&#x\1;', $content) ?? '');
