@@ -16,11 +16,16 @@ class BuildNkVersion extends Console
         parent::__construct('sdk:version');
     }
 
+    protected function configure(): void
+    {
+        $this->addArgument('branch');
+    }
+
     protected function play(): void
     {
         $commit = substr(StringUtil::trim((string) exec('git rev-parse HEAD')), 0, 7);
         $total = exec('git rev-list --count HEAD');
-        $branch = exec('git rev-parse --abbrev-ref HEAD');
+        $branch = $this->input()->getArgument('branch') ?? exec('git rev-parse --abbrev-ref HEAD');
         $version = $branch === 'master' ? "v{$total}" : "v{$total}-{$branch}";
 
         FileUtil::write('NK_VERSION', JsonUtil::encode([
