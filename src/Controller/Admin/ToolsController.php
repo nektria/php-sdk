@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Nektria\Controller\Admin;
 
 use Nektria\Controller\Controller;
-use Nektria\Document\DatabaseValue;
+use Nektria\Document\ArrayDocument;
 use Nektria\Document\DocumentResponse;
 use Nektria\Exception\InsufficientCredentialsException;
 use Nektria\Infrastructure\DatabaseValueReadModel;
@@ -102,7 +102,7 @@ class ToolsController extends Controller
 
         $pass = $this->requestData->getString('pass') ?? $contextService->project();
 
-        return $this->documentResponse(new DatabaseValue(JsonUtil::decode(
+        return $this->documentResponse(new ArrayDocument(JsonUtil::decode(
             (string) base64_decode(
                 (string) openssl_decrypt(
                     $this->requestData->retrieveString('hash'),

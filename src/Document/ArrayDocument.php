@@ -6,7 +6,7 @@ namespace Nektria\Document;
 
 use Nektria\Service\ContextService;
 
-class DatabaseValue implements Document
+class ArrayDocument implements Document
 {
     public function __construct(public readonly mixed $data)
     {

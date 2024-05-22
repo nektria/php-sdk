@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Nektria\Controller;
 
-use Nektria\Document\DatabaseValue;
+use Nektria\Document\ArrayDocument;
 use Nektria\Document\Document;
 use Nektria\Document\DocumentResponse;
 use Nektria\Document\Tenant;
@@ -90,7 +90,7 @@ class Controller
             $this->command($command, $transport, $delayMs, $retryOptions);
         }
 
-        return new DocumentResponse(new DatabaseValue([]), $this->context, Response::HTTP_NO_CONTENT);
+        return new DocumentResponse(new ArrayDocument([]), $this->context, Response::HTTP_NO_CONTENT);
     }
 
     /**

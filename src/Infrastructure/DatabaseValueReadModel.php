@@ -4,17 +4,17 @@ declare(strict_types=1);
 
 namespace Nektria\Infrastructure;
 
-use Nektria\Document\DatabaseValue;
+use Nektria\Document\ArrayDocument;
 use Nektria\Document\Document;
 use Nektria\Document\DocumentCollection;
 
 /**
- * @extends ReadModel<DatabaseValue>
+ * @extends ReadModel<ArrayDocument>
  */
 class DatabaseValueReadModel extends ReadModel
 {
     /**
-     * @return DocumentCollection<DatabaseValue>
+     * @return DocumentCollection<ArrayDocument>
      */
     public function readCustom(string $table, string $order, int $page): DocumentCollection
     {
@@ -32,7 +32,7 @@ class DatabaseValueReadModel extends ReadModel
     }
 
     /**
-     * @return DocumentCollection<DatabaseValue>
+     * @return DocumentCollection<ArrayDocument>
      */
     public function readMigrations(): DocumentCollection
     {
@@ -45,7 +45,7 @@ class DatabaseValueReadModel extends ReadModel
 
     protected function buildDocument(array $params): Document
     {
-        return new DatabaseValue($params);
+        return new ArrayDocument($params);
     }
 
     protected function source(): string
