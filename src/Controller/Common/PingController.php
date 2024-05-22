@@ -2,8 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Nektria\Controller;
+namespace Nektria\Controller\Common;
 
+use Nektria\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Attribute\Route;
 

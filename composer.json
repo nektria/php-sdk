@@ -16,6 +16,7 @@
         }
     ],
     "require": {
+        "ext-openssl": "*",
         "ext-redis": "*",
         "php": ">=8.1",
         "symfony/http-foundation": ">=v6.0",

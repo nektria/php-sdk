@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "51d67738909cee69c655a02c24792685",
+    "content-hash": "e5ab7d07cce363cf8f491c567f0dc89e",
     "packages": [
         {
             "name": "doctrine/cache",
@@ -4307,12 +4307,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/PHP-CS-Fixer/PHP-CS-Fixer.git",
-                "reference": "46083279c0df4f91e4f222123ba28c55f436ed1e"
+                "reference": "15cfcfe1f651209d21de20c9022c4e8e658f3e6a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/PHP-CS-Fixer/PHP-CS-Fixer/zipball/46083279c0df4f91e4f222123ba28c55f436ed1e",
-                "reference": "46083279c0df4f91e4f222123ba28c55f436ed1e",
+                "url": "https://api.github.com/repos/PHP-CS-Fixer/PHP-CS-Fixer/zipball/15cfcfe1f651209d21de20c9022c4e8e658f3e6a",
+                "reference": "15cfcfe1f651209d21de20c9022c4e8e658f3e6a",
                 "shasum": ""
             },
             "require": {
@@ -4400,7 +4400,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2024-05-20T20:42:16+00:00"
+            "time": "2024-05-22T14:49:42+00:00"
         },
         {
             "name": "masterminds/html5",
@@ -8258,6 +8258,7 @@
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {
+        "ext-openssl": "*",
         "ext-redis": "*",
         "php": ">=8.1"
     },
