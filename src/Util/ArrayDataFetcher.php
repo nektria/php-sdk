@@ -367,6 +367,14 @@ class ArrayDataFetcher
         if (!str_contains($field, '.')) {
             $value = $this->data[$field] ?? null;
 
+            if ($value === null) {
+                return null;
+            }
+
+            if (is_string($value)) {
+                $value = StringUtil::trim($value);
+            }
+
             if ($value === 'null') {
                 return null;
             }
@@ -377,10 +385,6 @@ class ArrayDataFetcher
 
             if ($value === 'false') {
                 return false;
-            }
-
-            if (is_string($value)) {
-                return StringUtil::trim($value);
             }
 
             return $value;
@@ -400,6 +404,14 @@ class ArrayDataFetcher
             if ($i === ($length - 1)) {
                 $value = $currentValue[$part] ?? null;
 
+                if ($value === null) {
+                    return null;
+                }
+
+                if (is_string($value)) {
+                    $value = StringUtil::trim($value);
+                }
+
                 if ($value === 'null') {
                     return null;
                 }
@@ -410,10 +422,6 @@ class ArrayDataFetcher
 
                 if ($value === 'false') {
                     return false;
-                }
-
-                if (is_string($value)) {
-                    return StringUtil::trim($value);
                 }
 
                 return $value;
