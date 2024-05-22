@@ -10,6 +10,7 @@ use Nektria\Dto\Clock;
 use Nektria\Infrastructure\DatabaseValueReadModel;
 use Nektria\Util\FileUtil;
 use Nektria\Util\JsonUtil;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Attribute\Route;
 use Throwable;
@@ -23,10 +24,18 @@ class CommonController extends Controller
     }
 
     #[Route('/version', methods: 'GET')]
-    public function version(DatabaseValueReadModel $readModel): JsonResponse
+    public function version(ContainerInterface $container): JsonResponse
     {
-        $versions = $readModel->readCustom('doctrine_migration_versions', 'version', 1);
-        $migration = $versions->first()->data ?? ['version' => 'DoctrineMigrations\\none'];
+        if ($container->has(DatabaseValueReadModel::class)) {
+            /** @var DatabaseValueReadModel $readModel */
+            $readModel = $container->get(DatabaseValueReadModel::class);
+            $versions = $readModel->readCustom('doctrine_migration_versions', 'version', 1);
+            $migration = $versions->first()->data ?? ['version' => 'DoctrineMigrations\\none'];
+
+            $migrationVersion = explode('\\', $migration['version'])[1];
+        } else {
+            $migrationVersion = null;
+        }
 
         try {
             $versionFile = JsonUtil::decode(FileUtil::read('/app/NK_VERSION'));
@@ -38,8 +47,7 @@ class CommonController extends Controller
                 'version' => '',
             ];
         }
-
-        $versionFile['migration'] = explode('\\', $migration['version'])[1];
+        $versionFile['migration'] = $migrationVersion;
 
         return $this->documentResponse(new ArrayDocument($versionFile));
     }
