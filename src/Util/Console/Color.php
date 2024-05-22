@@ -11,7 +11,7 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace Nektria\Console;
+namespace Nektria\Util\Console;
 
 use Symfony\Component\Console\Exception\InvalidArgumentException;
 

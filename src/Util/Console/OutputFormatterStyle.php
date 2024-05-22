@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Nektria\Console;
+namespace Nektria\Util\Console;
 
 use Symfony\Component\Console\Formatter\OutputFormatterStyleInterface;
 

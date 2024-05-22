@@ -13,6 +13,7 @@ use Nektria\Message\Command as CommandMessage;
 use Nektria\Message\Query;
 use Nektria\Service\AlertService;
 use Nektria\Service\Bus;
+use Nektria\Util\Console\OutputFormatterStyle;
 use Nektria\Util\StringUtil;
 use RuntimeException;
 use Symfony\Component\Console\Command\Command as BaseCommand;
