@@ -21,7 +21,7 @@ use Symfony\Component\Routing\Attribute\Route;
 use const PHP_EOL;
 use const STR_PAD_LEFT;
 
-#[Route('/tools')]
+#[Route('/api/admin/tools')]
 class ToolsController extends Controller
 {
     #[Route('/crypt', methods: 'GET')]
@@ -68,7 +68,7 @@ class ToolsController extends Controller
         ]);
     }
 
-    #[Route('/read', methods: 'GET')]
+    #[Route('/database/read', methods: 'GET')]
     public function databaseRead(DatabaseValueReadModel $readModel): DocumentResponse
     {
         return $this->documentResponse(
