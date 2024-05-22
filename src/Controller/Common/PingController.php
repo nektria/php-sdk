@@ -13,6 +13,6 @@ class PingController extends Controller
     #[Route('/ping', methods: ['GET'])]
     public function ping(): JsonResponse
     {
-        return new JsonResponse(['response' => 'pong']);
+        return new JsonResponse(['response' => 'pong.']);
     }
 }
