@@ -80,10 +80,8 @@ abstract class MessageListener implements EventSubscriberInterface
         $transportStamp = $event->getEnvelope()->last(TransportNamesStamp::class);
         $this->messageCompletedAt = Clock::now()->iso8601String();
         $message = $event->getEnvelope()->getMessage();
-        $try = 1;
         $maxRetries = 1;
         if ($retryStamp !== null) {
-            $try = $retryStamp->currentTry;
             $maxRetries = $retryStamp->maxRetries;
             $nextTry = $retryStamp->currentTry + 1;
             if ($nextTry <= $retryStamp->maxRetries) {
@@ -146,10 +144,9 @@ abstract class MessageListener implements EventSubscriberInterface
                 'messageReceivedAt' => $this->messageStartedAt,
                 'messageCompletedAt' => $this->messageCompletedAt,
                 'queue' => $exchangeName,
-                'try' => $try,
                 'maxRetries' => $maxRetries,
                 'httpRequest' => [
-                    'requestUrl' => "/{$messageClass}/{$message->ref()}/{$try}",
+                    'requestUrl' => "/{$messageClass}/{$message->ref()}",
                     'requestMethod' => 'QUEUE',
                     'status' => 500,
                     'latency' => max(0.001, round(microtime(true) - $this->executionTime, 3)) . 's',
@@ -158,8 +155,8 @@ abstract class MessageListener implements EventSubscriberInterface
 
             $tenantName = $this->userService->user()?->tenant->name ?? 'none';
 
-            $key = "{$tenantName}-messenger-{$classHash}_t{$try}";
-            $key2 = "{$tenantName}-messenger-{$classHash}_t{$try}_count";
+            $key = "{$tenantName}-messenger-{$classHash}";
+            $key2 = "{$tenantName}-messenger-{$classHash}_count";
             if ($this->contextService->env() === ContextService::DEV || $this->variableCache->refreshKey($key)) {
                 $ignoreMessages = [
                     'Redelivered message from AMQP detected that will be rejected and trigger the retry logic.',
@@ -177,11 +174,10 @@ abstract class MessageListener implements EventSubscriberInterface
                         $this->alertService->sendThrowable(
                             $this->userService->user()?->tenant->name ?? 'none',
                             'RABBIT',
-                            "/{$messageClass}/{$message->ref()}/{$try}",
+                            "/{$messageClass}/{$message->ref()}",
                             $data,
                             $exception,
                             $times,
-                            $try > 1 ? AlertService::FLAG_SUPPRESS_NOTIFICATIONS : null,
                         );
                     }
                 }
@@ -217,12 +213,7 @@ abstract class MessageListener implements EventSubscriberInterface
             $serializer = new Serializer($normalizers, $encoders);
             $data = JsonUtil::decode($serializer->serialize($message, 'json'));
             $messageClass = StringUtil::className($message);
-            $try = 1;
-            $retryStamp = $event->getEnvelope()->last(RetryStamp::class);
-            if ($retryStamp !== null) {
-                $try = $retryStamp->currentTry;
-            }
-            $resume = "/{$messageClass}/{$message->ref()}/{$try}";
+            $resume = "/{$messageClass}/{$message->ref()}";
             $time = max(0.001, round(microtime(true) - $this->executionTime, 3)) . 's';
 
             $exchangeName = '?';
