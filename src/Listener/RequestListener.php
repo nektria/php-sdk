@@ -118,7 +118,7 @@ abstract class RequestListener implements EventSubscriberInterface
             }
         }
 
-        if (str_starts_with($route, 'app_common_')) {
+        if (str_starts_with($route, 'app_common_') || str_starts_with($route, 'nektria_common_')) {
             try {
                 $apiKey = $this->readApiKey($request);
             } catch (InsufficientCredentialsException) {
@@ -143,7 +143,7 @@ abstract class RequestListener implements EventSubscriberInterface
 
         $apiKey = $this->readApiKey($request);
 
-        if (str_starts_with($route, 'app_admin_')) {
+        if (str_starts_with($route, 'app_admin_') || str_starts_with($route, 'nektria_admin_')) {
             $this->contextService->setContext(ContextService::ADMIN);
             $this->userService->authenticateUser($apiKey);
 
@@ -152,13 +152,13 @@ abstract class RequestListener implements EventSubscriberInterface
             } catch (InsufficientCredentialsException) {
                 $this->userService->clearAuthentication();
             }
-        } elseif (str_starts_with($route, 'app_api_')) {
+        } elseif (str_starts_with($route, 'app_api_') || str_starts_with($route, 'nektria_api_')) {
             $this->contextService->setContext(ContextService::PUBLIC);
             $this->userService->authenticateUser($apiKey);
-        } elseif (str_starts_with($route, 'app_api2_')) {
+        } elseif (str_starts_with($route, 'app_api2_') || str_starts_with($route, 'nektria_api2_')) {
             $this->contextService->setContext(ContextService::PUBLIC_V2);
             $this->userService->authenticateUser($apiKey);
-        } elseif (str_starts_with($route, 'app_web_')) {
+        } elseif (str_starts_with($route, 'app_web_') || str_starts_with($route, 'nektria_web_')) {
             $this->contextService->setContext(ContextService::INTERNAL);
             $this->userService->authenticateUser($apiKey);
         }
