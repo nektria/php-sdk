@@ -24,7 +24,7 @@ class BuildNkVersion extends Console
         $version = $branch === 'master' ? "v{$total}" : "v{$total}-{$branch}";
 
         FileUtil::write('NK_VERSION', JsonUtil::encode([
-            'createdAt' => Clock::now()->dateTimeString(),
+            'createdAt' => Clock::now()->iso8601String('Europe/Madrid'),
             'hash' => $commit,
             'type' => 'Release',
             'version' => $version,
