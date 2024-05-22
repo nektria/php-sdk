@@ -254,7 +254,12 @@ abstract class RequestListener implements EventSubscriberInterface
             return;
         }
 
-        $logLevel = $this->assignLogLevel($route);
+        $logLevel = null;
+        if (str_starts_with($route, 'nektria') || str_starts_with($route, 'api_admin_tools')) {
+            $logLevel = self::LOG_LEVEL_NONE;
+        } else {
+            $logLevel = $this->assignLogLevel($route);
+        }
 
         $responseContentRaw = ($this->originalResponse ?? $event->getResponse())->getContent();
         $length = 0;
