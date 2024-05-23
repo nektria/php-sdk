@@ -102,6 +102,7 @@ abstract class WriteModel
             $this->manager->persist($domain);
             $this->manager->flush();
             $this->manager->detach($domain);
+            $this->manager->commit();
         } catch (Throwable $e) {
             $this->resetManager();
             if (
