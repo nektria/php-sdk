@@ -176,15 +176,15 @@ class ToolsController extends Controller
 
         $data = [];
         foreach ($content as $queue) {
-            $name = str_pad($queue['name'], 35);
-            $ready = str_pad((string) $queue['messages_ready'], 6);
-            $unacked = str_pad((string) $queue['messages_unacknowledged'], 6);
-            $speed = $queue['messages_unacknowledged_details']['rate'];
+            $name = $queue['name'];
+            $ready = (int) $queue['messages_ready'];
+            $unacked = (int) $queue['messages_unacknowledged'];
+            $speed = (float) $queue['messages_unacknowledged_details']['rate'];
 
             $data[$name] = [
                 'ready' => $ready,
                 'unacknowledged' => $unacked,
-                'speed' => $speed,
+                'rate' => $speed,
             ];
         }
 
