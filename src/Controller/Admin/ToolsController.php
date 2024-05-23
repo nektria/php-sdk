@@ -24,6 +24,25 @@ use const STR_PAD_LEFT;
 #[Route('/api/admin/tools')]
 class ToolsController extends Controller
 {
+    #[Route('/console', methods: ['PATCH'])]
+    public function console(): DocumentResponse
+    {
+        $command = $this->requestData->retrieveString('command');
+        if (!str_starts_with($command, 'admin:') || str_starts_with($command, 'sdk:')) {
+            throw new InsufficientCredentialsException();
+        }
+
+        $args = $this->requestData->getArray('args') ?? [];
+        $command = new Process(array_merge(['../bin/console', $command], $args));
+        $command->run();
+
+        return $this->documentResponse(new ArrayDocument([
+            'status' => $command->getExitCode(),
+            'output' => $this->cleanOutput($command->getOutput()),
+            'errorOutput' => $this->cleanOutput($command->getErrorOutput()),
+        ]));
+    }
+
     #[Route('/crypt', methods: 'GET')]
     public function crypt(ContextService $contextService): Response
     {

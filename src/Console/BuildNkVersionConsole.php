@@ -9,7 +9,7 @@ use Nektria\Util\FileUtil;
 use Nektria\Util\JsonUtil;
 use Nektria\Util\StringUtil;
 
-class BuildNkVersion extends Console
+class BuildNkVersionConsole extends Console
 {
     public function __construct()
     {
