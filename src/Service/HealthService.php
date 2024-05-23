@@ -37,6 +37,7 @@ class HealthService
         $data = array_merge(
             $this->checkCompass(),
             $this->checkDatabase(),
+            $this->checkMetrics(),
             $this->checkRabbit(),
             $this->checkRedis(),
             $this->checkRouteManager(),
@@ -100,6 +101,29 @@ class HealthService
             /** @var ArrayDocumentReadModel $srvc */
             $srvc = $this->container->get(ArrayDocumentReadModel::class);
             $srvc->readCustom('doctrine_migration_versions', 'version', 1);
+
+            return [$key => true];
+        } catch (Throwable $e) {
+            $this->addError($key, $e->getMessage());
+
+            return [$key => false];
+        }
+    }
+
+    /**
+     * @return array<string, bool>
+     */
+    private function checkMetrics(): array
+    {
+        $key = 'metrics';
+        if (!$this->container->has(MetricsClient::class)) {
+            return [];
+        }
+
+        try {
+            /** @var MetricsClient $srvc */
+            $srvc = $this->container->get(MetricsClient::class);
+            $srvc->ping();
 
             return [$key => true];
         } catch (Throwable $e) {
