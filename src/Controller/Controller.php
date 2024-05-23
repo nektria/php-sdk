@@ -68,9 +68,9 @@ class Controller
      * @template T of Document
      * @param T $document
      */
-    protected function documentResponse(Document $document): DocumentResponse
+    protected function documentResponse(Document $document, int $status = 200): DocumentResponse
     {
-        return $this->response($document);
+        return $this->response($document, $status);
     }
 
     /**

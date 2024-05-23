@@ -6,8 +6,10 @@ namespace Nektria\Controller\Common;
 
 use Nektria\Controller\Controller;
 use Nektria\Document\ArrayDocument;
+use Nektria\Document\DocumentResponse;
 use Nektria\Dto\Clock;
 use Nektria\Infrastructure\ArrayDocumentReadModel;
+use Nektria\Service\HealthService;
 use Nektria\Util\FileUtil;
 use Nektria\Util\JsonUtil;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -15,8 +17,21 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Attribute\Route;
 use Throwable;
 
+use function count;
+
 class CommonController extends Controller
 {
+    #[Route('/healthz', methods: ['GET'])]
+    public function health(HealthService $healthService): DocumentResponse
+    {
+        $results = $healthService->check();
+
+        return $this->documentResponse(
+            new ArrayDocument($results),
+            count($results['errors']) === 0 ? DocumentResponse::HTTP_OK : DocumentResponse::HTTP_SERVICE_UNAVAILABLE,
+        );
+    }
+
     #[Route('/ping', methods: ['GET'])]
     public function ping(): JsonResponse
     {
