@@ -193,7 +193,7 @@ class HealthService
         try {
             $srvc = $this->container->get(YieldManagerClient::class);
             if ($srvc === null) {
-                return;
+                return [];
             }
             $srvc->ping();
 
