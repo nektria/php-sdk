@@ -102,9 +102,9 @@ abstract class WriteModel
             $this->manager->persist($domain);
             $this->manager->flush();
             $this->manager->detach($domain);
-            $this->manager->commit();
         } catch (Throwable $e) {
             $this->resetManager();
+
             if (
                 $domain instanceof EventEntity
                 && str_contains($e->getMessage(), 'duplicate key value violates unique constraint')
@@ -129,6 +129,10 @@ abstract class WriteModel
 
     private function resetManager(): void
     {
+        if ($this->manager->getConnection()->isTransactionActive()) {
+            $this->manager->getConnection()->rollBack();
+        }
+
         $this->managerRegistry->resetManager();
         $manager = $this->managerRegistry->getManager();
         if (!($manager instanceof EntityManager)) {
