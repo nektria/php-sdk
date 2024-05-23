@@ -8,7 +8,7 @@ use Nektria\Controller\Controller;
 use Nektria\Document\ArrayDocument;
 use Nektria\Document\DocumentResponse;
 use Nektria\Exception\InsufficientCredentialsException;
-use Nektria\Infrastructure\DatabaseValueReadModel;
+use Nektria\Infrastructure\ArrayDocumentModel;
 use Nektria\Service\ContextService;
 use Nektria\Util\FileUtil;
 use Nektria\Util\JsonUtil;
@@ -69,7 +69,7 @@ class ToolsController extends Controller
     }
 
     #[Route('/database/read', methods: 'GET')]
-    public function databaseRead(DatabaseValueReadModel $readModel): DocumentResponse
+    public function databaseRead(ArrayDocumentModel $readModel): DocumentResponse
     {
         return $this->documentResponse(
             $readModel->readCustom(

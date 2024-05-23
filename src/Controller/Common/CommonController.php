@@ -7,7 +7,7 @@ namespace Nektria\Controller\Common;
 use Nektria\Controller\Controller;
 use Nektria\Document\ArrayDocument;
 use Nektria\Dto\Clock;
-use Nektria\Infrastructure\DatabaseValueReadModel;
+use Nektria\Infrastructure\ArrayDocumentModel;
 use Nektria\Util\FileUtil;
 use Nektria\Util\JsonUtil;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -26,9 +26,9 @@ class CommonController extends Controller
     #[Route('/version', methods: 'GET')]
     public function version(ContainerInterface $container): JsonResponse
     {
-        if ($container->has(DatabaseValueReadModel::class)) {
-            /** @var DatabaseValueReadModel $readModel */
-            $readModel = $container->get(DatabaseValueReadModel::class);
+        if ($container->has(ArrayDocumentModel::class)) {
+            /** @var ArrayDocumentModel $readModel */
+            $readModel = $container->get(ArrayDocumentModel::class);
             $versions = $readModel->readCustom('doctrine_migration_versions', 'version', 1);
             $migration = $versions->first()->data ?? ['version' => 'DoctrineMigrations\\none'];
 

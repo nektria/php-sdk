@@ -11,7 +11,7 @@ use Nektria\Document\DocumentCollection;
 /**
  * @extends ReadModel<ArrayDocument>
  */
-class DatabaseValueReadModel extends ReadModel
+class ArrayDocumentModel extends ReadModel
 {
     /**
      * @return DocumentCollection<ArrayDocument>
