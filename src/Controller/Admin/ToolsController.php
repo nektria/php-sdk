@@ -12,20 +12,18 @@ use Nektria\Infrastructure\ArrayDocumentReadModel;
 use Nektria\Service\ContextService;
 use Nektria\Util\FileUtil;
 use Nektria\Util\JsonUtil;
-use Nektria\Util\StringUtil;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Process\Process;
 use Symfony\Component\Routing\Attribute\Route;
 
-use const PHP_EOL;
 use const STR_PAD_LEFT;
 
 #[Route('/api/admin/tools')]
 class ToolsController extends Controller
 {
     #[Route('/console', methods: ['PATCH'])]
-    public function console(): DocumentResponse
+    public function console(): Response
     {
         $command = $this->requestData->retrieveString('command');
         if (!str_starts_with($command, 'admin:') || str_starts_with($command, 'sdk:')) {
@@ -36,11 +34,7 @@ class ToolsController extends Controller
         $command = new Process(array_merge(['../bin/console', $command], $args));
         $command->run();
 
-        return $this->documentResponse(new ArrayDocument([
-            'status' => $command->getExitCode(),
-            'output' => $this->cleanOutput($command->getOutput()),
-            'errorOutput' => $this->cleanOutput($command->getErrorOutput()),
-        ]));
+        return $this->buildResponseForProcess($command);
     }
 
     #[Route('/crypt', methods: 'GET')]
@@ -75,16 +69,12 @@ class ToolsController extends Controller
     }
 
     #[Route('/database/migrations', methods: ['GET'])]
-    public function databaseMigrations(): JsonResponse
+    public function databaseMigrations(): Response
     {
         $command = new Process(array_merge(['../bin/console', 'doctrine:migration:status']));
         $command->run();
 
-        return new JsonResponse([
-            'status' => $command->getExitCode(),
-            'output' => $this->cleanOutput($command->getOutput()),
-            'errorOutput' => $this->cleanOutput($command->getErrorOutput()),
-        ]);
+        return $this->buildResponseForProcess($command);
     }
 
     #[Route('/database/read', methods: 'GET')]
@@ -100,16 +90,32 @@ class ToolsController extends Controller
     }
 
     #[Route('/database/schema', methods: ['GET'])]
-    public function databaseSchema(): JsonResponse
+    public function databaseSchema(): Response
     {
         $command = new Process(array_merge(['../bin/console', 'doctrine:schema:update', '--dump-sql']));
         $command->run();
 
-        return new JsonResponse([
-            'status' => $command->getExitCode(),
-            'output' => $this->cleanOutput($command->getOutput()),
-            'errorOutput' => $this->cleanOutput($command->getErrorOutput()),
-        ]);
+        return $this->buildResponseForProcess($command);
+    }
+
+    #[Route('/debug', methods: ['PATCH'])]
+    public function debug(ContextService $contextService): JsonResponse
+    {
+        $enable = $this->requestData->retrieveBool('enable');
+        $lifetime = $this->requestData->getInt('lifetime') ?? 3600;
+        $projects = $this->requestData->retrieveStringArray('projects');
+
+        $contextService->setDebugMode($enable, $projects, $lifetime);
+
+        return $this->emptyResponse();
+    }
+
+    #[Route('/debug/status', methods: ['PATCH'])]
+    public function debugStatus(ContextService $contextService): JsonResponse
+    {
+        return new JsonResponse($contextService->debugModes(
+            $this->requestData->retrieveStringArray('projects'),
+        ));
     }
 
     #[Route('/decrypt', methods: 'PATCH')]
@@ -135,18 +141,14 @@ class ToolsController extends Controller
         )));
     }
 
-    /**
-     * @return string[]
-     */
-    private function cleanOutput(string $message): array
+    private function buildResponseForProcess(Process $process): Response
     {
-        $parts = explode(PHP_EOL, $message);
-        $ret = [];
+        $result = $process->getExitCode() === 0 ? "Sucessful\n\n" : "Failure\n\n";
+        $result .= "OUTPUT\n\n";
+        $result .= $process->getOutput() . "\n\n";
+        $result .= "ERROR\n\n";
+        $result .= $process->getErrorOutput() . "\n\n";
 
-        foreach ($parts as $part) {
-            $ret[] = StringUtil::trim($part);
-        }
-
-        return $ret;
+        return new Response($result, Response::HTTP_OK, ['Content-Type' => 'text/plain']);
     }
 }
