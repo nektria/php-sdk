@@ -41,6 +41,7 @@ class HealthService
             $this->checkRedis(),
             $this->checkRouteManager(),
             $this->checkYieldManager(),
+            $this->extraChecks(),
         );
 
         return [
