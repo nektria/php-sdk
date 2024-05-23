@@ -24,11 +24,12 @@ class CommonController extends Controller
     #[Route('/healthz', methods: ['GET'])]
     public function health(HealthService $healthService): DocumentResponse
     {
-        $results = $healthService->check();
+        $data = $healthService->check();
+        ksort($data['results']);
 
         return $this->documentResponse(
-            new ArrayDocument($results),
-            count($results['errors']) === 0 ? DocumentResponse::HTTP_OK : DocumentResponse::HTTP_SERVICE_UNAVAILABLE,
+            new ArrayDocument($data),
+            count($data['errors']) === 0 ? DocumentResponse::HTTP_OK : DocumentResponse::HTTP_SERVICE_UNAVAILABLE,
         );
     }
 

@@ -27,7 +27,7 @@ class HealthService
     /**
      * @return array{
      *     errors: array<string, string>,
-     *     results: <string, bool>,
+     *     results: array<string, bool>,
      * }
      */
     public function check(): array
@@ -35,12 +35,12 @@ class HealthService
         $this->errors = [];
 
         $data = array_merge(
-            $this->checkYieldManager(),
-            $this->checkRouteManager(),
             $this->checkCompass(),
-            $this->checkRedis(),
             $this->checkDatabase(),
             $this->checkRabbit(),
+            $this->checkRedis(),
+            $this->checkRouteManager(),
+            $this->checkYieldManager(),
         );
 
         return [
@@ -73,6 +73,7 @@ class HealthService
         }
 
         try {
+            /** @var CompassClient $srvc */
             $srvc = $this->container->get(CompassClient::class);
             $srvc->ping();
 
@@ -95,6 +96,7 @@ class HealthService
         }
 
         try {
+            /** @var ArrayDocumentReadModel $srvc */
             $srvc = $this->container->get(ArrayDocumentReadModel::class);
             $srvc->readCustom('doctrine_migration_versions', 'version', 1);
 
@@ -116,6 +118,7 @@ class HealthService
             return [];
         }
 
+        /** @var string $rabbitDsn */
         $rabbitDsn = $this->container->getParameter('rabbitDsn');
         $host = str_replace(['amqp', '5672'], ['http', '15672'], $rabbitDsn);
 
@@ -144,6 +147,7 @@ class HealthService
             $hash = StringUtil::uuid4();
             $value = StringUtil::uuid4();
 
+            /** @var VariableCache $srvc */
             $srvc = $this->container->get(VariableCache::class);
             $srvc->saveString($hash, $value, 5);
             if ($srvc->readString($hash) !== $value) {
@@ -169,6 +173,7 @@ class HealthService
         }
 
         try {
+            /** @var RouteManagerClient $srvc */
             $srvc = $this->container->get(RouteManagerClient::class);
             $srvc->ping();
 
@@ -191,10 +196,8 @@ class HealthService
         }
 
         try {
+            /** @var YieldManagerClient $srvc */
             $srvc = $this->container->get(YieldManagerClient::class);
-            if ($srvc === null) {
-                return [];
-            }
             $srvc->ping();
 
             return [$key => true];
