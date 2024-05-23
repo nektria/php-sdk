@@ -31,6 +31,14 @@ class HealthConsole extends Console
         }
 
         if (count($data['errors']) > 0) {
+            $this->output()->writeln('');
+        }
+
+        foreach ($data['errors'] as $key => $error) {
+            $this->output()->writeln(" - <error>{$key}</error>: <red>{$error}</red>");
+        }
+
+        if (count($data['errors']) > 0) {
             throw new RuntimeException('health failed');
         }
     }

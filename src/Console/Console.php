@@ -306,9 +306,11 @@ abstract class Console extends BaseCommand
             if (!((bool) $this->input()->getOption('clean'))) {
                 $now = Clock::now();
                 $this->output()->writeln("\n\n<red>{$now->dateTimeString('Europe/Madrid')}</red>");
-            }
 
-            throw NektriaException::new($e);
+                throw NektriaException::new($e);
+            } else {
+                return 1;
+            }
         }
 
         if (!((bool) $this->input()->getOption('clean'))) {
