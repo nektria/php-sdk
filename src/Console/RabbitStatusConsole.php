@@ -5,19 +5,30 @@ declare(strict_types=1);
 namespace Nektria\Console;
 
 use Nektria\Service\RequestClient;
+use RuntimeException;
+use Symfony\Component\DependencyInjection\ContainerInterface;
+
+use function is_string;
 
 class RabbitStatusConsole extends Console
 {
     public function __construct(
         private readonly RequestClient $requestClient,
-        private readonly string $rabbitDsn
+        private readonly ContainerInterface $container,
     ) {
         parent::__construct('sdk:rabbit:status');
     }
 
     protected function play(): void
     {
-        $host = str_replace(['amqp', '5672'], ['http', '15672'], $this->rabbitDsn);
+        if (!$this->container->hasParameter('rabbitDsn')) {
+            throw new RuntimeException('Rabbit not configured.');
+        }
+        $rabbitDsn = $this->container->getParameter('rabbitDsn');
+        if (!is_string($rabbitDsn)) {
+            return;
+        }
+        $host = str_replace(['amqp', '5672'], ['http', '15672'], $rabbitDsn);
 
         $content = $this->requestClient->get(
             "{$host}/api/queues",

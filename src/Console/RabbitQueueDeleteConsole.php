@@ -5,12 +5,16 @@ declare(strict_types=1);
 namespace Nektria\Console;
 
 use Nektria\Service\RequestClient;
+use RuntimeException;
+use Symfony\Component\DependencyInjection\ContainerInterface;
+
+use function is_string;
 
 class RabbitQueueDeleteConsole extends Console
 {
     public function __construct(
         private readonly RequestClient $requestClient,
-        private readonly string $rabbitDsn
+        private readonly ContainerInterface $container,
     ) {
         parent::__construct('sdk:rabbit:delete');
     }
@@ -22,8 +26,15 @@ class RabbitQueueDeleteConsole extends Console
 
     protected function play(): void
     {
+        if (!$this->container->hasParameter('rabbitDsn')) {
+            throw new RuntimeException('Rabbit not configured.');
+        }
+        $rabbitDsn = $this->container->getParameter('rabbitDsn');
+        if (!is_string($rabbitDsn)) {
+            return;
+        }
         $this->output()->writeln('Starting queue deletion...');
-        $host = str_replace(['amqp', '5672'], ['http', '15672'], $this->rabbitDsn);
+        $host = str_replace(['amqp', '5672'], ['http', '15672'], $rabbitDsn);
         $targetQueue = $this->input()->getArgument('queue');
         $content = $this->requestClient->get("{$host}/api/queues")->json();
         $this->output()->writeln('Purging ' . $this->input()->getArgument('queue'));
@@ -40,7 +51,7 @@ class RabbitQueueDeleteConsole extends Console
                         'vhost' => '/',
                         'name' => $name,
                         'mode' => 'delete',
-                    ]
+                    ],
                 );
                 $this->output()->writeln("Queue '{$name}' deleted.");
 
