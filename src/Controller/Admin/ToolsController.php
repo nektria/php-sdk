@@ -27,7 +27,7 @@ class ToolsController extends Controller
     public function console(): Response
     {
         $command = $this->requestData->retrieveString('command');
-        if (!str_starts_with($command, 'admin:') || !str_starts_with($command, 'sdk:')) {
+        if (!str_starts_with($command, 'admin:') && !str_starts_with($command, 'sdk:')) {
             throw new InsufficientCredentialsException();
         }
 
