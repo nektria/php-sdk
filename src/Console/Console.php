@@ -7,6 +7,7 @@ namespace Nektria\Console;
 use Nektria\Document\Document;
 use Nektria\Document\ThrowableDocument;
 use Nektria\Dto\Clock;
+use Nektria\Exception\NektriaException;
 use Nektria\Infrastructure\BusInterface;
 use Nektria\Infrastructure\UserServiceInterface;
 use Nektria\Message\Command as CommandMessage;
@@ -19,6 +20,7 @@ use RuntimeException;
 use Symfony\Component\Console\Command\Command as BaseCommand;
 use Symfony\Component\Console\Helper\QuestionHelper;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\Question;
 use Throwable;
@@ -121,6 +123,8 @@ abstract class Console extends BaseCommand
         $this->bus = $bus;
         $this->userService = $userService;
         $this->alertService = $alertService;
+
+        $this->addOption('clean', 'c', InputOption::VALUE_NONE, 'Hide execution time');
     }
 
     public function input(): InputInterface
@@ -205,7 +209,6 @@ abstract class Console extends BaseCommand
     {
         $this->input = $input;
         $this->output = $output;
-
         if ($this->lockMode) {
             $this->lockScreen();
             $this->clear();
@@ -300,14 +303,18 @@ abstract class Console extends BaseCommand
                 new ThrowableDocument($e),
             );
 
-            $now = Clock::now();
-            $this->output()->writeln("\n\n<red>{$now->dateTimeString('Europe/Madrid')}</red>");
+            if (!((bool) $this->input()->getOption('clean'))) {
+                $now = Clock::now();
+                $this->output()->writeln("\n\n<red>{$now->dateTimeString('Europe/Madrid')}</red>");
+            }
 
-            throw $e;
+            throw NektriaException::new($e);
         }
 
-        $now = Clock::now();
-        $this->output()->writeln("\n\n<green>{$now->dateTimeString('Europe/Madrid')}</green>");
+        if (!((bool) $this->input()->getOption('clean'))) {
+            $now = Clock::now();
+            $this->output()->writeln("\n\n<green>{$now->dateTimeString('Europe/Madrid')}</green>");
+        }
 
         return 0;
     }

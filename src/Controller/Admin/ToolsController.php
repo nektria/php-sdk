@@ -10,6 +10,7 @@ use Nektria\Document\DocumentResponse;
 use Nektria\Exception\InsufficientCredentialsException;
 use Nektria\Infrastructure\ArrayDocumentReadModel;
 use Nektria\Service\ContextService;
+use Nektria\Service\RequestClient;
 use Nektria\Util\FileUtil;
 use Nektria\Util\JsonUtil;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -31,6 +32,7 @@ class ToolsController extends Controller
         }
 
         $args = $this->requestData->getArray('args') ?? [];
+        $args[] = '--clean';
         $command = new Process(array_merge(['../bin/console', $command], $args));
         $command->run();
 
@@ -139,6 +141,54 @@ class ToolsController extends Controller
                 true
             )
         )));
+    }
+
+    #[Route('/rabbit/delete', methods: 'PATCH')]
+    public function rabbitDelete(RequestClient $requestClient, string $rabbitDsn): DocumentResponse
+    {
+        $queue = $this->requestData->retrieveString('queue');
+        $host = str_replace(['amqp', '5672'], ['http', '15672'], $rabbitDsn);
+
+        $content = $requestClient->get("{$host}/api/queues/%2F/{$queue}")->json();
+
+        $vhost = urlencode($content['vhost']);
+
+        $requestClient->delete(
+            "{$host}/api/queues/{$vhost}/{$queue}",
+            data: [
+                'vhost' => '/',
+                'name' => $queue,
+                'mode' => 'delete',
+            ]
+        );
+
+        return $this->emptyResponse();
+    }
+
+    #[Route('/rabbit/status', methods: 'GET')]
+    public function rabbitStatus(RequestClient $requestClient, string $rabbitDsn): DocumentResponse
+    {
+        $host = str_replace(['amqp', '5672'], ['http', '15672'], $rabbitDsn);
+
+        $content = $requestClient->get(
+            "{$host}/api/queues",
+        )->json();
+
+        $data = [];
+        foreach ($content as $queue) {
+            $name = str_pad($queue['name'], 35);
+            $ready = str_pad((string) $queue['messages_ready'], 6);
+            $unacked = str_pad((string) $queue['messages_unacknowledged'], 6);
+            $speed = $queue['messages_unacknowledged_details']['rate'];
+
+            $data[$name] = [
+                'ready' => $ready,
+                'unacknowledged' => $unacked,
+                'speed' => $speed,
+            ];
+        }
+
+        return $this->documentResponse(new ArrayDocument($data));
     }
 
     private function buildResponseForProcess(Process $process): Response
