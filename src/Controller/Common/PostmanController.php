@@ -143,8 +143,8 @@ class PostmanController extends Controller
             }
 
             if (
-                !str_starts_with($item['defaults']['_controller'], 'App') &&
-                !str_starts_with($item['defaults']['_controller'], 'Nektria')
+                !str_starts_with($item['defaults']['_controller'], 'App')
+                && !str_starts_with($item['defaults']['_controller'], 'Nektria')
             ) {
                 continue;
             }
@@ -415,7 +415,20 @@ class PostmanController extends Controller
 
             $sample = match ($type) {
                 'Array' => [],
+                'Address' => [
+                    'addressLine1' => 'string',
+                    'addressLine2' => 'string',
+                    'city' => 'string',
+                    'countryCode' => 'string',
+                    'elevator' => true,
+                    'latitude' => 'float',
+                    'longitude' => 'float',
+                    'postalCode' => 'string',
+                ],
                 'Clock', 'ClockAsLocal' => '2024-12-31T23:59:59',
+                'ClockTz' => '2024-12-31T23:59:59+00:00',
+                'Id' => '9baff5ad-db09-4fc0-b876-948b44e4158a',
+                'Date' => '2024-12-31',
                 'String' => 'string',
                 'StringArray' => ['string'],
                 'Int' => 1,

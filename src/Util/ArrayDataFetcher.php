@@ -33,6 +33,42 @@ class ArrayDataFetcher
     }
 
     /**
+     * @return array{
+     *     addressLine1: string,
+     *     addressLine2: string,
+     *     city: string,
+     *     countryCode: string,
+     *     elevator: ?bool,
+     *     latitude: ?float,
+     *     longitude: ?float,
+     *     postalCode: string,
+     * }|null
+     */
+    public function getAddress(string $field): ?array
+    {
+        if (!$this->hasField($field)) {
+            return null;
+        }
+
+        $latitude = $this->getFloat("{$field}.latitude");
+        $longitude = $this->getFloat("{$field}.longitude");
+
+        ValidateOpt::latitude($latitude);
+        ValidateOpt::longitude($longitude);
+
+        return [
+            'addressLine1' => $this->retrieveString("{$field}.addressLine1"),
+            'addressLine2' => $this->getString("{$field}.addressLine2") ?? '',
+            'city' => $this->retrieveString("{$field}.city"),
+            'countryCode' => $this->retrieveString("{$field}.countryCode"),
+            'elevator' => $this->getBool("{$field}.elevator"),
+            'latitude' => $latitude,
+            'longitude' => $longitude,
+            'postalCode' => $this->retrieveString("{$field}.postalCode"),
+        ];
+    }
+
+    /**
      * @return mixed[]|null
      */
     public function getArray(string $field): ?array
@@ -91,6 +127,11 @@ class ArrayDataFetcher
         return $value?->replaceTimezone($timezone)->removeTimeZone();
     }
 
+    public function getClockTz(string $field): ?Clock
+    {
+        return $this->getClock($field);
+    }
+
     /**
      * @return float[]|null
      */
@@ -106,6 +147,11 @@ class ArrayDataFetcher
         return null;
     }
 
+    public function getDate(string $field): ?Clock
+    {
+        return $this->getClock($field);
+    }
+
     public function getFloat(string $field): ?float
     {
         $value = $this->getValue($field);
@@ -119,6 +165,15 @@ class ArrayDataFetcher
         }
 
         return (float) $value;
+    }
+
+    public function getId(string $field): ?string
+    {
+        $val = $this->getString($field);
+
+        ValidateOpt::uuid4($val);
+
+        return $val;
     }
 
     public function getInt(string $field): ?int
@@ -217,6 +272,29 @@ class ArrayDataFetcher
     }
 
     /**
+     * @return array{
+     *     addressLine1: string,
+     *     addressLine2: string,
+     *     city: string,
+     *     countryCode: string,
+     *     elevator: ?bool,
+     *     latitude: ?float,
+     *     longitude: ?float,
+     *     postalCode: string,
+     * }
+     */
+    public function retrieveAddress(string $field): array
+    {
+        $value = $this->getAddress($field);
+
+        if ($value === null) {
+            throw new MissingRequestParamException($field);
+        }
+
+        return $value;
+    }
+
+    /**
      * @return mixed[]
      */
     public function retrieveArray(string $field): array
@@ -263,6 +341,16 @@ class ArrayDataFetcher
         return $value->replaceTimezone($timezone)->removeTimeZone();
     }
 
+    public function retrieveClockTz(string $field): Clock
+    {
+        return $this->retrieveClock($field);
+    }
+
+    public function retrieveDate(string $field): Clock
+    {
+        return $this->retrieveClock($field);
+    }
+
     public function retrieveFloat(string $field): float
     {
         $value = $this->getFloat($field);
@@ -270,6 +358,15 @@ class ArrayDataFetcher
         if ($value === null) {
             throw new MissingRequestParamException($field);
         }
+
+        return $value;
+    }
+
+    public function retrieveId(string $field): string
+    {
+        $value = $this->retrieveString($field);
+
+        Validate::uuid4($value);
 
         return $value;
     }
