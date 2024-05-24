@@ -60,7 +60,7 @@ class CommonController extends Controller
             $versionFile = [
                 'builtAt' => Clock::now()->dateTimeString(),
                 'hash' => '',
-                'proyect' => $contextService->project(),
+                'project' => $contextService->project(),
                 'type' => 'Development',
                 'version' => '',
             ];
