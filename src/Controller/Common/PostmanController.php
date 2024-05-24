@@ -480,6 +480,7 @@ class PostmanController extends Controller
 
                     $mix[$part] = $sample;
                     $sample = $mix;
+                    ksort($sample);
 
                     $hash[$remain] = $sample;
                 }
@@ -489,6 +490,8 @@ class PostmanController extends Controller
         if (!$found) {
             return null;
         }
+
+        ksort($body);
 
         return $body;
     }
