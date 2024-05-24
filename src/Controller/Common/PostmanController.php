@@ -182,7 +182,7 @@ class PostmanController extends Controller
                 $key,
                 $host,
                 $item,
-                false
+                $public
             );
         }
 
@@ -292,6 +292,14 @@ class PostmanController extends Controller
         if ($json !== null && $method === 'GET') {
             $query = [];
             foreach ($json as $k => $value) {
+                if ($value === true) {
+                    $value = 'true';
+                } elseif ($value === false) {
+                    $value = 'false';
+                } elseif ($value === null) {
+                    $value = 'null';
+                }
+
                 $query[] = [
                     'key' => $k,
                     'value' => (string) $value,
