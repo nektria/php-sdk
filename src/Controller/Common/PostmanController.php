@@ -191,6 +191,9 @@ class PostmanController extends Controller
             $bcs[$f1]['item'][] = $ctrl;
         }
 
+        // TODO Console
+
+        ksort($bcs);
         foreach ($bcs as $bc) {
             $items[] = $bc;
         }
