@@ -8,6 +8,7 @@ use Nektria\Console\Console;
 use Nektria\Document\ThrowableDocument;
 use Nektria\Service\AlertService;
 use Nektria\Service\ContextService;
+use Nektria\Service\LogService;
 use Nektria\Service\VariableCache;
 use Symfony\Component\Console\ConsoleEvents;
 use Symfony\Component\Console\Event\ConsoleErrorEvent;
@@ -19,6 +20,7 @@ abstract class ConsoleListener implements EventSubscriberInterface
         private readonly ContextService $contextService,
         private readonly VariableCache $variableCache,
         private readonly AlertService $alertService,
+        private readonly LogService $logService,
     ) {
     }
 
@@ -41,6 +43,9 @@ abstract class ConsoleListener implements EventSubscriberInterface
         }
 
         $path = '/Console/' . str_replace('\\', '/', $command::class);
+
+        $this->logService->temporalLogs();
+        $this->logService->exception($event->getError());
 
         if ($this->contextService->env() === ContextService::DEV || $this->variableCache->refreshKey($path)) {
             $tenantName = 'none';
