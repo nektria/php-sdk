@@ -37,6 +37,7 @@ abstract class ConsoleListener implements EventSubscriberInterface
     public function onConsoleError(ConsoleErrorEvent $event): void
     {
         $command = $event->getCommand();
+        $this->contextService->setContext('Console');
 
         if ($command instanceof Console || $command === null) {
             return;
