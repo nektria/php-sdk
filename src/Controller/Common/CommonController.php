@@ -9,6 +9,7 @@ use Nektria\Document\ArrayDocument;
 use Nektria\Document\DocumentResponse;
 use Nektria\Dto\Clock;
 use Nektria\Infrastructure\ArrayDocumentReadModel;
+use Nektria\Service\ContextService;
 use Nektria\Service\HealthService;
 use Nektria\Util\FileUtil;
 use Nektria\Util\JsonUtil;
@@ -40,7 +41,7 @@ class CommonController extends Controller
     }
 
     #[Route('/version', methods: 'GET')]
-    public function version(ContainerInterface $container): JsonResponse
+    public function version(ContainerInterface $container, ContextService $contextService): JsonResponse
     {
         if ($container->has(ArrayDocumentReadModel::class)) {
             /** @var ArrayDocumentReadModel $readModel */
@@ -59,6 +60,7 @@ class CommonController extends Controller
             $versionFile = [
                 'builtAt' => Clock::now()->dateTimeString(),
                 'hash' => '',
+                'proyect' => $contextService->project(),
                 'type' => 'Development',
                 'version' => '',
             ];
