@@ -294,7 +294,7 @@ class PostmanController extends Controller
             foreach ($json as $k => $value) {
                 $query[] = [
                     'key' => $k,
-                    'value' => $value,
+                    'value' => (string) $value,
                 ];
             }
 
