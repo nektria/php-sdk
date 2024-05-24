@@ -7,7 +7,6 @@ https://carrefour-proxy.nektria.net/postman
 https://fontvella-proxy.nektria.net/postman
 https://metrics.nektria.net/postman
 
-
 routemanager      http://localhost:8000/postman
 yieldmanager      http://localhost:8001/postman
 compass           http://localhost:8004/postman
