@@ -23,7 +23,7 @@ class PostmanController extends Controller
     public function postman(ContextService $contextService): BinaryFileResponse
     {
         $file = "{$contextService->project()}.json";
-        $body = $this->buildPostmanCollection($contextService, false);
+        $body = $this->buildPostmanCollection($contextService, !$contextService->isLocalEnvironament());
 
         FileUtil::write("/tmp/{$file}", JsonUtil::encode($body));
 
@@ -139,6 +139,10 @@ class PostmanController extends Controller
 
         foreach ($data as $key => $item) {
             if ($public && !str_starts_with($key, 'app_api2_')) {
+                continue;
+            }
+
+            if ($public && str_contains($key, 'hidden')) {
                 continue;
             }
 
