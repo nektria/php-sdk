@@ -5,14 +5,16 @@ declare(strict_types=1);
 namespace Nektria\Console;
 
 use Nektria\Dto\Clock;
+use Nektria\Service\ContextService;
 use Nektria\Util\FileUtil;
 use Nektria\Util\JsonUtil;
 use Nektria\Util\StringUtil;
 
 class BuildNkVersionConsole extends Console
 {
-    public function __construct()
-    {
+    public function __construct(
+        private readonly ContextService $contextService,
+    ) {
         parent::__construct('sdk:version');
     }
 
@@ -29,8 +31,9 @@ class BuildNkVersionConsole extends Console
         $version = $branch === 'master' ? "v{$total}" : "v{$total}-{$branch}";
 
         FileUtil::write('NK_VERSION', JsonUtil::encode([
-            'createdAt' => Clock::now()->iso8601String('Europe/Madrid'),
+            'builtAt' => Clock::now()->iso8601String('Europe/Madrid'),
             'hash' => $commit,
+            'project' => $this->contextService->project(),
             'type' => 'Release',
             'version' => $version,
         ]));
