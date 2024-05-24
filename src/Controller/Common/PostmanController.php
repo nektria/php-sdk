@@ -142,8 +142,12 @@ class PostmanController extends Controller
                 continue;
             }
 
-            // Nektria\Controller\Common\CommonController::ping
-            // App\Controller\Common\SecurityController
+            if (
+                !str_starts_with($item['defaults']['_controller'], 'App') &&
+                !str_starts_with($item['defaults']['_controller'], 'Nektria')
+            ) {
+                continue;
+            }
 
             $suf = '';
             $folder3 = '';
