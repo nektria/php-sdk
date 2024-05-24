@@ -43,9 +43,9 @@ class PostmanController extends Controller
             'routemanager' => '230de982-7d00-423d-b146-166fa019fcaf',
             'compass' => '068a161d-eacb-4922-ad59-cfc33f57606a',
             'metrics' => '493fdd90-bd82-466f-b4f1-23e2c65abdf7',
-            'fontvella-proxy' => 'afff0b97-a25e-4e7e-b5c0-41b6486df761',
-            'carrefour-proxy' => '58e7b81f-aecc-492c-a440-7b25957443dd',
-            'dia-proxy' => '237cb057-d27b-4ed0-b458-3e5d8e237587',
+            'proxy-fontvella' => 'afff0b97-a25e-4e7e-b5c0-41b6486df761',
+            'proxy-carrefour' => '58e7b81f-aecc-492c-a440-7b25957443dd',
+            'proxy-dia' => '237cb057-d27b-4ed0-b458-3e5d8e237587',
             default => 'bd5c586b-4b1c-47be-a867-d9927e39177c',
         };
 
@@ -54,7 +54,7 @@ class PostmanController extends Controller
             'routemanager' => '{{host_rm}}',
             'compass' => '{{host_compass}}',
             'metrics' => '{{host_metrics}}',
-            'fontvella-proxy', 'carrefour-proxy', 'dia-proxy' => '{{host_proxy}}',
+            'proxy-fontvella', 'proxy-carrefour', 'proxy-dia' => '{{host_proxy}}',
             default => '',
         };
 
