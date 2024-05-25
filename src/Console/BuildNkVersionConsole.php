@@ -6,7 +6,6 @@ namespace Nektria\Console;
 
 use Nektria\Dto\Clock;
 use Nektria\Service\ContextService;
-use Nektria\Util\FileUtil;
 use Nektria\Util\JsonUtil;
 use Nektria\Util\StringUtil;
 
@@ -30,12 +29,12 @@ class BuildNkVersionConsole extends Console
         $branch = $this->input()->getArgument('branch') ?? exec('git rev-parse --abbrev-ref HEAD');
         $version = $branch === 'master' ? "v{$total}" : "v{$total}-{$branch}";
 
-        FileUtil::write('NK_VERSION', JsonUtil::encode([
+        $this->output()->writeln(JsonUtil::encode([
             'builtAt' => Clock::now()->iso8601String('Europe/Madrid'),
             'hash' => $commit,
             'project' => $this->contextService->project(),
             'type' => 'Release',
             'version' => $version,
-        ]));
+        ], true));
     }
 }
