@@ -4476,12 +4476,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/PHP-CS-Fixer/PHP-CS-Fixer.git",
-                "reference": "36db6a41f1963d8197ecd4bcf9bb390eef80d1ce"
+                "reference": "e7523394b428d2f14f0eea147a012d4c47c49ca1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/PHP-CS-Fixer/PHP-CS-Fixer/zipball/36db6a41f1963d8197ecd4bcf9bb390eef80d1ce",
-                "reference": "36db6a41f1963d8197ecd4bcf9bb390eef80d1ce",
+                "url": "https://api.github.com/repos/PHP-CS-Fixer/PHP-CS-Fixer/zipball/e7523394b428d2f14f0eea147a012d4c47c49ca1",
+                "reference": "e7523394b428d2f14f0eea147a012d4c47c49ca1",
                 "shasum": ""
             },
             "require": {
@@ -4569,7 +4569,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2024-05-23T17:57:01+00:00"
+            "time": "2024-05-24T21:37:37+00:00"
         },
         {
             "name": "masterminds/html5",
