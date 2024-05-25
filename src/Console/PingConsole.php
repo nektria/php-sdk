@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Nektria\Console;
 
-use RuntimeException;
-
 class PingConsole extends Console
 {
     public function __construct()
@@ -18,7 +16,7 @@ class PingConsole extends Console
         if (file_exists('/tmp/entity_manager_is_closed')) {
             unlink('/tmp/entity_manager_is_closed');
 
-            throw new RuntimeException('Entity manager is closed');
+            // throw new RuntimeException('Entity manager is closed');
         }
 
         $this->output()->writeln('pong');

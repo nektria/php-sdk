@@ -14,6 +14,7 @@ use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\Process\Process;
 use Symfony\Component\Routing\Attribute\Route;
+use Throwable;
 
 use function count;
 
@@ -187,10 +188,28 @@ class PostmanController extends Controller
         }
 
         if (!$public) {
-            $command = new Process(array_merge(['../bin/console', 'list', '--format=json']));
-            $command->run();
+            $data = [];
 
-            $data = JsonUtil::decode($command->getOutput())['commands'];
+            try {
+                $command = new Process(array_merge(['../bin/console', 'list', '--format=json']));
+                $command->run();
+
+                $data = JsonUtil::decode($command->getOutput())['commands'];
+            } catch (Throwable $e) {
+                $command = new Process(array_merge(['../bin/console', 'list', '--raw']));
+                $command->run();
+
+                $lines = explode("\n", $command->getOutput());
+                foreach ($lines as $line) {
+                    $name = explode(' ', $line)[0];
+                    $data[] = [
+                        'name' => $name,
+                        'definition' => [
+                            'arguments' => [],
+                        ],
+                    ];
+                }
+            }
 
             $adminConsole = [];
             $sdkConsole = [];
