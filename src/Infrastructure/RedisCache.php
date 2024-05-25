@@ -29,6 +29,24 @@ abstract class RedisCache
         $this->redisDsn = $redisDsn;
     }
 
+    public function exec(): void
+    {
+        try {
+            $this->init()->exec();
+        } catch (Throwable $e) {
+            throw NektriaException::new($e);
+        }
+    }
+
+    public function multi(): void
+    {
+        try {
+            $this->init()->multi();
+        } catch (Throwable $e) {
+            throw NektriaException::new($e);
+        }
+    }
+
     /**
      * @return int[]
      */
