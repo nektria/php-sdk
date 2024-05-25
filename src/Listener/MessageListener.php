@@ -304,7 +304,7 @@ abstract class MessageListener implements EventSubscriberInterface
         $data = JsonUtil::decode($this->sharedVariableCache->readString('bus_current_usage', '[]'));
         $data[$project] ??= [];
         $data[$project][$clzz] ??= 0;
-        $data[$project][$clzz] = max(0, $data[$project][$clzz] - 1);
+        $data[$project][$clzz] = max(0, ((int) $data[$project][$clzz]) - 1);
         $this->sharedVariableCache->saveString('bus_current_usage', JsonUtil::encode($data), 86400);
         $this->sharedVariableCache->exec();
     }
@@ -320,7 +320,7 @@ abstract class MessageListener implements EventSubscriberInterface
         $data = JsonUtil::decode($this->sharedVariableCache->readString('bus_current_usage', '[]'));
         $data[$project] ??= [];
         $data[$project][$clzz] ??= 0;
-        ++$data[$project][$clzz];
+        $data[$project][$clzz] = min(10000, ((int) $data[$project][$clzz]) + 1);
         $this->sharedVariableCache->saveString('bus_current_usage', JsonUtil::encode($data), 86400);
         $this->sharedVariableCache->exec();
     }
