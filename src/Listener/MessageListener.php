@@ -318,7 +318,7 @@ abstract class MessageListener implements EventSubscriberInterface
     private function decreaseCounter(Event | Query | Command $message): void
     {
         $project = $this->contextService->project();
-        $clzz = get_class($message);
+        $clzz = $message::class;
         $this->sharedVariableCache->multi();
         $data = JsonUtil::decode($this->sharedVariableCache->readString('bus_current_usage', '[]'));
         $data[$project] ??= [];
@@ -334,7 +334,7 @@ abstract class MessageListener implements EventSubscriberInterface
     private function increaseCounter(Event | Query | Command $message): void
     {
         $project = $this->contextService->project();
-        $clzz = get_class($message);
+        $clzz = $message::class;
         $this->sharedVariableCache->multi();
         $data = JsonUtil::decode($this->sharedVariableCache->readString('bus_current_usage', '[]'));
         $data[$project] ??= [];
