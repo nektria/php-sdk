@@ -182,81 +182,89 @@ class PostmanController extends Controller
                 $key,
                 $host,
                 $item,
-                $public
+                $public,
             );
         }
 
-        $command = new Process(array_merge(['../bin/console', 'list', '--format=json']));
-        $command->run();
+        if (!$public) {
+            $command = new Process(array_merge(['../bin/console', 'list', '--format=json']));
+            $command->run();
 
-        $data = JsonUtil::decode($command->getOutput())['commands'];
+            $data = JsonUtil::decode($command->getOutput())['commands'];
 
-        $adminConsole = [];
-        $sdkConsole = [];
-        foreach ($data as $item) {
-            if (
-                !str_starts_with($item['name'], 'admin:')
-                && !str_starts_with($item['name'], 'sdk:')
-            ) {
-                continue;
-            }
+            $adminConsole = [];
+            $sdkConsole = [];
+            $consoleItems = [];
+            foreach ($data as $item) {
+                if (
+                    !str_starts_with($item['name'], 'admin:')
+                    && !str_starts_with($item['name'], 'sdk:')
+                ) {
+                    continue;
+                }
 
-            $args = [];
-            foreach ($item['definition']['arguments'] as $arg) {
-                if ($arg['is_required'] === true) {
-                    $args[] = $arg['name'];
+                $args = [];
+                foreach ($item['definition']['arguments'] as $arg) {
+                    if ($arg['is_required'] === true) {
+                        $args[] = $arg['name'];
+                    } else {
+                        $args[] = "[{$arg['name']}]";
+                    }
+                }
+
+                $body = [
+                    'command' => $item['name'],
+                    'args' => $args,
+                ];
+
+                $transformed = [
+                    'name' => $item['name'],
+                    'request' => [
+                        'body' => [
+                            'mode' => 'raw',
+                            'raw' => JsonUtil::encode($body, true),
+                            'options' => [
+                                'raw' => [
+                                    'language' => 'json',
+                                ],
+                            ],
+                        ],
+                        'description' => $item['name'],
+                        'method' => 'PATCH',
+                        'url' => [
+                            'raw' => "{$host}/api/admin/tools/console",
+                            'host' => [$host],
+                            'path' => ['api/admin/tools/console'],
+                        ],
+                    ],
+                ];
+
+                if (str_starts_with($item['name'], 'admin:')) {
+                    $adminConsole[] = $transformed;
                 } else {
-                    $args[] = "[{$arg['name']}]";
+                    $sdkConsole[] = $transformed;
                 }
             }
 
-            $body = [
-                'command' => $item['name'],
-                'args' => $args
-            ];
-
-            $transformed = [
-                'name' => $item['name'],
-                'request' => [
-                    'body' => [
-                        'mode' => 'raw',
-                        'raw' => JsonUtil::encode($body, true),
-                        'options' => [
-                            'raw' => [
-                                'language' => 'json'
-                            ]
-                        ]
-                    ],
-                    'description' => $item['name'],
-                    'method' => 'PATCH',
-                    'url' => [
-                        'raw' => "{$host}/api/admin/tools/console",
-                        'host' => [$host],
-                        'path' => ['api/admin/tools/console'],
-                    ],
-                ]
-            ];
-
-            if (str_starts_with($item['name'], 'admin:')) {
-                $adminConsole[] = $transformed;
-            } else {
-                $sdkConsole[] = $transformed;
-            }
-        }
-
-        $bcs['Console'] = [
-            'name' => 'Console',
-            'item' => [
-                [
+            if (count($adminConsole) > 0) {
+                $consoleItems[] = [
                     'name' => 'Admin',
                     'item' => $adminConsole,
-                ],
-                [
+                ];
+            }
+
+            if (count($sdkConsole) > 0) {
+                $consoleItems[] = [
                     'name' => 'SDK',
                     'item' => $sdkConsole,
-                ]
-            ]
-        ];
+                ];
+            }
+
+            $bcs['Console'] = [
+                'name' => 'Console',
+                'item' => $consoleItems,
+            ];
+        }
 
         foreach ($ctrls as $key => $ctrl) {
             $f1 = explode('_', $key)[0];
@@ -305,7 +313,7 @@ class PostmanController extends Controller
                             "pm.request.addHeader({key: 'X-Origin', value: 'Nektria/Postman'});",
                             "pm.request.addHeader({key: 'Content-type', value: 'application/json'});",
                             "pm.request.addHeader({key: 'X-Trace', value: '00000000-0000-4000-8000-000000000000'});",
-                            ''
+                            '',
                         ],
                     ],
                 ],
@@ -387,9 +395,9 @@ class PostmanController extends Controller
                         'raw' => $url,
                         'host' => [$host],
                         'path' => [$path],
-                        'query' => $query
+                        'query' => $query,
                     ],
-                ]
+                ],
             ];
         }
 
@@ -402,9 +410,9 @@ class PostmanController extends Controller
                         'raw' => JsonUtil::encode($json, true),
                         'options' => [
                             'raw' => [
-                                'language' => 'json'
-                            ]
-                        ]
+                                'language' => 'json',
+                            ],
+                        ],
                     ],
                     'description' => $description,
                     'method' => $method,
@@ -413,7 +421,7 @@ class PostmanController extends Controller
                         'host' => [$host],
                         'path' => [$path],
                     ],
-                ]
+                ],
             ];
         }
 
@@ -427,7 +435,7 @@ class PostmanController extends Controller
                     'host' => [$host],
                     'path' => [$path],
                 ],
-            ]
+            ],
         ];
     }
 
