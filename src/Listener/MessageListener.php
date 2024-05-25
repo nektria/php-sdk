@@ -317,11 +317,13 @@ abstract class MessageListener implements EventSubscriberInterface
      */
     private function decreaseCounter(Event | Query | Command $message): void
     {
+        $project = $this->contextService->project();
+        $clzz = get_class($message);
         $this->sharedVariableCache->multi();
         $data = JsonUtil::decode($this->sharedVariableCache->readString('bus_current_usage', '[]'));
-        $data[$this->contextService->project()] ??= [];
-        $data[$this->contextService->project()][$message::class] ??= 0;
-        $data[$this->contextService->project()][$message::class] = max(0, $data[$message::class] - 1);
+        $data[$project] ??= [];
+        $data[$project][$clzz] ??= 0;
+        $data[$project][$clzz] = max(0, $data[$project][$clzz] - 1);
         $this->sharedVariableCache->saveString('bus_current_usage', JsonUtil::encode($data), 86400);
         $this->sharedVariableCache->exec();
     }
@@ -331,11 +333,13 @@ abstract class MessageListener implements EventSubscriberInterface
      */
     private function increaseCounter(Event | Query | Command $message): void
     {
+        $project = $this->contextService->project();
+        $clzz = get_class($message);
         $this->sharedVariableCache->multi();
         $data = JsonUtil::decode($this->sharedVariableCache->readString('bus_current_usage', '[]'));
-        $data[$this->contextService->project()] ??= [];
-        $data[$this->contextService->project()][$message::class] ??= 0;
-        ++$data[$this->contextService->project()][$message::class];
+        $data[$project] ??= [];
+        $data[$project][$clzz] ??= 0;
+        ++$data[$project][$clzz];
         $this->sharedVariableCache->saveString('bus_current_usage', JsonUtil::encode($data), 86400);
         $this->sharedVariableCache->exec();
     }
