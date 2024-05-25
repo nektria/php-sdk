@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Nektria\Console;
 
 use Nektria\Service\RequestClient;
-use RuntimeException;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 use function is_string;
@@ -23,6 +22,7 @@ class RabbitStatusConsole extends Console
     {
         if (!$this->container->hasParameter('rabbitDsn')) {
             $this->output()->writeln('Rabbit not configured.');
+
             return;
         }
 

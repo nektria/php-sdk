@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Nektria\Controller\Common;
 
 use Nektria\Controller\Controller;
+use Nektria\Dto\Clock;
 use Nektria\Service\ContextService;
 use Nektria\Util\FileUtil;
 use Nektria\Util\JsonUtil;
@@ -487,6 +488,11 @@ class PostmanController extends Controller
         $hash = [];
 
         $previousLine = '';
+
+        $defaultNow = Clock::now();
+        $defaultStartTime = $defaultNow->setTime(16);
+        $defaultEndTime = $defaultNow->setTime(18);
+
         foreach ($lines as $line) {
             $line = $previousLine . StringUtil::trim($line);
             $previousLine = '';
@@ -525,7 +531,6 @@ class PostmanController extends Controller
             $name = $matches[3];
 
             $sample = match ($type) {
-                'Array' => [],
                 'Address' => [
                     'addressLine1' => 'string',
                     'addressLine2' => 'string',
@@ -536,18 +541,25 @@ class PostmanController extends Controller
                     'longitude' => 0.2,
                     'postalCode' => 'string',
                 ],
-                'Clock', 'ClockAsLocal' => '2024-12-31T23:59:59',
-                'ClockTz' => '2024-12-31T23:59:59+00:00',
+                'Array' => [],
+                'Bool' => true,
+                'Clock', 'ClockAsLocal' => $defaultNow->dateTimeString(),
+                'ClockTz' => $defaultNow->iso8601String(),
+                'Date' => $defaultNow->dateString(),
+                'Float' => 1.2,
                 'Id' => '9baff5ad-db09-4fc0-b876-948b44e4158a',
-                'Date' => '2024-12-31',
+                'Int' => 1,
+                'Length' => [],
                 'String' => 'string',
                 'StringArray' => ['string'],
-                'Int' => 1,
-                'Float' => 1.2,
-                'Bool' => true,
-                'Length' => [],
                 default => '?',
             };
+
+            if (str_contains($name, 'startTime')) {
+                $sample = $defaultStartTime;
+            } elseif (str_contains($name, 'endTime')) {
+                $sample = $defaultEndTime;
+            }
 
             if ($sample === '?') {
                 throw new RuntimeException($type);
