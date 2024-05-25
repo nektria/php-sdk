@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace Nektria\Console;
 
 use Nektria\Service\RequestClient;
+use Nektria\Service\SharedVariableCache;
+use Nektria\Util\JsonUtil;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 use function is_string;
@@ -14,6 +16,7 @@ class RabbitStatusConsole extends Console
     public function __construct(
         private readonly RequestClient $requestClient,
         private readonly ContainerInterface $container,
+        private readonly SharedVariableCache $sharedVariableCache,
     ) {
         parent::__construct('sdk:rabbit:status');
     }
@@ -44,6 +47,23 @@ class RabbitStatusConsole extends Console
             $speed = $queue['messages_unacknowledged_details']['rate'];
 
             $this->output()->writeln("{$vhost} {$name}: R:{$ready} U:{$unacked} S:{$speed}");
+        }
+
+        $this->output()->writeln('');
+
+        $data = JsonUtil::decode($this->sharedVariableCache->readString('bus_current_usage', '[]'));
+        foreach ($data as $project => $messages) {
+            $printHeader = false;
+            foreach ($messages as $message => $times) {
+                if ((int) $times > 0) {
+                    if (!$printHeader) {
+                        $printHeader = true;
+                        $this->output()->writeln($project);
+                    }
+
+                    $this->output()->writeln("    {$message}: {$times}");
+                }
+            }
         }
     }
 }

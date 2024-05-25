@@ -64,7 +64,7 @@ class SharedVariableCache extends SharedRedisCache
         $this->setItem($key, self::DEFAULT, $lifetime);
     }
 
-    public function saveString(string $key, string $value): void
+    public function saveString(string $key, string $value, int $ttl = 300): void
     {
         $this->setItem($key, $value, 604800);
     }

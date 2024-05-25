@@ -6,6 +6,7 @@ namespace Nektria\Listener;
 
 use Doctrine\DBAL\ConnectionException;
 use Doctrine\DBAL\Exception\DriverException;
+use Nektria\Document\Document;
 use Nektria\Document\ThrowableDocument;
 use Nektria\Dto\Clock;
 use Nektria\Exception\ResourceNotFoundException;
@@ -13,10 +14,12 @@ use Nektria\Infrastructure\BusInterface;
 use Nektria\Infrastructure\UserServiceInterface;
 use Nektria\Message\Command;
 use Nektria\Message\Event;
+use Nektria\Message\Query;
 use Nektria\Service\AlertService;
 use Nektria\Service\ContextService;
 use Nektria\Service\LockMessageService;
 use Nektria\Service\LogService;
+use Nektria\Service\SharedVariableCache;
 use Nektria\Service\VariableCache;
 use Nektria\Util\JsonUtil;
 use Nektria\Util\MessageStamp\ContextStamp;
@@ -54,7 +57,8 @@ abstract class MessageListener implements EventSubscriberInterface
         private readonly LogService $logService,
         private readonly UserServiceInterface $userService,
         private readonly VariableCache $variableCache,
-        private readonly BusInterface $bus
+        private readonly BusInterface $bus,
+        private readonly SharedVariableCache $sharedVariableCache,
     ) {
         $this->executionTime = microtime(true);
         $this->messageCompletedAt = Clock::now()->iso8601String();
@@ -81,6 +85,11 @@ abstract class MessageListener implements EventSubscriberInterface
         $this->messageCompletedAt = Clock::now()->iso8601String();
         $message = $event->getEnvelope()->getMessage();
         $maxRetries = 1;
+
+        if ($message instanceof Command || $message instanceof Event || $message instanceof Query) {
+            $this->decreaseCounter($message);
+        }
+
         if ($retryStamp !== null) {
             $maxRetries = $retryStamp->maxRetries;
             $nextTry = $retryStamp->currentTry + 1;
@@ -207,6 +216,10 @@ abstract class MessageListener implements EventSubscriberInterface
         $this->messageCompletedAt = Clock::now()->iso8601String();
         $message = $event->getEnvelope()->getMessage();
 
+        if ($message instanceof Command || $message instanceof Event || $message instanceof Query) {
+            $this->decreaseCounter($message);
+        }
+
         if ($message instanceof Command || $message instanceof Event) {
             $encoders = [new JsonEncoder()];
             $normalizers = [new PropertyNormalizer(), new DateTimeNormalizer(), new ObjectNormalizer()];
@@ -257,6 +270,10 @@ abstract class MessageListener implements EventSubscriberInterface
             $this->lock->acquire($message->ref(), 10);
         }
 
+        if ($message instanceof Command || $message instanceof Event || $message instanceof Query) {
+            $this->increaseCounter($message);
+        }
+
         try {
             /** @var ContextStamp|null $contextStamp */
             $contextStamp = $event->getEnvelope()->last(ContextStamp::class);
@@ -294,4 +311,28 @@ abstract class MessageListener implements EventSubscriberInterface
     }
 
     abstract protected function cleanMemory(): void;
+
+    /**
+     * @param Event|Query<Document>|Command $message
+     */
+    private function decreaseCounter(Event | Query | Command $message): void
+    {
+        $data = JsonUtil::decode($this->sharedVariableCache->readString('bus_current_usage', '[]'));
+        $data[$this->contextService->project()] ??= [];
+        $data[$this->contextService->project()][$message::class] ??= 0;
+        $data[$this->contextService->project()][$message::class] = max(0, $data[$message::class] - 1);
+        $this->sharedVariableCache->saveString('bus_current_usage', $data, 86400);
+    }
+
+    /**
+     * @param Event|Query<Document>|Command $message
+     */
+    private function increaseCounter(Event | Query | Command $message): void
+    {
+        $data = JsonUtil::decode($this->sharedVariableCache->readString('bus_current_usage', '[]'));
+        $data[$this->contextService->project()] ??= [];
+        $data[$this->contextService->project()][$message::class] ??= 0;
+        ++$data[$this->contextService->project()][$message::class];
+        $this->sharedVariableCache->saveString('bus_current_usage', $data, 86400);
+    }
 }
