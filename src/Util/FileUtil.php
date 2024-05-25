@@ -44,7 +44,7 @@ class FileUtil
 
     public static function write(string $file, string $content): void
     {
-        if (file_put_contents($file, $content) === false) {
+        if (file_put_contents("/tmp/{$file}", $content) === false) {
             throw new RuntimeException('Cannot write file');
         }
     }
