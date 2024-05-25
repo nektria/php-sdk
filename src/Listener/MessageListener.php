@@ -17,7 +17,6 @@ use Nektria\Message\Event;
 use Nektria\Message\Query;
 use Nektria\Service\AlertService;
 use Nektria\Service\ContextService;
-use Nektria\Service\LockMessageService;
 use Nektria\Service\LogService;
 use Nektria\Service\SharedVariableCache;
 use Nektria\Service\VariableCache;
@@ -53,7 +52,6 @@ abstract class MessageListener implements EventSubscriberInterface
     public function __construct(
         private readonly AlertService $alertService,
         private readonly ContextService $contextService,
-        private readonly LockMessageService $lock,
         private readonly LogService $logService,
         private readonly UserServiceInterface $userService,
         private readonly VariableCache $variableCache,
@@ -202,11 +200,6 @@ abstract class MessageListener implements EventSubscriberInterface
 
         $this->cleanMemory();
 
-        try {
-            $this->lock->releaseAll();
-        } catch (Throwable) {
-        }
-
         gc_collect_cycles();
     }
 
@@ -256,19 +249,12 @@ abstract class MessageListener implements EventSubscriberInterface
 
         $this->cleanMemory();
 
-        try {
-            $this->lock->releaseAll();
-        } catch (Throwable) {
-        }
         gc_collect_cycles();
     }
 
     public function onWorkerMessageReceived(WorkerMessageReceivedEvent $event): void
     {
         $message = $event->getEnvelope()->getMessage();
-        if ($message instanceof Event) {
-            $this->lock->acquire($message->ref(), 10);
-        }
 
         if ($message instanceof Command || $message instanceof Event || $message instanceof Query) {
             $this->increaseCounter($message);
@@ -301,11 +287,6 @@ abstract class MessageListener implements EventSubscriberInterface
     public function onWorkerStoppedEvent(): void
     {
         $this->cleanMemory();
-
-        try {
-            $this->lock->releaseAll();
-        } catch (Throwable) {
-        }
 
         gc_collect_cycles();
     }
