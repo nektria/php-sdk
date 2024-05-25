@@ -22,8 +22,10 @@ class RabbitStatusConsole extends Console
     protected function play(): void
     {
         if (!$this->container->hasParameter('rabbitDsn')) {
-            throw new RuntimeException('Rabbit not configured.');
+            $this->output()->writeln('Rabbit not configured.');
+            return;
         }
+
         $rabbitDsn = $this->container->getParameter('rabbitDsn');
         if (!is_string($rabbitDsn)) {
             return;
