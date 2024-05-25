@@ -186,14 +186,83 @@ class PostmanController extends Controller
             );
         }
 
+        $command = new Process(array_merge(['../bin/console', 'list', '--format=json']));
+        $command->run();
+
+        $data = JsonUtil::decode($command->getOutput())['commands'];
+
+        $adminConsole = [];
+        $sdkConsole = [];
+        foreach ($data as $item) {
+            if (
+                !str_starts_with($item['name'], 'admin:')
+                && !str_starts_with($item['name'], 'sdk:')
+            ) {
+                continue;
+            }
+
+            $args = [];
+            foreach ($item['definition']['arguments'] as $arg) {
+                if ($arg['is_required'] === true) {
+                    $args[] = $arg['name'];
+                } else {
+                    $args[] = "[{$arg['name']}]";
+                }
+            }
+
+            $body = [
+                'command' => $item['name'],
+                'args' => $args
+            ];
+
+            $transformed = [
+                'name' => $item['name'],
+                'request' => [
+                    'body' => [
+                        'mode' => 'raw',
+                        'raw' => JsonUtil::encode($body, true),
+                        'options' => [
+                            'raw' => [
+                                'language' => 'json'
+                            ]
+                        ]
+                    ],
+                    'description' => $item['name'],
+                    'method' => 'PATCH',
+                    'url' => [
+                        'raw' => "{$host}/api/admin/tools/console",
+                        'host' => [$host],
+                        'path' => ['api/admin/tools/console'],
+                    ],
+                ]
+            ];
+
+            if (str_starts_with($item['name'], 'admin:')) {
+                $adminConsole[] = $transformed;
+            } else {
+                $sdkConsole[] = $transformed;
+            }
+        }
+
+        $bcs['Console'] = [
+            'name' => 'Console',
+            'item' => [
+                [
+                    'name' => 'Admin',
+                    'item' => $adminConsole,
+                ],
+                [
+                    'name' => 'SDK',
+                    'item' => $sdkConsole,
+                ]
+            ]
+        ];
+
         foreach ($ctrls as $key => $ctrl) {
             $f1 = explode('_', $key)[0];
             $bcs[$f1]['item'][] = $ctrl;
         }
 
-        // TODO Console
-
-        ksort($bcs);
         foreach ($bcs as $bc) {
             $items[] = $bc;
         }
