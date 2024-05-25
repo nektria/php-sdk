@@ -556,9 +556,9 @@ class PostmanController extends Controller
             };
 
             if (str_contains($name, 'startTime')) {
-                $sample = $defaultStartTime;
+                $sample = $defaultStartTime->dateTimeString();
             } elseif (str_contains($name, 'endTime')) {
-                $sample = $defaultEndTime;
+                $sample = $defaultEndTime->dateTimeString();
             }
 
             if ($sample === '?') {
