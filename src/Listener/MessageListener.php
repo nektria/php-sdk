@@ -321,7 +321,7 @@ abstract class MessageListener implements EventSubscriberInterface
         $data[$this->contextService->project()] ??= [];
         $data[$this->contextService->project()][$message::class] ??= 0;
         $data[$this->contextService->project()][$message::class] = max(0, $data[$message::class] - 1);
-        $this->sharedVariableCache->saveString('bus_current_usage', $data, 86400);
+        $this->sharedVariableCache->saveString('bus_current_usage', JsonUtil::encode($data), 86400);
     }
 
     /**
@@ -333,6 +333,6 @@ abstract class MessageListener implements EventSubscriberInterface
         $data[$this->contextService->project()] ??= [];
         $data[$this->contextService->project()][$message::class] ??= 0;
         ++$data[$this->contextService->project()][$message::class];
-        $this->sharedVariableCache->saveString('bus_current_usage', $data, 86400);
+        $this->sharedVariableCache->saveString('bus_current_usage', JsonUtil::encode($data), 86400);
     }
 }
