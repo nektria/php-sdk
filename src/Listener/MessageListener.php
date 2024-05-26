@@ -300,7 +300,6 @@ abstract class MessageListener implements EventSubscriberInterface
     {
         $project = $this->contextService->project();
         $clzz = $message::class;
-        $this->sharedVariableCache->multi();
         $data = JsonUtil::decode($this->sharedVariableCache->readString('bus_messages', '[]'));
         $key = "{$project}_{$clzz}";
         if (!in_array($key, $data, true)) {
@@ -320,7 +319,6 @@ abstract class MessageListener implements EventSubscriberInterface
     {
         $project = $this->contextService->project();
         $clzz = $message::class;
-        $this->sharedVariableCache->multi();
         $data = JsonUtil::decode($this->sharedVariableCache->readString('bus_messages', '[]'));
         $key = "{$project}_{$clzz}";
         if (!in_array($key, $data, true)) {
