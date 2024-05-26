@@ -51,17 +51,29 @@ class RabbitStatusConsole extends Console
 
         $this->output()->writeln('');
 
-        $data = JsonUtil::decode($this->sharedVariableCache->readString('bus_current_usage', '[]'));
-        foreach ($data as $project => $messages) {
+        $data = JsonUtil::decode($this->sharedVariableCache->readString('bus_messages', '[]'));
+
+        $projects = [];
+        foreach ($data as $item) {
+            [$project, $clzz] = explode('_', $item);
+
+            $projects[$project] ??= [];
+            $projects[$project][] = $clzz;
+        }
+
+        ksort($projects);
+        foreach ($projects as $project => $clzzs) {
+            sort($clzzs);
             $printHeader = false;
-            foreach ($messages as $message => $times) {
-                if ((int) $times > 0) {
+            foreach ($clzzs as $clzz) {
+                $times = $this->sharedVariableCache->readInt("bus_messages_{$project}_{$clzz}");
+                if ($times > 0) {
                     if (!$printHeader) {
                         $printHeader = true;
                         $this->output()->writeln($project);
                     }
 
-                    $this->output()->writeln("    {$message}: {$times}");
+                    $this->output()->writeln("    {$clzz}: {$times}");
                 }
             }
         }

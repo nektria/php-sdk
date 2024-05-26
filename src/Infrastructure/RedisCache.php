@@ -29,10 +29,28 @@ abstract class RedisCache
         $this->redisDsn = $redisDsn;
     }
 
+    public function decr(string $key): void
+    {
+        try {
+            $this->init()->decr($key);
+        } catch (Throwable $e) {
+            throw NektriaException::new($e);
+        }
+    }
+
     public function exec(): void
     {
         try {
             $this->init()->exec();
+        } catch (Throwable $e) {
+            throw NektriaException::new($e);
+        }
+    }
+
+    public function incr(string $key): void
+    {
+        try {
+            $this->init()->incr($key);
         } catch (Throwable $e) {
             throw NektriaException::new($e);
         }

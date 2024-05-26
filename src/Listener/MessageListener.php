@@ -301,12 +301,16 @@ abstract class MessageListener implements EventSubscriberInterface
         $project = $this->contextService->project();
         $clzz = $message::class;
         $this->sharedVariableCache->multi();
-        $data = JsonUtil::decode($this->sharedVariableCache->readString('bus_current_usage', '[]'));
-        $data[$project] ??= [];
-        $data[$project][$clzz] ??= 0;
-        $data[$project][$clzz] = max(0, ((int) $data[$project][$clzz]) - 1);
-        $this->sharedVariableCache->saveString('bus_current_usage', JsonUtil::encode($data), 86400);
-        $this->sharedVariableCache->exec();
+        $data = JsonUtil::decode($this->sharedVariableCache->readString('bus_messages', '[]'));
+        $key = "{$project}_{$clzz}";
+        if (!in_array($key, $data, true)) {
+            $data[] = $key;
+        }
+        sort($data);
+        $this->sharedVariableCache->saveString('bus_messages', JsonUtil::encode($data), 86400);
+
+        $times = $this->sharedVariableCache->readInt("bus_messages_{$key}") - 1;
+        $this->sharedVariableCache->saveInt("bus_messages_{$key}", $times);
     }
 
     /**
@@ -317,11 +321,15 @@ abstract class MessageListener implements EventSubscriberInterface
         $project = $this->contextService->project();
         $clzz = $message::class;
         $this->sharedVariableCache->multi();
-        $data = JsonUtil::decode($this->sharedVariableCache->readString('bus_current_usage', '[]'));
-        $data[$project] ??= [];
-        $data[$project][$clzz] ??= 0;
-        $data[$project][$clzz] = min(100_000, ((int) $data[$project][$clzz]) + 1);
-        $this->sharedVariableCache->saveString('bus_current_usage', JsonUtil::encode($data), 86400);
-        $this->sharedVariableCache->exec();
+        $data = JsonUtil::decode($this->sharedVariableCache->readString('bus_messages', '[]'));
+        $key = "{$project}_{$clzz}";
+        if (!in_array($key, $data, true)) {
+            $data[] = $key;
+        }
+        sort($data);
+        $this->sharedVariableCache->saveString('bus_messages', JsonUtil::encode($data), 86400);
+
+        $times = $this->sharedVariableCache->readInt("bus_messages_{$key}") - 1;
+        $this->sharedVariableCache->saveInt("bus_messages_{$key}", $times);
     }
 }
