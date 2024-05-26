@@ -309,7 +309,7 @@ abstract class MessageListener implements EventSubscriberInterface
         sort($data);
         $this->sharedVariableCache->saveString('bus_messages', JsonUtil::encode($data), 86400);
 
-        $times = $this->sharedVariableCache->readInt("bus_messages_{$key}") - 1;
+        $times = min(100_000, $this->sharedVariableCache->readInt("bus_messages_{$key}") - 1);
         $this->sharedVariableCache->saveInt("bus_messages_{$key}", $times);
     }
 
@@ -329,7 +329,7 @@ abstract class MessageListener implements EventSubscriberInterface
         sort($data);
         $this->sharedVariableCache->saveString('bus_messages', JsonUtil::encode($data), 86400);
 
-        $times = $this->sharedVariableCache->readInt("bus_messages_{$key}") - 1;
+        $times = max($this->sharedVariableCache->readInt("bus_messages_{$key}") - 1, 0);
         $this->sharedVariableCache->saveInt("bus_messages_{$key}", $times);
     }
 }
