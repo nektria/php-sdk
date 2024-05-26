@@ -307,7 +307,7 @@ abstract class MessageListener implements EventSubscriberInterface
         }
         sort($data);
         $this->sharedVariableCache->saveString('bus_messages', JsonUtil::encode($data), 86400);
-        $times = max($this->sharedVariableCache->readInt("bus_messages_{$key}") - 1, 0)
+        $times = max($this->sharedVariableCache->readInt("bus_messages_{$key}") - 1, 0);
         $this->sharedVariableCache->saveInt("bus_messages_{$key}", $times);
     }
 
