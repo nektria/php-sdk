@@ -2,8 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Nektria\Console;
+namespace Nektria\Console\Rabbit;
 
+use Nektria\Console\Console;
 use Nektria\Service\RequestClient;
 use Nektria\Service\SharedVariableCache;
 use Nektria\Util\JsonUtil;

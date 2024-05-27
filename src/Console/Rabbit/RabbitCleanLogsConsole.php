@@ -1,0 +1,46 @@
+<?php
+
+declare(strict_types=1);
+
+namespace Nektria\Console\Rabbit;
+
+use Nektria\Console\Console;
+use Nektria\Service\SharedVariableCache;
+use Nektria\Util\JsonUtil;
+use Symfony\Component\DependencyInjection\ContainerInterface;
+
+class RabbitCleanLogsConsole extends Console
+{
+    public function __construct(
+        private readonly ContainerInterface $container,
+        private readonly SharedVariableCache $sharedVariableCache,
+    ) {
+        parent::__construct('sdk:rabbit:clean-logs');
+    }
+
+    protected function play(): void
+    {
+        if (!$this->container->hasParameter('rabbitDsn')) {
+            $this->output()->writeln('Rabbit not configured.');
+
+            return;
+        }
+
+        $data = JsonUtil::decode($this->sharedVariableCache->readString('bus_messages', '[]'));
+
+        $projects = [];
+        foreach ($data as $item) {
+            [$project, $clzz] = explode('_', $item);
+
+            $projects[$project] ??= [];
+            $projects[$project][] = $clzz;
+        }
+
+        ksort($projects);
+        foreach ($projects as $project => $clzzs) {
+            foreach ($clzzs as $clzz) {
+                $this->sharedVariableCache->saveInt("bus_messages_{$project}_{$clzz}", 0, ttl: 3600);
+            }
+        }
+    }
+}
