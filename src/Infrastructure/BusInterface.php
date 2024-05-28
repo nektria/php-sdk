@@ -29,7 +29,19 @@ interface BusInterface
 
     public function dispatchDelayedEvents(): void;
 
-    public function dispatchEvent(Event $event): void;
+    /**
+     * @param array{
+     *     currentTry: int,
+     *     maxTries: int,
+     *     interval: int,
+     * }|null $retryOptions
+     */
+    public function dispatchEvent(
+        Event $event,
+        ?string $transport = null,
+        ?int $delayMs = null,
+        ?array $retryOptions = null
+    ): void;
 
     /**
      * @template T of Document

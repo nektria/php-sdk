@@ -114,17 +114,52 @@ class Bus implements BusInterface
     }
 
     /**
+     * @param array{
+     *     currentTry: int,
+     *     maxTries: int,
+     *     interval: int,
+     * }|null $retryOptions
      * @throws Throwable
      */
-    final public function dispatchEvent(Event $event): void
-    {
+    final public function dispatchEvent(
+        Event $event,
+        ?string $transport = null,
+        ?int $delayMs = null,
+        ?array $retryOptions = null
+    ): void {
+        $stamps = [
+            new ContextStamp(
+                $this->contextService->traceId(),
+                $this->contextService->tenantId(),
+            ),
+        ];
+
+        if ($transport !== null) {
+            $stamps[] = new TransportNamesStamp([$transport]);
+        }
+
+        if ($retryOptions !== null) {
+            if ($this->contextService->env() === ContextService::DEV) {
+                $stamps[] = new RetryStamp(
+                    max(1, $retryOptions['currentTry']),
+                    min(10, $retryOptions['maxTries']),
+                    min(10_000, $retryOptions['interval']),
+                );
+            } else {
+                $stamps[] = new RetryStamp(
+                    max(1, $retryOptions['currentTry']),
+                    $retryOptions['maxTries'],
+                    $retryOptions['interval'],
+                );
+            }
+        }
+
+        if ($delayMs !== null) {
+            $stamps[] = new DelayStamp($delayMs);
+        }
+
         try {
-            $this->bus->dispatch($event, [
-                new ContextStamp(
-                    $this->contextService->traceId(),
-                    $this->contextService->tenantId(),
-                ),
-            ]);
+            $this->bus->dispatch($event, $stamps);
         } catch (HandlerFailedException $e) {
             $previous = $e->getPrevious();
             if ($previous !== null) {
