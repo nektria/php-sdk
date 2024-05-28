@@ -26,6 +26,7 @@ use Nektria\Util\MessageStamp\RetryStamp;
 use Nektria\Util\StringUtil;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\Messenger\Bridge\Amqp\Transport\AmqpReceivedStamp;
+use Symfony\Component\Messenger\Event\SendMessageToTransportsEvent;
 use Symfony\Component\Messenger\Event\WorkerMessageFailedEvent;
 use Symfony\Component\Messenger\Event\WorkerMessageHandledEvent;
 use Symfony\Component\Messenger\Event\WorkerMessageReceivedEvent;
@@ -69,6 +70,7 @@ abstract class MessageListener implements EventSubscriberInterface
     public static function getSubscribedEvents(): array
     {
         return [
+            SendMessageToTransportsEvent::class => 'onSendMessageToTransports',
             WorkerMessageReceivedEvent::class => 'onWorkerMessageReceived',
             WorkerMessageHandledEvent::class => 'onWorkerMessageHandled',
             WorkerMessageFailedEvent::class => 'onMessengerException',
@@ -203,6 +205,15 @@ abstract class MessageListener implements EventSubscriberInterface
         gc_collect_cycles();
     }
 
+    public function onSendMessageToTransports(SendMessageToTransportsEvent $event): void
+    {
+        $message = $event->getEnvelope()->getMessage();
+
+        if ($message instanceof Command || $message instanceof Event || $message instanceof Query) {
+            $this->increasePendingCounter($message);
+        }
+    }
+
     public function onWorkerMessageHandled(WorkerMessageHandledEvent $event): void
     {
         $this->bus->dispatchDelayedEvents();
@@ -258,6 +269,7 @@ abstract class MessageListener implements EventSubscriberInterface
 
         if ($message instanceof Command || $message instanceof Event || $message instanceof Query) {
             $this->increaseCounter($message);
+            $this->decreasePendingCounter($message);
         }
 
         try {
@@ -314,6 +326,24 @@ abstract class MessageListener implements EventSubscriberInterface
     /**
      * @param Event|Query<Document>|Command $message
      */
+    private function decreasePendingCounter(Event | Query | Command $message): void
+    {
+        $project = $this->contextService->project();
+        $clzz = $message::class;
+        $data = JsonUtil::decode($this->sharedVariableCache->readString('bus_messages_pending', '[]'));
+        $key = "{$project}_{$clzz}";
+        if (!in_array($key, $data, true)) {
+            $data[] = $key;
+        }
+        sort($data);
+        $this->sharedVariableCache->saveString('bus_messages_pending', JsonUtil::encode($data), 3600);
+        $times = max($this->sharedVariableCache->readInt("bus_messages_pending_{$key}") - 1, 0);
+        $this->sharedVariableCache->saveInt("bus_messages_pending_{$key}", $times, ttl: 3600);
+    }
+
+    /**
+     * @param Event|Query<Document>|Command $message
+     */
     private function increaseCounter(Event | Query | Command $message): void
     {
         $project = $this->contextService->project();
@@ -328,5 +358,23 @@ abstract class MessageListener implements EventSubscriberInterface
 
         $times = min(100_000, $this->sharedVariableCache->readInt("bus_messages_{$key}") + 1);
         $this->sharedVariableCache->saveInt("bus_messages_{$key}", $times, ttl: 3600);
+    }
+
+    /**
+     * @param Event|Query<Document>|Command $message
+     */
+    private function increasePendingCounter(Event | Query | Command $message): void
+    {
+        $project = $this->contextService->project();
+        $clzz = $message::class;
+        $data = JsonUtil::decode($this->sharedVariableCache->readString('bus_messages_pending', '[]'));
+        $key = "{$project}_{$clzz}";
+        if (!in_array($key, $data, true)) {
+            $data[] = $key;
+        }
+        sort($data);
+        $this->sharedVariableCache->saveString('bus_messages_pending', JsonUtil::encode($data), 3600);
+        $times = min(100_000, $this->sharedVariableCache->readInt("bus_messages_pending_{$key}") + 1);
+        $this->sharedVariableCache->saveInt("bus_messages_pending_{$key}", $times, ttl: 3600);
     }
 }

@@ -51,7 +51,48 @@ class RabbitStatusConsole extends Console
         }
 
         $this->output()->writeln('');
+        $this->output()->writeln('PROCESSING');
 
+        $this->printProcessingMessages();
+
+        $this->output()->writeln('');
+        $this->output()->writeln('PENDING');
+
+        $this->printPendingMessages();
+    }
+
+    private function printPendingMessages(): void
+    {
+        $data = JsonUtil::decode($this->sharedVariableCache->readString('bus_messages_pending', '[]'));
+
+        $projects = [];
+        foreach ($data as $item) {
+            [$project, $clzz] = explode('_', $item);
+
+            $projects[$project] ??= [];
+            $projects[$project][] = $clzz;
+        }
+
+        ksort($projects);
+        foreach ($projects as $project => $clzzs) {
+            sort($clzzs);
+            $printHeader = false;
+            foreach ($clzzs as $clzz) {
+                $times = $this->sharedVariableCache->readInt("bus_messages_pending_{$project}_{$clzz}");
+                if ($times > 0) {
+                    if (!$printHeader) {
+                        $printHeader = true;
+                        $this->output()->writeln($project);
+                    }
+
+                    $this->output()->writeln("    {$clzz}: {$times}");
+                }
+            }
+        }
+    }
+
+    private function printProcessingMessages(): void
+    {
         $data = JsonUtil::decode($this->sharedVariableCache->readString('bus_messages', '[]'));
 
         $projects = [];
