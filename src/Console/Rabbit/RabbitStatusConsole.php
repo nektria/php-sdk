@@ -51,12 +51,12 @@ class RabbitStatusConsole extends Console
         }
 
         $this->output()->writeln('');
-        $this->output()->writeln('PROCESSING');
+        $this->output()->writeln('PROCESSING:');
 
         $this->printProcessingMessages();
 
         $this->output()->writeln('');
-        $this->output()->writeln('PENDING');
+        $this->output()->writeln('PENDING:');
 
         $this->printPendingMessages();
     }
