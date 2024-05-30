@@ -7,7 +7,7 @@ namespace Nektria\Dto;
 use Nektria\Service\SharedTenantCache;
 
 /**
- * @phpstan-import-type WarehouseMetadataArray from SharedTenantCache
+ * @phpstan-import-type TenantMetadataArray from SharedTenantCache
  */
 class TenantMetadata
 {
@@ -69,10 +69,7 @@ class TenantMetadata
         return $this->data['countComplementaryOrders'];
     }
 
-    /**
-     * @return mixed[]
-     */
-    public function data(): array
+    public function data(): mixed
     {
         return $this->data;
     }
@@ -283,7 +280,7 @@ class TenantMetadata
     }
 
     /**
-     * @return WarehouseMetadataArray
+     * @return TenantMetadataArray
      */
     public function toArray(): array
     {

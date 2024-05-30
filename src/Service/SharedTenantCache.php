@@ -9,7 +9,7 @@ use Nektria\Dto\TenantMetadata;
 use Nektria\Infrastructure\SharedRedisCache;
 
 /**
- * @phpstan-type WarehouseMetadataArray array{
+ * @phpstan-type TenantMetadataArray array{
  *     autoDuplicateLastWeek: bool,
  *     availableTags: string[],
  *     blockWarehouse: bool,
@@ -45,7 +45,7 @@ use Nektria\Infrastructure\SharedRedisCache;
  * @extends SharedRedisCache<array{
  *     id: string,
  *     name: string,
- *     metadata: WarehouseMetadataArray
+ *     metadata: TenantMetadataArray
  * }>
  */
 class SharedTenantCache extends SharedRedisCache
@@ -71,7 +71,7 @@ class SharedTenantCache extends SharedRedisCache
             [
                 'id' => $tenant->id,
                 'name' => $tenant->name,
-                'metadata' => $tenant->metadata->toArray(),
+                'metadata' => $tenant->metadata->data(),
             ],
             1209600,
         );
