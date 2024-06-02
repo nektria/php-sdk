@@ -38,18 +38,13 @@ class ClockType extends Type
         return Clock::fromString($value);
     }
 
-    public function getName(): string
-    {
-        return 'clock';
-    }
-
     public function getSQLDeclaration(array $column, AbstractPlatform $platform): string
     {
         return 'TIMESTAMP(0) WITHOUT TIME ZONE';
     }
 
-    public function requiresSQLCommentHint(AbstractPlatform $platform): bool
+    public function getName(): string
     {
-        return true;
+        return 'clock';
     }
 }
