@@ -25,6 +25,7 @@
         "ext-pdo": "*",
         "ext-redis": "*",
         "ext-sodium": "*",
+        "ext-zend-opcache": "*",
         "doctrine/common": "^3.0",
         "doctrine/dbal": "^3.0",
         "doctrine/doctrine-bundle": "^2.0",

@@ -383,8 +383,14 @@ class PostmanController extends Controller
         $path = substr($data['path'], 1);
         $method = explode('|', $data['method'])[0];
         $name = explode('::', $data['defaults']['_controller'])[1];
-        $fixedName = preg_replace('/([a-z])([A-Z0-9])/', '\1 \2', $name) ?? '';
-        $fixedName = preg_replace('/(\d)([A-Z])/', '\1 \2', $fixedName) ?? '';
+
+        $fixedName = '';
+        foreach (str_split($name) as $letter) {
+            if ($letter >= 'A' && $letter <= 'Z' && $fixedName !== '') {
+                $fixedName .= ' ';
+            }
+            $fixedName .= $letter;
+        }
         $fixedName = ucwords($fixedName);
 
         $file = str_replace('\\', '/', explode('::', $data['defaults']['_controller'])[0]) . '.php';

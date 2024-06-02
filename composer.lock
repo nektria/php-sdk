@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "05473f2a7a24ec75699a5d740b4db6c7",
+    "content-hash": "5b0aca318daac4a3cb3baee146be87b4",
     "packages": [
         {
             "name": "doctrine/cache",
@@ -10244,7 +10244,8 @@
         "ext-json": "*",
         "ext-pdo": "*",
         "ext-redis": "*",
-        "ext-sodium": "*"
+        "ext-sodium": "*",
+        "ext-zend-opcache": "*"
     },
     "platform-dev": [],
     "plugin-api-version": "2.6.0"
