@@ -61,7 +61,7 @@ abstract class ConsoleListener implements EventSubscriberInterface
                 $path,
                 [
                     'command' => $args['command'],
-                    'arguments' => $args['receivers'],
+                    'arguments' => $args['receivers'] ?? [],
                     'options' => $options,
                 ],
                 new ThrowableDocument($event->getError()),
