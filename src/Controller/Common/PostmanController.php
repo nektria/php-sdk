@@ -383,6 +383,9 @@ class PostmanController extends Controller
         $path = substr($data['path'], 1);
         $method = explode('|', $data['method'])[0];
         $name = explode('::', $data['defaults']['_controller'])[1];
+        $fixedName = preg_replace('/([a-z])([A-Z0-9])/', '\1 \2', $name) ?? '';
+        $fixedName = preg_replace('/(\d)([A-Z])/', '\1 \2', $fixedName) ?? '';
+        $fixedName = ucwords($fixedName);
 
         $file = str_replace('\\', '/', explode('::', $data['defaults']['_controller'])[0]) . '.php';
         $file = str_replace(['App', 'Nektria/'], ['/app/src', '/app/vendor/nektria/php-sdk/src/'], $file);
@@ -406,10 +409,6 @@ class PostmanController extends Controller
                 ];
             }
 
-            $fixedName = preg_replace('/([a-z])([A-Z0-9])/', '\1 \2', $name) ?? '';
-            $fixedName = preg_replace('/(\d)([A-Z])/', '\1 \2', $fixedName) ?? '';
-            $fixedName = ucwords($fixedName);
-
             return [
                 'name' => $fixedName,
                 'request' => [
@@ -427,7 +426,7 @@ class PostmanController extends Controller
 
         if ($json !== null) {
             return [
-                'name' => $name,
+                'name' => $fixedName,
                 'request' => [
                     'body' => [
                         'mode' => 'raw',
@@ -450,7 +449,7 @@ class PostmanController extends Controller
         }
 
         return [
-            'name' => $name,
+            'name' => $fixedName,
             'request' => [
                 'description' => $description,
                 'method' => $method,
