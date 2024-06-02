@@ -39,6 +39,7 @@
         "symfony/mercure-bundle": "^0.3",
         "symfony/mime": "^v7.0",
         "symfony/monolog-bundle": "^v3.0",
+        "symfony/process": "^7.0",
         "symfony/property-access": "^7.0",
         "symfony/runtime": "^7.0",
         "symfony/serializer": "^7.0",
