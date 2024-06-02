@@ -12,7 +12,7 @@
     "authors": [
         {
             "name": "Javier Gonzalez Cuadrado",
-            "email": "xgc1986@gmail.com"
+            "email": "xavi@nektria.com"
         }
     ],
     "require": {
@@ -73,8 +73,7 @@
     },
     "scripts": {
         "auto-scripts": {
-            "cache:clear": "symfony-cmd",
-            "assets:install %PUBLIC_DIR%": "symfony-cmd"
+            "cache:clear": "symfony-cmd"
         }
     }
 }
