@@ -16,15 +16,15 @@
         }
     ],
     "require": {
-        "php": ">=8.1",
+        "php": ">=8.3",
         "ext-amqp": "*",
         "ext-ctype": "*",
         "ext-curl": "*",
         "ext-iconv": "*",
         "ext-json": "*",
-        "ext-openssl": "*",
         "ext-pdo": "*",
         "ext-redis": "*",
+        "ext-sodium": "*",
         "doctrine/annotations": "^2.0",
         "doctrine/common": "^3.0",
         "doctrine/dbal": "^3.0",
@@ -42,6 +42,7 @@
         "symfony/property-access": "^7.0",
         "symfony/runtime": "^7.0",
         "symfony/serializer": "^7.0",
+        "symfony/translation-contracts": "^3.0",
         "symfony/yaml": "^7.0"
     },
     "require-dev": {
