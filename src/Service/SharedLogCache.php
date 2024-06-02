@@ -36,7 +36,7 @@ class SharedLogCache extends SharedRedisCache
     {
         $logs = $this->getItem($this->contextService->traceId()) ?? [];
         $logs[] = $log;
-        $logs = array_slice($logs, -100);
+        $logs = array_slice($logs, -20);
 
         $this->setItem($this->contextService->traceId(), $logs, 30 * 60);
     }

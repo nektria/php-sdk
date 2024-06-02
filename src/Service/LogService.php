@@ -16,15 +16,15 @@ use const PHP_EOL;
 
 class LogService
 {
-    public const DEBUG = 'DEBUG';
+    public const string DEBUG = 'DEBUG';
 
-    public const EMERGENCY = 'EMERGENCY';
+    public const string EMERGENCY = 'EMERGENCY';
 
-    public const ERROR = 'ERROR';
+    public const string ERROR = 'ERROR';
 
-    public const INFO = 'INFO';
+    public const string INFO = 'INFO';
 
-    public const WARNING = 'WARNING';
+    public const string WARNING = 'WARNING';
 
     /** @var resource|false */
     private $channel;
