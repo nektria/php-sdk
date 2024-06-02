@@ -406,8 +406,12 @@ class PostmanController extends Controller
                 ];
             }
 
+            $fixedName = preg_replace('/([a-z])([A-Z0-9])/', '\1 \2', $name) ?? '';
+            $fixedName = preg_replace('/(\d)([A-Z])/', '\1 \2', $fixedName) ?? '';
+            $fixedName = ucwords($fixedName);
+
             return [
-                'name' => $name,
+                'name' => $fixedName,
                 'request' => [
                     'description' => $description,
                     'method' => $method,
