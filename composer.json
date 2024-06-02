@@ -16,13 +16,13 @@
         }
     ],
     "require": {
-        "ext-openssl": "*",
         "php": ">=8.1",
         "ext-amqp": "*",
         "ext-ctype": "*",
         "ext-curl": "*",
         "ext-iconv": "*",
         "ext-json": "*",
+        "ext-openssl": "*",
         "ext-pdo": "*",
         "ext-redis": "*",
         "doctrine/annotations": "^2.0",
