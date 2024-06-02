@@ -25,7 +25,7 @@ class PostmanController extends Controller
     public function postman(ContextService $contextService): BinaryFileResponse
     {
         $file = "{$contextService->project()}.json";
-        $body = $this->buildPostmanCollection($contextService, !$contextService->isLocalEnvironament());
+        $body = $this->buildPostmanCollection($contextService);
 
         FileUtil::write($file, JsonUtil::encode($body));
 
@@ -38,7 +38,7 @@ class PostmanController extends Controller
     /**
      * @return mixed[]
      */
-    private function buildPostmanCollection(ContextService $contextService, bool $public): array
+    private function buildPostmanCollection(ContextService $contextService): array
     {
         $postmanId = match ($contextService->project()) {
             'yieldmanager' => 'd4f9b932-ff22-4b71-985c-5034d0f879ed',
@@ -140,11 +140,21 @@ class PostmanController extends Controller
         $items = [];
 
         foreach ($data as $key => $item) {
-            if ($public && !str_starts_with($key, 'app_api2_')) {
-                continue;
+            if ($contextService->isStaging() || $contextService->isProd()) {
+                if (!str_starts_with($key, 'app_api2_')) {
+                    continue;
+                }
+
+                if (str_contains($key, 'hidden')) {
+                    continue;
+                }
             }
 
-            if ($public && str_contains($key, 'hidden')) {
+            if (
+                $contextService->isQA()
+                && !str_starts_with($key, 'app_web_')
+                && !str_starts_with($key, 'app_common_')
+            ) {
                 continue;
             }
 
@@ -184,11 +194,11 @@ class PostmanController extends Controller
                 $key,
                 $host,
                 $item,
-                $public,
+                $contextService,
             );
         }
 
-        if (!$public) {
+        if ($contextService->isLocalEnvironament()) {
             $data = [];
 
             try {
@@ -376,8 +386,9 @@ class PostmanController extends Controller
      *     }
      * }
      */
-    private function buildPostmanRequest(string $key, string $host, array $data, bool $public): array
+    private function buildPostmanRequest(string $key, string $host, array $data, ContextService $contextService): array
     {
+        $public = $contextService->isStaging() || $contextService->isProd();
         $description = $public ? $key : "{$key} ({$data['defaults']['_controller']})";
         $url = "{$host}{$data['path']}";
         $path = substr($data['path'], 1);
