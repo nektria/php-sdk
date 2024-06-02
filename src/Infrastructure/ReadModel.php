@@ -88,7 +88,7 @@ abstract class ReadModel
             foreach ($newParams as $key => $value) {
                 $query->bindValue($key, $value);
             }
-            $results = $query->executeQuery($newParams)->fetchAllAssociative();
+            $results = $query->executeQuery()->fetchAllAssociative();
 
             if (count($groupBy) > 0) {
                 $newResults = [];

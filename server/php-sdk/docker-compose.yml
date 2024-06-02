@@ -1,6 +1,6 @@
 services:
   php-sdk:
-    image: eu.gcr.io/nektria/php:8.1
+    image: eu.gcr.io/nektria/php:8.3
     container_name: php-sdk
     restart: 'no'
     networks:
