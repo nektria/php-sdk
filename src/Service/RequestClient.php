@@ -30,7 +30,7 @@ class RequestClient
         array $data = [],
         array $headers = [],
         array $options = [],
-        bool $enableDebugFallback = true
+        ?bool $enableDebugFallback = null
     ): RequestResponse {
         return $this->request(
             'DELETE',
@@ -52,7 +52,7 @@ class RequestClient
         array $data = [],
         array $headers = [],
         array $options = [],
-        bool $enableDebugFallback = true
+        ?bool $enableDebugFallback = null
     ): RequestResponse {
         return $this->request(
             'GET',
@@ -75,7 +75,7 @@ class RequestClient
         array $headers = [],
         array $options = [],
         bool $sendBodyAsObject = false,
-        bool $enableDebugFallback = true
+        ?bool $enableDebugFallback = null
     ): RequestResponse {
         return $this->request(
             'PATCH',
@@ -99,7 +99,7 @@ class RequestClient
         array $headers = [],
         array $options = [],
         bool $sendBodyAsObject = false,
-        bool $enableDebugFallback = true
+        ?bool $enableDebugFallback = null
     ): RequestResponse {
         return $this->request(
             'POST',
@@ -107,7 +107,8 @@ class RequestClient
             data: $data,
             headers: $headers,
             options: $options,
-            sendBodyAsObject: $sendBodyAsObject
+            sendBodyAsObject: $sendBodyAsObject,
+            enableDebugFallback: $enableDebugFallback
         );
     }
 
@@ -122,7 +123,7 @@ class RequestClient
         array $headers = [],
         array $options = [],
         bool $sendBodyAsObject = false,
-        bool $enableDebugFallback = true
+        ?bool $enableDebugFallback = null
     ): RequestResponse {
         return $this->request(
             'PUT',
@@ -130,7 +131,8 @@ class RequestClient
             data: $data,
             headers: $headers,
             options: $options,
-            sendBodyAsObject: $sendBodyAsObject
+            sendBodyAsObject: $sendBodyAsObject,
+            enableDebugFallback: $enableDebugFallback
         );
     }
 
@@ -146,7 +148,7 @@ class RequestClient
         array $headers = [],
         array $options = [],
         bool $sendBodyAsObject = false,
-        bool $enableDebugFallback = true
+        ?bool $enableDebugFallback = null
     ): RequestResponse {
         $body = JsonUtil::encode($data);
         $headers = array_merge([
@@ -195,7 +197,7 @@ class RequestClient
             throw NektriaException::new($e);
         }
 
-        if ($enableDebugFallback) {
+        if ($enableDebugFallback ?? str_starts_with($url, 'https')) {
             $this->logService->debug([
                 'method' => $response->method,
                 'request' => $data,
