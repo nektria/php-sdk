@@ -9,27 +9,27 @@ use Nektria\Util\ValidateOpt;
 
 class ContextService
 {
-    public const ADMIN = 'admin';
+    public const string ADMIN = 'admin';
 
-    public const COMMON = 'common';
+    public const string COMMON = 'common';
 
-    public const DEV = 'dev';
+    public const string DEV = 'dev';
 
-    public const INTERNAL = 'internal';
+    public const string INTERNAL = 'internal';
 
-    public const PROD = 'prod';
+    public const string PROD = 'prod';
 
-    public const PUBLIC = 'public';
+    public const string PUBLIC = 'public';
 
-    public const PUBLIC_V2 = 'public_v2';
+    public const string PUBLIC_V2 = 'public_v2';
 
-    public const QA = 'qa';
+    public const string QA = 'qa';
 
-    public const STAGING = 'staging';
+    public const string STAGING = 'staging';
 
-    public const SYSTEM = 'system';
+    public const string SYSTEM = 'system';
 
-    public const TEST = 'test';
+    public const string TEST = 'test';
 
     private string $context;
 
@@ -42,7 +42,7 @@ class ContextService
     public function __construct(
         private readonly SharedVariableCache $sharedVariableCache,
         private readonly string $env,
-        private readonly string $project
+        private readonly string $project,
     ) {
         $this->context = self::COMMON;
         $this->traceId = StringUtil::uuid4();

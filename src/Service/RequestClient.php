@@ -29,9 +29,17 @@ class RequestClient
         string $url,
         array $data = [],
         array $headers = [],
-        array $options = []
+        array $options = [],
+        bool $enableDebugFallback = true
     ): RequestResponse {
-        return $this->request('DELETE', $url, $data, $headers, $options);
+        return $this->request(
+            'DELETE',
+            $url,
+            data: $data,
+            headers: $headers,
+            options: $options,
+            enableDebugFallback: $enableDebugFallback
+        );
     }
 
     /**
@@ -43,9 +51,17 @@ class RequestClient
         string $url,
         array $data = [],
         array $headers = [],
-        array $options = []
+        array $options = [],
+        bool $enableDebugFallback = true
     ): RequestResponse {
-        return $this->request('GET', $url, $data, $headers, $options);
+        return $this->request(
+            'GET',
+            $url,
+            data: $data,
+            headers: $headers,
+            options: $options,
+            enableDebugFallback: $enableDebugFallback
+        );
     }
 
     /**
@@ -58,9 +74,18 @@ class RequestClient
         array $data = [],
         array $headers = [],
         array $options = [],
-        bool $sendBodyAsObject = false
+        bool $sendBodyAsObject = false,
+        bool $enableDebugFallback = true
     ): RequestResponse {
-        return $this->request('PATCH', $url, $data, $headers, $options, $sendBodyAsObject);
+        return $this->request(
+            'PATCH',
+            $url,
+            data: $data,
+            headers: $headers,
+            options: $options,
+            sendBodyAsObject: $sendBodyAsObject,
+            enableDebugFallback: $enableDebugFallback
+        );
     }
 
     /**
@@ -73,9 +98,17 @@ class RequestClient
         array $data = [],
         array $headers = [],
         array $options = [],
-        bool $sendBodyAsObject = false
+        bool $sendBodyAsObject = false,
+        bool $enableDebugFallback = true
     ): RequestResponse {
-        return $this->request('POST', $url, $data, $headers, $options, $sendBodyAsObject);
+        return $this->request(
+            'POST',
+            $url,
+            data: $data,
+            headers: $headers,
+            options: $options,
+            sendBodyAsObject: $sendBodyAsObject
+        );
     }
 
     /**
@@ -88,9 +121,17 @@ class RequestClient
         array $data = [],
         array $headers = [],
         array $options = [],
-        bool $sendBodyAsObject = false
+        bool $sendBodyAsObject = false,
+        bool $enableDebugFallback = true
     ): RequestResponse {
-        return $this->request('PUT', $url, $data, $headers, $options, $sendBodyAsObject);
+        return $this->request(
+            'PUT',
+            $url,
+            data: $data,
+            headers: $headers,
+            options: $options,
+            sendBodyAsObject: $sendBodyAsObject
+        );
     }
 
     /**
@@ -104,7 +145,8 @@ class RequestClient
         array $data = [],
         array $headers = [],
         array $options = [],
-        bool $sendBodyAsObject = false
+        bool $sendBodyAsObject = false,
+        bool $enableDebugFallback = true
     ): RequestResponse {
         $body = JsonUtil::encode($data);
         $headers = array_merge([
@@ -153,15 +195,17 @@ class RequestClient
             throw NektriaException::new($e);
         }
 
-        $this->logService->debug([
-            'method' => $response->method,
-            'request' => $data,
-            'requestHeaders' => $headers,
-            'response' => $response->json(),
-            'responseHeaders' => $respHeaders,
-            'status' => $response->status,
-            'url' => $url,
-        ], "{$status} {$method} {$url}");
+        if ($enableDebugFallback) {
+            $this->logService->debug([
+                'method' => $response->method,
+                'request' => $data,
+                'requestHeaders' => $headers,
+                'response' => $response->json(),
+                'responseHeaders' => $respHeaders,
+                'status' => $response->status,
+                'url' => $url,
+            ], "{$status} {$method} {$url}");
+        }
 
         if ($status >= 300) {
             $errorContent = $content;
