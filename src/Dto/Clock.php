@@ -27,10 +27,10 @@ class Clock
         return new self($dateTime);
     }
 
-    public static function fromString(string $dateTime): self
+    public static function fromString(?string $dateTime): self
     {
         try {
-            return new self(new DateTimeImmutable($dateTime));
+            return new self(new DateTimeImmutable($dateTime ?? 'now'));
         } catch (Throwable $e) {
             throw NektriaException::new($e);
         }
