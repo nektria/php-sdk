@@ -32,13 +32,18 @@ class MicroClockType extends Type
         return Clock::fromString($value);
     }
 
+    public function getName(): string
+    {
+        return 'micro_clock';
+    }
+
     public function getSQLDeclaration(array $column, AbstractPlatform $platform): string
     {
         return 'TIMESTAMP(6) WITHOUT TIME ZONE';
     }
 
-    public function getName(): string
+    public function requiresSQLCommentHint(AbstractPlatform $platform): bool
     {
-        return 'micro_clock';
+        return true;
     }
 }
