@@ -331,12 +331,16 @@ class Clock
         return "$count {$name}s ago";
     }
 
-    public function timeString(?string $timeZone = null): string
+    public function timeString(bool $withSeconds = false, ?string $timeZone = null): string
     {
         try {
             $dateTime = $this->dateTime;
             if ($timeZone !== null) {
                 $dateTime = $dateTime->setTimezone(new DateTimeZone($timeZone));
+            }
+
+            if ($withSeconds) {
+                return $dateTime->format('H:i:s');
             }
 
             return $dateTime->format('H:i');
