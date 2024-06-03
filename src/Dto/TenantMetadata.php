@@ -11,13 +11,13 @@ use Nektria\Service\SharedTenantCache;
  */
 class TenantMetadata
 {
-    public const ECHO_MODE_ALWAYS = 'always';
+    public const string ECHO_MODE_ALWAYS = 'always';
 
-    public const ECHO_MODE_DEFAULT = 'default';
+    public const string ECHO_MODE_DEFAULT = 'default';
 
-    public const GRID_MODE_COMMON = 'common';
+    public const string GRID_MODE_COMMON = 'common';
 
-    public const GRID_MODE_DEFAULT = 'default';
+    public const string GRID_MODE_DEFAULT = 'default';
 
     /** @var mixed[] */
     private array $data;
@@ -171,13 +171,6 @@ class TenantMetadata
         return $this->data['ignoreRoutesOnLogsList'];
     }
 
-    public function importOrdersFromFileByProxy(): bool
-    {
-        $this->data['importOrdersFromFileByProxy'] ??= false;
-
-        return $this->data['importOrdersFromFileByProxy'];
-    }
-
     public function longSpeed(): int
     {
         $this->data['longSpeed'] ??= 720;
@@ -199,18 +192,15 @@ class TenantMetadata
         return $this->data['parkingTime'];
     }
 
-    public function proxyHost(): string
+    public function proxyHost(): ?string
     {
-        $this->data['proxyHost'] ??= '';
+        $this->data['proxyHost'] ??= null;
+
+        if ($this->data['proxyHost'] === '') {
+            $this->data['proxyHost'] = null;
+        }
 
         return $this->data['proxyHost'];
-    }
-
-    public function proxyToken(): string
-    {
-        $this->data['proxyToken'] ??= '';
-
-        return $this->data['proxyToken'];
     }
 
     public function recoverCoords(): bool
@@ -218,27 +208,6 @@ class TenantMetadata
         $this->data['recoverCoords'] ??= false;
 
         return $this->data['recoverCoords'];
-    }
-
-    public function sendNewOrderToProxy(): bool
-    {
-        $this->data['sendNewOrderToProxy'] ??= false;
-
-        return $this->data['sendNewOrderToProxy'];
-    }
-
-    public function sendRoutesAtPickingShiftClosesAt(): bool
-    {
-        $this->data['sendRoutesAtPickingShiftClosesAt'] ??= true;
-
-        return $this->data['sendRoutesAtPickingShiftClosesAt'];
-    }
-
-    public function sendRoutesByProxy(): bool
-    {
-        $this->data['sendRoutesByProxy'] ??= false;
-
-        return $this->data['sendRoutesByProxy'];
     }
 
     public function shortSpeed(): int
@@ -301,16 +270,11 @@ class TenantMetadata
             'gridVersion' => $this->gridVesion(),
             'gridViewerOrdersPrefix' => $this->gridViewerOrdersPrefix(),
             'ignoreRoutesOnLogsList' => $this->ignoreRoutesOnLogsList(),
-            'importOrdersFromFileByProxy' => $this->importOrdersFromFileByProxy(),
             'longSpeed' => $this->longSpeed(),
             'nextStepEnabled' => $this->nextStepEnabled(),
             'parkingTime' => $this->parkingTime(),
             'proxyHost' => $this->proxyHost(),
-            'proxyToken' => $this->proxyToken(),
             'recoverCoords' => $this->recoverCoords(),
-            'sendNewOrderToProxy' => $this->sendNewOrderToProxy(),
-            'sendRoutesAtPickingShiftClosesAt' => $this->sendRoutesAtPickingShiftClosesAt(),
-            'sendRoutesByProxy' => $this->sendRoutesByProxy(),
             'shortSpeed' => $this->shortSpeed(),
             'syncRMOrder' => $this->syncRMOrder(),
             'syncRMShift' => $this->syncRMShift(),

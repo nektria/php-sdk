@@ -217,13 +217,13 @@ use Nektria\Dto\Clock;
  *     response: string
  * }
  */
-class YieldManagerClient
+readonly class YieldManagerClient
 {
     public function __construct(
-        private readonly ContextService $contextService,
-        private readonly SharedUserCache $sharedUserCache,
-        private readonly RequestClient $requestClient,
-        private readonly string $yieldManagerHost
+        private ContextService $contextService,
+        private SharedUserCache $sharedUserCache,
+        private RequestClient $requestClient,
+        private string $yieldManagerHost
     ) {
     }
 

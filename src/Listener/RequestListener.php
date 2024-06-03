@@ -39,11 +39,11 @@ use function in_array;
 
 abstract class RequestListener implements EventSubscriberInterface
 {
-    public const LOG_LEVEL_DEBUG = 'DEBUG';
+    public const string LOG_LEVEL_DEBUG = 'DEBUG';
 
-    public const LOG_LEVEL_INFO = 'INFO';
+    public const string LOG_LEVEL_INFO = 'INFO';
 
-    public const LOG_LEVEL_NONE = 'NONE';
+    public const string LOG_LEVEL_NONE = 'NONE';
 
     /** @var string[] */
     private readonly array $allowedCors;
