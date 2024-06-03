@@ -14,6 +14,20 @@ readonly class ProxyClient
     ) {
     }
 
+    public function executeTask(string $task): void
+    {
+        $proxyHost = $this->userService->retrieveUser()->tenant->metadata->proxyHost();
+
+        if ($proxyHost === null) {
+            return;
+        }
+
+        $this->requestClient->get(
+            "{$proxyHost}/api/admin/tasks/{$task}",
+            headers: $this->getHeaders(),
+        );
+    }
+
     public function getBillingFile(): string
     {
         $proxyHost = $this->userService->retrieveUser()->tenant->metadata->proxyHost();
@@ -39,7 +53,7 @@ readonly class ProxyClient
         $this->requestClient->post(
             "{$proxyHost}/api/admin/orders/import",
             headers: $this->getHeaders(),
-        )->body;
+        );
     }
 
     public function sendOrderIsUpdated(string $orderNumber): void
@@ -53,7 +67,7 @@ readonly class ProxyClient
         $this->requestClient->patch(
             "{$proxyHost}/api/admin/orders/{$orderNumber}/updated",
             headers: $this->getHeaders(),
-        )->body;
+        );
     }
 
     public function sendOrderStatusIsDelivered(string $orderNumber): void
@@ -67,7 +81,7 @@ readonly class ProxyClient
         $this->requestClient->patch(
             "{$proxyHost}/api/admin/orders/{$orderNumber}/delivered",
             headers: $this->getHeaders(),
-        )->body;
+        );
     }
 
     public function sendPickingShiftRoutes(string $pickingShiftId): void
@@ -81,7 +95,7 @@ readonly class ProxyClient
         $this->requestClient->patch(
             "{$proxyHost}/api/admin/picking-shifts/{$pickingShiftId}/send-routes",
             headers: $this->getHeaders(),
-        )->body;
+        );
     }
 
     public function sendRouteIsUpdated(string $routeId): void
@@ -95,7 +109,7 @@ readonly class ProxyClient
         $this->requestClient->patch(
             "{$proxyHost}/api/admin/routes/{$routeId}/updated",
             headers: $this->getHeaders(),
-        )->body;
+        );
     }
 
     /**
