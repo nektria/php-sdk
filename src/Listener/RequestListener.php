@@ -143,7 +143,7 @@ abstract class RequestListener implements EventSubscriberInterface
 
         $apiKey = $this->readApiKey($request);
 
-        if (str_starts_with($route, 'app_admin_') || str_starts_with($route, 'nektria_admin_')) {
+        if (str_starts_with($route, 'app_admin') || str_starts_with($route, 'nektria_admin')) {
             $this->contextService->setContext(ContextService::ADMIN);
             $this->userService->authenticateUser($apiKey);
 
