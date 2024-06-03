@@ -133,6 +133,11 @@ class Clock
         }
     }
 
+    public function day(): int
+    {
+        return (int) $this->dateTime->format('d');
+    }
+
     /**
      * @param CtTimeFormat $in
      */
@@ -252,6 +257,11 @@ class Clock
     public function modify(string $modifier): self
     {
         return new self($this->dateTime->modify($modifier));
+    }
+
+    public function month(): int
+    {
+        return (int) $this->dateTime->format('m');
     }
 
     public function removeTimeZone(): self
