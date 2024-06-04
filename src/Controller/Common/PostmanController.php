@@ -393,6 +393,7 @@ class PostmanController extends Controller
         $path = $data['path'];
         $path = str_replace('{', '{{', $path);
         $path = str_replace('}', '}}', $path);
+        $path = str_replace('{{id}}', '{{$guid}}', $path);
         $url = "{$host}{$path}";
         $path = substr($path, 1);
         $method = explode('|', $data['method'])[0];
