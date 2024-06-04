@@ -390,8 +390,11 @@ class PostmanController extends Controller
     {
         $public = $contextService->isStaging() || $contextService->isProd();
         $description = $public ? $key : "{$key} ({$data['defaults']['_controller']})";
-        $url = "{$host}{$data['path']}";
-        $path = substr($data['path'], 1);
+        $path = $data['path'];
+        $path = str_replace('{', '{{', $path);
+        $path = str_replace('}', '}}', $path);
+        $url = "{$host}{$path}";
+        $path = substr($path, 1);
         $method = explode('|', $data['method'])[0];
         $name = explode('::', $data['defaults']['_controller'])[1];
 
