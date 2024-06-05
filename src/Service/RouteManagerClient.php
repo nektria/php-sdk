@@ -23,6 +23,16 @@ use Throwable;
  *      response: string
  * }
  *
+ * @phpstan-type RMRoute array{
+ *     callbackUrl: ?string,
+ *     estimatedDeliveryRefresh: ?int,
+ *     expressOrdersNotificationEmails: string[],
+ *     isochroneContourSizes: int[],
+ *     pshiftRoutesNotificationEmails: string[],
+ *     routeRangeCosts: array{string: float[]},
+ *     routingTips:string,
+ * }
+ *
  * @phpstan-type RMWarehouse array{
  *     address: RMAddress,
  *     id: string,
@@ -49,13 +59,13 @@ use Throwable;
  *     routingTips:string,
  * }
  */
-class RouteManagerClient
+readonly class RouteManagerClient
 {
     public function __construct(
-        private readonly ContextService $contextService,
-        private readonly SharedUserCache $sharedUserCache,
-        private readonly RequestClient $requestClient,
-        private readonly string $routeManagerHost
+        private ContextService $contextService,
+        private SharedUserCache $sharedUserCache,
+        private RequestClient $requestClient,
+        private string $routeManagerHost
     ) {
     }
 
@@ -79,6 +89,17 @@ class RouteManagerClient
             "{$this->routeManagerHost}/api/admin/orders/{$orderNumber}",
             headers: $this->getHeaders(),
         );
+    }
+
+    /**
+     * @return RMRoute[]
+     */
+    public function getPickingShiftRoutes(string $pickingShiftId): array
+    {
+        return $this->requestClient->get(
+            "{$this->routeManagerHost}/api/admin/picking-shifts/{$pickingShiftId}/routes",
+            headers: $this->getHeaders()
+        )->json();
     }
 
     /**

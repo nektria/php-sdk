@@ -11,13 +11,13 @@ use function count;
 /**
  * @template T of Document
  */
-class DocumentCollection implements Document
+readonly class DocumentCollection extends Document
 {
     /**
      * @param T[] $items
      */
     public function __construct(
-        private readonly array $items
+        private array $items
     ) {
     }
 

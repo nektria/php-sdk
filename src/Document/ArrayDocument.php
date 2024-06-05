@@ -6,9 +6,9 @@ namespace Nektria\Document;
 
 use Nektria\Service\ContextService;
 
-class ArrayDocument implements Document
+readonly class ArrayDocument extends Document
 {
-    public function __construct(public readonly mixed $data)
+    public function __construct(public mixed $data)
     {
     }
 

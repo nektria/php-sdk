@@ -4,32 +4,27 @@ declare(strict_types=1);
 
 namespace Nektria\Document;
 
+use Nektria\Dto\SocketInfo;
 use Nektria\Service\ContextService;
 
-class User implements Document
+readonly class User extends Document
 {
-    private ?string $socketsToken;
-
-    /**
-     * @var string[]|null
-     */
-    private ?array $topics;
+    private SocketInfo $socketInfo;
 
     /**
      * @param string[] $warehouses
      */
     public function __construct(
-        public readonly string $id,
-        public readonly string $email,
-        public readonly array $warehouses,
-        public readonly string $apiKey,
-        public readonly string $role,
-        public readonly string $tenantId,
-        public readonly Tenant $tenant,
-        public readonly ?string $dniNie
+        public string $id,
+        public string $email,
+        public array $warehouses,
+        public string $apiKey,
+        public string $role,
+        public string $tenantId,
+        public Tenant $tenant,
+        public ?string $dniNie
     ) {
-        $this->socketsToken = null;
-        $this->topics = null;
+        $this->socketInfo = new SocketInfo();
     }
 
     /**
@@ -37,8 +32,7 @@ class User implements Document
      */
     public function appendSockets(string $token, array $allowedTopics): void
     {
-        $this->topics = $allowedTopics;
-        $this->socketsToken = $token;
+        $this->socketInfo->appendSockets($token, $allowedTopics);
     }
 
     public function toArray(ContextService $context): mixed
@@ -52,8 +46,8 @@ class User implements Document
                 'dniNie' => $this->dniNie,
                 'language' => 'en',
                 'tenant' => $this->tenant->toArray($context),
-                'socketsToken' => $this->socketsToken,
-                'allowedTopics' => $this->topics,
+                'socketsToken' => $this->socketInfo->socketsToken(),
+                'allowedTopics' => $this->socketInfo->topics(),
             ];
         }
 
@@ -66,8 +60,8 @@ class User implements Document
                 'dniNie' => $this->dniNie,
                 'language' => 'en',
                 'tenant' => $this->tenant->toArray($context),
-                'socketsToken' => $this->socketsToken,
-                'allowedTopics' => $this->topics,
+                'socketsToken' => $this->socketInfo->socketsToken(),
+                'allowedTopics' => $this->socketInfo->topics(),
                 'apiKey' => $this->apiKey,
             ];
         }

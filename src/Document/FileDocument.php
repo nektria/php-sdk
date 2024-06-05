@@ -6,14 +6,14 @@ namespace Nektria\Document;
 
 use Nektria\Service\ContextService;
 
-class FileDocument implements Document
+readonly class FileDocument extends Document
 {
     private int | bool $size;
 
     public function __construct(
-        public readonly string $file,
-        public readonly string $filename,
-        public readonly string $mime,
+        public string $file,
+        public string $filename,
+        public string $mime,
     ) {
         $this->size = filesize($file);
     }

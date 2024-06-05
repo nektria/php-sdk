@@ -9,12 +9,12 @@ use Nektria\Service\ContextService;
 
 use function in_array;
 
-class Tenant implements Document
+readonly class Tenant extends Document
 {
     public function __construct(
-        public readonly string $id,
-        public readonly string $name,
-        public readonly TenantMetadata $metadata
+        public string $id,
+        public string $name,
+        public TenantMetadata $metadata
     ) {
     }
 

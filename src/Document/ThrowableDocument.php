@@ -18,11 +18,11 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Throwable;
 
-class ThrowableDocument implements Document
+readonly class ThrowableDocument extends Document
 {
-    public readonly int $status;
+    public int $status;
 
-    public readonly Throwable $throwable;
+    public Throwable $throwable;
 
     public function __construct(
         Throwable $throwable

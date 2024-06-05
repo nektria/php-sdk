@@ -6,7 +6,7 @@ namespace Nektria\Document;
 
 use Nektria\Service\ContextService;
 
-interface Document
+readonly abstract class Document
 {
-    public function toArray(ContextService $context): mixed;
+    abstract public function toArray(ContextService $context): mixed;
 }
