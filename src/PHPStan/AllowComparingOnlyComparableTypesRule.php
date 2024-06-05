@@ -63,7 +63,12 @@ class AllowComparingOnlyComparableTypesRule implements Rule
         $leftType = $scope->getType($node->left);
         $rightType = $scope->getType($node->right);
 
-        if ($node->left instanceof Node\Expr\Array_ || $node->right instanceof Node\Expr\Array_) {
+        if (
+            $node->left instanceof Node\Expr\Array_
+            || $node->right instanceof Node\Expr\Array_
+            || $scope->getType($node->left)->isArray()->yes()
+            || $scope->getType($node->right)->isArray()->yes()
+        ) {
             return [
                 RuleErrorBuilder::message('Array comparison is not allowed.')
                     ->identifier('nektria.comparation')
