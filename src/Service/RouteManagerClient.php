@@ -228,9 +228,20 @@ readonly class RouteManagerClient
     }
 
     /**
+     * @return RMWarehouse
+     */
+    public function getWarehouse(string $id): array
+    {
+        return $this->requestClient->get(
+            "{$this->routeManagerHost}/api/admin/warehouses/{$id}",
+            headers: $this->getHeaders(),
+        )->json();
+    }
+
+    /**
      * @return RMRoute[]
      */
-    public function getPickingShiftRoutes(string $pickingShiftId): array
+    public function listPickingShiftRoutes(string $pickingShiftId): array
     {
         return $this->requestClient->get(
             "{$this->routeManagerHost}/api/admin/picking-shifts/{$pickingShiftId}/routes",
@@ -239,12 +250,15 @@ readonly class RouteManagerClient
     }
 
     /**
-     * @return RMWarehouse
+     * @return RMPickingShift[]
      */
-    public function getWarehouse(string $id): array
+    public function listWarehousePickingShifts(string $warehouseId, Clock $date): array
     {
         return $this->requestClient->get(
-            "{$this->routeManagerHost}/api/admin/warehouses/{$id}",
+            "{$this->routeManagerHost}/api/admin/warehouses/{$warehouseId}/picking-shifts",
+            data: [
+                'date' => $date->dateString(),
+            ],
             headers: $this->getHeaders(),
         )->json();
     }
