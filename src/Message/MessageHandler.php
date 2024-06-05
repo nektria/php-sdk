@@ -17,7 +17,7 @@ use function in_array;
 
 readonly abstract class MessageHandler
 {
-    private ContainerBox $containerBox;
+    protected ContainerBox $containerBox;
 
     public function __construct()
     {
