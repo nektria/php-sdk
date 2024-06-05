@@ -8,11 +8,6 @@ use Throwable;
 
 class NektriaException extends NektriaRuntimeException
 {
-    public function __construct(string $message = '', int $code = 0, ?Throwable $previous = null)
-    {
-        parent::__construct($message, $code, $previous);
-    }
-
     public static function new(Throwable $e): self
     {
         if ($e instanceof self) {
