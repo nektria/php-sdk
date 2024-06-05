@@ -19,18 +19,80 @@ use Throwable;
  *      postalCode: string,
  * }
  *
+ * @phpstan-type RMOrder array{
+ *      address: RMAddress,
+ *      area: string,
+ *      createdAt: string,
+ *      deliveryComment: string,
+ *      finishedAt: string|null,
+ *      id: string,
+ *      localFinishedAt: string|null,
+ *      localStatusUpdatedAt: string,
+ *      localProxyAssignedAt: string|null,
+ *      metadata: string,
+ *      orderNumber: string,
+ *      note: string,
+ *      pickingShiftId: string|null,
+ *      productLines: int,
+ *      proxyAssignedAt: string|null,
+ *      routeId: string|null,
+ *      shopper: string|null,
+ *      status: string,
+ *      statusUpdatedAt: string,
+ *      stepId: string|null,
+ *      tenantId: string,
+ *      timeRange: array{
+ *          endTime: string,
+ *          startTime: string,
+ *      },
+ *      type: string,
+ *      updatedAt: string,
+ *      warehouseId: string|null,
+ *      weight: int,
+ * }
+ *
  * @phpstan-type RMPing array{
  *      response: string
  * }
  *
  * @phpstan-type RMRoute array{
- *     callbackUrl: ?string,
- *     estimatedDeliveryRefresh: ?int,
- *     expressOrdersNotificationEmails: string[],
- *     isochroneContourSizes: int[],
- *     pshiftRoutesNotificationEmails: string[],
- *     routeRangeCosts: array{string: float[]},
- *     routingTips:string,
+ *     createdAt: string,
+ *     distance: int,
+ *     driverArrivedAtWarehouseAt: string,
+ *     driverId: string|null,
+ *     executionWindow: array{
+ *         startTime: string,
+ *         endTime: string,
+ *     },
+ *     id: string,
+ *     name: string,
+ *     pickingShiftId: string,
+ *     providerId: string,
+ *     stagingArea: string|null,
+ *     steps: RMStep[],
+ *     time: int,
+ *     type: string,
+ *     updatedAt: string,
+ *     vehicleId: string|null,
+ * }
+ *
+ * @phpstan-type RMStep array{
+ *     distance: int,
+ *     estimatedDelivery: string,
+ *     handlingTime: int,
+ *     id: string,
+ *     localEstimatedDelivery: string,
+ *     localEstimatedDelivery: string,
+ *     localOriginalEstimatedDelivery: string,
+ *     orders: RMOrder[],
+ *     originalEstimatedDelivery: string,
+ *     originalEstimatedDelivery: string,
+ *     originalLestimatedDelivery: string,
+ *     parkingTime: int,
+ *     travelTime: int,
+ *     type: string,
+ *     waitingTime: int,
+ *     warehouseId: string,
  * }
  *
  * @phpstan-type RMWarehouse array{
@@ -75,9 +137,9 @@ readonly class RouteManagerClient
             $this->requestClient->patch(
                 "{$this->routeManagerHost}/api/admin/orders/{$orderNumber}/check-proxy-assignation",
                 data: [
-                    'at' => Clock::now()->dateTimeString()
+                    'at' => Clock::now()->dateTimeString(),
                 ],
-                headers: $this->getHeaders()
+                headers: $this->getHeaders(),
             );
         } catch (Throwable) {
         }
@@ -98,7 +160,7 @@ readonly class RouteManagerClient
     {
         return $this->requestClient->get(
             "{$this->routeManagerHost}/api/admin/picking-shifts/{$pickingShiftId}/routes",
-            headers: $this->getHeaders()
+            headers: $this->getHeaders(),
         )->json();
     }
 
