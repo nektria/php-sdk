@@ -64,6 +64,11 @@ class Clock
         return new self();
     }
 
+    public static function nowLocal(string $timezone): self
+    {
+        return (new self())->fromUTCToLocal($timezone);
+    }
+
     /**
      * @param CtTimeFormat $in
      * @return Clock[]
