@@ -19,7 +19,7 @@ use Throwable;
 
 use function count;
 
-class PostmanController extends Controller
+readonly class PostmanController extends Controller
 {
     #[Route('/postman', methods: ['GET'])]
     public function postman(ContextService $contextService): BinaryFileResponse

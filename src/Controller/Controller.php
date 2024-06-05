@@ -20,24 +20,19 @@ use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Response;
 use Throwable;
 
-class Controller
+readonly class Controller
 {
-    protected BusInterface $bus;
-
     protected Request $request;
 
     protected ArrayDataFetcher $requestData;
 
-    private ContextService $context;
-
     public function __construct(
-        private readonly UserService $userService,
-        ContextService $context,
-        BusInterface $bus,
+        protected UserService $userService,
+        protected ContextService $context,
+        protected BusInterface $bus,
         RequestStack $requestStack,
     ) {
         $this->request = $requestStack->getCurrentRequest() ?? new Request();
-        $this->bus = $bus;
         $body = [];
 
         try {
@@ -45,7 +40,6 @@ class Controller
         } catch (Throwable) {
         }
         $this->requestData = new ArrayDataFetcher(array_merge($this->request->query->all(), $body));
-        $this->context = $context;
     }
 
     /**

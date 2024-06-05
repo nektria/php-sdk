@@ -20,7 +20,7 @@ use Throwable;
 
 use function count;
 
-class CommonController extends Controller
+readonly class CommonController extends Controller
 {
     #[Route('/healthz', methods: ['GET'])]
     public function health(HealthService $healthService): DocumentResponse

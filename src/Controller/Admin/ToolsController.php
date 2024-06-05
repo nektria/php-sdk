@@ -21,7 +21,7 @@ use Symfony\Component\Routing\Attribute\Route;
 use const STR_PAD_LEFT;
 
 #[Route('/api/admin/tools')]
-class ToolsController extends Controller
+readonly class ToolsController extends Controller
 {
     #[Route('/debug', methods: ['PATCH'])]
     public function configureDebug(ContextService $contextService): JsonResponse
