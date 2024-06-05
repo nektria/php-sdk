@@ -49,6 +49,11 @@ class Clock
         }
     }
 
+    public static function localNow(string $timezone): self
+    {
+        return (new self())->fromUTCToLocal($timezone);
+    }
+
     public static function max(self $a, self $b): self
     {
         return $a->isAfter($b) ? $a : $b;
@@ -62,11 +67,6 @@ class Clock
     public static function now(): self
     {
         return new self();
-    }
-
-    public static function nowLocal(string $timezone): self
-    {
-        return (new self())->fromUTCToLocal($timezone);
     }
 
     /**
