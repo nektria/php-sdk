@@ -29,7 +29,7 @@ readonly abstract class MessageHandler
 
     protected function checkAccessToWarehouse(string $warehouseId): void
     {
-        if ($this->hasAccessToWarehouse($warehouseId)) {
+        if (!$this->hasAccessToWarehouse($warehouseId)) {
             throw new InsufficientCredentialsException();
         }
     }
