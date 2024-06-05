@@ -13,20 +13,18 @@ use Nektria\Util\ContainerBox;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 use function count;
+use function define;
 use function in_array;
+
+define('MESSAGE_HANDLER_CONTAINER_BOX', new ContainerBox());
 
 readonly abstract class MessageHandler
 {
-    protected ContainerBox $containerBox;
-
-    public function __construct()
-    {
-        $this->containerBox = new ContainerBox();
-    }
+    public const ContainerBox CONTAINER_BOX = MESSAGE_HANDLER_CONTAINER_BOX;
 
     public function inject(ContainerInterface $container): void
     {
-        $this->containerBox->set($container);
+        self::CONTAINER_BOX->set($container);
     }
 
     protected function checkAccessToWarehouse(string $warehouseId): void
@@ -34,6 +32,11 @@ readonly abstract class MessageHandler
         if ($this->hasAccessToWarehouse($warehouseId)) {
             throw new InsufficientCredentialsException();
         }
+    }
+
+    protected function containerBox(): ContainerBox
+    {
+        return self::CONTAINER_BOX;
     }
 
     protected function hasAccessToWarehouse(string $warehouseId): bool
@@ -80,7 +83,7 @@ readonly abstract class MessageHandler
     protected function userService(): UserServiceInterface
     {
         /** @var UserServiceInterface $service */
-        $service = $this->containerBox->get()->get(UserServiceInterface::class);
+        $service = self::CONTAINER_BOX->get()->get(UserServiceInterface::class);
 
         return $service;
     }
@@ -88,7 +91,7 @@ readonly abstract class MessageHandler
     private function roleManager(): RoleManager
     {
         /** @var RoleManager $service */
-        $service = $this->containerBox->get()->get(RoleManager::class);
+        $service = self::CONTAINER_BOX->get()->get(RoleManager::class);
 
         return $service;
     }
