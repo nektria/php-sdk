@@ -9,6 +9,7 @@ use Nektria\Exception\InsufficientCredentialsException;
 use Nektria\Infrastructure\UserServiceInterface;
 use Nektria\Service\RoleManager;
 use Nektria\Util\ContainerBox;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 use function count;
 use function in_array;
@@ -20,6 +21,11 @@ readonly abstract class MessageHandler
     public function __construct()
     {
         $this->containerBox = new ContainerBox();
+    }
+
+    public function inject(ContainerInterface $container): void
+    {
+        $this->containerBox->set($container);
     }
 
     protected function checkAccessToWarehouse(string $warehouseId): void
