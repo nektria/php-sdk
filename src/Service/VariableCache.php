@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Nektria\Service;
 
+use Nektria\Dto\Clock;
 use Nektria\Infrastructure\InternalRedisCache;
 
 /**
@@ -11,9 +12,9 @@ use Nektria\Infrastructure\InternalRedisCache;
  */
 class VariableCache extends InternalRedisCache
 {
-    public const DEFAULT = '1';
+    public const string DEFAULT = '1';
 
-    public const DEFAULT_TTL = 300;
+    public const int DEFAULT_TTL = 300;
 
     public function deleteKey(string $key): void
     {
@@ -37,6 +38,17 @@ class VariableCache extends InternalRedisCache
         return $value !== null;
     }
 
+    public function readClock(string $key): ?Clock
+    {
+        $clock = $this->readString($key);
+
+        if ($clock === null) {
+            return null;
+        }
+
+        return Clock::fromString($clock);
+    }
+
     public function readInt(string $key, int $default = 0): int
     {
         return (int) ($this->getItem($key) ?? $default);
@@ -57,9 +69,15 @@ class VariableCache extends InternalRedisCache
         return $result;
     }
 
-    public function readString(string $key, string $default = ''): string
+    public function readString(string $key): ?string
     {
-        return (string) ($this->getItem($key) ?? $default);
+        $value = $this->getItem($key);
+
+        if ($value === null) {
+            return null;
+        }
+
+        return (string) $value;
     }
 
     public function refreshKey(string $key, int $ttl = self::DEFAULT_TTL): bool
@@ -71,6 +89,11 @@ class VariableCache extends InternalRedisCache
         }
 
         return $isNew;
+    }
+
+    public function saveClock(string $key, Clock $value, int $ttl = self::DEFAULT_TTL): void
+    {
+        $this->setItem($key, $value->iso8601String(), $ttl);
     }
 
     public function saveInt(string $key, int $value, int $ttl = self::DEFAULT_TTL): void
