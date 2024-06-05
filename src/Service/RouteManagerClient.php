@@ -64,6 +64,26 @@ use Throwable;
  *      tags: string[],
  * }
  *
+ * @phpstan-type RMPickingShift array{
+ *      closesAt: string,
+ *      connectivities: array{pickingShift: int, timeWindow: int, route: int}[],
+ *      costPerOrder: float,
+ *      createdAt: string,
+ *      date: string,
+ *      id: string,
+ *      name: string,
+ *      pickingShiftCode: string,
+ *      status: string,
+ *      tags: string[],
+ *      timeWindows: RMTimeWindow[],
+ *      totalOrders: int,
+ *      totalRoutes: int,
+ *      totalTrucks: string,
+ *      totalUnnassignedOrders: int,
+ *      updatedAt: string,
+ *      warehouseId: string,
+ * }
+ *
  * @phpstan-type RMPing array{
  *      response: string
  * }
@@ -126,6 +146,18 @@ use Throwable;
  *     warehouseId: string,
  * }
  *
+ * @phpstan-type RMTimeWindow array{
+ *     areas: string[],
+ *     createdAt: string,
+ *     endTime: string,
+ *     id: string,
+ *     pickingShiftId: string,
+ *     priority: int,
+ *     startTime: string,
+ *     updatedAt: string,
+ *     warehouseId: string,
+ * }
+ *
  * @phpstan-type RMWarehouse array{
  *     address: RMAddress,
  *     id: string,
@@ -182,6 +214,17 @@ readonly class RouteManagerClient
             "{$this->routeManagerHost}/api/admin/orders/{$orderNumber}",
             headers: $this->getHeaders(),
         );
+    }
+
+    /**
+     * @return RMPickingShift
+     */
+    public function getPickingShift(string $id): array
+    {
+        return $this->requestClient->get(
+            "{$this->routeManagerHost}/api/admin/picking-shifts/{$id}",
+            headers: $this->getHeaders(),
+        )->json();
     }
 
     /**
