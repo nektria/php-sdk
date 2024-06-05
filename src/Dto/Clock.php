@@ -277,9 +277,9 @@ class Clock
         return new self($this->dateTime->modify($modifier));
     }
 
-    public function month(): int
+    public function month(): string
     {
-        return (int) $this->dateTime->format('m');
+        return $this->dateTime->format('m');
     }
 
     public function removeTimeZone(): self
@@ -394,13 +394,13 @@ class Clock
         };
     }
 
-    public function week(): int
+    public function week(): string
     {
-        return (int) $this->dateTime->format('W');
+        return $this->dateTime->format('W');
     }
 
-    public function year(): int
+    public function year(): string
     {
-        return (int) $this->dateTime->format('Y');
+        return $this->dateTime->format('Y');
     }
 }

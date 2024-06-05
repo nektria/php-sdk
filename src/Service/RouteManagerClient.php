@@ -217,12 +217,34 @@ readonly class RouteManagerClient
     }
 
     /**
+     * @return RMOrder
+     */
+    public function getOrder(string $orderNumber): array
+    {
+        return $this->requestClient->get(
+            "{$this->routeManagerHost}/api/admin/orders/{$orderNumber}",
+            headers: $this->getHeaders(),
+        )->json();
+    }
+
+    /**
      * @return RMPickingShift
      */
     public function getPickingShift(string $id): array
     {
         return $this->requestClient->get(
             "{$this->routeManagerHost}/api/admin/picking-shifts/{$id}",
+            headers: $this->getHeaders(),
+        )->json();
+    }
+
+    /**
+     * @return RMRoute
+     */
+    public function getRoute(string $id): array
+    {
+        return $this->requestClient->get(
+            "{$this->routeManagerHost}/api/admin/routes/{$id}",
             headers: $this->getHeaders(),
         )->json();
     }
