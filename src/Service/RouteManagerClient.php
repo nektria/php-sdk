@@ -19,6 +19,11 @@ use Throwable;
  *      postalCode: string,
  * }
  *
+ * @phpstan-type RMBox array{
+ *      code: string,
+ *      quantity: number,
+ * }
+ *
  * @phpstan-type RMOrder array{
  *      address: RMAddress,
  *      area: string,
@@ -36,7 +41,7 @@ use Throwable;
  *      productLines: int,
  *      proxyAssignedAt: string|null,
  *      routeId: string|null,
- *      shopper: string|null,
+ *      shopper: RMShopper|null,
  *      status: string,
  *      statusUpdatedAt: string,
  *      stepId: string|null,
@@ -52,23 +57,22 @@ use Throwable;
  * }
  *
  * @phpstan-type RMOrderMetadata array{
- *      boxes: array{
- *          code: string,
- *          quantity: int,
- *      }[],
+ *      boxes: RMBox[],
  *      priority: int|null,
- *      products: array{
- *          code: string,
- *          name: string,
- *          weight: int,
- *          quantity: int,
- *      }[],
+ *      products: RMProduct[],
  *      returnPickUp: bool,
  *      tags: string[],
  * }
  *
  * @phpstan-type RMPing array{
  *      response: string
+ * }
+ *
+ * @phpstan-type RMProduct array{
+ *      code: string,
+ *      name: string,
+ *      weight: int,
+ *      quantity: int,
  * }
  *
  * @phpstan-type RMRoute array{
@@ -90,6 +94,17 @@ use Throwable;
  *     type: string,
  *     updatedAt: string,
  *     vehicleId: string|null,
+ * }
+ *
+ * @phpstan-type RMShopper array{
+ *     createdAt: string,
+ *     delayScore: number,
+ *     id: string,
+ *     name: string,
+ *     phone: string,
+ *     shopperCode: string,
+ *     tenantId: string,
+ *     updatedAt: string,
  * }
  *
  * @phpstan-type RMStep array{
