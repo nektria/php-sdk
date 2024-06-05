@@ -545,7 +545,7 @@ readonly class PostmanController extends Controller
             }
             preg_match($pattern, $line, $matches);
 
-            if ($matches === []) {
+            if (count($matches) === 0) {
                 throw new RuntimeException();
             }
             $found = true;

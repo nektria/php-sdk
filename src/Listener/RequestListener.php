@@ -153,9 +153,9 @@ abstract class RequestListener implements EventSubscriberInterface
                 $this->userService->clearAuthentication();
             }
         } elseif (
-            str_starts_with($route, 'app_apilegacy_') ||
-            str_starts_with($route, 'app_api_') ||
-            str_starts_with($route, 'nektria_api_')
+            str_starts_with($route, 'app_apilegacy_')
+            || str_starts_with($route, 'app_api_')
+            || str_starts_with($route, 'nektria_api_')
         ) {
             $this->contextService->setContext(ContextService::PUBLIC);
             $this->userService->authenticateUser($apiKey);

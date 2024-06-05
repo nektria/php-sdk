@@ -207,6 +207,17 @@ readonly class RouteManagerClient
     }
 
     /**
+     * @return RMWarehouse[]
+     */
+    public function listWarehouses(): array
+    {
+        return $this->requestClient->get(
+            "{$this->routeManagerHost}/api/admin/warehouses",
+            headers: $this->getHeaders(),
+        )->json();
+    }
+
+    /**
      * @return RMPing
      */
     public function ping(): array

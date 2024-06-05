@@ -19,6 +19,7 @@ use PhpParser\Node\Expr\BinaryOp\Spaceship;
 use PHPStan\Analyser\Scope;
 use PHPStan\Rules\Rule;
 use PHPStan\Rules\RuleErrorBuilder;
+use PHPStan\ShouldNotHappenException;
 use PHPStan\Type\FloatType;
 use PHPStan\Type\IntegerType;
 use PHPStan\Type\ObjectType;
@@ -37,6 +38,9 @@ class AllowComparingOnlyComparableTypesRule implements Rule
         return BinaryOp::class;
     }
 
+    /**
+     * @throws ShouldNotHappenException
+     */
     public function processNode(Node $node, Scope $scope): array
     {
         if (
@@ -58,6 +62,14 @@ class AllowComparingOnlyComparableTypesRule implements Rule
 
         $leftType = $scope->getType($node->left);
         $rightType = $scope->getType($node->right);
+
+        if ($node->left instanceof Node\Expr\Array_ || $node->right instanceof Node\Expr\Array_) {
+            return [
+                RuleErrorBuilder::message('Array comparison is not allowed.')
+                    ->identifier('nektria.comparation')
+                    ->build()
+            ];
+        }
 
         if ($this->containsOnlyTypes($leftType, [$clockType, $clock2Type])) {
             return [RuleErrorBuilder::message('Cannot compare clocks.')->identifier('nektria.comparation')->build()];
