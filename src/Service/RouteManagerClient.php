@@ -29,7 +29,7 @@ use Throwable;
  *      localFinishedAt: string|null,
  *      localStatusUpdatedAt: string,
  *      localProxyAssignedAt: string|null,
- *      metadata: string,
+ *      metadata: RMOrderMetadata,
  *      orderNumber: string,
  *      note: string,
  *      pickingShiftId: string|null,
@@ -49,6 +49,22 @@ use Throwable;
  *      updatedAt: string,
  *      warehouseId: string|null,
  *      weight: int,
+ * }
+ *
+ * @phpstan-type RMOrderMetadata array{
+ *      boxes: array{
+ *          code: string,
+ *          quantity: int,
+ *      }[],
+ *      priority: int|null,
+ *      products: array{
+ *          code: string,
+ *          name: string,
+ *          weight: int,
+ *          quantity: int,
+ *      }[],
+ *      returnPickUp: bool,
+ *      tags: string[],
  * }
  *
  * @phpstan-type RMPing array{
