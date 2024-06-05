@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Nektria\Message;
 
+use Nektria\Document\Tenant;
 use Nektria\Document\User;
 use Nektria\Exception\InsufficientCredentialsException;
 use Nektria\Infrastructure\UserServiceInterface;
@@ -59,6 +60,11 @@ readonly abstract class MessageHandler
         }
 
         return true;
+    }
+
+    protected function tenant(): Tenant
+    {
+        return $this->userService()->retrieveUser()->tenant;
     }
 
     protected function tenantId(): string
