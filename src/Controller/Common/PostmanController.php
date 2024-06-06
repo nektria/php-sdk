@@ -392,6 +392,20 @@ readonly class PostmanController extends Controller
         $description = $public ? $key : "{$key} ({$data['defaults']['_controller']})";
         $path = $data['path'];
         $path = str_replace(['{', '}'], ['{{', '}}'], $path);
+
+        $pathArgs = [];
+
+        $pathParts = explode('{{', $path);
+
+        foreach ($pathParts as $part) {
+            if (!str_contains($part, '}}')) {
+                continue;
+            }
+
+            $part = explode('}}', $part)[0];
+            $pathArgs[] = "pm.environment.set('{$part}', 'value');";
+        }
+
         $url = "{$host}{$path}";
         $path = substr($path, 1);
         $method = explode('|', $data['method'])[0];
@@ -440,6 +454,15 @@ readonly class PostmanController extends Controller
                         'query' => $query,
                     ],
                 ],
+                'event' => [
+                    [
+                        'listen' => 'prerequest',
+                        'script' => [
+                            'type' => 'text/javascript',
+                            'exec' => $pathArgs,
+                        ],
+                    ],
+                ],
             ];
         }
 
@@ -464,6 +487,15 @@ readonly class PostmanController extends Controller
                         'path' => [$path],
                     ],
                 ],
+                'event' => [
+                    [
+                        'listen' => 'prerequest',
+                        'script' => [
+                            'type' => 'text/javascript',
+                            'exec' => $pathArgs,
+                        ],
+                    ],
+                ],
             ];
         }
 
@@ -476,6 +508,15 @@ readonly class PostmanController extends Controller
                     'raw' => $url,
                     'host' => [$host],
                     'path' => [$path],
+                ],
+            ],
+            'event' => [
+                [
+                    'listen' => 'prerequest',
+                    'script' => [
+                        'type' => 'text/javascript',
+                        'exec' => $pathArgs,
+                    ],
                 ],
             ],
         ];
