@@ -45,7 +45,7 @@ class ClockDateType extends Type
 
     public function getSQLDeclaration(array $column, AbstractPlatform $platform): string
     {
-        return 'VARCHAR(255)';
+        return 'DATE';
     }
 
     public function requiresSQLCommentHint(AbstractPlatform $platform): bool
