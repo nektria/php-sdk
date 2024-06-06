@@ -108,6 +108,11 @@ class ContextService
         return $this->env === self::PROD;
     }
 
+    public function isPublic(): bool
+    {
+        return $this->context === self::PUBLIC || $this->context === self::PUBLIC_V2;
+    }
+
     public function isQA(): bool
     {
         return $this->env === self::QA;
