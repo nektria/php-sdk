@@ -110,8 +110,8 @@ class CompassClient
         $matrix = [];
 
         foreach ($data as $distance) {
-            $fromHash = "{$distance['originLatitude']},{$distance['originLongitude']}";
-            $toHash = "{$distance['destinationLatitude']},{$distance['destinationLongitude']}";
+            $fromHash = $hashMap["{$distance['originLatitude']},{$distance['originLongitude']}"];
+            $toHash = $hashMap["{$distance['destinationLatitude']},{$distance['destinationLongitude']}"];
 
             $matrix[$fromHash] ??= [];
             $matrix[$toHash] ??= [];
