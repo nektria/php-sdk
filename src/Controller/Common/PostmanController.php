@@ -27,7 +27,7 @@ readonly class PostmanController extends Controller
         $file = "{$contextService->project()}.json";
         $body = $this->buildPostmanCollection($contextService);
 
-        FileUtil::write($file, JsonUtil::encode($body));
+        FileUtil::tmpWrite($file, JsonUtil::encode($body));
 
         $response = new BinaryFileResponse("/tmp/{$file}");
         $response->setContentDisposition(ResponseHeaderBag::DISPOSITION_ATTACHMENT, $file);
