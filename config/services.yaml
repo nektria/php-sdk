@@ -2,12 +2,35 @@ parameters:
 
 services:
   _defaults:
+    public: true
     autowire: true
     autoconfigure: true
+    bind:
+      string $alertsToken: 'none'
+      string $env: '%kernel.environment%'
+      string $project: 'sdk'
+      string $redisDsn: 'none'
 
-  App\:
-    resource: '../src/'
-    exclude:
-      - '../src/DependencyInjection/'
-      - '../src/Entity/'
-      - '../src/Kernel.php'
+  Symfony\Component\DependencyInjection\ContainerInterface: '@service_container'
+
+
+  Nektria\Console\:
+    resource: '../src/Console'
+    tags: [ 'console.command' ]
+    calls:
+      - inject: [ '@Nektria\Service\Bus', '@Nektria\Service\UserService', '@Nektria\Service\AlertService' ]
+
+  Nektria\Infrastructure\UserServiceInterface: '@Nektria\Service\UserService'
+  Nektria\Service\AlertService: ~
+  Nektria\Service\Bus: ~
+  Nektria\Service\ContextService: ~
+  Nektria\Service\HealthService: ~
+  Nektria\Service\LogService: ~
+  Nektria\Service\RequestClient: ~
+  Nektria\Service\RoleManager: ~
+  Nektria\Service\SharedDiscordCache: ~
+  Nektria\Service\SharedLogCache: ~
+  Nektria\Service\SharedTenantCache: ~
+  Nektria\Service\SharedUserCache: ~
+  Nektria\Service\SharedVariableCache: ~
+  Nektria\Service\UserService: ~

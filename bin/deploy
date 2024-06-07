@@ -1,4 +1,10 @@
 #!/usr/bin/env bash
 
-git add . && git commit -am "auto commit" && git push
+git pull
+bin/console sdk:increase-version
+
+VERSION=$(bin/tools/composer-update)
+git tag -a "$VERSION"
+git add . && git commit -am "auto commit" && git push --tags
+
 
