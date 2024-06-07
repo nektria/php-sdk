@@ -131,7 +131,9 @@ class StaticAnalysisConsole extends Console
             return false;
         }
 
-        $this->output()->writeln("Endpoint {$endpoint['defaults']['_controller']} is not correctly configured");
+        $this->output()->writeln(
+            "Endpoint <white1>{$endpoint['defaults']['_controller']}</white1> is not correctly configured"
+        );
         foreach ($messages as $message) {
             $this->output()->writeln("    * {$message}");
         }
