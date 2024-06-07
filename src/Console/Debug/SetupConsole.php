@@ -37,6 +37,30 @@ class SetupConsole extends Console
                 continue;
             }
 
+            if ($file === 'cloudbuild_1.yml') {
+                if ($this->contextService->project() === 'yieldmanager') {
+                    $file = 'cloudbuild.yml';
+                } else {
+                    continue;
+                }
+            }
+
+            if ($file === 'cloudbuild_2.yml') {
+                if ($this->contextService->project() !== 'yieldmanager') {
+                    $file = 'cloudbuild.yml';
+                } else {
+                    continue;
+                }
+            }
+
+            if ($file === 'cloudbuild-services_1.yml') {
+                if ($this->contextService->project() === 'yieldmanager') {
+                    $file = 'cloudbuild-services.yml';
+                } else {
+                    continue;
+                }
+            }
+
             $fromPath = "{$from}/{$file}";
             $toPath = "{$to}/{$this->fix($file)}";
 

@@ -1,0 +1,32 @@
+steps:
+  - name: gcr.io/cloud-builders/git
+    args: [ "fetch", "--unshallow", "--quiet" ]
+  - id: Load PHP image
+    name: gcr.io/cloud-builders/docker
+    args: ["pull", "-q", "eu.gcr.io/nektria/php:8.3"]
+  - id: validating code
+    args: ["/app/pipeline-no-test-no-db", "$BRANCH_NAME"]
+    entrypoint: sh
+    name: eu.gcr.io/nektria/php:8.3
+  - name: gcr.io/cloud-builders/docker
+    args:
+      - '-c'
+      - >
+        set -e  >/dev/null 2>&1
+
+        SERIAL_NUMBER=$(git rev-list --count HEAD)
+
+        if [ "$BRANCH_NAME" = "$_BRANCH" ];then TAG=v$$SERIAL_NUMBER; else TAG="v$$SERIAL_NUMBER-$BRANCH_NAME"; fi; >/dev/null 2>&1
+
+        IMAGE=eu.gcr.io/$PROJECT_ID/$_APP:$$TAG  >/dev/null 2>&1
+
+        docker build -t $$IMAGE -f /workspace/server/pipeline/Dockerfile .
+
+        docker push $$IMAGE  >/dev/null 2>&1
+
+        echo Version: eu.gcr.io/nektria/$_APP:$$TAG
+    id: Push new __PROJECT__ image
+    entrypoint: bash
+substitutions:
+  _BRANCH: master
+  _APP: __PROJECT__
