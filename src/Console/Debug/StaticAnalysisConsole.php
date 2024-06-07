@@ -2,8 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Nektria\Console;
+namespace Nektria\Console\Debug;
 
+use Nektria\Console\Console;
 use Nektria\Exception\NektriaException;
 use Nektria\Util\JsonUtil;
 use Symfony\Component\Process\Process;
@@ -14,7 +15,7 @@ class StaticAnalysisConsole extends Console
 {
     public function __construct()
     {
-        parent::__construct('sdk:static-analysis');
+        parent::__construct('debug:static-analysis');
     }
 
     protected function play(): void

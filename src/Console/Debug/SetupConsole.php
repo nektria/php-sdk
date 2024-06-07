@@ -2,13 +2,15 @@
 
 declare(strict_types=1);
 
-namespace Nektria\Console;
+namespace Nektria\Console\Debug;
+
+use Nektria\Console\Console;
 
 class SetupConsole extends Console
 {
     public function __construct()
     {
-        parent::__construct('sdk:setup');
+        parent::__construct('debug:setup');
     }
 
     protected function play(): void

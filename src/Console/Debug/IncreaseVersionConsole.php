@@ -2,8 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Nektria\Console;
+namespace Nektria\Console\Debug;
 
+use Nektria\Console\Console;
 use Nektria\Util\FileUtil;
 use Nektria\Util\JsonUtil;
 
@@ -11,7 +12,7 @@ class IncreaseVersionConsole extends Console
 {
     public function __construct()
     {
-        parent::__construct('sdk:increase-version');
+        parent::__construct('debug:increase-version');
     }
 
     protected function play(): void

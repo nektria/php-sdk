@@ -2,8 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Nektria\Console;
+namespace Nektria\Console\Debug;
 
+use Nektria\Console\Console;
 use Nektria\Dto\Clock;
 use Nektria\Service\ContextService;
 use Nektria\Util\JsonUtil;
@@ -15,7 +16,7 @@ class BuildNkVersionConsole extends Console
     public function __construct(
         private readonly ContextService $contextService,
     ) {
-        parent::__construct('sdk:version');
+        parent::__construct('debug:version');
     }
 
     protected function configure(): void
