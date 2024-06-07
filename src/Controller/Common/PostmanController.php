@@ -305,6 +305,26 @@ readonly class PostmanController extends Controller
             $items[] = $bc;
         }
 
+        $host = match ($contextService->project()) {
+            'proxy-carrefour' => 'http://localhost:8101',
+            'proxy-fontvella' => 'http://localhost:8102',
+            'proxy-dia' => 'http://localhost:8103',
+            default => '',
+        };
+
+        $extras = [];
+        if ($host !== '') {
+            $extras = [
+                "    const env = pm.environment.get('env');",
+                "    if (env === 'dev') {",
+                '        pm.request.url.host[0] = pm.request.url.host[0].replace(',
+                "            '{{host_proxy}}',",
+                "            'http://localhost:8101',",
+                '        );',
+                '    }',
+            ];
+        }
+
         return [
             'info' => [
                 '_exporter_id' => '4175778',
@@ -326,6 +346,7 @@ readonly class PostmanController extends Controller
                             "    app = 'routemanager';",
                             "} if (pm.request.url.host[0] === '{{host_proxy}}') {",
                             "    app = 'nektria-proxy';",
+                            ...$extras,
                             "} if (pm.request.url.host[0] === '{{host_compass}}') {",
                             "    app = 'compass';",
                             "} if (pm.request.url.host[0] === '{{host_metrics}}') {",
