@@ -319,7 +319,7 @@ readonly class PostmanController extends Controller
                 "    if (env === 'dev') {",
                 '        pm.request.url.host[0] = pm.request.url.host[0].replace(',
                 "            '{{host_proxy}}',",
-                "            'http://localhost:8101',",
+                "            '{$host}',",
                 '        );',
                 '    }',
             ];
