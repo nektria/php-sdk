@@ -4,12 +4,8 @@ declare(strict_types=1);
 
 namespace Nektria\Console;
 
-use Nektria\Exception\NektriaException;
 use Nektria\Util\FileUtil;
 use Nektria\Util\JsonUtil;
-use Symfony\Component\Process\Process;
-
-use function count;
 
 class IncreaseVersionConsole extends Console
 {
@@ -21,6 +17,13 @@ class IncreaseVersionConsole extends Console
     protected function play(): void
     {
         $composer = JsonUtil::decode(FileUtil::read('composer.json'));
-        $this->output()->write($composer['version']);
+
+        [$mayor, $minor1, $commit] = explode('.', $composer['version']);
+        $commit = (string) ((int) $commit + 1);
+        $newVersion = "$mayor.$minor1.$commit";
+        $composer['version'] = $newVersion;
+        FileUtil::write('composer.json', JsonUtil::encode($composer, true));
+
+        $this->output()->write($newVersion);
     }
 }

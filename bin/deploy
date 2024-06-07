@@ -1,12 +1,12 @@
 #!/usr/bin/env bash
 
+set -e
+
 git pull
 bin/console sdk:increase-version
-
 VERSION=$(bin/console sdk:increase-version -c)
 bin/tools/composer-update
-echo "XXX$VERSION"
 git tag "$VERSION"
-git add . && git commit -am "auto commit" && git push --tags && git push
+git add . && git commit -am "auto commit" && git push --tags
 
 
