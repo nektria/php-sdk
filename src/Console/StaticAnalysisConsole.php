@@ -23,13 +23,35 @@ class StaticAnalysisConsole extends Console
         $command->run();
 
         $data = JsonUtil::decode($command->getOutput());
+        $messages = [];
+
         $failed = false;
         foreach ($data as $hash => $endpoint) {
-            $failed = $this->analyseEndpoint($hash, $endpoint) || $failed;
+            [$controller, $method] = explode('::', $endpoint['defaults']['_controller']);
+
+            $errors = $this->analyseEndpoint($hash, $endpoint);
+            if (count($errors) === 0) {
+                continue;
+            }
+
+            $failed = true;
+            $messages[$controller] ??= [];
+            $messages[$controller][$method] ??= [];
+            $messages[$controller][$method] = $this->analyseEndpoint($hash, $endpoint);
+        }
+
+        foreach ($messages as $controller => $methods) {
+            $this->output()->writeln("<white1>{$controller}</white1>");
+            foreach ($methods as $method => $errors) {
+                foreach ($errors as $error) {
+                    $this->output()->writeln("    <red>{$method}:</red> {$error}");
+                }
+            }
+            $this->output()->writeln('');
         }
 
         if ($failed) {
-            throw new NektriaException('Some endpoints are not correctly configured');
+            throw new NektriaException('Some endpoints are not correctly configured', silent: true);
         }
     }
 
@@ -55,16 +77,16 @@ class StaticAnalysisConsole extends Console
      *         utf8: bool,
      *     },
      * } $endpoint
-     * @return bool true if the endpoint is not correctly configured
+     * @return string[]
      */
-    private function analyseEndpoint(string $hash, array $endpoint): bool
+    private function analyseEndpoint(string $hash, array $endpoint): array
     {
         if (str_starts_with($endpoint['path'], '/_')) {
-            return false;
+            return [];
         }
 
         if (str_starts_with($endpoint['defaults']['_controller'], 'Nektria')) {
-            return false;
+            return [];
         }
 
         $messages = [];
@@ -105,7 +127,10 @@ class StaticAnalysisConsole extends Console
         }
 
         if ($endpoint['method'] === 'ANY') {
-            $messages[] = 'Method must be defined';
+            $function = explode('::', $endpoint['defaults']['_controller'])[1];
+            if (!str_contains($function, 'fallback')) {
+                $messages[] = 'Method must be defined';
+            }
         } elseif ($endpoint['method'] === 'GET') {
             $function = explode('::', $endpoint['defaults']['_controller'])[1];
             if (!str_starts_with($function, 'get') && !str_starts_with($function, 'list')) {
@@ -135,18 +160,6 @@ class StaticAnalysisConsole extends Console
             $messages[] = "Method '{$endpoint['method']}' not supported";
         }
 
-        if (count($messages) === 0) {
-            return false;
-        }
-
-        $this->output()->writeln(
-            "Endpoint <white1>{$endpoint['defaults']['_controller']}</white1> is not correctly configured"
-        );
-        foreach ($messages as $message) {
-            $this->output()->writeln("    * {$message}");
-        }
-        $this->output()->writeln('');
-
-        return true;
+        return $messages;
     }
 }

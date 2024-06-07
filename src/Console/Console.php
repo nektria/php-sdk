@@ -38,8 +38,6 @@ abstract class Console extends BaseCommand
 
     private ?InputInterface $input;
 
-    private bool $lockMode = false;
-
     private ?OutputInterface $output;
 
     private UserServiceInterface $userService;
@@ -150,11 +148,6 @@ abstract class Console extends BaseCommand
         return $this->input()->getArgument($name);
     }
 
-    public function setLockMode(): void
-    {
-        $this->lockMode = true;
-    }
-
     protected function beep(): void
     {
         $this->output()->write("\007");
@@ -162,11 +155,7 @@ abstract class Console extends BaseCommand
 
     protected function clear(): void
     {
-        if ($this->lockMode) {
-            $this->output()->write("\33[H\33[2J");
-        } else {
-            $this->output()->write("\033\143");
-        }
+        $this->output()->write("\033\143");
     }
 
     /**
@@ -209,16 +198,6 @@ abstract class Console extends BaseCommand
     {
         $this->input = $input;
         $this->output = $output;
-        if ($this->lockMode) {
-            $this->lockScreen();
-            $this->clear();
-        }
-
-        /*pcntl_signal(SIGINT, function () {
-            $this->unlockScreen();
-
-            return 0;
-        });*/
 
         $output->getFormatter()->setStyle('red', new OutputFormatterStyle('red', null, []));
         $output->getFormatter()->setStyle('red1', new OutputFormatterStyle('red', null, ['bold']));
@@ -286,13 +265,9 @@ abstract class Console extends BaseCommand
 
         try {
             $this->play();
-            if ($this->lockMode) {
-                $this->unlockScreen();
-            }
         } catch (Throwable $e) {
-            if ($this->lockMode) {
-                $this->unlockScreen();
-            }
+            $isSilent = $e instanceof NektriaException && $e->silent();
+
             $this->alertService->sendThrowable(
                 $this->userService->user()?->tenant->name ?? 'none',
                 'COMMAND',
@@ -306,6 +281,10 @@ abstract class Console extends BaseCommand
             if (!((bool) $this->input()->getOption('clean'))) {
                 $now = Clock::now();
                 $this->output()->writeln("\n\n<red>{$now->dateTimeString('Europe/Madrid')}</red>");
+
+                if ($isSilent) {
+                    return 1;
+                }
 
                 throw NektriaException::new($e);
             } else {
@@ -321,15 +300,5 @@ abstract class Console extends BaseCommand
         return 0;
     }
 
-    protected function lockScreen(): void
-    {
-        $this->output()->write("\033[?1049h\033[H");
-    }
-
     abstract protected function play(): void;
-
-    protected function unlockScreen(): void
-    {
-        $this->output()->write("\033[?1049l");
-    }
 }
