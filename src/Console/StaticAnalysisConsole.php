@@ -63,6 +63,10 @@ class StaticAnalysisConsole extends Console
             return false;
         }
 
+        if (str_starts_with($endpoint['defaults']['_controller'], 'Nektria')) {
+            return false;
+        }
+
         $messages = [];
 
         // Path cannot end with '/'
