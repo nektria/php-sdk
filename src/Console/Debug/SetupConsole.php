@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Nektria\Console\Debug;
 
 use Nektria\Console\Console;
+use Nektria\Exception\NektriaException;
 use Nektria\Service\ContextService;
 use Nektria\Util\FileUtil;
 
@@ -18,8 +19,8 @@ class SetupConsole extends Console
 
     protected function play(): void
     {
-        $this->copyDir('vendor/nektria/php-sdk/src/assets/bin', 'bin');
-        $this->copyDir('vendor/nektria/php-sdk/src/assets/server', 'server');
+        $this->copyDir('vendor/nektria/php-sdk/assets/bin', 'bin');
+        $this->copyDir('vendor/nektria/php-sdk/assets/server', 'server');
         $this->output()->writeln('done');
     }
 
@@ -40,6 +41,9 @@ class SetupConsole extends Console
             $toPath = "{$to}/{$this->fix($file)}";
 
             if (is_dir($fromPath)) {
+                if (!mkdir($toPath) && !is_dir($toPath)) {
+                    throw new NektriaException("Directory '{$toPath}' was not created.");
+                }
                 $this->copyDir($fromPath, $toPath);
             } else {
                 $this->copyFile($fromPath, $toPath);
