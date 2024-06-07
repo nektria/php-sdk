@@ -8,9 +8,10 @@ use Nektria\Exception\NektriaException;
 use Nektria\Util\JsonUtil;
 use Symfony\Component\Process\Process;
 
+use function count;
+
 class StaticAnalysisConsole extends Console
 {
-
     public function __construct()
     {
         parent::__construct('sdk:static-analysis');
@@ -24,7 +25,7 @@ class StaticAnalysisConsole extends Console
         $data = JsonUtil::decode($command->getOutput());
         $failed = false;
         foreach ($data as $hash => $endpoint) {
-            $failed |= $this->analyseEndpoint($hash, $endpoint);
+            $failed = $failed || $this->analyseEndpoint($hash, $endpoint);
         }
 
         if ($failed) {
@@ -76,6 +77,7 @@ class StaticAnalysisConsole extends Console
                 $pos = strpos($part, '{');
                 if ($pos !== false && $pos !== 0) {
                     $messages[] = 'A variable in path must no be mixed with other characters';
+
                     break;
                 }
             }
@@ -88,6 +90,7 @@ class StaticAnalysisConsole extends Console
                 $pos = strpos($part, '}');
                 if ($pos !== false && !str_ends_with($part, '}')) {
                     $messages[] = 'A variable in path must no be mixed with other characters';
+
                     break;
                 }
             }
@@ -124,7 +127,7 @@ class StaticAnalysisConsole extends Console
             $messages[] = "Method '{$endpoint['method']}' not supported";
         }
 
-        if (empty($messages)) {
+        if (count($messages) === 0) {
             return false;
         }
 
