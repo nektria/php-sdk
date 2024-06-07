@@ -100,6 +100,10 @@ class StaticAnalysisConsole extends Console
             }
         }
 
+        if (str_contains($endpoint['path'], '{id}')) {
+            $messages[] = 'Use a more descriptive variable name than "id"';
+        }
+
         if ($endpoint['method'] === 'ANY') {
             $messages[] = 'Method must be defined';
         } elseif ($endpoint['method'] === 'GET') {
