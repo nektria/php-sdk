@@ -611,6 +611,7 @@ readonly class PostmanController extends Controller
                 'Date' => $defaultNow->dateString(),
                 'Float' => 1.2,
                 'Id' => '9baff5ad-db09-4fc0-b876-948b44e4158a',
+                'IdsCSV' => 'ID_1,ID_2,...,ID_N',
                 'Int' => 1,
                 'Length' => [],
                 'String' => 'string',

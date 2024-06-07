@@ -176,6 +176,24 @@ class ArrayDataFetcher
         return $val;
     }
 
+    /**
+     * @return string[]|null
+     */
+    public function getIdsCSV(string $field): ?array
+    {
+        $value = $this->getString($field);
+
+        if ($value === null) {
+            throw new MissingRequestParamException($field);
+        }
+
+        if ($value === '') {
+            return [];
+        }
+
+        return explode(',', $value);
+    }
+
     public function getInt(string $field): ?int
     {
         $value = $this->getValue($field);
@@ -367,6 +385,20 @@ class ArrayDataFetcher
         $value = $this->retrieveString($field);
 
         Validate::uuid4($value);
+
+        return $value;
+    }
+
+    /**
+     * @return string[]
+     */
+    public function retrieveIdsCSV(string $field): array
+    {
+        $value = $this->getIdsCSV($field);
+
+        if ($value === null) {
+            throw new MissingRequestParamException($field);
+        }
 
         return $value;
     }
