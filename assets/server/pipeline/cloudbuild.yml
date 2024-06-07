@@ -1,0 +1,58 @@
+steps:
+  - name: gcr.io/cloud-builders/git
+    args: [ "fetch", "--unshallow", "--quiet" ]
+  - id: Load PHP image
+    name: gcr.io/cloud-builders/docker
+    args: ["pull", "-q", "eu.gcr.io/nektria/php:8.3"]
+  - name: 'docker/compose'
+    args:
+      - '-c'
+      - >
+        set -e
+
+        echo "Building tests services"
+
+        docker-compose -f server/pipeline/cloudbuild-services.yml up -d 
+
+        docker exec -i pipeline_test-rabbit_1 sh -c 'until wget http://localhost:15672 ; do echo "Waiting Rabbit..." ; sleep 2; done'
+
+        docker exec -i pipeline_test-postgres_1 sh -c 'until psql -U user -d __PROJECT___test -c "SELECT 1;" >/dev/null 2>&1; do echo "Waiting DB.."; sleep 2; done'
+
+        echo "Importing database data"
+
+        docker exec -i pipeline_test-postgres_1 wget -O __PROJECT__.dump https://storage.googleapis.com/local_db_dump/__PROJECT__.dump >/dev/null 2>&1
+
+        docker exec -i pipeline_test-postgres_1 dropdb -U user __PROJECT___test --if-exists >/dev/null 2>&1
+
+        docker exec -i pipeline_test-postgres_1 createdb -U user __PROJECT___test >/dev/null 2>&1
+
+        docker exec -i pipeline_test-postgres_1 bash -c "psql -U user __PROJECT___test < __PROJECT__.dump" >/dev/null 2>&1
+    id: Load test services
+    entrypoint: sh
+  - id: validating code
+    args: ["/app/pipeline", "$BRANCH_NAME"]
+    entrypoint: sh
+    name: eu.gcr.io/nektria/php:8.3
+  - name: gcr.io/cloud-builders/docker
+    args:
+      - '-c'
+      - >
+        set -e  >/dev/null 2>&1
+
+        SERIAL_NUMBER=$(git rev-list --count HEAD)
+
+        if [ "$BRANCH_NAME" = "$_BRANCH" ];then TAG=v$$SERIAL_NUMBER; else TAG="v$$SERIAL_NUMBER-$BRANCH_NAME"; fi; >/dev/null 2>&1
+
+        IMAGE=eu.gcr.io/$PROJECT_ID/$_APP:$$TAG  >/dev/null 2>&1
+
+        docker build -t $$IMAGE -f server/pipeline/Dockerfile .
+
+        docker push $$IMAGE  >/dev/null 2>&1
+
+        echo Version: eu.gcr.io/nektria/$_APP:$$TAG
+
+    id: Push new __PROJECT__ image
+    entrypoint: bash
+substitutions:
+  _APP: __PROJECT__
+  _BRANCH: master

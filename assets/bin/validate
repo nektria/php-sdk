@@ -1,0 +1,36 @@
+#!/bin/bash
+bin/console &> /dev/null
+
+trap "exit 1" ERR
+
+USE_GOOGLE=''
+
+print_usage() {
+  printf "Usage: bin/phpstan [-g] \n"
+}
+
+while getopts 'g' flag; do
+  case "$flag" in
+    g) USE_GOOGLE='1';;
+    *) print_usage
+       exit 1 ;;
+  esac
+done
+
+bin/tools/check-dumps
+
+if [ "$USE_GOOGLE" = '1' ]; then
+  bin/tools/composer-validate -g
+  bin/tools/phpstan -g
+  bin/tools/php-cs-fixer -g
+  bin/tools/phpcs -g
+  bin/console debug:static-analysis
+else
+  docker exec -i proxy-dia composer global update
+  bin/tools/composer-validate
+  bin/tools/phpstan
+  bin/tools/php-cs-fixer
+  bin/tools/phpcs
+  bin/console debug:static-analysis
+fi
+

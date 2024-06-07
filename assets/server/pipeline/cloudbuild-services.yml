@@ -1,0 +1,34 @@
+version: '2'
+services:
+
+  test-postgres:
+    hostname: postgres
+    image: docker.io/postgres:13-alpine
+    environment:
+      POSTGRES_PASSWORD: 1234
+      POSTGRES_DB: __PROJECT___test
+      POSTGRES_USER: user
+    ports:
+      - "5432:5432"
+
+  test-redis:
+    image: redis:7.0-alpine
+    container_name: redis
+    ports:
+      - "6379:6379"
+
+  test-rabbit:
+    hostname: rabbit
+    image: docker.io/rabbitmq:3.8.7-management-alpine
+    environment:
+      RABBITMQ_ERLANG_COOKIE: cluster_cookie
+      RABBITMQ_DEFAULT_USER: user
+      RABBITMQ_DEFAULT_PASS: 1234
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+
+networks:
+  default:
+    external:
+      name: cloudbuild
