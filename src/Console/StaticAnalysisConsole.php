@@ -133,9 +133,10 @@ class StaticAnalysisConsole extends Console
             if (
                 $variable !== 'shopperCode'
                 && $variable !== 'orderNumber'
+                && $variable !== 'date'
                 && !str_contains($variable, 'Id')
             ) {
-                $messages[] = 'Path variable name must end by "Id" or be "shopperCode" or "orderNumber"';
+                $messages[] = 'Path variable name must end by "Id" or be "shopperCode" or "orderNumber" or "date"';
             }
         }
 
