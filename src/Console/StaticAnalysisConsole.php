@@ -25,7 +25,7 @@ class StaticAnalysisConsole extends Console
         $data = JsonUtil::decode($command->getOutput());
         $failed = false;
         foreach ($data as $hash => $endpoint) {
-            $failed = $failed || $this->analyseEndpoint($hash, $endpoint);
+            $failed = $this->analyseEndpoint($hash, $endpoint) || $failed;
         }
 
         if ($failed) {
