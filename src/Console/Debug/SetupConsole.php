@@ -41,7 +41,7 @@ class SetupConsole extends Console
             $toPath = "{$to}/{$this->fix($file)}";
 
             if (is_dir($fromPath)) {
-                if (!mkdir($toPath) && !is_dir($toPath)) {
+                if (!is_dir($toPath) && !mkdir($toPath)) {
                     throw new NektriaException("Directory '{$toPath}' was not created.");
                 }
                 $this->copyDir($fromPath, $toPath);
