@@ -6,7 +6,8 @@ git pull
 bin/console sdk:increase-version
 VERSION=$(bin/console sdk:increase-version -c)
 bin/tools/composer-update
+git add . && git commit -am "auto commit" && git push
 git tag "$VERSION"
-git add . && git commit -am "auto commit" && git push --tags
+git push --tags
 
 
