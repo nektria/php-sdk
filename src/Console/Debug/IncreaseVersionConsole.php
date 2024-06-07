@@ -23,7 +23,9 @@ class IncreaseVersionConsole extends Console
         $commit = (string) ((int) $commit + 1);
         $newVersion = "$mayor.$minor1.$commit";
         $composer['version'] = $newVersion;
-        FileUtil::write('composer.json', JsonUtil::encode($composer, true));
+        FileUtil::write('composer.json',
+            str_replace('\/', '/', JsonUtil::encode($composer, true))
+        );
 
         $this->output()->write($newVersion);
     }
