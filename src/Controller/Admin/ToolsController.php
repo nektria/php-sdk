@@ -23,7 +23,7 @@ use const STR_PAD_LEFT;
 #[Route('/api/admin/tools')]
 readonly class ToolsController extends Controller
 {
-    #[Route('/debug', methods: ['PATCH'])]
+    #[Route('/debug', methods: 'PATCH')]
     public function configureDebug(ContextService $contextService): JsonResponse
     {
         $enable = $this->requestData->retrieveBool('enable');
@@ -80,7 +80,7 @@ readonly class ToolsController extends Controller
         return $this->emptyResponse();
     }
 
-    #[Route('/console', methods: ['PATCH'])]
+    #[Route('/console', methods: 'PATCH')]
     public function executeAConsoleCommand(): Response
     {
         $command = $this->requestData->retrieveString('command');
@@ -96,7 +96,7 @@ readonly class ToolsController extends Controller
         return $this->buildResponseForProcess($command);
     }
 
-    #[Route('/database/migrations', methods: ['GET'])]
+    #[Route('/database/migrations', methods: 'GET')]
     public function executeDoctrineMigrationStatus(): Response
     {
         $command = new Process(array_merge(['../bin/console', 'doctrine:migration:status']));
@@ -105,7 +105,7 @@ readonly class ToolsController extends Controller
         return $this->buildResponseForProcess($command);
     }
 
-    #[Route('/database/schema', methods: ['GET'])]
+    #[Route('/database/schema', methods: 'GET')]
     public function executeDoctrineSchemaUpdateDumpSql(): Response
     {
         $command = new Process(array_merge(['../bin/console', 'doctrine:schema:update', '--dump-sql']));
@@ -114,7 +114,7 @@ readonly class ToolsController extends Controller
         return $this->buildResponseForProcess($command);
     }
 
-    #[Route('/debug/status', methods: ['PATCH'])]
+    #[Route('/debug/status', methods: 'PATCH')]
     public function getDebugConfigurationStatus(ContextService $contextService): JsonResponse
     {
         return new JsonResponse($contextService->debugModes(

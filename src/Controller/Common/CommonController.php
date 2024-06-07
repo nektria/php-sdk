@@ -22,7 +22,7 @@ use function count;
 
 readonly class CommonController extends Controller
 {
-    #[Route('/healthz', methods: ['GET'])]
+    #[Route('/healthz', methods: 'GET')]
     public function health(HealthService $healthService): DocumentResponse
     {
         $data = $healthService->check();
@@ -34,7 +34,7 @@ readonly class CommonController extends Controller
         );
     }
 
-    #[Route('/ping', methods: ['GET'])]
+    #[Route('/ping', methods: 'GET')]
     public function ping(): JsonResponse
     {
         return new JsonResponse(['response' => 'pong']);

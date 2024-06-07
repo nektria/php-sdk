@@ -21,7 +21,7 @@ use function count;
 
 readonly class PostmanController extends Controller
 {
-    #[Route('/postman', methods: ['GET'])]
+    #[Route('/postman', methods: 'GET')]
     public function postman(ContextService $contextService): BinaryFileResponse
     {
         $file = "{$contextService->project()}.json";
