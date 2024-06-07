@@ -122,8 +122,21 @@ class StaticAnalysisConsole extends Console
             }
         }
 
-        if (str_contains($endpoint['path'], '{id}')) {
-            $messages[] = 'Use a more descriptive variable name than "id"';
+        $pathParts = explode('{', $endpoint['path']);
+        foreach ($pathParts as $part) {
+            if (!str_contains($part, '}')) {
+                continue;
+            }
+
+            $variable = explode('}', $part)[0];
+
+            if (
+                $variable !== 'shopperCode'
+                && $variable !== 'orderNumber'
+                && !str_contains($variable, 'Id')
+            ) {
+                $messages[] = 'Path variable name must end by "Id" or be "shopperCode" or "orderNumber"';
+            }
         }
 
         if ($endpoint['method'] === 'ANY') {
