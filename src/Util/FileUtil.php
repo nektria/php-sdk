@@ -42,9 +42,16 @@ class FileUtil
         return $content;
     }
 
-    public static function write(string $file, string $content): void
+    public static function tmpWrite(string $file, string $content): void
     {
         if (file_put_contents("/tmp/{$file}", $content) === false) {
+            throw new RuntimeException('Cannot write file');
+        }
+    }
+
+    public static function write(string $file, string $content): void
+    {
+        if (file_put_contents($file, $content) === false) {
             throw new RuntimeException('Cannot write file');
         }
     }
