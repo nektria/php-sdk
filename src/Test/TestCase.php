@@ -261,6 +261,7 @@ class TestCase extends WebTestCase
         $methods = get_class_methods($this);
 
         if (!self::$onBootExecuted) {
+            self::$onBootExecuted = true;
             $runnerListener->onBoot();
 
             foreach ($methods as $method) {
@@ -271,8 +272,6 @@ class TestCase extends WebTestCase
                 }
             }
         }
-
-        self::$onBootExecuted = true;
 
         foreach ($methods as $method) {
             if (str_starts_with($method, 'init') && !isset($this->inits[$method])) {

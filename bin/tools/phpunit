@@ -17,7 +17,7 @@ done
 
 if [ "$USE_GOOGLE" = '1' ]; then
   bin/console > /dev/null
-  vendor/bin/phpunit --stop-on-failure  --stop-on-error --testdox --configuration /workspace/server/pipeline/phpunit.xml.dist
+  vendor/bin/phpunit --stop-on-failure --stop-on-error --testdox --configuration /workspace/server/pipeline/phpunit.xml.dist
 else
   docker exec -it yieldmanager bin/console > /dev/null
   docker exec -it yieldmanager /root/.composer/vendor/bin/phpunit --stop-on-failure --stop-on-error --testdox --configuration /app/server/__PROJECT__-dev/phpunit.xml.dist
