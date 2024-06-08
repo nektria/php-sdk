@@ -258,13 +258,22 @@ class TestCase extends WebTestCase
         /** @var TestRunnerListener $runnerListener */
         $runnerListener = self::getContainer()->get(TestRunnerListener::class);
 
+        $methods = get_class_methods($this);
+
         if (!self::$onBootExecuted) {
             $runnerListener->onBoot();
+
+            foreach ($methods as $method) {
+                if (str_starts_with($method, 'boot')) {
+                    $this->inits[$method] = true;
+                    // @phpstan-ignore-next-line
+                    $this->$method();
+                }
+            }
         }
 
         self::$onBootExecuted = true;
 
-        $methods = get_class_methods($this);
         foreach ($methods as $method) {
             if (str_starts_with($method, 'init') && !isset($this->inits[$method])) {
                 $this->inits[$method] = true;
