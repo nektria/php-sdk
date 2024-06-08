@@ -1,9 +1,10 @@
 #!/usr/bin/env bash
 
-bin/migrator
-git add .
-git commit -am "auto commit"
-git pull
-git push
-docker exec -it nektria-hub bin/console nektria:deploy -w __PROJECT__
+set -e
 
+git pull
+VERSION=$(bin/console debug:increase-version -c)
+bin/tools/composer-update
+git add . && git commit -am "auto commit" && git push
+git tag "$VERSION"
+git push --tags

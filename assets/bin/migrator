@@ -10,7 +10,7 @@ if (!is_dir($basedir)) {
 $files = scandir($basedir);
 
 foreach ($files as $file) {
-    if (strpos($file, 'Version') === false) {
+    if (!str_contains($file, 'Version')) {
         continue;
     }
 
@@ -21,15 +21,15 @@ foreach ($files as $file) {
 
     foreach ($migrationFile as $line) {
 
-        if (strpos($line, 'public function down') !== false) {
+        if (str_contains($line, 'public function down')) {
             $isRollback = true;
         }
 
-        if (strpos($line, 'public function up') !== false) {
+        if (str_contains($line, 'public function up')) {
             $isRollback = false;
         }
 
-        if (strpos($line, '$this->addSql(') === false) {
+        if (!str_contains($line, '$this->addSql(')) {
             continue;
         }
 
