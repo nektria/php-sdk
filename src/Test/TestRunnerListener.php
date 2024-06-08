@@ -4,7 +4,11 @@ declare(strict_types=1);
 
 namespace Nektria\Test;
 
+use Doctrine\ORM\EntityManagerInterface;
+use Nektria\Exception\NektriaException;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\Process\Process;
+use Throwable;
 
 readonly class TestRunnerListener
 {
@@ -15,5 +19,28 @@ readonly class TestRunnerListener
 
     public function onBoot(): void
     {
+    }
+
+    public function restartDatabase(): void
+    {
+        try {
+            (new Process(['bin/console', 'd:d:c', '-e', 'test']))->run();
+            /** @var EntityManagerInterface $em */
+            $em = $this->container->get('doctrine.orm.entity_manager');
+            $em->getConnection()->executeStatement("
+            DO $$
+            DECLARE
+                r RECORD;
+            BEGIN
+                FOR r IN (SELECT tablename FROM pg_tables WHERE schemaname = 'public')
+                LOOP
+                    EXECUTE 'DROP TABLE IF EXISTS public.' || quote_ident(r.tablename) || ' CASCADE';
+                END LOOP;
+            END $$;
+        ");
+            (new Process(['bin/console', 'd:m:m', '-e', 'test', '-n']))->run();
+        } catch (Throwable $e) {
+            throw NektriaException::new($e);
+        }
     }
 }
