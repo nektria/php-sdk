@@ -39,32 +39,9 @@ class SetupConsole extends Console
             }
 
             $toFile = $this->fix($file);
-            if ($toFile === 'cloudbuild_1.yml') {
-                if ($this->contextService->project() === 'yieldmanager') {
-                    $toFile = 'cloudbuild.yml';
-                } else {
-                    continue;
-                }
-            }
-
-            if ($toFile === 'cloudbuild_2.yml') {
-                if ($this->contextService->project() !== 'yieldmanager') {
-                    $toFile = 'cloudbuild.yml';
-                } else {
-                    continue;
-                }
-            }
 
             if ($toFile === '.git-ignore') {
                 $toFile = '.gitignore';
-            }
-
-            if ($toFile === 'cloudbuild-services_1.yml') {
-                if ($this->contextService->project() === 'yieldmanager') {
-                    $toFile = 'cloudbuild-services.yml';
-                } else {
-                    continue;
-                }
             }
 
             $fromPath = "{$from}/{$file}";
