@@ -21,7 +21,7 @@ readonly class TestRunnerListener
     {
     }
 
-    public function restartDatabase(): void
+    public function restartDatabase(bool $useMigrations): void
     {
         try {
             (new Process(['bin/console', 'd:d:c', '-e', 'test']))->run();
@@ -38,7 +38,11 @@ readonly class TestRunnerListener
                 END LOOP;
             END $$;
         ");
-            (new Process(['bin/console', 'd:m:m', '-e', 'test', '-n']))->run();
+            if ($useMigrations) {
+                (new Process(['bin/console', 'd:m:m', '-e', 'test', '-n']))->run();
+            } else {
+                (new Process(['bin/console', 'd:s:u', '-e', 'test', '--dump-sql', '--force']))->run();
+            }
         } catch (Throwable $e) {
             throw NektriaException::new($e);
         }

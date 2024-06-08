@@ -1,6 +1,6 @@
 {
     "name": "nektria/php-sdk",
-    "version": "1.0.63",
+    "version": "1.0.64",
     "type": "library",
     "description": "Nektria PHP SDK",
     "minimum-stability": "stable",
