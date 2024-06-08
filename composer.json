@@ -1,6 +1,6 @@
 {
     "name": "nektria/php-sdk",
-    "version": "1.0.35",
+    "version": "1.0.36",
     "type": "library",
     "description": "Nektria PHP SDK",
     "minimum-stability": "stable",
@@ -34,7 +34,6 @@
         "doctrine/orm": "^3.0",
         "symfony/amqp-messenger": "^7.0",
         "symfony/dotenv": "^7.0",
-        "symfony/flex": "^v2.0",
         "symfony/http-client": "^7.0",
         "symfony/lock": "^7.0",
         "symfony/messenger": "^7.0",
@@ -70,7 +69,6 @@
         },
         "sort-packages": true,
         "allow-plugins": {
-            "symfony/flex": true,
             "symfony/runtime": true
         }
     },
