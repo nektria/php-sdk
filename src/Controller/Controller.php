@@ -10,10 +10,10 @@ use Nektria\Document\DocumentResponse;
 use Nektria\Document\Tenant;
 use Nektria\Document\User;
 use Nektria\Infrastructure\BusInterface;
+use Nektria\Infrastructure\UserServiceInterface;
 use Nektria\Message\Command;
 use Nektria\Message\Query;
 use Nektria\Service\ContextService;
-use Nektria\Service\UserService;
 use Nektria\Util\ArrayDataFetcher;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
@@ -27,7 +27,7 @@ readonly class Controller
     protected ArrayDataFetcher $requestData;
 
     public function __construct(
-        protected UserService $userService,
+        protected UserServiceInterface $userService,
         protected ContextService $context,
         protected BusInterface $bus,
         RequestStack $requestStack,

@@ -78,7 +78,6 @@ class TestUserService extends UserService
 
     public function authenticateApi(string $apiKey): void
     {
-        dump('A');
         $this->clearAuthentication();
 
         $this->user = $this->users["ak{$apiKey}"] ?? null;
@@ -107,7 +106,6 @@ class TestUserService extends UserService
 
     public function authenticateUser(string $apiKey): void
     {
-        dump('B');
         $this->clearAuthentication();
 
         $this->user = $this->users["ak{$apiKey}"] ?? null;
