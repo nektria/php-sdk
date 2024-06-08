@@ -19,8 +19,7 @@ class SetupConsole extends Console
 
     protected function play(): void
     {
-        $this->copyDir('vendor/nektria/php-sdk/assets/bin', 'bin');
-        $this->copyDir('vendor/nektria/php-sdk/assets/server', 'server');
+        $this->copyDir('vendor/nektria/php-sdk/assets', '.');
         $this->output()->writeln('done');
 
         exec('chmod -R +x bin/*');
@@ -54,6 +53,10 @@ class SetupConsole extends Console
                 } else {
                     continue;
                 }
+            }
+
+            if ($toFile === '.git-ignore') {
+                $toFile = '.gitignore';
             }
 
             if ($toFile === 'cloudbuild-services_1.yml') {
