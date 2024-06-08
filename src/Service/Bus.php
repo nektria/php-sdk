@@ -7,6 +7,7 @@ namespace Nektria\Service;
 use Nektria\Document\Document;
 use Nektria\Exception\NektriaException;
 use Nektria\Infrastructure\BusInterface;
+use Nektria\Infrastructure\UserServiceInterface;
 use Nektria\Message\Command;
 use Nektria\Message\Event;
 use Nektria\Message\Query;
@@ -33,7 +34,7 @@ class Bus implements BusInterface
     public function __construct(
         private readonly MessageBusInterface $bus,
         private readonly ContextService $contextService,
-        private readonly UserService $userService
+        private readonly UserServiceInterface $userService
     ) {
         $this->delayedEvents = [];
     }
