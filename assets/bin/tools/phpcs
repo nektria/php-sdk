@@ -15,12 +15,9 @@ while getopts 'g' flag; do
   esac
 done
 
-if [ "$USE_LOCAL" = '1' ]; then
-  php -d memory_limit=-1 /root/.composer/vendor/bin/phpcbf src --colors --standard=PSR12
-  php -d memory_limit=-1 /root/.composer/vendor/bin/phpcs src --colors --standard=PSR12
-elif [ "$USE_GOOGLE" = '1' ]; then
-  php -d memory_limit=-1 /builder/home/.composer/vendor/bin/phpcs src --standard=PSR12
+if [ "$USE_GOOGLE" = '1' ]; then
+  php -d memory_limit=-1 /builder/home/.composer/vendor/bin/phpcs src tests --standard=PSR12
 else
-  docker exec -i __PROJECT__ /root/.composer/vendor/bin/phpcbf src --colors --standard=PSR12
-  docker exec -i __PROJECT__ /root/.composer/vendor/bin/phpcs src --colors --standard=PSR12
+  docker exec -i __PROJECT__ /root/.composer/vendor/bin/phpcbf src tests --colors --standard=PSR12
+  docker exec -i __PROJECT__ /root/.composer/vendor/bin/phpcs src tests --colors --standard=PSR12
 fi
