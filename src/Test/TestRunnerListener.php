@@ -21,23 +21,28 @@ readonly class TestRunnerListener
     {
     }
 
-    public function restartDatabase(bool $useMigrations): void
-    {
+    public function restartDatabase(
+        bool $reuseDatabase = true,
+        bool $useMigrations = true
+    ): void {
         try {
-            (new Process(['bin/console', 'd:d:c', '-e', 'test']))->run();
-            /** @var EntityManagerInterface $em */
-            $em = $this->container->get('doctrine.orm.entity_manager');
-            $em->getConnection()->executeStatement("
-            DO $$
-            DECLARE
-                r RECORD;
-            BEGIN
-                FOR r IN (SELECT tablename FROM pg_tables WHERE schemaname = 'public')
-                LOOP
-                    EXECUTE 'DROP TABLE IF EXISTS public.' || quote_ident(r.tablename) || ' CASCADE';
-                END LOOP;
-            END $$;
-        ");
+            if (!$reuseDatabase) {
+                (new Process(['bin/console', 'd:d:c', '-e', 'test']))->run();
+                /** @var EntityManagerInterface $em */
+                $em = $this->container->get('doctrine.orm.entity_manager');
+                $em->getConnection()->executeStatement("
+                    DO $$
+                    DECLARE
+                        r RECORD;
+                    BEGIN
+                        FOR r IN (SELECT tablename FROM pg_tables WHERE schemaname = 'public')
+                        LOOP
+                            EXECUTE 'DROP TABLE IF EXISTS public.' || quote_ident(r.tablename) || ' CASCADE';
+                        END LOOP;
+                    END $$;
+                ");
+            }
+
             if ($useMigrations) {
                 (new Process(['bin/console', 'd:m:m', '-e', 'test', '-n']))->run();
             } else {
