@@ -11,12 +11,12 @@ use Nektria\Infrastructure\UserServiceInterface;
 
 class UserService implements UserServiceInterface
 {
-    private ?User $user;
+    protected ?User $user;
 
     public function __construct(
-        private readonly ContextService $contextService,
-        private readonly SharedUserCache $sharedUserCache,
-        private readonly RoleManager $roleManager,
+        protected readonly ContextService $contextService,
+        protected readonly SharedUserCache $sharedUserCache,
+        protected readonly RoleManager $roleManager,
     ) {
         $this->user = null;
     }
