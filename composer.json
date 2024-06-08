@@ -1,6 +1,6 @@
 {
     "name": "nektria/php-sdk",
-    "version": "1.0.36",
+    "version": "1.0.37",
     "type": "library",
     "description": "Nektria PHP SDK",
     "minimum-stability": "stable",
@@ -17,7 +17,7 @@
         }
     ],
     "require": {
-        "php": ">=8.3",
+        "php": ">=8.3 <8.4",
         "ext-amqp": "*",
         "ext-ctype": "*",
         "ext-curl": "*",
