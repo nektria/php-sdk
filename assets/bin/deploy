@@ -1,3 +1,8 @@
 #!/usr/bin/env bash
 
-git add . && git commit -am "auto commit" && git push
+bin/migrator
+git add .
+git commit -am "auto commit"
+git pull
+git push
+docker exec -it nektria-hub bin/console nektria:deploy -w __PROJECT__
