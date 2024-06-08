@@ -4,7 +4,7 @@ trap "exit 1" ERR
 USE_GOOGLE=''
 
 print_usage() {
-  printf "Usage: bin/php-cs-fixer [-g] \n"
+  printf "Usage: bin/composer-validate [-g] \n"
 }
 
 while getopts 'g' flag; do
