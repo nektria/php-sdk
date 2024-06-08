@@ -17,6 +17,11 @@ class TestCase extends WebTestCase
 {
     protected KernelBrowser $client;
 
+    /**
+     * @var array<string, bool>
+     */
+    private array $inits = [];
+
     private static bool $onBootExecuted = false;
 
     /**
@@ -244,25 +249,28 @@ class TestCase extends WebTestCase
 
     protected function init(): void
     {
-        if (!self::$booted) {
-            $this->client = self::createClient();
+        if (self::$booted) {
+            return;
+        }
 
-            /** @var TestRunnerListener $runnerListener */
-            $runnerListener = self::getContainer()->get(TestRunnerListener::class);
+        $this->client = self::createClient();
 
-            if (!self::$onBootExecuted) {
-                $runnerListener->onBoot();
+        /** @var TestRunnerListener $runnerListener */
+        $runnerListener = self::getContainer()->get(TestRunnerListener::class);
 
-                $methods = get_class_methods($this);
-                foreach ($methods as $method) {
-                    if (str_starts_with($method, 'init')) {
-                        // @phpstan-ignore-next-line
-                        $this->$method();
-                    }
-                }
+        if (!self::$onBootExecuted) {
+            $runnerListener->onBoot();
+        }
+
+        self::$onBootExecuted = true;
+
+        $methods = get_class_methods($this);
+        foreach ($methods as $method) {
+            if (str_starts_with($method, 'init') && !isset($this->inits[$method])) {
+                $this->inits[$method] = true;
+                // @phpstan-ignore-next-line
+                $this->$method();
             }
-
-            // self::$onBootExecuted = true;
         }
     }
 

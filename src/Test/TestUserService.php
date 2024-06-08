@@ -31,6 +31,28 @@ class TestUserService extends UserService
             metadata: new TenantMetadata([])
         );
 
+        $this->users['ak1000'] = new User(
+            id: '09e75ab6-2673-4ce8-a833-5a7cd284f831',
+            email: 'admin@nektria.net',
+            warehouses: [],
+            apiKey: '1000',
+            role: RoleManager::ROLE_ADMIN,
+            tenantId: $tenant->id,
+            tenant: $tenant,
+            dniNie: null
+        );
+
+        $this->users['ak1001'] = new User(
+            id: 'cd3f0ff3-b3ce-4620-90ac-b8659a8779b5',
+            email: 'user@nektria.net',
+            warehouses: [],
+            apiKey: '1001',
+            role: RoleManager::ROLE_USER,
+            tenantId: $tenant->id,
+            tenant: $tenant,
+            dniNie: null
+        );
+
         $this->users['ak2000'] = new User(
             id: 'd4bd0258-2fe7-4599-9b9f-7c13fec85f69',
             email: '',
@@ -53,23 +75,51 @@ class TestUserService extends UserService
             dniNie: null
         );
 
-        $this->users['ak1000'] = new User(
-            id: '09e75ab6-2673-4ce8-a833-5a7cd284f831',
-            email: 'admin@nektria.net',
+        $tenant = new Tenant(
+            id: '1aef7923-4b88-4d1f-b7b5-c409d962c60c',
+            name: 'Test2',
+            metadata: new TenantMetadata([])
+        );
+
+        $this->users['ak3000'] = new User(
+            id: 'f37c8deb-403d-4e1f-8f20-bd21f016449b',
+            email: 'admin2@nektria.net',
             warehouses: [],
-            apiKey: '1000',
+            apiKey: '1001',
             role: RoleManager::ROLE_ADMIN,
             tenantId: $tenant->id,
             tenant: $tenant,
             dniNie: null
         );
 
-        $this->users['ak1001'] = new User(
-            id: 'cd3f0ff3-b3ce-4620-90ac-b8659a8779b5',
-            email: 'user@nektria.net',
+        $this->users['ak3001'] = new User(
+            id: 'e662ccc1-024e-4e30-8968-685621f072a7',
+            email: 'user2@nektria.net',
             warehouses: [],
             apiKey: '1001',
             role: RoleManager::ROLE_USER,
+            tenantId: $tenant->id,
+            tenant: $tenant,
+            dniNie: null
+        );
+
+        $this->users['ak4000'] = new User(
+            id: '4166b0f7-bd1a-4f81-aed7-7df972584390',
+            email: '',
+            warehouses: [],
+            apiKey: '2000',
+            role: RoleManager::ROLE_SYSTEM,
+            tenantId: $tenant->id,
+            tenant: $tenant,
+            dniNie: null
+        );
+
+        $this->users['ak4001'] = new User(
+            id: 'efd09992-7370-4ebe-a765-ef1806ba7584',
+            email: '',
+            warehouses: [],
+            apiKey: '2001',
+            role: RoleManager::ROLE_API,
             tenantId: $tenant->id,
             tenant: $tenant,
             dniNie: null
