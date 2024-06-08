@@ -26,19 +26,19 @@ steps:
     args:
       - '-c'
       - >
-      set -e  >/dev/null 2>&1
-      
-      SERIAL_NUMBER=$(git rev-list --count HEAD)
-      
-      if [ "$BRANCH_NAME" = "$_BRANCH" ];then TAG=v$$SERIAL_NUMBER; else TAG="v$$SERIAL_NUMBER-$BRANCH_NAME"; fi; >/dev/null 2>&1
-      
-      IMAGE=eu.gcr.io/$PROJECT_ID/$_APP:$$TAG  >/dev/null 2>&1
-      
-      docker build -t $$IMAGE -f /workspace/server/pipeline/Dockerfile .
-      
-      docker push $$IMAGE  >/dev/null 2>&1
-
-      echo Version: eu.gcr.io/nektria/$_APP:$$TAG
+        set -e  >/dev/null 2>&1
+        
+        SERIAL_NUMBER=$(git rev-list --count HEAD)
+        
+        if [ "$BRANCH_NAME" = "$_BRANCH" ];then TAG=v$$SERIAL_NUMBER; else TAG="v$$SERIAL_NUMBER-$BRANCH_NAME"; fi; >/dev/null 2>&1
+        
+        IMAGE=eu.gcr.io/$PROJECT_ID/$_APP:$$TAG  >/dev/null 2>&1
+        
+        docker build -t $$IMAGE -f /workspace/server/pipeline/Dockerfile .
+        
+        docker push $$IMAGE  >/dev/null 2>&1
+  
+        echo Version: eu.gcr.io/nektria/$_APP:$$TAG
     id: Push new __PROJECT__ image
     entrypoint: bash
 substitutions:
