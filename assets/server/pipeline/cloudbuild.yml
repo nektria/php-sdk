@@ -5,7 +5,7 @@ steps:
     name: gcr.io/cloud-builders/docker
     args: ["pull", "-q", "eu.gcr.io/nektria/php:8.3"]
   - id: validating code
-    args: ["/app/pipeline", "$BRANCH_NAME"]
+    args: ["/app/pipeline", "$BRANCH_NAME", "$_BRANCH"]
     entrypoint: sh
     name: eu.gcr.io/nektria/php:8.3
   - name: gcr.io/cloud-builders/docker
