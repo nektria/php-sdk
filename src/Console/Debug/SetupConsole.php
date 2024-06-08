@@ -22,6 +22,8 @@ class SetupConsole extends Console
         $this->copyDir('vendor/nektria/php-sdk/assets/bin', 'bin');
         $this->copyDir('vendor/nektria/php-sdk/assets/server', 'server');
         $this->output()->writeln('done');
+
+        exec('chmod -R +x bin/*');
     }
 
     private function copyDir(string $from, string $to): void

@@ -351,8 +351,6 @@ readonly class PostmanController extends Controller
                             "    app = 'compass';",
                             "} if (pm.request.url.host[0] === '{{host_metrics}}') {",
                             "    app = 'metrics';",
-                            '} else {',
-                            '    console.log(pm.request.url.host[0])',
                             '}',
                             "if (pm.request.url.path.join('/').indexOf('/admin') > 0) {",
                             "    pm.request.addHeader({key: 'X-Api-Id', value: '{{api_key_admin}}'})",
@@ -424,7 +422,7 @@ readonly class PostmanController extends Controller
             }
 
             $part = explode('}}', $part)[0];
-            $pathArgs[] = "pm.environment.set('{$part}', 'value');";
+            $pathArgs[] = "pm.collectionVariables.set('{$part}', 'value');";
         }
 
         $url = "{$host}{$path}";
