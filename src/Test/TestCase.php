@@ -75,6 +75,7 @@ class TestCase extends WebTestCase
         $runnerListener = self::getContainer()->get(TestRunnerListener::class);
 
         $methods = get_class_methods($this);
+        sort($methods);
 
         if (!self::$onBootExecuted) {
             self::$onBootExecuted = true;
@@ -124,6 +125,7 @@ class TestCase extends WebTestCase
         $this->boot();
 
         $methods = get_class_methods($this);
+        sort($methods);
         foreach ($methods as $method) {
             if ($method === 'init') {
                 continue;
