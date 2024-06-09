@@ -2,8 +2,7 @@
 
 $finder = \PhpCsFixer\Finder::create()
     ->in(['src'])
-    ->exclude('var')
-;
+    ->exclude('var');
 
 $config = new PhpCsFixer\Config();
 $config
@@ -17,20 +16,20 @@ $config
             'const' => 'one',
             'method' => 'one',
             'property' => 'one',
-            'trait_import' => 'one'
+            'trait_import' => 'one',
         ]],
         'class_definition' => false,
-        'concat_space' => [ 'spacing' => 'one'],
+        'concat_space' => ['spacing' => 'one'],
         'declare_strict_types' => true,
         'fopen_flags' => ['b_mode' => true],
         'general_phpdoc_annotation_remove' => ['annotations' => ['author', 'copyright', 'package', 'group']],
         'global_namespace_import' => [
             'import_classes' => true,
             'import_constants' => true,
-            'import_functions' => true
+            'import_functions' => true,
         ],
         'method_argument_space' => [
-            'on_multiline' => 'ensure_fully_multiline'
+            'on_multiline' => 'ensure_fully_multiline',
         ],
         'no_extra_blank_lines' => true,
         'ordered_imports' => ['sort_algorithm' => 'alpha', 'imports_order' => ['class', 'function', 'const']],
@@ -41,7 +40,6 @@ $config
         'types_spaces' => ['space' => 'single'],
         'yoda_style' => false,
     ])
-    ->setFinder($finder)
-;
+    ->setFinder($finder);
 
 return $config;

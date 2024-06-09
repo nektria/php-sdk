@@ -129,9 +129,9 @@ class CompassClient
     }
 
     /**
-     * @deprecated Use getDistanceMatrix instead
      * @param CompassCoordinate[] $coordinates
      * @return CompassDistance[]
+     * @deprecated Use getDistanceMatrix instead
      */
     public function getDistances(string $travelMode, array $coordinates): array
     {

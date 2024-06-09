@@ -27,7 +27,7 @@ readonly class ProxyClient
         $this->requestClient->get(
             "{$proxyHost}/api/admin/tasks/{$task}",
             headers: $this->getHeaders(),
-            enableDebugFallback: true
+            enableDebugFallback: true,
         );
     }
 
@@ -42,7 +42,7 @@ readonly class ProxyClient
         return $this->requestClient->get(
             "{$proxyHost}/api/admin/files/billing",
             headers: $this->getHeaders(),
-            enableDebugFallback: true
+            enableDebugFallback: true,
         )->body;
     }
 
@@ -57,7 +57,7 @@ readonly class ProxyClient
         $this->requestClient->post(
             "{$proxyHost}/api/admin/orders/import",
             headers: $this->getHeaders(),
-            enableDebugFallback: true
+            enableDebugFallback: true,
         );
     }
 
@@ -72,7 +72,7 @@ readonly class ProxyClient
         $this->requestClient->patch(
             "{$proxyHost}/api/admin/orders/{$orderNumber}/updated",
             headers: $this->getHeaders(),
-            enableDebugFallback: true
+            enableDebugFallback: true,
         );
     }
 
@@ -87,7 +87,7 @@ readonly class ProxyClient
         $this->requestClient->patch(
             "{$proxyHost}/api/admin/orders/{$orderNumber}/delivered",
             headers: $this->getHeaders(),
-            enableDebugFallback: true
+            enableDebugFallback: true,
         );
     }
 
@@ -102,7 +102,7 @@ readonly class ProxyClient
         $this->requestClient->patch(
             "{$proxyHost}/api/admin/picking-shifts/{$pickingShiftId}/send-routes",
             headers: $this->getHeaders(),
-            enableDebugFallback: true
+            enableDebugFallback: true,
         );
     }
 
@@ -117,7 +117,7 @@ readonly class ProxyClient
         $this->requestClient->patch(
             "{$proxyHost}/api/admin/routes/{$routeId}/updated",
             headers: $this->getHeaders(),
-            enableDebugFallback: true
+            enableDebugFallback: true,
         );
     }
 

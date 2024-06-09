@@ -3,7 +3,7 @@ steps:
     args: [ "fetch", "--unshallow", "--quiet" ]
   - id: Load PHP image
     name: gcr.io/cloud-builders/docker
-    args: ["pull", "-q", "eu.gcr.io/nektria/php:8.3"]
+    args: [ "pull", "-q", "eu.gcr.io/nektria/php:8.3" ]
   - name: 'docker/compose'
     args:
       - '-c'
@@ -19,7 +19,7 @@ steps:
     id: Load test services
     entrypoint: sh
   - id: validating code
-    args: ["/app/pipeline", "$BRANCH_NAME", "$_APP"]
+    args: [ "/app/pipeline", "$BRANCH_NAME", "$_APP" ]
     entrypoint: sh
     name: eu.gcr.io/nektria/php:8.3
   - name: gcr.io/cloud-builders/docker
@@ -37,7 +37,7 @@ steps:
         docker build -t $$IMAGE -f /workspace/server/pipeline/Dockerfile .
         
         docker push $$IMAGE  >/dev/null 2>&1
-  
+        
         echo Version: eu.gcr.io/nektria/$_APP:$$TAG
     id: Push new __PROJECT__ image
     entrypoint: bash

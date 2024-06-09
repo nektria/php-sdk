@@ -53,8 +53,8 @@ readonly class ToolsController extends Controller
                     0,
                     str_pad($pass, 16, '0', STR_PAD_LEFT),
                 ),
-                true
-            )
+                true,
+            ),
         )));
     }
 
@@ -74,7 +74,7 @@ readonly class ToolsController extends Controller
                 'vhost' => '/',
                 'name' => $queue,
                 'mode' => 'delete',
-            ]
+            ],
         );
 
         return $this->emptyResponse();

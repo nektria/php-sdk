@@ -38,7 +38,7 @@ class RequestClient
             data: $data,
             headers: $headers,
             options: $options,
-            enableDebugFallback: $enableDebugFallback
+            enableDebugFallback: $enableDebugFallback,
         );
     }
 
@@ -60,7 +60,7 @@ class RequestClient
             data: $data,
             headers: $headers,
             options: $options,
-            enableDebugFallback: $enableDebugFallback
+            enableDebugFallback: $enableDebugFallback,
         );
     }
 
@@ -84,7 +84,7 @@ class RequestClient
             headers: $headers,
             options: $options,
             sendBodyAsObject: $sendBodyAsObject,
-            enableDebugFallback: $enableDebugFallback
+            enableDebugFallback: $enableDebugFallback,
         );
     }
 
@@ -108,7 +108,7 @@ class RequestClient
             headers: $headers,
             options: $options,
             sendBodyAsObject: $sendBodyAsObject,
-            enableDebugFallback: $enableDebugFallback
+            enableDebugFallback: $enableDebugFallback,
         );
     }
 
@@ -132,7 +132,7 @@ class RequestClient
             headers: $headers,
             options: $options,
             sendBodyAsObject: $sendBodyAsObject,
-            enableDebugFallback: $enableDebugFallback
+            enableDebugFallback: $enableDebugFallback,
         );
     }
 

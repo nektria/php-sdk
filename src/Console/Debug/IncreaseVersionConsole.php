@@ -18,14 +18,14 @@ class IncreaseVersionConsole extends Console
     protected function play(): void
     {
         $composer = JsonUtil::decode(FileUtil::read('composer.json'));
-
-        [$mayor, $minor1, $commit] = explode('.', $composer['version']);
+        [$desc, $version] = explode(' - ', $composer['description']);
+        [$mayor, $minor1, $commit] = explode('.', $version);
         $commit = (string) ((int) $commit + 1);
         $newVersion = "$mayor.$minor1.$commit";
-        $composer['version'] = $newVersion;
+        $composer['description'] = "{$desc} - {$newVersion}";
         FileUtil::write(
             'composer.json',
-            str_replace('\/', '/', JsonUtil::encode($composer, true))
+            str_replace('\/', '/', JsonUtil::encode($composer, true)),
         );
 
         $this->output()->write($newVersion);

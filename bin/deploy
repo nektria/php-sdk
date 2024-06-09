@@ -4,7 +4,8 @@ set -e
 
 git pull
 VERSION=$(bin/console debug:increase-version -c)
-bin/tools/composer-update
+bin/validate
+#bin/tools/composer-update
 git add . && git commit -am "auto commit" && git push
 git tag "$VERSION"
 git push --tags

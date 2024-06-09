@@ -15,6 +15,20 @@ use function is_array;
 
 class TestCase extends WebTestCase
 {
+    use RequestHelper;
+
+    public const string ROLE_ADMIN = '1000';
+
+    public const string ROLE_API = '2001';
+
+    public const string ROLE_SYSTEM = '2000';
+
+    public const string ROLE_USER = '1001';
+
+    public const string TENANT_ID = '74a0c280-a76f-4231-aa85-97a20da592ab';
+
+    public const string WAREHOUSE_ID = 'be878e2b-88fa-449d-875d-7a9567fa671a';
+
     protected KernelBrowser $client;
 
     /**
@@ -53,6 +67,65 @@ class TestCase extends WebTestCase
     protected static function assertJsonType(array $expected, array $target): void
     {
         self::assertJsonTypeInternal($expected, $target, '');
+    }
+
+    public function getTestName(): string
+    {
+        $key = '';
+        $traces = debug_backtrace();
+        foreach ($traces as $trace) {
+            if (strncmp($trace['function'], 'test', 4) === 0) {
+                $key = ($trace['class'] ?? '') . '::' . $trace['function'];
+
+                break;
+            }
+        }
+
+        if ($key === '') {
+            throw new NektriaException('Test function starting with "test" has not been found.');
+        }
+
+        return $key;
+    }
+
+    protected function init(): void
+    {
+        if (self::$booted) {
+            return;
+        }
+
+        $this->client = self::createClient();
+
+        /** @var TestRunnerListener $runnerListener */
+        $runnerListener = self::getContainer()->get(TestRunnerListener::class);
+
+        $methods = get_class_methods($this);
+
+        if (!self::$onBootExecuted) {
+            self::$onBootExecuted = true;
+            $runnerListener->onBoot();
+
+            foreach ($methods as $method) {
+                if (str_starts_with($method, 'boot')) {
+                    $this->inits[$method] = true;
+                    // @phpstan-ignore-next-line
+                    $this->$method();
+                }
+            }
+        }
+
+        foreach ($methods as $method) {
+            if (!isset($this->inits[$method]) && str_starts_with($method, 'init')) {
+                $this->inits[$method] = true;
+                // @phpstan-ignore-next-line
+                $this->$method();
+            }
+        }
+    }
+
+    protected function setUp(): void
+    {
+        $this->init();
     }
 
     /**
@@ -226,64 +299,5 @@ class TestCase extends WebTestCase
                 throw new ExpectationFailedException("Field '{$root}{$key}' is not expected.");
             }
         }
-    }
-
-    public function getTestName(): string
-    {
-        $key = '';
-        $traces = debug_backtrace();
-        foreach ($traces as $trace) {
-            if (strncmp($trace['function'], 'test', 4) === 0) {
-                $key = ($trace['class'] ?? '') . '::' . $trace['function'];
-
-                break;
-            }
-        }
-
-        if ($key === '') {
-            throw new NektriaException('Test function starting with "test" has not been found.');
-        }
-
-        return $key;
-    }
-
-    protected function init(): void
-    {
-        if (self::$booted) {
-            return;
-        }
-
-        $this->client = self::createClient();
-
-        /** @var TestRunnerListener $runnerListener */
-        $runnerListener = self::getContainer()->get(TestRunnerListener::class);
-
-        $methods = get_class_methods($this);
-
-        if (!self::$onBootExecuted) {
-            self::$onBootExecuted = true;
-            $runnerListener->onBoot();
-
-            foreach ($methods as $method) {
-                if (str_starts_with($method, 'boot')) {
-                    $this->inits[$method] = true;
-                    // @phpstan-ignore-next-line
-                    $this->$method();
-                }
-            }
-        }
-
-        foreach ($methods as $method) {
-            if (str_starts_with($method, 'init') && !isset($this->inits[$method])) {
-                $this->inits[$method] = true;
-                // @phpstan-ignore-next-line
-                $this->$method();
-            }
-        }
-    }
-
-    protected function setUp(): void
-    {
-        $this->init();
     }
 }

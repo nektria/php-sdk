@@ -72,7 +72,7 @@ class AllowComparingOnlyComparableTypesRule implements Rule
             return [
                 RuleErrorBuilder::message('Array comparison is not allowed.')
                     ->identifier('nektria.comparation')
-                    ->build()
+                    ->build(),
             ];
         }
 
