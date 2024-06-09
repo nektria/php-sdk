@@ -121,8 +121,9 @@ class TestCase extends WebTestCase
 
         $this->client = self::createClient();
 
-        $methods = get_class_methods($this);
+        $this->boot();
 
+        $methods = get_class_methods($this);
         foreach ($methods as $method) {
             if ($method === 'init') {
                 continue;
