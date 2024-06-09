@@ -9,7 +9,7 @@
         <env name="APP_ENV" value="test"/>
         <env name="APP_DEBUG" value="1"/>
         <env name="SYMFONY_DEPRECATIONS_HELPER" value="disabled"/>
-        <env name="DATABASE_URL" value="postgresql://test:HK3VCVtLr23Cret@34.76.83.217:5432/test-__PROJECT__"/>
+        <env name="DATABASE_URL" value="postgresql://user:1234@postgres:5432/test"/>
         <env name="COMPASS_URL" value="http://compass"/>
         <env name="GOOGLE_CLOUD_CREDENTIALS_PATH" value="/app/config/google_credentials.json"/>
         <env name="REDIS_URL" value="redis://redis/0"/>
