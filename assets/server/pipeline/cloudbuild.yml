@@ -18,8 +18,6 @@ steps:
 
         docker-compose -f server/pipeline/cloudbuild-services.yml up -d 
 
-        docker exec -i pipeline_postgres_1 sh -c 'until psql -U user -d test -c "SELECT 1;" >/dev/null 2>&1; do echo "Waiting DB.."; sleep 2; done'
-
   - id: validating code
     name: eu.gcr.io/nektria/php:8.3
     entrypoint: sh
