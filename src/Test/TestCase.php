@@ -69,6 +69,31 @@ class TestCase extends WebTestCase
         self::assertJsonTypeInternal($expected, $target, '');
     }
 
+    protected function boot(): void
+    {
+        /** @var TestRunnerListener $runnerListener */
+        $runnerListener = self::getContainer()->get(TestRunnerListener::class);
+
+        $methods = get_class_methods($this);
+
+        if (!self::$onBootExecuted) {
+            self::$onBootExecuted = true;
+            $runnerListener->onBoot();
+
+            foreach ($methods as $method) {
+                if ($method === 'boot') {
+                    continue;
+                }
+
+                if (str_starts_with($method, 'boot')) {
+                    $this->inits[$method] = true;
+                    // @phpstan-ignore-next-line
+                    $this->$method();
+                }
+            }
+        }
+    }
+
     public function getTestName(): string
     {
         $key = '';
@@ -96,25 +121,13 @@ class TestCase extends WebTestCase
 
         $this->client = self::createClient();
 
-        /** @var TestRunnerListener $runnerListener */
-        $runnerListener = self::getContainer()->get(TestRunnerListener::class);
-
         $methods = get_class_methods($this);
 
-        if (!self::$onBootExecuted) {
-            self::$onBootExecuted = true;
-            $runnerListener->onBoot();
-
-            foreach ($methods as $method) {
-                if (str_starts_with($method, 'boot')) {
-                    $this->inits[$method] = true;
-                    // @phpstan-ignore-next-line
-                    $this->$method();
-                }
-            }
-        }
-
         foreach ($methods as $method) {
+            if ($method === 'init') {
+                continue;
+            }
+
             if (!isset($this->inits[$method]) && str_starts_with($method, 'init')) {
                 $this->inits[$method] = true;
                 // @phpstan-ignore-next-line
