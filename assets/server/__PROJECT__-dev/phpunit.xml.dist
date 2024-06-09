@@ -13,6 +13,7 @@
         <env name="COMPASS_URL" value="http://compass"/>
         <env name="GOOGLE_CLOUD_CREDENTIALS_PATH" value="/app/config/google_credentials.json"/>
         <env name="REDIS_URL" value="redis://redis/0"/>
+        <env name="RABBIT_URL" value="amqp://user:1234@rabbit:5672"/>
         <env name="RABBITMQ_URL" value="amqp://user:1234@rabbit:5672"/>
         <env name="YIELDMANAGERBO_HOST" value="http://yieldmanagerbo"/>
         <env name="ROUTEMANAGER_HOST" value="http://routemanager"/>
