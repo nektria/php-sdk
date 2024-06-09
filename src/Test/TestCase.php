@@ -312,7 +312,9 @@ class TestCase extends WebTestCase
 
         foreach (array_keys($target) as $key) {
             if (!in_array($key, $expectedKeys, true)) {
-                throw new ExpectationFailedException("Field '{$root}{$key}' is not expected.");
+                $receivedType = gettype($target[$key]);
+
+                throw new ExpectationFailedException("Field '{$root}{$key}' ({$receivedType}) is not expected.");
             }
         }
     }
