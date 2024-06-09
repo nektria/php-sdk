@@ -62,6 +62,11 @@ trait RequestHelper
         $this->requestArea = StringUtil::uuid4();
     }
 
+    protected function behaveAs(string $user): void
+    {
+        $this->apiId = $user;
+    }
+
     protected function getLastResponse(): Response
     {
         return $this->client->getResponse();
