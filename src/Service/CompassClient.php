@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Nektria\Service;
 
+use function count;
+
 /**
  * @phpstan-type CompassPing array{
  *     response: string
@@ -38,23 +40,23 @@ namespace Nektria\Service;
  *      destinationLongitude: float,
  * }
  *
- * @phpstan-type CompassDistanceMatrix array<string, array<string, array{
+ * @phpstan-type CompassDistanceResult array<string, array{
  *      distance: int,
  *      travelTime: int,
- * }>>
+ * }>
  *
  * @phpstan-type CompassGeoPolygon array{
  *      distance: int,
  *      coordinates: CompassCoordinate[],
  * }
  */
-class CompassClient
+readonly class CompassClient
 {
     public function __construct(
-        private readonly ContextService $contextService,
-        private readonly SharedUserCache $sharedUserCache,
-        private readonly RequestClient $requestClient,
-        private readonly string $compassHost
+        private ContextService $contextService,
+        private SharedUserCache $sharedUserCache,
+        private RequestClient $requestClient,
+        private string $compassHost
     ) {
     }
 
@@ -85,18 +87,25 @@ class CompassClient
     }
 
     /**
-     * @param CompassCoordinateWithHash[] $coordinates
-     * @return CompassDistanceMatrix
+     * @param array<int, CompassCoordinateWithHash> $coordinates
+     * @return CompassDistanceResult
      */
     public function getDistanceMatrix(string $travelMode, array $coordinates): array
     {
         $list = [];
-        /** @var array<string, string[]> $hashMap */
+        /** @var array<string, string> $hashMap */
         $hashMap = [];
-        foreach ($coordinates as $coordinate) {
+        $totalWaypoints = count($coordinates);
+
+        $list[] = "{$coordinates[0]['latitude']},{$coordinates[0]['longitude']}";
+
+        for ($i = 1; $i < $totalWaypoints; ++$i) {
+            $coordinate = $coordinates[$i];
+            $prevCoordinate = $coordinates[$i - 1];
+            $c1 = "{$prevCoordinate['latitude']},{$prevCoordinate['longitude']}";
+            $c2 = "{$coordinate['latitude']},{$coordinate['longitude']}";
             $list[] = "{$coordinate['latitude']},{$coordinate['longitude']}";
-            $hashMap["{$coordinate['latitude']},{$coordinate['longitude']}"] ??= [];
-            $hashMap["{$coordinate['latitude']},{$coordinate['longitude']}"][] = $coordinate['hash'];
+            $hashMap["{$c1},{$c2}"] = $coordinate['hash'];
         }
 
         /** @var CompassDistance[] $data */
@@ -109,29 +118,24 @@ class CompassClient
             headers: $this->getHeaders(),
         )->json();
 
-        $matrix = [];
+        $result = [];
 
-        foreach ($data as $distance) {
-            $fromHashes = $hashMap["{$distance['originLatitude']},{$distance['originLongitude']}"];
-            $toHashes = $hashMap["{$distance['destinationLatitude']},{$distance['destinationLongitude']}"];
+        for ($i = 1; $i < $totalWaypoints; ++$i) {
+            $coordinate = $coordinates[$i];
+            $prevCoordinate = $coordinates[$i - 1];
+            $cell = $data[$i - 1];
 
-            foreach ($fromHashes as $fromHash) {
-                foreach ($toHashes as $toHash) {
-                    $matrix[$fromHash] ??= [];
-                    $matrix[$toHash] ??= [];
-                    $matrix[$fromHash][$toHash] = [
-                        'distance' => $distance['distance'],
-                        'travelTime' => $distance['travelTime'],
-                    ];
-                    $matrix[$toHash][$fromHash] = [
-                        'distance' => $distance['distance'],
-                        'travelTime' => $distance['travelTime'],
-                    ];
-                }
-            }
+            $c1 = "{$cell['originLatitude']},{$cell['originLongitude']}";
+            $c2 = "{$cell['destinationLatitude']},{$cell['destinationLongitude']}";
+            $hash = $hashMap["{$c1},{$c2}"];
+
+            $result[$hash] = [
+                'distance' => $cell['distance'],
+                'travelTime' => $cell['travelTime'],
+            ];
         }
 
-        return $matrix;
+        return $result;
     }
 
     /**
