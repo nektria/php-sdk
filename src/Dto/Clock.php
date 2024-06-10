@@ -151,9 +151,9 @@ class Clock
         }
     }
 
-    public function day(): int
+    public function day(): string
     {
-        return (int) $this->dateTime->format('d');
+        return $this->dateTime->format('d');
     }
 
     /**
@@ -191,9 +191,9 @@ class Clock
         return $this->dateTime;
     }
 
-    public function hour(): int
+    public function hour(): string
     {
-        return (int) $this->dateTime->format('H');
+        return $this->dateTime->format('H');
     }
 
     /**

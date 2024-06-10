@@ -60,19 +60,19 @@ use function in_array;
  */
 class AlertService
 {
-    public const CHANNEL_BUGS = 'bugs';
+    public const string CHANNEL_BUGS = 'bugs';
 
-    public const CHANNEL_CONFIGURATIONS = 'configurations';
+    public const string CHANNEL_CONFIGURATIONS = 'configurations';
 
-    public const CHANNEL_OPERATIONS = 'operations';
+    public const string CHANNEL_OPERATIONS = 'operations';
 
-    public const CHANNEL_PICKING_SHIFTS = 'pickingshifts';
+    public const string CHANNEL_PICKING_SHIFTS = 'pickingshifts';
 
-    public const CHANNEL_UPDATES = 'updates';
+    public const string CHANNEL_UPDATES = 'updates';
 
-    public const EMPTY_LINE = "‎\n‎";
+    public const string EMPTY_LINE = "‎\n‎";
 
-    public const FLAG_SUPPRESS_NOTIFICATIONS = 1 << 12;
+    public const int FLAG_SUPPRESS_NOTIFICATIONS = 1 << 12;
 
     /** @var string[] */
     private array $tokens;
@@ -166,7 +166,7 @@ class AlertService
      */
     public function sendMessage(string $channel, array $message, ?int $flags = null): void
     {
-        $hour = Clock::now()->setTimezone('Europe/Madrid')->hour();
+        $hour = (int) Clock::now()->setTimezone('Europe/Madrid')->hour();
         if ($hour < 8 || $hour > 23) {
             $flags |= self::FLAG_SUPPRESS_NOTIFICATIONS;
         }
@@ -233,12 +233,11 @@ class AlertService
             return;
         }
 
-        $hour = Clock::now()->setTimezone('Europe/Madrid')->hour();
+        $hour = (int) Clock::now()->setTimezone('Europe/Madrid')->hour();
         if ($hour < 8 || $hour > 23) {
             $flags |= self::FLAG_SUPPRESS_NOTIFICATIONS;
         }
 
-        $maxLength = 2000;
         $inputString = JsonUtil::encode($input, true);
         $documentString = JsonUtil::encode($document->toDevArray(), true);
         $eol = self::EMPTY_LINE;
