@@ -286,7 +286,7 @@ abstract class Console extends BaseCommand
                     return 1;
                 }
 
-                throw NektriaException::new($e);
+                throw $e;
             } else {
                 return 1;
             }
