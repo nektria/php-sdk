@@ -98,7 +98,7 @@ class Clock
     /**
      * @param CtTimeFormat $in
      */
-    public function add(int $amount, string $in): self
+    public function add(int $amount, string $in = 'seconds'): self
     {
         if ($amount === 0) {
             return $this;
