@@ -91,10 +91,12 @@ class CompassClient
     public function getDistanceMatrix(string $travelMode, array $coordinates): array
     {
         $list = [];
+        /** @var array<string, string[]> $hashMap */
         $hashMap = [];
         foreach ($coordinates as $coordinate) {
             $list[] = "{$coordinate['latitude']},{$coordinate['longitude']}";
-            $hashMap["{$coordinate['latitude']},{$coordinate['longitude']}"] = $coordinate['hash'];
+            $hashMap["{$coordinate['latitude']},{$coordinate['longitude']}"] ??= [];
+            $hashMap["{$coordinate['latitude']},{$coordinate['longitude']}"][] = $coordinate['hash'];
         }
 
         /** @var CompassDistance[] $data */
@@ -110,19 +112,23 @@ class CompassClient
         $matrix = [];
 
         foreach ($data as $distance) {
-            $fromHash = $hashMap["{$distance['originLatitude']},{$distance['originLongitude']}"];
-            $toHash = $hashMap["{$distance['destinationLatitude']},{$distance['destinationLongitude']}"];
+            $fromHashes = $hashMap["{$distance['originLatitude']},{$distance['originLongitude']}"];
+            $toHashes = $hashMap["{$distance['destinationLatitude']},{$distance['destinationLongitude']}"];
 
-            $matrix[$fromHash] ??= [];
-            $matrix[$toHash] ??= [];
-            $matrix[$fromHash][$toHash] = [
-                'distance' => $distance['distance'],
-                'travelTime' => $distance['travelTime'],
-            ];
-            $matrix[$toHash][$fromHash] = [
-                'distance' => $distance['distance'],
-                'travelTime' => $distance['travelTime'],
-            ];
+            foreach ($fromHashes as $fromHash) {
+                foreach ($toHashes as $toHash) {
+                    $matrix[$fromHash] ??= [];
+                    $matrix[$toHash] ??= [];
+                    $matrix[$fromHash][$toHash] = [
+                        'distance' => $distance['distance'],
+                        'travelTime' => $distance['travelTime'],
+                    ];
+                    $matrix[$toHash][$fromHash] = [
+                        'distance' => $distance['distance'],
+                        'travelTime' => $distance['travelTime'],
+                    ];
+                }
+            }
         }
 
         return $matrix;
