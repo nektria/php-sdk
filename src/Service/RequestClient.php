@@ -165,6 +165,8 @@ class RequestClient
             $body = $data;
         }
 
+        $start = floor(microtime(true) * 1000);
+
         try {
             if ($method === 'GET') {
                 $params = http_build_query($data);
@@ -175,11 +177,13 @@ class RequestClient
                 $options['body'] = $body;
             }
 
+            $start = floor(microtime(true) * 1000);
             $response = $this->client->request(
                 $method,
                 $url,
                 $options,
             );
+            $end = floor(microtime(true) * 1000) - $start;
 
             $content = $response->getContent(false);
             $status = $response->getStatusCode();
@@ -197,6 +201,8 @@ class RequestClient
             throw NektriaException::new($e);
         }
 
+        $end = floor(microtime(true) * 1000) - $start;
+
         if ($enableDebugFallback ?? str_starts_with($url, 'https')) {
             $this->logService->debug([
                 'method' => $response->method,
@@ -206,6 +212,7 @@ class RequestClient
                 'responseHeaders' => $respHeaders,
                 'status' => $response->status,
                 'url' => $url,
+                'duration' => $end
             ], "{$status} {$method} {$url}");
         }
 
