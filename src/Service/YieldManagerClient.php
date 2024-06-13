@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Nektria\Service;
 
-use Nektria\Dto\Clock;
+use Nektria\Dto\LocalClock;
 
 /**
  * @phpstan-type YMTimeWindow array{
@@ -238,7 +238,7 @@ readonly class YieldManagerClient
     /**
      * @return YMExpressOrder[]
      */
-    public function getExpressOrdersFromWarehouseAndDate(string $warehouseId, Clock $date): array
+    public function getExpressOrdersFromWarehouseAndDate(string $warehouseId, LocalClock $date): array
     {
         return $this->requestClient->get(
             "{$this->yieldManagerHost}/api/admin/warehouses/{$warehouseId}/express-orders",
@@ -263,7 +263,7 @@ readonly class YieldManagerClient
     /**
      * @return YMOrder[]
      */
-    public function getOrdersFromWarehouseAndDate(string $warehouseId, Clock $date): array
+    public function getOrdersFromWarehouseAndDate(string $warehouseId, LocalClock $date): array
     {
         return $this->requestClient->get(
             "{$this->yieldManagerHost}/api/admin/warehouses/{$warehouseId}/orders",
@@ -277,7 +277,7 @@ readonly class YieldManagerClient
     /**
      * @return YMShift[]
      */
-    public function getShiftsFromWarehouseAndDate(string $warehouseId, Clock $date): array
+    public function getShiftsFromWarehouseAndDate(string $warehouseId, LocalClock $date): array
     {
         return $this->requestClient->get(
             "{$this->yieldManagerHost}/api/admin/warehouses/{$warehouseId}/shifts",
@@ -302,7 +302,7 @@ readonly class YieldManagerClient
     /**
      * @return YMWarehouseResume
      */
-    public function getWarehouseResume(string $warehouseId, Clock $date): array
+    public function getWarehouseResume(string $warehouseId, LocalClock $date): array
     {
         return $this->requestClient->get(
             "{$this->yieldManagerHost}/api/admin/warehouses/{$warehouseId}/resume",
@@ -385,8 +385,8 @@ readonly class YieldManagerClient
         ?string $shopperCode = null,
         ?int $weight = null,
         ?int $productLines = null,
-        ?Clock $startTime = null,
-        ?Clock $endTime = null,
+        ?LocalClock $startTime = null,
+        ?LocalClock $endTime = null,
         ?string $addressLine1 = null,
         ?string $addressLine2 = null,
         ?string $postalCode = null,
