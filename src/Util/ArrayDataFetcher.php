@@ -364,15 +364,15 @@ class ArrayDataFetcher
         return $value;
     }
 
-    public function retrieveClockFromTZ(string $field, string $timezone): LocalClock
+    public function retrieveClockFromLocal(string $field, string $timezone): Clock
     {
-        $value = $this->getClock($field);
+        $value = $this->getLocalClock($field);
 
         if ($value === null) {
             throw new MissingRequestParamException($field);
         }
 
-        return $value->toLocal($timezone);
+        return $value->toUTC($timezone);
     }
 
     public function retrieveClockTz(string $field): Clock
