@@ -171,9 +171,9 @@ class LocalClock
         return $diff->invert === 1 ? $absDiff : -$absDiff;
     }
 
-    public function fromLocalToUTC(string $timezone): self
+    public function fromLocalToUTC(string $timezone): Clock
     {
-        return $this->replaceTimezone($timezone);
+        return Clock::fromString($this->replaceTimezone($timezone)->dateTimeString());
     }
 
     public function getPHPDateTime(): DateTimeImmutable

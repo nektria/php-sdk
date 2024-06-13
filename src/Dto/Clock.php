@@ -49,11 +49,6 @@ class Clock
         }
     }
 
-    public static function localNow(string $timezone): self
-    {
-        return (new self())->fromUTCToLocal($timezone);
-    }
-
     public static function max(self $a, self $b): self
     {
         return $a->isAfter($b) ? $a : $b;
@@ -176,14 +171,9 @@ class Clock
         return $diff->invert === 1 ? $absDiff : -$absDiff;
     }
 
-    public function fromLocalToUTC(string $timezone): self
+    public function fromUTCToLocal(string $timezone): LocalClock
     {
-        return $this->replaceTimezone($timezone);
-    }
-
-    public function fromUTCToLocal(string $timezone): self
-    {
-        return $this->setTimezone($timezone)->replaceTimezone('UTC');
+        return LocalClock::fromString($this->setTimezone($timezone)->replaceTimezone('UTC')->dateTimeString());
     }
 
     public function getPHPDateTime(): DateTimeImmutable
