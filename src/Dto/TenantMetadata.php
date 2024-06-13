@@ -11,7 +11,6 @@ use Nektria\Service\SharedTenantCache;
  */
 class TenantMetadata
 {
-
     public const string ECHO_MODE_ALWAYS = 'always';
 
     public const string ECHO_MODE_DEFAULT = 'default';
