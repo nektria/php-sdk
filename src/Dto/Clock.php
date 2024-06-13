@@ -116,8 +116,6 @@ class Clock
         return $this->timestamp($in) <=> $to->timestamp($in);
     }
 
-    // still is UTC but the hour is the same as the timezone selected
-
     public function dateString(?string $timeZone = null): string
     {
         try {
@@ -131,6 +129,8 @@ class Clock
             throw NektriaException::new($e);
         }
     }
+
+    // still is UTC but the hour is the same as the timezone selected
 
     public function dateTimeString(?string $timeZone = null): string
     {
@@ -382,6 +382,11 @@ class Clock
             'weeks' => (int) ($ts / 604800),
             default => throw new DomainException("Invalid time format: {$in}"),
         };
+    }
+
+    public function toString(): string
+    {
+        return $this->iso8601String();
     }
 
     public function week(): string

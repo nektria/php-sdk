@@ -384,6 +384,11 @@ class LocalClock
         };
     }
 
+    public function toString(): string
+    {
+        return $this->dateTimeString();
+    }
+
     public function week(): string
     {
         return $this->dateTime->format('W');
