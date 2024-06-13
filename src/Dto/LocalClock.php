@@ -171,11 +171,6 @@ class LocalClock
         return $diff->invert === 1 ? $absDiff : -$absDiff;
     }
 
-    public function fromLocalToUTC(string $timezone): Clock
-    {
-        return Clock::fromString($this->replaceTimezone($timezone)->dateTimeString());
-    }
-
     public function getPHPDateTime(): DateTimeImmutable
     {
         return $this->dateTime;
@@ -368,6 +363,11 @@ class LocalClock
             'weeks' => (int) ($ts / 604800),
             default => throw new DomainException("Invalid time format: {$in}"),
         };
+    }
+
+    public function toUTC(string $timezone): Clock
+    {
+        return Clock::fromString($this->replaceTimezone($timezone)->dateTimeString());
     }
 
     public function week(): string
