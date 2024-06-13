@@ -267,6 +267,11 @@ class ArrayDataFetcher
         }
     }
 
+    public function getLocalDate(string $field): ?Clock
+    {
+        return $this->getClock($field);
+    }
+
     public function getString(string $field): ?string
     {
         $value = $this->getValue($field);
@@ -484,6 +489,17 @@ class ArrayDataFetcher
     }
 
     public function retrieveLocalClock(string $field): LocalClock
+    {
+        $value = $this->getLocalClock($field);
+
+        if ($value === null) {
+            throw new MissingRequestParamException($field);
+        }
+
+        return $value;
+    }
+
+    public function retrieveLocalDate(string $field): LocalClock
     {
         $value = $this->getLocalClock($field);
 
