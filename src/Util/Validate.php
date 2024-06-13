@@ -9,6 +9,7 @@ use Nektria\Dto\Clock;
 use Nektria\Dto\LocalClock;
 use Nektria\Exception\MissingFieldRequiredToCreateClassException;
 use Nektria\Exception\NektriaException;
+use Nektria\Service\RoleManager;
 use RuntimeException;
 use Throwable;
 
@@ -172,6 +173,11 @@ class Validate
 
     // times
 
+    public static function role(string $role): void
+    {
+        self::inStringList($role, (new RoleManager())->roles());
+    }
+
     public static function sameDay(Clock | LocalClock $start, Clock | LocalClock $end): void
     {
         if ($start::class !== $end::class) {
@@ -194,6 +200,8 @@ class Validate
         }
     }
 
+    // array
+
     public static function timezone(string $value): void
     {
         try {
@@ -203,7 +211,7 @@ class Validate
         }
     }
 
-    // array
+    // classes
 
     public static function uuid4(string $id): void
     {
@@ -211,8 +219,6 @@ class Validate
             throw new InvalidArgumentException("Invalid uuid '{$id}'.");
         }
     }
-
-    // classes
 
     private static function checkClassFieldReturnsNotNull(object $object, string $className, string $field): void
     {

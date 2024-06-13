@@ -125,7 +125,12 @@ class ValidateOpt
         }
     }
 
-    // times
+    public static function role(?string $value): void
+    {
+        if ($value !== null) {
+            Validate::role($value);
+        }
+    }
 
     public static function timezone(?string $value): void
     {
@@ -133,8 +138,6 @@ class ValidateOpt
             Validate::timezone($value);
         }
     }
-
-    // array
 
     public static function uuid4(?string $value): void
     {

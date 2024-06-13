@@ -50,8 +50,6 @@ class ValidateEach
         }
     }
 
-    // Strings
-
     /**
      * @param string[] $values
      * @param string[] $validValues
@@ -62,6 +60,8 @@ class ValidateEach
             Validate::inStringList($item, $validValues);
         }
     }
+
+    // Strings
 
     /**
      * @param float[] $values
@@ -123,8 +123,6 @@ class ValidateEach
         }
     }
 
-    // coordinates
-
     /**
      * @param int[]|float[] $values
      */
@@ -134,6 +132,8 @@ class ValidateEach
             Validate::naturalNumber($item);
         }
     }
+
+    // coordinates
 
     /**
      * @param string[] $values
@@ -162,6 +162,16 @@ class ValidateEach
     {
         foreach ($values as $item) {
             Validate::regexp($item, $regexp);
+        }
+    }
+
+    /**
+     * @param string[] $values
+     */
+    public static function role(array $values): void
+    {
+        foreach ($values as $item) {
+            Validate::role($item);
         }
     }
 
