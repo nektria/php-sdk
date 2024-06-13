@@ -45,7 +45,7 @@ class LocalClockType extends Type
 
     public function getSQLDeclaration(array $column, AbstractPlatform $platform): string
     {
-        return 'DATE';
+        return 'TIMESTAMP(0) WITHOUT TIME ZONE';
     }
 
     public function requiresSQLCommentHint(AbstractPlatform $platform): bool
