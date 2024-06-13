@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Nektria\Infrastructure;
 
 use Nektria\Dto\Clock;
+use Nektria\Dto\LocalClock;
 use RuntimeException;
 use Throwable;
 
@@ -293,10 +294,14 @@ abstract class InternalReferenceRedisCache extends RedisCache
     /**
      * @param string[] $items
      */
-    protected function setListItems(string $key, array $items, Clock | int $ttl = 300): void
+    protected function setListItems(string $key, array $items, Clock | LocalClock | int $ttl = 300): void
     {
         if ($ttl instanceof Clock) {
             $ttl = $ttl->diff(Clock::now());
+        }
+
+        if ($ttl instanceof LocalClock) {
+            $ttl = $ttl->diff(LocalClock::now());
         }
 
         if (count($items) === 0) {
