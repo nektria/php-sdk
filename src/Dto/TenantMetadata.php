@@ -11,6 +11,7 @@ use Nektria\Service\SharedTenantCache;
  */
 class TenantMetadata
 {
+
     public const string ECHO_MODE_ALWAYS = 'always';
 
     public const string ECHO_MODE_DEFAULT = 'default';
@@ -133,6 +134,13 @@ class TenantMetadata
         $this->data['forceTags'] ??= false;
 
         return $this->data['forceTags'];
+    }
+
+    public function freeSlotPriceForincentivizedShoppers(): string
+    {
+        $this->data['freeSlotPriceForincentivizedShoppers'] ??= false;
+
+        return $this->data['freeSlotPriceForincentivizedShoppers'];
     }
 
     public function getDiscordChannelFor(string $channel): ?string
@@ -266,6 +274,7 @@ class TenantMetadata
             'extraLongSpeed' => $this->extraLongSpeed(),
             'forceDriverAssignation' => $this->forceDriverAssignation(),
             'forceTags' => $this->forceTags(),
+            'freeSlotPriceForincentivizedShoppers' => $this->freeSlotPriceForincentivizedShoppers(),
             'gridMode' => $this->gridMode(),
             'gridVersion' => $this->gridVesion(),
             'gridViewerOrdersPrefix' => $this->gridViewerOrdersPrefix(),
