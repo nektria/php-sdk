@@ -1,10 +1,15 @@
 <?php
 
-$finder = \PhpCsFixer\Finder::create()
-    ->in(['src'])
-    ->exclude('var');
+use PhpCsFixer\Finder;
+use PhpCsFixer\Runner\Parallel\ParallelConfigFactory;
+
+$finder = Finder::create()
+    ->in(['src', 'tests'])
+    ->exclude('var')
+    ->exclude('tests');
 
 $config = new PhpCsFixer\Config();
+$config->setParallelConfig(ParallelConfigFactory::detect());
 $config
     ->setRules([
         '@Symfony' => true,

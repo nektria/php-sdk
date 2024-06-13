@@ -16,7 +16,7 @@ use function is_bool;
 use function is_object;
 use function is_string;
 
-class ArrayDataFetcher
+readonly class ArrayDataFetcher
 {
     /**
      * @param mixed[] $data
@@ -267,9 +267,9 @@ class ArrayDataFetcher
         }
     }
 
-    public function getLocalDate(string $field): ?Clock
+    public function getLocalDate(string $field): ?LocalClock
     {
-        return $this->getClock($field);
+        return $this->getLocalClock($field);
     }
 
     public function getString(string $field): ?string
