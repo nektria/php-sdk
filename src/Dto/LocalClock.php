@@ -234,20 +234,6 @@ class LocalClock
         return $this->timestamp($in) !== $to->timestamp($in);
     }
 
-    public function iso8601String(?string $timeZone = null): string
-    {
-        try {
-            $dateTime = $this->dateTime;
-            if ($timeZone !== null) {
-                $dateTime = $dateTime->setTimezone(new DateTimeZone($timeZone));
-            }
-
-            return $dateTime->format(DateTimeImmutable::ATOM);
-        } catch (Throwable $e) {
-            throw NektriaException::new($e);
-        }
-    }
-
     public function microDateTimeString(?string $timeZone = null): string
     {
         try {
@@ -382,11 +368,6 @@ class LocalClock
             'weeks' => (int) ($ts / 604800),
             default => throw new DomainException("Invalid time format: {$in}"),
         };
-    }
-
-    public function toString(): string
-    {
-        return $this->dateTimeString();
     }
 
     public function week(): string

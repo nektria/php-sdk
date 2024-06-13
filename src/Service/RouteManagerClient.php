@@ -200,7 +200,7 @@ readonly class RouteManagerClient
             $this->requestClient->patch(
                 "{$this->routeManagerHost}/api/admin/orders/{$orderNumber}/check-proxy-assignation",
                 data: [
-                    'at' => Clock::now()->dateTimeString(),
+                    'at' => Clock::now()->iso8601String(),
                 ],
                 headers: $this->getHeaders(),
             );

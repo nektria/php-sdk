@@ -22,10 +22,6 @@ class ClockType extends Type
             return $value;
         }
 
-        if ($value instanceof Clock) {
-            return $value->dateTimeString();
-        }
-
         return (string) $value;
     }
 

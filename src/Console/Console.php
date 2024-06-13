@@ -280,7 +280,7 @@ abstract class Console extends BaseCommand
 
             if (!((bool) $this->input()->getOption('clean'))) {
                 $now = Clock::now();
-                $this->output()->writeln("\n\n<red>{$now->dateTimeString('Europe/Madrid')}</red>");
+                $this->output()->writeln("\n\n<red>{$now->fromUTCToLocal('Europe/Madrid')->dateTimeString()}</red>");
 
                 if ($isSilent) {
                     return 1;
@@ -294,7 +294,7 @@ abstract class Console extends BaseCommand
 
         if (!((bool) $this->input()->getOption('clean'))) {
             $now = Clock::now();
-            $this->output()->writeln("\n\n<green>{$now->dateTimeString('Europe/Madrid')}</green>");
+            $this->output()->writeln("\n\n<green>{$now->fromUTCToLocal('Europe/Madrid')->dateTimeString()}</green>");
         }
 
         return 0;

@@ -625,7 +625,7 @@ readonly class PostmanController extends Controller
                 ],
                 'Array' => [],
                 'Bool' => true,
-                'Clock', 'ClockAsLocal' => $defaultNow->dateTimeString(),
+                'Clock', 'ClockAsLocal' => (string) $defaultNow,
                 'ClockTz' => $defaultNow->iso8601String(),
                 'Date' => $defaultNow->dateString(),
                 'Float' => 1.2,
@@ -639,9 +639,9 @@ readonly class PostmanController extends Controller
             };
 
             if (str_contains($name, 'startTime')) {
-                $sample = $defaultStartTime->dateTimeString();
+                $sample = (string) $defaultStartTime;
             } elseif (str_contains($name, 'endTime')) {
-                $sample = $defaultEndTime->dateTimeString();
+                $sample = (string) $defaultEndTime;
             }
 
             if ($sample === '?') {

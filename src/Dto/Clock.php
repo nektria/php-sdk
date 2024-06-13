@@ -87,7 +87,11 @@ class Clock
 
     public function __toString(): string
     {
-        return $this->dateTimeString();
+        try {
+            return $this->dateTime->format('Y-m-d\TH:i:s');
+        } catch (Throwable $e) {
+            throw NektriaException::new($e);
+        }
     }
 
     /**
@@ -130,22 +134,6 @@ class Clock
         }
     }
 
-    // still is UTC but the hour is the same as the timezone selected
-
-    public function dateTimeString(?string $timeZone = null): string
-    {
-        try {
-            $dateTime = $this->dateTime;
-            if ($timeZone !== null) {
-                $dateTime = $dateTime->setTimezone(new DateTimeZone($timeZone));
-            }
-
-            return $dateTime->format('Y-m-d\TH:i:s');
-        } catch (Throwable $e) {
-            throw NektriaException::new($e);
-        }
-    }
-
     public function day(): string
     {
         return $this->dateTime->format('d');
@@ -173,7 +161,7 @@ class Clock
 
     public function fromUTCToLocal(string $timezone): LocalClock
     {
-        return LocalClock::fromString($this->setTimezone($timezone)->replaceTimezone('UTC')->dateTimeString());
+        return LocalClock::fromString((string) $this->setTimezone($timezone)->replaceTimezone('UTC'));
     }
 
     public function getPHPDateTime(): DateTimeImmutable
@@ -274,13 +262,13 @@ class Clock
 
     public function removeTimeZone(): self
     {
-        return self::fromString($this->dateTimeString());
+        return self::fromString((string) $this);
     }
 
     public function replaceTimezone(string $timeZone): self
     {
         try {
-            $dateTime = (new DateTimeImmutable($this->dateTimeString(), new DateTimeZone($timeZone)))
+            $dateTime = (new DateTimeImmutable((string) $this, new DateTimeZone($timeZone)))
                 ->setTimezone(new DateTimeZone('UTC'));
 
             return new self($dateTime);
