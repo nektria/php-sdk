@@ -364,6 +364,17 @@ class ArrayDataFetcher
         return $value;
     }
 
+    public function retrieveClockFromTZ(string $field, string $timezone): LocalClock
+    {
+        $value = $this->getClock($field);
+
+        if ($value === null) {
+            throw new MissingRequestParamException($field);
+        }
+
+        return $value->toLocal($timezone);
+    }
+
     public function retrieveClockTz(string $field): Clock
     {
         return $this->retrieveClock($field);
@@ -481,17 +492,6 @@ class ArrayDataFetcher
         }
 
         return $value;
-    }
-
-    public function retrieveLocalClockWithTZ(string $field, string $timezone): LocalClock
-    {
-        $value = $this->getClock($field);
-
-        if ($value === null) {
-            throw new MissingRequestParamException($field);
-        }
-
-        return $value->toLocal($timezone);
     }
 
     public function retrieveString(string $field): string
