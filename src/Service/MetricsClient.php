@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Nektria\Service;
 
 use Nektria\Dto\Clock;
+use Nektria\Dto\LocalClock;
 
 /**
  * @phpstan-type MetricsDeliveryInfo array{
@@ -26,10 +27,7 @@ class MetricsClient
     ) {
     }
 
-    /**
-     * @param Clock $at should be local time
-     */
-    public function deliverOrder(string $orderNumber, Clock $at): void
+    public function deliverOrder(string $orderNumber, LocalClock $at): void
     {
         $this->requestClient->patch(
             "{$this->metricsHost}/api/admin/orders/{$orderNumber}/deliver",
