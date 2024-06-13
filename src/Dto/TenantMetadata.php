@@ -135,7 +135,7 @@ class TenantMetadata
         return $this->data['forceTags'];
     }
 
-    public function freeSlotPriceForincentivizedShoppers(): string
+    public function freeSlotPriceForincentivizedShoppers(): bool
     {
         $this->data['freeSlotPriceForincentivizedShoppers'] ??= false;
 
