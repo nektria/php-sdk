@@ -33,16 +33,6 @@ class ValidateEach
     /**
      * @param string[] $values
      */
-    public static function dniNie(array $values): void
-    {
-        foreach ($values as $item) {
-            Validate::dniNie($item);
-        }
-    }
-
-    /**
-     * @param string[] $values
-     */
     public static function email(array $values): void
     {
         foreach ($values as $item) {

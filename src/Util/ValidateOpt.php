@@ -24,13 +24,6 @@ class ValidateOpt
         }
     }
 
-    public static function dniNie(?string $value): void
-    {
-        if ($value !== null) {
-            Validate::dniNie($value);
-        }
-    }
-
     public static function email(?string $value): void
     {
         if ($value !== null) {

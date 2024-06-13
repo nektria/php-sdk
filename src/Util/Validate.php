@@ -6,7 +6,9 @@ namespace Nektria\Util;
 
 use InvalidArgumentException;
 use Nektria\Dto\Clock;
+use Nektria\Dto\LocalClock;
 use Nektria\Exception\MissingFieldRequiredToCreateClassException;
+use Nektria\Exception\NektriaException;
 use RuntimeException;
 use Throwable;
 
@@ -55,13 +57,6 @@ class Validate
         }
     }
 
-    public static function dniNie(string $dninie): void
-    {
-        if (!self::isValidNIE($dninie) && !self::isValidNIF($dninie)) {
-            throw new InvalidArgumentException("Invalid DNI or NIE '{$dninie}'.");
-        }
-    }
-
     // Strings
 
     public static function email(string $value): void
@@ -94,50 +89,6 @@ class Validate
 
             throw new InvalidArgumentException("Invalid value '{$value}', valid values are '{$validValues}'");
         }
-    }
-
-    public static function isValidNIE(string $docNumber): bool
-    {
-        $fixedDocNumber = strtoupper($docNumber);
-        $isValidFormat = self::respectsDocPattern(
-            $fixedDocNumber,
-            '/^[XYZT][0-9][0-9][0-9][0-9][0-9][0-9][0-9][A-Z0-9]/',
-        );
-
-        if ($isValidFormat) {
-            if ($fixedDocNumber[1] === 'T') {
-                return true;
-            }
-
-            $numberWithoutLast = substr($fixedDocNumber, 0, -1);
-            $lastDigit = substr($fixedDocNumber, strlen($fixedDocNumber) - 1, strlen($fixedDocNumber));
-            $numberWithoutLast = str_replace(['Y', 'X', 'Z'], ['1', '0', '2'], $numberWithoutLast);
-            $fixedDocNumber = $numberWithoutLast . $lastDigit;
-
-            return self::isValidNIF($fixedDocNumber);
-        }
-
-        return false;
-    }
-
-    public static function isValidNIF(string $docNumber): bool
-    {
-        $fixedDocNumber = strtoupper($docNumber);
-        $writtenDigit = strtoupper($docNumber[strlen($docNumber) - 1]);
-        $isValidFormat = self::respectsDocPattern(
-            $fixedDocNumber,
-            '/^[KLM0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][a-zA-Z0-9]/',
-        );
-
-        if ($isValidFormat) {
-            $correctDigit = self::getNIFCheckDigit($fixedDocNumber);
-
-            if ($writtenDigit === $correctDigit) {
-                return true;
-            }
-        }
-
-        return false;
     }
 
     public static function latitude(float $value): void
@@ -221,15 +172,23 @@ class Validate
 
     // times
 
-    public static function sameDay(Clock $start, Clock $end): void
+    public static function sameDay(Clock | LocalClock $start, Clock | LocalClock $end): void
     {
+        if ($start::class !== $end::class) {
+            throw new NektriaException('start and end must be the same class');
+        }
+
         if ($start->dateString() !== $end->dateString()) {
             throw new InvalidArgumentException('Invalid timeRange, startTime and endTime must be in the same day');
         }
     }
 
-    public static function timeRange(Clock $start, Clock $end): void
+    public static function timeRange(Clock | LocalClock $start, Clock | LocalClock $end): void
     {
+        if ($start::class !== $end::class) {
+            throw new NektriaException('start and end must be the same class');
+        }
+
         if ($start->isAfter($end)) {
             throw new InvalidArgumentException('Invalid timeRange, endTime must be after startTime');
         }
@@ -278,28 +237,6 @@ class Validate
         } else {
             throw new RuntimeException("{$className} does not implements {$field}()");
         }
-    }
-
-    private static function getNIFCheckDigit(string $docNumber): string
-    {
-        $keyString = 'TRWAGMYFPDXBNJZSQVHLCKE';
-        $correctLetter = '';
-
-        $fixedDocNumber = strtoupper($docNumber);
-
-        $isValid = self::respectsDocPattern(
-            $fixedDocNumber,
-            '/^[KLM0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][a-zA-Z0-9]/',
-        );
-
-        if ($isValid) {
-            $fixedDocNumber = str_replace(['K', 'L', 'M'], '0', $fixedDocNumber);
-
-            $position = substr($fixedDocNumber, 0, 8) % 23;
-            $correctLetter = $keyString[$position];
-        }
-
-        return $correctLetter;
     }
 
     private static function respectsDocPattern(string $givenString, string $pattern): bool

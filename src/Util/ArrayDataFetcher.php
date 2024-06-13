@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Nektria\Util;
 
 use Nektria\Dto\Clock;
+use Nektria\Dto\LocalClock;
 use Nektria\Exception\InvalidRequestParamException;
 use Nektria\Exception\MissingRequestParamException;
 use Throwable;
@@ -251,6 +252,21 @@ class ArrayDataFetcher
         return 0;
     }
 
+    public function getLocalClock(string $field): ?LocalClock
+    {
+        $value = $this->getValue($field);
+
+        if ($value === null) {
+            return null;
+        }
+
+        try {
+            return LocalClock::fromString($value)->setTimezone('UTC');
+        } catch (Throwable) {
+            throw new InvalidRequestParamException($field, 'datetime');
+        }
+    }
+
     public function getString(string $field): ?string
     {
         $value = $this->getValue($field);
@@ -346,17 +362,6 @@ class ArrayDataFetcher
         }
 
         return $value;
-    }
-
-    public function retrieveClockAsLocal(string $field, string $timezone): Clock
-    {
-        $value = $this->getClock($field);
-
-        if ($value === null) {
-            throw new MissingRequestParamException($field);
-        }
-
-        return $value->replaceTimezone($timezone)->removeTimeZone();
     }
 
     public function retrieveClockTz(string $field): Clock
@@ -465,6 +470,28 @@ class ArrayDataFetcher
         }
 
         return 0;
+    }
+
+    public function retrieveLocalClock(string $field): LocalClock
+    {
+        $value = $this->getLocalClock($field);
+
+        if ($value === null) {
+            throw new MissingRequestParamException($field);
+        }
+
+        return $value;
+    }
+
+    public function retrieveLocalClockWithTZ(string $field, string $timezone): LocalClock
+    {
+        $value = $this->getClock($field);
+
+        if ($value === null) {
+            throw new MissingRequestParamException($field);
+        }
+
+        return $value->toLocal($timezone);
     }
 
     public function retrieveString(string $field): string
