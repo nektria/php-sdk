@@ -25,9 +25,15 @@ parameters:
         -
             class: 'DateTime'
             message: 'Use Clock or LocalClock instead of DateTime'
+            allowIn:
+                - src/Dto/Clock.php
+                - src/Dto/LocalClock.php
         -
             class: 'DateTimeImmutable'
             message: 'Use Clock or LocalClock instead of DateTime'
+            allowIn:
+                - src/Dto/Clock.php
+                - src/Dto/LocalClock.php
 
 rules:
     - Nektria\PHPStan\AllowComparingOnlyComparableTypesRule
