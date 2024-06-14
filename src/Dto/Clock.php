@@ -27,7 +27,7 @@ class Clock
         $this->dateTime = $dateTime ?? new DateTimeImmutable();
     }
 
-    public static function fromPhpDateTime(DateTimeImmutable $dateTime): self
+    public static function fromPhpDateTime(DateTimeInterface $dateTime): self
     {
         return new self($dateTime);
     }

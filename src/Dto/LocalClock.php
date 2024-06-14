@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace Nektria\Dto;
 
+use DateTime;
 use DateTimeImmutable;
+use DateTimeInterface;
 use DateTimeZone;
 use DomainException;
 use Nektria\Exception\NektriaException;
@@ -17,12 +19,15 @@ class LocalClock
 {
     private DateTimeImmutable $dateTime;
 
-    private function __construct(?DateTimeImmutable $dateTime = null)
+    private function __construct(?DateTimeInterface $dateTime = null)
     {
+        if ($dateTime instanceof DateTime) {
+            $dateTime = DateTimeImmutable::createFromMutable($dateTime);
+        }
         $this->dateTime = $dateTime ?? new DateTimeImmutable();
     }
 
-    public static function fromPhpDateTime(DateTimeImmutable $dateTime): self
+    public static function fromPhpDateTime(DateTimeInterface $dateTime): self
     {
         return new self($dateTime);
     }
