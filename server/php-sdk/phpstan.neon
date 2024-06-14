@@ -8,6 +8,7 @@ includes:
     - '%currentWorkingDirectory%/vendor/phpstan/phpstan-doctrine/extension.neon'
     - '%currentWorkingDirectory%/vendor/phpstan/phpstan-doctrine/rules.neon'
     - '%currentWorkingDirectory%/vendor/phpstan/phpstan/conf/bleedingEdge.neon'
+    - '%currentWorkingDirectory%/vendor/spaze/phpstan-disallowed-calls/extension.neon'
 
 parameters:
     level: 8
@@ -20,8 +21,13 @@ parameters:
     #symfony:
         #container_xml_path: '%currentWorkingDirectory%/var/cache/dev/App_KernelDevDebugContainer.xml'
 
-    #scanFiles:
-        #- '%currentWorkingDirectory%/config/global.php'
+    disallowedNamespaces:  # `disallowedClasses` is an alias of `disallowedNamespaces`
+        -
+            class: 'DateTime'
+            message: 'Use Clock or LocalClock instead of DateTime'
+        -
+            class: 'DateTimeImmutable'
+            message: 'Use Clock or LocalClock instead of DateTime'
 
 rules:
     - Nektria\PHPStan\AllowComparingOnlyComparableTypesRule

@@ -19,7 +19,6 @@ use PhpParser\Node\Expr\BinaryOp\Spaceship;
 use PHPStan\Analyser\Scope;
 use PHPStan\Rules\Rule;
 use PHPStan\Rules\RuleErrorBuilder;
-use PHPStan\ShouldNotHappenException;
 use PHPStan\Type\FloatType;
 use PHPStan\Type\IntegerType;
 use PHPStan\Type\ObjectType;
@@ -38,9 +37,6 @@ class AllowComparingOnlyComparableTypesRule implements Rule
         return BinaryOp::class;
     }
 
-    /**
-     * @throws ShouldNotHappenException
-     */
     public function processNode(Node $node, Scope $scope): array
     {
         if (
