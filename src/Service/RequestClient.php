@@ -166,6 +166,7 @@ readonly class RequestClient
         }
 
         $start = floor(microtime(true) * 1000);
+        $end = null;
 
         try {
             if ($method === 'GET') {
@@ -201,7 +202,7 @@ readonly class RequestClient
             throw NektriaException::new($e);
         }
 
-        $end = floor(microtime(true) * 1000) - $start;
+        $end ??= floor(microtime(true) * 1000) - $start;
 
         if ($enableDebugFallback ?? str_starts_with($url, 'https')) {
             $this->logService->debug([
