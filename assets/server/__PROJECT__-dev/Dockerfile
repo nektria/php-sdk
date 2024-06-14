@@ -5,7 +5,7 @@ RUN unset APP_ENV
 
 ENV PATH ~/.composer/vendor/bin:$PATH
 
-RUN composer global require phpstan/phpstan phpstan/phpstan-mockery phpstan/phpstan-phpunit phpstan/phpstan-strict-rules phpstan/phpstan-symfony phpstan/phpstan-doctrine shipmonk/phpstan-rules
+RUN composer global require phpstan/phpstan phpstan/phpstan-mockery phpstan/phpstan-phpunit phpstan/phpstan-strict-rules phpstan/phpstan-symfony phpstan/phpstan-doctrine shipmonk/phpstan-rules spaze/phpstan-disallowed-calls
 RUN composer global require friendsofphp/php-cs-fixer:dev-master
 RUN composer global require squizlabs/php_codesniffer
 RUN composer global require phpunit/phpunit
