@@ -253,11 +253,17 @@ class LocalClock
         return $this->dateTime->format('m');
     }
 
+    /**
+     * @deprecated
+     */
     public function removeTimeZone(): self
     {
         return self::fromString($this->dateTimeString());
     }
 
+    /**
+     * @deprecated
+     */
     public function replaceTimezone(string $timeZone): self
     {
         try {
@@ -280,6 +286,9 @@ class LocalClock
         return new self($this->dateTime->setTimestamp($timestamp));
     }
 
+    /**
+     * @deprecated
+     */
     public function setTimezone(string $timeZone): self
     {
         try {
