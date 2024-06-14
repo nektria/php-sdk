@@ -166,6 +166,7 @@ readonly class RequestClient
         }
 
         $start = floor(microtime(true) * 1000);
+        /** @var float|null $end */
         $end = null;
 
         try {
