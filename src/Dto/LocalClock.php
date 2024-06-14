@@ -367,7 +367,14 @@ class LocalClock
 
     public function toUTC(string $timezone): Clock
     {
-        return Clock::fromString($this->replaceTimezone($timezone)->dateTimeString());
+        try {
+            $self = new self((new DateTimeImmutable($this->dateTimeString(), new DateTimeZone($timezone)))
+                ->setTimezone(new DateTimeZone('UTC')));
+
+            return Clock::fromString((string) $self);
+        } catch (Throwable $e) {
+            throw NektriaException::new($e);
+        }
     }
 
     public function week(): string

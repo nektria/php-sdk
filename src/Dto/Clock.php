@@ -369,12 +369,13 @@ class Clock
 
     public function toLocal(string $timezone): LocalClock
     {
-        return LocalClock::fromString((string) $this->setTimezone($timezone)->replaceTimezone('UTC'));
-    }
+        try {
+            $self = new self($this->dateTime->setTimezone(new DateTimeZone($timezone)));
 
-    public function toString(): string
-    {
-        return $this->iso8601String();
+            return LocalClock::fromString((string) $self);
+        } catch (Throwable $e) {
+            throw NektriaException::new($e);
+        }
     }
 
     public function week(): string
