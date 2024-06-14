@@ -11,12 +11,12 @@ use Nektria\Util\JsonUtil;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 use Throwable;
 
-class RequestClient
+readonly class RequestClient
 {
     public function __construct(
-        private readonly HttpClientInterface $client,
-        private readonly LogService $logService,
-        private readonly ContextService $contextService,
+        private HttpClientInterface $client,
+        private LogService $logService,
+        private ContextService $contextService,
     ) {
     }
 
@@ -232,7 +232,7 @@ class RequestClient
                 'url' => $url,
             ], "{$method} {$url} failed with status {$status}");
 
-            throw new RequestException($response);
+            throw new RequestException($response, silent: $status >= 500);
         }
 
         return $response;
