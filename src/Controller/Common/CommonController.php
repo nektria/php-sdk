@@ -5,13 +5,13 @@ declare(strict_types=1);
 namespace Nektria\Controller\Common;
 
 use Nektria\Controller\Controller;
-use Nektria\Controller\Route;
 use Nektria\Document\ArrayDocument;
 use Nektria\Document\DocumentResponse;
 use Nektria\Dto\Clock;
 use Nektria\Infrastructure\ArrayDocumentReadModel;
 use Nektria\Service\ContextService;
 use Nektria\Service\HealthService;
+use Nektria\Util\Controller\Route;
 use Nektria\Util\FileUtil;
 use Nektria\Util\JsonUtil;
 use Symfony\Component\DependencyInjection\ContainerInterface;

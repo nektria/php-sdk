@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Nektria\Controller;
+namespace Nektria\Util\Controller;
 
 use Attribute;
 

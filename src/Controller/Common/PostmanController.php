@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace Nektria\Controller\Common;
 
 use Nektria\Controller\Controller;
-use Nektria\Controller\Route;
 use Nektria\Dto\Clock;
 use Nektria\Service\ContextService;
+use Nektria\Util\Controller\Route;
 use Nektria\Util\FileUtil;
 use Nektria\Util\JsonUtil;
 use Nektria\Util\StringUtil;

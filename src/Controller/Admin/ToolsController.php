@@ -5,13 +5,13 @@ declare(strict_types=1);
 namespace Nektria\Controller\Admin;
 
 use Nektria\Controller\Controller;
-use Nektria\Controller\Route;
 use Nektria\Document\ArrayDocument;
 use Nektria\Document\DocumentResponse;
 use Nektria\Exception\InsufficientCredentialsException;
 use Nektria\Infrastructure\ArrayDocumentReadModel;
 use Nektria\Service\ContextService;
 use Nektria\Service\RequestClient;
+use Nektria\Util\Controller\Route;
 use Nektria\Util\FileUtil;
 use Nektria\Util\JsonUtil;
 use Symfony\Component\HttpFoundation\JsonResponse;
