@@ -53,7 +53,7 @@ trait RequestHelper
 
     public function initRequestHelper(): void
     {
-        $this->requestArea = 'none';
+        $this->requestArea = StringUtil::uuid4();
         $this->apiId = '';
     }
 
