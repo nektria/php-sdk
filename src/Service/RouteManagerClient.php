@@ -357,6 +357,23 @@ readonly class RouteManagerClient
         return $this->requestClient->get("{$this->routeManagerHost}/ping")->json();
     }
 
+    public function saveDriverCoordinates(
+        string $driverId,
+        float $latitude,
+        float $longitude,
+        Clock $at
+    ): void {
+        $this->requestClient->put(
+            "{$this->routeManagerHost}/api/admin/drivers/{$driverId}/coordinates",
+            data: [
+                'latitude' => $latitude,
+                'longitude' => $longitude,
+                'at' => $at->iso8601String(),
+            ],
+            headers: $this->getHeaders(),
+        );
+    }
+
     /**
      * @return array<string, string>
      */
