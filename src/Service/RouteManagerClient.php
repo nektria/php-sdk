@@ -303,6 +303,17 @@ readonly class RouteManagerClient
     }
 
     /**
+     * @return RMOrder[]
+     */
+    public function listPickingShiftOrders(string $pickingShiftId): array
+    {
+        return $this->requestClient->get(
+            "{$this->routeManagerHost}/api/admin/picking-shifts/{$pickingShiftId}/orders",
+            headers: $this->getHeaders(),
+        )->json();
+    }
+
+    /**
      * @return RMRoute[]
      */
     public function listPickingShiftRoutes(string $pickingShiftId): array
