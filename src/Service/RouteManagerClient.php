@@ -26,10 +26,11 @@ use Throwable;
  *
  * @phpstan-type RMDriver array{
  *      id: string,
- *      warehouses: string[],
+ *      identificationDocument: string,
  *      latitude: float,
  *      longitude: float,
  *      positionUpdatedAt: string,
+ *      warehouses: string[],
  * }
  *
  * @phpstan-type RMOrder array{
