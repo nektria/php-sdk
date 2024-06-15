@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Nektria\Controller\Common;
 
 use Nektria\Controller\Controller;
+use Nektria\Controller\Route;
 use Nektria\Dto\Clock;
 use Nektria\Service\ContextService;
 use Nektria\Util\FileUtil;
@@ -14,14 +15,13 @@ use RuntimeException;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\Process\Process;
-use Symfony\Component\Routing\Attribute\Route;
 use Throwable;
 
 use function count;
 
 readonly class PostmanController extends Controller
 {
-    #[Route('/postman', methods: 'GET')]
+    #[Route('/postman', method: 'GET')]
     public function postman(ContextService $contextService): BinaryFileResponse
     {
         $file = "{$contextService->project()}.json";

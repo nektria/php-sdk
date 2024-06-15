@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Nektria\Controller\Common;
 
 use Nektria\Controller\Controller;
+use Nektria\Controller\Route;
 use Nektria\Document\ArrayDocument;
 use Nektria\Document\DocumentResponse;
 use Nektria\Dto\Clock;
@@ -15,14 +16,13 @@ use Nektria\Util\FileUtil;
 use Nektria\Util\JsonUtil;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\Routing\Attribute\Route;
 use Throwable;
 
 use function count;
 
 readonly class CommonController extends Controller
 {
-    #[Route('/healthz', methods: 'GET')]
+    #[Route('/healthz', method: 'GET')]
     public function health(HealthService $healthService): DocumentResponse
     {
         $data = $healthService->check();
@@ -34,13 +34,13 @@ readonly class CommonController extends Controller
         );
     }
 
-    #[Route('/ping', methods: 'GET')]
+    #[Route('/ping', method: 'GET')]
     public function ping(): JsonResponse
     {
         return new JsonResponse(['response' => 'pong']);
     }
 
-    #[Route('/version', methods: 'GET')]
+    #[Route('/version', method: 'GET')]
     public function version(ContainerInterface $container, ContextService $contextService): JsonResponse
     {
         if ($container->has(ArrayDocumentReadModel::class)) {

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Nektria\Controller\Admin;
 
 use Nektria\Controller\Controller;
+use Nektria\Controller\Route;
 use Nektria\Document\ArrayDocument;
 use Nektria\Document\DocumentResponse;
 use Nektria\Exception\InsufficientCredentialsException;
@@ -16,14 +17,13 @@ use Nektria\Util\JsonUtil;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Process\Process;
-use Symfony\Component\Routing\Attribute\Route;
 
 use const STR_PAD_LEFT;
 
 #[Route('/api/admin/tools')]
 readonly class ToolsController extends Controller
 {
-    #[Route('/debug', methods: 'PATCH')]
+    #[Route('/debug', method: 'PATCH')]
     public function configureDebug(ContextService $contextService): JsonResponse
     {
         $enable = $this->requestData->retrieveBool('enable');
@@ -35,7 +35,7 @@ readonly class ToolsController extends Controller
         return $this->emptyResponse();
     }
 
-    #[Route('/decrypt', methods: 'PATCH')]
+    #[Route('/decrypt', method: 'PATCH')]
     public function decodeAllVariables(ContextService $contextService): JsonResponse
     {
         if (!$contextService->isLocalEnvironament()) {
@@ -58,7 +58,7 @@ readonly class ToolsController extends Controller
         )));
     }
 
-    #[Route('/rabbit/delete', methods: 'PATCH')]
+    #[Route('/rabbit/delete', method: 'PATCH')]
     public function deleteARabbitQueue(RequestClient $requestClient, string $rabbitDsn): DocumentResponse
     {
         $queue = $this->requestData->retrieveString('queue');
@@ -80,7 +80,7 @@ readonly class ToolsController extends Controller
         return $this->emptyResponse();
     }
 
-    #[Route('/console', methods: 'PATCH')]
+    #[Route('/console', method: 'PATCH')]
     public function executeAConsoleCommand(): Response
     {
         $command = $this->requestData->retrieveString('command');
@@ -96,7 +96,7 @@ readonly class ToolsController extends Controller
         return $this->buildResponseForProcess($command);
     }
 
-    #[Route('/database/migrations', methods: 'GET')]
+    #[Route('/database/migrations', method: 'GET')]
     public function executeDoctrineMigrationStatus(): Response
     {
         $command = new Process(array_merge(['../bin/console', 'doctrine:migration:status']));
@@ -105,7 +105,7 @@ readonly class ToolsController extends Controller
         return $this->buildResponseForProcess($command);
     }
 
-    #[Route('/database/schema', methods: 'GET')]
+    #[Route('/database/schema', method: 'GET')]
     public function executeDoctrineSchemaUpdateDumpSql(): Response
     {
         $command = new Process(array_merge(['../bin/console', 'doctrine:schema:update', '--dump-sql']));
@@ -114,7 +114,7 @@ readonly class ToolsController extends Controller
         return $this->buildResponseForProcess($command);
     }
 
-    #[Route('/debug/status', methods: 'PATCH')]
+    #[Route('/debug/status', method: 'PATCH')]
     public function getDebugConfigurationStatus(ContextService $contextService): JsonResponse
     {
         return new JsonResponse($contextService->debugModes(
@@ -122,7 +122,7 @@ readonly class ToolsController extends Controller
         ));
     }
 
-    #[Route('/rabbit/status', methods: 'GET')]
+    #[Route('/rabbit/status', method: 'GET')]
     public function getRabbitStatus(RequestClient $requestClient, string $rabbitDsn): DocumentResponse
     {
         $host = str_replace(['amqp', '5672'], ['http', '15672'], $rabbitDsn);
@@ -148,7 +148,7 @@ readonly class ToolsController extends Controller
         return $this->documentResponse(new ArrayDocument($data));
     }
 
-    #[Route('/crypt', methods: 'GET')]
+    #[Route('/crypt', method: 'GET')]
     public function readAllVariables(ContextService $contextService): Response
     {
         $lines = explode("\n", FileUtil::read('/app/.env'));
@@ -179,7 +179,7 @@ readonly class ToolsController extends Controller
         return new Response((string) $result);
     }
 
-    #[Route('/database/read', methods: 'GET')]
+    #[Route('/database/read', method: 'GET')]
     public function readFromDatabase(ArrayDocumentReadModel $readModel): DocumentResponse
     {
         return $this->documentResponse(
