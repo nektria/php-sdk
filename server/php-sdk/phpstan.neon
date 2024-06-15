@@ -35,6 +35,11 @@ parameters:
             allowIn:
                 - src/Dto/Clock.php
                 - src/Dto/LocalClock.php
+        -
+            class: 'Symfony\Component\Routing\Attribute\Route'
+            message: 'Use Nektria\Util\Controller\Route instead'
+            allowIn:
+                - src/Util/Controller/Route.php
 
 rules:
     - Nektria\PHPStan\AllowComparingOnlyComparableTypesRule

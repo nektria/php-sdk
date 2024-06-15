@@ -30,6 +30,9 @@ parameters:
         -
             class: 'DateTimeImmutable'
             message: 'Use Clock or LocalClock instead of DateTime'
+        -
+            class: 'Symfony\Component\Routing\Attribute\Route'
+            message: 'Use Nektria\Util\Controller\Route instead'
 
 rules:
     - Nektria\PHPStan\AllowComparingOnlyComparableTypesRule
