@@ -111,7 +111,7 @@ class TestCase extends WebTestCase
             throw new NektriaException('Test function starting with "test" has not been found.');
         }
 
-        return $key;
+        return str_replace('\\', '/', $key);
     }
 
     protected function init(): void
