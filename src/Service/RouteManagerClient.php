@@ -24,6 +24,14 @@ use Throwable;
  *      quantity: number,
  * }
  *
+ * @phpstan-type RMDriver array{
+ *      id: string,
+ *      warehouses: string[],
+ *      latitude: float,
+ *      longitude: float,
+ *      positionUpdatedAt: string,
+ * }
+ *
  * @phpstan-type RMOrder array{
  *      address: RMAddress,
  *      area: string,
@@ -214,6 +222,17 @@ readonly class RouteManagerClient
             "{$this->routeManagerHost}/api/admin/orders/{$orderNumber}",
             headers: $this->getHeaders(),
         );
+    }
+
+    /**
+     * @return RMDriver
+     */
+    public function getDriver(string $id): array
+    {
+        return $this->requestClient->get(
+            "{$this->routeManagerHost}/api/admin/drivers/{$id}",
+            headers: $this->getHeaders(),
+        )->json();
     }
 
     /**
