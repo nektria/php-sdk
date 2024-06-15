@@ -236,6 +236,23 @@ readonly class RouteManagerClient
         );
     }
 
+    public function executeSaveDriverCoordinatesFromOrder(
+        string $orderNumber,
+        float $latitude,
+        float $longitude,
+        Clock $at
+    ): void {
+        $this->requestClient->patch(
+            "{$this->routeManagerHost}/api/admin/orders/{$orderNumber}/save-driver-coordinates",
+            data: [
+                'latitude' => $latitude,
+                'longitude' => $longitude,
+                'at' => $at->iso8601String(),
+            ],
+            headers: $this->getHeaders(),
+        );
+    }
+
     /**
      * @return RMDriver
      */
