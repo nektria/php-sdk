@@ -167,6 +167,17 @@ use Throwable;
  *     warehouseId: string,
  * }
  *
+ * @phpstan-type RMVehicle array{
+ *      code: string,
+ *      createdAt: string,
+ *      id: string,
+ *      name: string,
+ *      tenantId: string,
+ *      type: string,
+ *      updatedAt: string,
+ *      warehouseId: string,
+ * }
+ *
  * @phpstan-type RMWarehouse array{
  *     address: RMAddress,
  *     id: string,
@@ -265,6 +276,17 @@ readonly class RouteManagerClient
     {
         return $this->requestClient->get(
             "{$this->routeManagerHost}/api/admin/routes/{$id}",
+            headers: $this->getHeaders(),
+        )->json();
+    }
+
+    /**
+     * @return RMVehicle
+     */
+    public function getVehicle(string $id): array
+    {
+        return $this->requestClient->get(
+            "{$this->routeManagerHost}/api/admin/vehicles/{$id}",
             headers: $this->getHeaders(),
         )->json();
     }
