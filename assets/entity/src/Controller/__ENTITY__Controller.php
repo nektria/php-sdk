@@ -7,7 +7,7 @@ namespace App\Controller\__CONTEXT__;
 use Nektria\Controller\Controller;
 use Nektria\Util\Controller\Route;
 
-#[Route('/__ENTITY_ROUTE__')]
+#[Route('/__ENTITY_PATH__')]
 readonly class __ENTITY__Controller extends Controller
 {
 }

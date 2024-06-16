@@ -89,6 +89,11 @@ class SetupResourceConsole extends Console
         $resource = (string) $this->input()->getOption('resource');
         $camelCaseResource = lcfirst($resource);
         $snakeCaseResource = strtolower((string) preg_replace('/(?<!^)[A-Z]/', '_$0', $resource));
+        $hypenCaseResource = strtolower((string) preg_replace('/(?<!^)[A-Z]/', '-$0', $resource));
+        $pathResource = $hypenCaseResource;
+        if (!str_ends_with($pathResource, 's')) {
+            $pathResource .= 's';
+        }
 
         if ($resource === '') {
             throw new NektriaException('Resource name is required.');
@@ -99,13 +104,17 @@ class SetupResourceConsole extends Console
                 '__PROJECT__',
                 '__ENTITY__',
                 '__ENTITY_CC__',
-                '__ENTITY_SC__'
+                '__ENTITY_SC__',
+                '__ENTITY_HC__',
+                '__ENTITY_PATH__',
             ],
             [
                 $this->contextService->project(),
                 $resource,
                 $camelCaseResource,
-                $snakeCaseResource
+                $snakeCaseResource,
+                $hypenCaseResource,
+                $pathResource,
             ],
             $text
         );
