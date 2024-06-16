@@ -86,8 +86,6 @@ class SetupMessageConsole extends Console
 
     private function copyDir(string $from, string $to): void
     {
-        $override = (bool) $this->input()->getOption('override');
-
         $files = scandir($from);
 
         if ($files === false) {
@@ -114,9 +112,6 @@ class SetupMessageConsole extends Console
                 }
                 $this->copyDir($fromPath, $toPath);
             } else {
-                if (!$override && is_file($toPath)) {
-                    continue;
-                }
                 $this->copyFile($fromPath, $toPath);
             }
         }
