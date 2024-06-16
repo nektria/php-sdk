@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Controller\__CONTEXT__;
+namespace App\Controller\Web;
 
 use Nektria\Controller\Controller;
 use Nektria\Util\Controller\Route;
