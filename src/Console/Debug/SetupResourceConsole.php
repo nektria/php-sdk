@@ -25,7 +25,6 @@ class SetupResourceConsole extends Console
             'o',
             InputOption::VALUE_NONE,
             'Override existing files.',
-            false
         );
         $this->addOption(
             'resource',
