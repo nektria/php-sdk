@@ -31,6 +31,7 @@ class SetupResourceConsole extends Console
             'r',
             InputOption::VALUE_REQUIRED,
             'Resource name.',
+            ''
         );
     }
 
@@ -88,6 +89,10 @@ class SetupResourceConsole extends Console
         $resource = (string) $this->input()->getOption('resource');
         $camelCaseResource = lcfirst($resource);
         $snakeCaseResource = strtolower((string) preg_replace('/(?<!^)[A-Z]/', '_$0', $resource));
+
+        if ($resource === '') {
+            throw new NektriaException('Resource name is required.');
+        }
 
         return str_replace(
             [
