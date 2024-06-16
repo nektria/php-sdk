@@ -15,7 +15,6 @@ use PHPStan\Analyser\TypeSpecifier;
 use PHPStan\Analyser\TypeSpecifierAwareExtension;
 use PHPStan\Analyser\TypeSpecifierContext;
 use PHPStan\Reflection\MethodReflection;
-use PHPStan\Type\NullType;
 use PHPStan\Type\TypeCombinator;
 
 class ValidateClassFieldsReturnsNotNullExtension implements TypeSpecifierAwareExtension
@@ -59,14 +58,11 @@ class ValidateClassFieldsReturnsNotNullExtension implements TypeSpecifierAwareEx
             if ($fieldItem->value instanceof String_) {
                 $fieldName = $fieldItem->value->value;
                 $propertyType = $objectType->getProperty($fieldName, $scope)->getReadableType();
-
-                if ($propertyType->isSuperTypeOf(new NullType())->yes()) {
-                    $newType = TypeCombinator::removeNull($propertyType);
-                    $propertyExpr = new PropertyFetch($objectExpr, $fieldName);
-                    $specifiedTypes = $specifiedTypes->unionWith(
-                        $this->typeSpecifier->create($propertyExpr, $newType, TypeSpecifierContext::createTruthy())
-                    );
-                }
+                $newType = TypeCombinator::removeNull($propertyType);
+                $propertyExpr = new PropertyFetch($objectExpr, $fieldName);
+                $specifiedTypes = $specifiedTypes->unionWith(
+                    $this->typeSpecifier->create($propertyExpr, $newType, TypeSpecifierContext::createTruthy()),
+                );
             }
         }
 
