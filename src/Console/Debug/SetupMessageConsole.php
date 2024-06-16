@@ -81,7 +81,7 @@ class SetupMessageConsole extends Console
         }
 
         $this->copyDir($fromPath, "./Message/{$resource}");
-        $this->copyDir($fromPathHandler, "./Message/{$resource}Handler");
+        $this->copyDir($fromPathHandler, "./MessageHandler/{$resource}");
     }
 
     private function copyDir(string $from, string $to): void
