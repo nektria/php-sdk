@@ -39,6 +39,10 @@ rules:
 
 services:
     -
+        class: Nektria\PHPStan\ValidateClassFieldReturnsNotNullExtension
+        tags:
+            - phpstan.typeSpecifier.staticMethodTypeSpecifyingExtension
+    -
         class: Nektria\PHPStan\ValidateClassFieldsReturnsNotNullExtension
         tags:
             - phpstan.typeSpecifier.staticMethodTypeSpecifyingExtension
