@@ -20,7 +20,7 @@ readonly class __ENTITY__Service
         $this->__ENTITY_CC__WriteModel->delete($__ENTITY_CC__);
     }
 
-    public function retrieve__ENTITY__(string $__ENTITY_CC__Id): __ENTITY__
+    public function retrieve(string $__ENTITY_CC__Id): __ENTITY__
     {
         $__ENTITY_CC__ = $this->__ENTITY_CC__WriteModel->find($__ENTITY_CC__Id);
 
