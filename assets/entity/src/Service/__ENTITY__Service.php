@@ -1,0 +1,38 @@
+<?php
+
+declare(strict_types=1);
+
+namespace App\Service;
+
+use App\Entity\__ENTITY__;
+use App\Infrastructure\WriteModel\__ENTITY__WriteModel;
+use Nektria\Exception\ResourceNotFoundException;
+
+readonly class __ENTITY__Service
+{
+    public function __construct(
+        private __ENTITY__WriteModel $__ENTITY_CC__WriteModel,
+    ) {
+    }
+
+    public function delete(__ENTITY__ $__ENTITY_CC__): void
+    {
+        $this->__ENTITY_VAR__WriteModel->delete($__ENTITY_CC__);
+    }
+
+    public function retrieve__ENTITY__(string $__ENTITY_CC__Id): __ENTITY__
+    {
+        $__ENTITY_CC__ = $this->__ENTITY_VAR__WriteModel->find($__ENTITY_CC__Id);
+
+        if ($__ENTITY_CC__ === null) {
+            throw new ResourceNotFoundException('__ENTITY__', $__ENTITY_CC__Id);
+        }
+
+        return $__ENTITY_CC__;
+    }
+
+    public function save(__ENTITY__ $__ENTITY_CC__): void
+    {
+        $this->__ENTITY_VAR__WriteModel->save($__ENTITY_CC__);
+    }
+}

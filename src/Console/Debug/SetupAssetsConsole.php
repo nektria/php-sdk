@@ -9,17 +9,17 @@ use Nektria\Exception\NektriaException;
 use Nektria\Service\ContextService;
 use Nektria\Util\FileUtil;
 
-class SetupConsole extends Console
+class SetupAssetsConsole extends Console
 {
     public function __construct(
         private readonly ContextService $contextService
     ) {
-        parent::__construct('debug:setup');
+        parent::__construct('debug:setup:assets');
     }
 
     protected function play(): void
     {
-        $this->copyDir('vendor/nektria/php-sdk/assets', '.');
+        $this->copyDir('vendor/nektria/php-sdk/assets/setup', '.');
         $this->output()->writeln('done');
 
         exec('chmod -R +x bin/*');
