@@ -62,12 +62,12 @@ class SetupMessageConsole extends Console
             throw new NektriaException('Message is required.');
         }
 
-        if (!is_dir('./Message')) {
-            mkdir('./Message');
+        if (!is_dir("./src/Message/{$resource}")) {
+            mkdir("./src/Message/{$resource}");
         }
 
-        if (!is_dir("./Message/{$resource}")) {
-            mkdir("./Message/{$resource}");
+        if (!is_dir("./src/MessageHandler/{$resource}")) {
+            mkdir("./src/MessageHandler/{$resource}");
         }
 
         if ($type === 'Query') {
@@ -80,8 +80,8 @@ class SetupMessageConsole extends Console
             throw new NektriaException('Message type is invalid.');
         }
 
-        $this->copyDir($fromPath, "./Message/{$resource}");
-        $this->copyDir($fromPathHandler, "./MessageHandler/{$resource}");
+        $this->copyDir($fromPath, "./src/Message/{$resource}");
+        $this->copyDir($fromPathHandler, "./src/MessageHandler/{$resource}");
     }
 
     private function copyDir(string $from, string $to): void

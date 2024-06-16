@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\MessageHandler\__RESOURCE__;
+namespace App\MessageHandler\__ENTITY__;
 
 use App\Document\__ENTITY__;
 use App\Message\__ENTITY__\__MESSAGE__;
