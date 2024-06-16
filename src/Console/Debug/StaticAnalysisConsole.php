@@ -134,6 +134,7 @@ class StaticAnalysisConsole extends Console
             if (
                 $variable !== 'shopperCode'
                 && $variable !== 'orderNumber'
+                && $variable !== 'ref'
                 && $variable !== 'date'
                 && !str_contains($variable, 'Id')
             ) {
