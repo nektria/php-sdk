@@ -9,12 +9,16 @@ use Nektria\Document\Document;
 use Nektria\Document\DocumentResponse;
 use Nektria\Document\Tenant;
 use Nektria\Document\User;
+use Nektria\Exception\MissingRequestFileException;
 use Nektria\Infrastructure\BusInterface;
 use Nektria\Infrastructure\UserServiceInterface;
 use Nektria\Message\Command;
 use Nektria\Message\Query;
 use Nektria\Service\ContextService;
 use Nektria\Util\ArrayDataFetcher;
+use Nektria\Util\File\FileReader;
+use Nektria\Util\FileUtil;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Response;
@@ -87,6 +91,23 @@ readonly class Controller
         return new DocumentResponse(new ArrayDocument([]), $this->context, Response::HTTP_NO_CONTENT);
     }
 
+    protected function getFileReader(string $field, string $separator = ';'): ?FileReader
+    {
+        /** @var UploadedFile|null $uploadedFile */
+        $uploadedFile = $this->request->files->get($field);
+
+        if ($uploadedFile === null) {
+            return null;
+        }
+
+        $path = $uploadedFile->getRealPath();
+
+        return match ($uploadedFile->getClientMimeType()) {
+            'text/csv' => FileUtil::loadCsvReader($path, $separator),
+            default => FileUtil::loadFileReader($path),
+        };
+    }
+
     /**
      * @template T of Document
      * @param Query<T> $query
@@ -99,6 +120,17 @@ readonly class Controller
     protected function response(Document $document, int $status = 200): DocumentResponse
     {
         return new DocumentResponse($document, $this->context, $status);
+    }
+
+    protected function retrieveFileReader(string $field, string $separator = ';'): FileReader
+    {
+        $fileReader = $this->getFileReader($field, $separator);
+
+        if ($fileReader === null) {
+            throw new MissingRequestFileException($field);
+        }
+
+        return $fileReader;
     }
 
     protected function retrieveTenant(): Tenant

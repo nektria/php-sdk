@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Nektria\Util;
 
 use Nektria\Util\File\CsvFileReader;
+use Nektria\Util\File\FileReader;
 use RuntimeException;
 
 class FileUtil
@@ -41,6 +42,16 @@ class FileUtil
         }
 
         return new CsvFileReader($file, $separator);
+    }
+
+    public static function loadFileReader(string $file, string $separator = ','): FileReader
+    {
+        $file = fopen($file, 'rb');
+        if ($file === false) {
+            throw new RuntimeException('Cannot open file');
+        }
+
+        return new FileReader($file);
     }
 
     public static function read(string $file): string

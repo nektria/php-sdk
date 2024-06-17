@@ -6,21 +6,22 @@ namespace Nektria\Util\File;
 
 use Generator;
 
-readonly class CsvFileReader
+readonly class CsvFileReader extends FileReader
 {
     /**
      * @param resource $file
      */
     public function __construct(
-        private $file,
+        mixed $file,
         private string $separator
     ) {
+        parent::__construct($file);
     }
 
     /**
      * @return Generator<string[]>
      */
-    public function readLine(): Generator
+    public function csvLines(): Generator
     {
         $row = fgetcsv($this->file, separator: $this->separator);
         while ($row !== false) {
@@ -28,5 +29,7 @@ readonly class CsvFileReader
 
             $row = fgetcsv($this->file, separator: $this->separator);
         }
+
+        return null;
     }
 }
