@@ -25,19 +25,31 @@ use function count;
  *     longitude: float,
  * }
  *
+ * @phpstan-type CompassWaypoint array{
+ *      destination: string,
+ *      latitude: float,
+ *      longitude: float,
+ *  }
+ *
  * @phpstan-type CompassCoordinateWithHash array{
  *     hash: string,
  *     latitude: float,
  *     longitude: float,
  * }
  *
- * @phpstan-type CompassDistance array{
+ * @phpstan-type CompassLegacyDistance array{
  *      distance: int,
  *      travelTime: int,
  *      originLatitude: float,
  *      originLongitude: float,
  *      destinationLatitude: float,
  *      destinationLongitude: float,
+ * }
+ *
+ * @phpstan-type CompassDistance array{
+ *      destination: string,
+ *      distance: int,
+ *      travelTime: int,
  * }
  *
  * @phpstan-type CompassDistanceResult array<string, array{
@@ -108,7 +120,7 @@ readonly class CompassClient
             $hashMap["{$c1},{$c2}"] = $coordinate['hash'];
         }
 
-        /** @var CompassDistance[] $data */
+        /** @var CompassLegacyDistance[] $data */
         $data = $this->requestClient->get(
             "{$this->compassHost}/api/admin/distances",
             data: [
@@ -139,21 +151,15 @@ readonly class CompassClient
     }
 
     /**
-     * @param CompassCoordinate[] $coordinates
+     * @param CompassWaypoint[] $waypoints
      * @return CompassDistance[]
-     * @deprecated Use getDistanceMatrix instead
      */
-    public function getDistances(string $travelMode, array $coordinates): array
+    public function getDistances(string $travelMode, array $waypoints): array
     {
-        $list = [];
-        foreach ($coordinates as $coordinate) {
-            $list[] = "{$coordinate['latitude']},{$coordinate['longitude']}";
-        }
-
-        return $this->requestClient->get(
+        return $this->requestClient->patch(
             "{$this->compassHost}/api/admin/distances",
             data: [
-                'wayPoints' => implode('|', $list),
+                'wayPoints' => $waypoints,
                 'travelMode' => $travelMode,
             ],
             headers: $this->getHeaders(),
@@ -174,6 +180,28 @@ readonly class CompassClient
                 'distances' => implode(',', $distances),
                 'travelMode' => $travelMode,
                 'type' => $type,
+            ],
+            headers: $this->getHeaders(),
+        )->json();
+    }
+
+    /**
+     * @param CompassCoordinate[] $coordinates
+     * @return CompassLegacyDistance[]
+     * @deprecated Use getDistanceMatrix instead
+     */
+    public function getLegacyDistances(string $travelMode, array $coordinates): array
+    {
+        $list = [];
+        foreach ($coordinates as $coordinate) {
+            $list[] = "{$coordinate['latitude']},{$coordinate['longitude']}";
+        }
+
+        return $this->requestClient->get(
+            "{$this->compassHost}/api/admin/distances",
+            data: [
+                'wayPoints' => implode('|', $list),
+                'travelMode' => $travelMode,
             ],
             headers: $this->getHeaders(),
         )->json();
