@@ -159,7 +159,7 @@ readonly class CompassClient
         return $this->requestClient->patch(
             "{$this->compassHost}/api/admin/distances",
             data: [
-                'wayPoints' => $waypoints,
+                'waypoints' => $waypoints,
                 'travelMode' => $travelMode,
             ],
             headers: $this->getHeaders(),
