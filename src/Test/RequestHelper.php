@@ -9,6 +9,7 @@ use Nektria\Util\JsonUtil;
 use Nektria\Util\StringUtil;
 use RuntimeException;
 use Symfony\Component\HttpFoundation\Response;
+use Throwable;
 
 use function count;
 
@@ -83,7 +84,11 @@ trait RequestHelper
             throw new RuntimeException('There is no response');
         }
 
-        return JsonUtil::decode($responseContent);
+        try {
+            return JsonUtil::decode($responseContent);
+        } catch (Throwable) {
+            return ['no-content'];
+        }
     }
 
     protected function sendDelete(string $path): void
