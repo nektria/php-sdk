@@ -91,7 +91,7 @@ readonly class Controller
         return new DocumentResponse(new ArrayDocument([]), $this->context, Response::HTTP_NO_CONTENT);
     }
 
-    protected function getFileReader(string $field, string $separator = ';'): ?FileReader
+    protected function getFileReader(string $field, string $separator = ','): ?FileReader
     {
         /** @var UploadedFile|null $uploadedFile */
         $uploadedFile = $this->request->files->get($field);
@@ -122,7 +122,7 @@ readonly class Controller
         return new DocumentResponse($document, $this->context, $status);
     }
 
-    protected function retrieveFileReader(string $field, string $separator = ';'): FileReader
+    protected function retrieveFileReader(string $field, string $separator = ','): FileReader
     {
         $fileReader = $this->getFileReader($field, $separator);
 
