@@ -43,6 +43,16 @@ class ValidateEach
     /**
      * @param int[]|float[]|string[] $values
      */
+    public static function greaterOrEqualThan(array $values, int | float | string $limit): void
+    {
+        foreach ($values as $item) {
+            Validate::greaterOrEqualThan($item, $limit);
+        }
+    }
+
+    /**
+     * @param int[]|float[]|string[] $values
+     */
     public static function greaterThan(array $values, int | float | string $limit): void
     {
         foreach ($values as $item) {

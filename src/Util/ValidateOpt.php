@@ -31,6 +31,13 @@ class ValidateOpt
         }
     }
 
+    public static function greaterOrEqualThan(int | float | null $number, int | float $limit): void
+    {
+        if ($number !== null) {
+            Validate::greaterOrEqualThan($number, $limit);
+        }
+    }
+
     public static function greaterThan(int | float | null $number, int | float $limit): void
     {
         if ($number !== null) {
