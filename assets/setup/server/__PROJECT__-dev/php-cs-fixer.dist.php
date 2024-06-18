@@ -9,7 +9,7 @@ $finder = Finder::create()
     ->exclude('tests');
 
 $config = new PhpCsFixer\Config();
-//$config->setParallelConfig(ParallelConfigFactory::detect());
+$config->setParallelConfig(ParallelConfigFactory::detect());
 $config
     ->setRules([
         '@Symfony' => true,
