@@ -1,6 +1,7 @@
 ###> global ###
 .fleet
-.idea
+.idea/tasks.xml
+.idea/workspace.xml
 *.DS_Store
 /.tmp
 /tmp
