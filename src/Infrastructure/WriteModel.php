@@ -133,9 +133,18 @@ abstract class WriteModel
 
     private function checkFromService(): void
     {
-        $p1 = explode('\\', debug_backtrace()[1]['object']::class);
+        $o1 = debug_backtrace()[1]['object'] ?? null;
+        if ($o1 === null) {
+            throw new NektriaException('Unable to check the called.');
+        }
+        $p1 = explode('\\', $o1::class);
         $resource1 = explode('WriteModel', end($p1))[0];
-        $p2 = explode('\\', debug_backtrace()[3]['object']::class);
+
+        $o2 = debug_backtrace()[3]['object'] ?? null;
+        if ($o2 === null) {
+            throw new NektriaException('Unable to check the caller.');
+        }
+        $p2 = explode('\\', $o2::class);
         $resource2 = end($p2);
 
         if ($resource2 === "{$resource1}Service") {
