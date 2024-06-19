@@ -6,6 +6,7 @@ namespace Nektria\Infrastructure;
 
 use Nektria\Dto\Clock;
 use Nektria\Dto\LocalClock;
+use Nektria\Util\Validate;
 use Throwable;
 
 /**
@@ -33,6 +34,8 @@ abstract class SharedRedisCache extends RedisCache
      */
     protected function getItem(string $key): mixed
     {
+        Validate::notEmpty($key);
+
         try {
             $item = $this->init()->get("{$this->fqn}:{$key}");
 
@@ -48,6 +51,8 @@ abstract class SharedRedisCache extends RedisCache
 
     protected function removeItem(string $key): void
     {
+        Validate::notEmpty($key);
+
         try {
             $this->init()->del("{$this->fqn}:{$key}");
         } catch (Throwable) {
@@ -59,6 +64,8 @@ abstract class SharedRedisCache extends RedisCache
      */
     protected function setItem(string $key, $item, Clock | LocalClock | int $ttl = 300): void
     {
+        Validate::notEmpty($key);
+
         if ($ttl instanceof Clock) {
             $ttl = $ttl->diff(Clock::now());
         }
