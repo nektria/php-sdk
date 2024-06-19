@@ -41,7 +41,7 @@ abstract class WriteModel
     protected function deleteEntity(EntityInterface $domain): void
     {
         $this->checkFromService();
-
+        throw new RuntimeException('test');
         try {
             $this->manager->remove($domain);
             $this->manager->flush();
@@ -133,6 +133,16 @@ abstract class WriteModel
 
     private function checkFromService(): void
     {
+        $p1 = explode('\\', debug_backtrace()[1]['object']::class);
+        $resource1 = explode('WriteModel', end($p1))[0];
+        $p2 = explode('\\', debug_backtrace()[3]['object']::class);
+        $resource2 = end($p2);
+
+        if ($resource2 === "{$resource1}Service") {
+            return;
+        }
+
+        throw new NektriaException("You can only call save or delete from '{$resource1}Service.'");
     }
 
     private function resetManager(): void
