@@ -20,7 +20,7 @@ readonly class CsvFileReader extends FileReader
      */
     public function appendData(array $content): void
     {
-        fputcsv($this->resource, $content);
+        fputcsv($this->resource, $content, separator: $this->separator);
     }
 
     /**
