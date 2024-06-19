@@ -41,7 +41,7 @@ abstract class WriteModel
     protected function deleteEntity(EntityInterface $domain): void
     {
         $this->checkFromService();
-        throw new RuntimeException('test');
+
         try {
             $this->manager->remove($domain);
             $this->manager->flush();
