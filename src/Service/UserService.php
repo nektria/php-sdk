@@ -71,7 +71,6 @@ class UserService implements UserServiceInterface
             throw new InvalidAuthorizationException();
         }
 
-
         $user = $this->sharedUserCache->read($apiKey);
         $this->user = $user;
 
