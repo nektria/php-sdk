@@ -5,15 +5,22 @@ declare(strict_types=1);
 namespace Nektria\Util\File;
 
 use Generator;
+use Nektria\Exception\NektriaException;
 
 readonly class FileReader
 {
-    /**
-     * @param resource $file
-     */
+    /** @var resource */
+    protected mixed $resource;
+
     public function __construct(
-        protected mixed $file,
+        protected string $file,
     ) {
+        $resource = fopen($file, 'rb');
+        if ($resource === false) {
+            throw new NektriaException('Cannot open file');
+        }
+
+        $this->resource = $resource;
     }
 
     /**
@@ -21,11 +28,11 @@ readonly class FileReader
      */
     public function lines(): Generator
     {
-        $row = fgets($this->file);
+        $row = fgets($this->resource);
         while ($row !== false) {
             yield $row;
 
-            $row = fgets($this->file);
+            $row = fgets($this->resource);
         }
 
         return null;

@@ -36,21 +36,11 @@ class FileUtil
 
     public static function loadCsvReader(string $file, string $separator = ','): CsvFileReader
     {
-        $file = fopen($file, 'rb');
-        if ($file === false) {
-            throw new RuntimeException('Cannot open file');
-        }
-
         return new CsvFileReader($file, $separator);
     }
 
-    public static function loadFileReader(string $file, string $separator = ','): FileReader
+    public static function loadFileReader(string $file): FileReader
     {
-        $file = fopen($file, 'rb');
-        if ($file === false) {
-            throw new RuntimeException('Cannot open file');
-        }
-
         return new FileReader($file);
     }
 

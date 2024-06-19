@@ -8,11 +8,8 @@ use Generator;
 
 readonly class CsvFileReader extends FileReader
 {
-    /**
-     * @param resource $file
-     */
     public function __construct(
-        mixed $file,
+        string $file,
         private string $separator
     ) {
         parent::__construct($file);
@@ -23,11 +20,11 @@ readonly class CsvFileReader extends FileReader
      */
     public function csvLines(): Generator
     {
-        $row = fgetcsv($this->file, separator: $this->separator);
+        $row = fgetcsv($this->resource, separator: $this->separator);
         while ($row !== false) {
             yield $row;
 
-            $row = fgetcsv($this->file, separator: $this->separator);
+            $row = fgetcsv($this->resource, separator: $this->separator);
         }
 
         return null;
