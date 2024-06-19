@@ -15,7 +15,7 @@ readonly class FileReader
     public function __construct(
         protected string $file,
     ) {
-        $resource = fopen($file, 'rb');
+        $resource = fopen($file, 'rwb');
         if ($resource === false) {
             throw new NektriaException('Cannot open file');
         }
@@ -36,5 +36,10 @@ readonly class FileReader
         }
 
         return null;
+    }
+
+    public function save(): void
+    {
+        fclose($this->resource);
     }
 }

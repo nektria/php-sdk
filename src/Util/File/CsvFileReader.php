@@ -16,6 +16,14 @@ readonly class CsvFileReader extends FileReader
     }
 
     /**
+     * @param array<int|float|string|bool> $content
+     */
+    public function appendData(array $content): void
+    {
+        fputcsv($this->resource, $content);
+    }
+
+    /**
      * @return Generator<string[]>
      */
     public function csvLines(): Generator
