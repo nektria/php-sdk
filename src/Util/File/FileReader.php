@@ -37,9 +37,4 @@ readonly class FileReader
 
         return null;
     }
-
-    public function save(): void
-    {
-        fclose($this->resource);
-    }
 }
