@@ -11,14 +11,11 @@ services:
       string $project: 'sdk'
       string $redisDsn: 'none'
 
-  Symfony\Component\DependencyInjection\ContainerInterface: '@service_container'
-
-
   Nektria\Console\:
     resource: '../src/Console'
     tags: [ 'console.command' ]
     calls:
-      - inject: [ '@Nektria\Service\Bus', '@Nektria\Service\UserService', '@Nektria\Service\AlertService' ]
+      - inject: [ '@service_container' ]
 
   Nektria\Infrastructure\UserServiceInterface: '@Nektria\Service\UserService'
   Nektria\Service\AlertService: ~
@@ -34,3 +31,6 @@ services:
   Nektria\Service\SharedUserCache: ~
   Nektria\Service\SharedVariableCache: ~
   Nektria\Service\UserService: ~
+  Nektria\Test\TestRunnerListener: ~
+
+  Symfony\Component\DependencyInjection\ContainerInterface: '@service_container'

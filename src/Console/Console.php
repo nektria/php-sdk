@@ -13,7 +13,6 @@ use Nektria\Infrastructure\UserServiceInterface;
 use Nektria\Message\Command as CommandMessage;
 use Nektria\Message\Query;
 use Nektria\Service\AlertService;
-use Nektria\Service\Bus;
 use Nektria\Util\Console\OutputFormatterStyle;
 use Nektria\Util\StringUtil;
 use RuntimeException;
@@ -23,6 +22,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\Question;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 use Throwable;
 
 use function count;
@@ -32,15 +32,17 @@ use const PHP_EOL;
 
 abstract class Console extends BaseCommand
 {
-    private AlertService $alertService;
-
-    private BusInterface $bus;
+    private ?ContainerInterface $container;
 
     private ?InputInterface $input;
 
     private ?OutputInterface $output;
 
-    private UserServiceInterface $userService;
+    public function __construct(string $name)
+    {
+        parent::__construct($name);
+        $this->container = null;
+    }
 
     /**
      * @param string[]|null $validResponses
@@ -114,13 +116,9 @@ abstract class Console extends BaseCommand
     }
 
     public function inject(
-        Bus $bus,
-        UserServiceInterface $userService,
-        AlertService $alertService,
+        ContainerInterface $container
     ): void {
-        $this->bus = $bus;
-        $this->userService = $userService;
-        $this->alertService = $alertService;
+        $this->container = $container;
 
         $this->addOption('clean', 'c', InputOption::VALUE_NONE, 'Hide execution time');
     }
@@ -148,14 +146,39 @@ abstract class Console extends BaseCommand
         return $this->input()->getArgument($name);
     }
 
+    protected function alertService(): AlertService
+    {
+        /** @var AlertService $alertService */
+        $alertService = $this->container()->get(AlertService::class);
+
+        return $alertService;
+    }
+
     protected function beep(): void
     {
         $this->output()->write("\007");
     }
 
+    protected function bus(): BusInterface
+    {
+        /** @var BusInterface $bus */
+        $bus = $this->container()->get(BusInterface::class);
+
+        return $bus;
+    }
+
     protected function clear(): void
     {
         $this->output()->write("\033\143");
+    }
+
+    protected function container(): ContainerInterface
+    {
+        if ($this->container === null) {
+            throw new NektriaException('container not injected.');
+        }
+
+        return $this->container;
     }
 
     /**
@@ -172,10 +195,9 @@ abstract class Console extends BaseCommand
         ?int $delayMs = null,
         ?array $retryOptions = null
     ): void {
-        $bus = $this->bus;
-        $this->userService->authenticateSystem($tenantId);
-        $bus->dispatchCommand($command, $transport, $delayMs, $retryOptions);
-        $this->userService->clearAuthentication();
+        $this->userService()->authenticateSystem($tenantId);
+        $this->bus()->dispatchCommand($command, $transport, $delayMs, $retryOptions);
+        $this->userService()->clearAuthentication();
     }
 
     /**
@@ -186,14 +208,16 @@ abstract class Console extends BaseCommand
         Query $query,
         string $tenantId,
     ): Document {
-        $bus = $this->bus;
-        $this->userService->authenticateSystem($tenantId);
-        $document = $bus->dispatchQuery($query);
-        $this->userService->clearAuthentication();
+        $this->userService()->authenticateSystem($tenantId);
+        $document = $this->bus()->dispatchQuery($query);
+        $this->userService()->clearAuthentication();
 
         return $document;
     }
 
+    /**
+     * @throws Throwable
+     */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->input = $input;
@@ -268,8 +292,8 @@ abstract class Console extends BaseCommand
         } catch (Throwable $e) {
             $isSilent = $e instanceof NektriaException && $e->silent();
 
-            $this->alertService->sendThrowable(
-                $this->userService->user()?->tenant->name ?? 'none',
+            $this->alertService()->sendThrowable(
+                $this->userService()->user()?->tenant->name ?? 'none',
                 'COMMAND',
                 $this->getName() ?? '',
                 [
@@ -287,9 +311,9 @@ abstract class Console extends BaseCommand
                 }
 
                 throw $e;
-            } else {
-                return 1;
             }
+
+            return 1;
         }
 
         if (!((bool) $this->input()->getOption('clean'))) {
@@ -301,4 +325,12 @@ abstract class Console extends BaseCommand
     }
 
     abstract protected function play(): void;
+
+    protected function userService(): UserServiceInterface
+    {
+        /** @var UserServiceInterface $userService */
+        $userService = $this->container()->get(UserServiceInterface::class);
+
+        return $userService;
+    }
 }

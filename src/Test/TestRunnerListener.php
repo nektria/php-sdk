@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Nektria\Test;
 
-use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\EntityManager;
 use Nektria\Exception\NektriaException;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Process\Process;
@@ -28,7 +28,7 @@ readonly class TestRunnerListener
         try {
             if (!$reuseDatabase) {
                 (new Process(['bin/console', 'd:d:c', '-e', 'test']))->run();
-                /** @var EntityManagerInterface $em */
+                /** @var EntityManager $em */
                 $em = $this->container->get('doctrine.orm.entity_manager');
                 $em->getConnection()->executeStatement("
                     DO $$
