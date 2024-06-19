@@ -40,6 +40,8 @@ abstract class WriteModel
      */
     protected function deleteEntity(EntityInterface $domain): void
     {
+        $this->checkFromService();
+
         try {
             $this->manager->remove($domain);
             $this->manager->flush();
@@ -97,6 +99,8 @@ abstract class WriteModel
      */
     protected function saveEntity(EntityInterface $domain): void
     {
+        $this->checkFromService();
+
         try {
             $domain->refresh();
             $this->manager->persist($domain);
@@ -125,6 +129,10 @@ abstract class WriteModel
 
             throw NektriaException::new($e);
         }
+    }
+
+    private function checkFromService(): void
+    {
     }
 
     private function resetManager(): void
