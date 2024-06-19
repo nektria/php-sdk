@@ -11,7 +11,19 @@ use Nektria\Message\Query;
 
 interface BusInterface
 {
-    public function addDelayedEvent(Event $event): void;
+    /**
+     * @param array{
+     *     currentTry: int,
+     *     maxTries: int,
+     *     interval: int,
+     * }|null $retryOptions
+     */
+    public function addDelayedEvent(
+        Event $event,
+        ?string $transport = null,
+        ?int $delayMs = null,
+        ?array $retryOptions = null
+    ): void;
 
     /**
      * @param array{

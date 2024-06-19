@@ -28,7 +28,18 @@ use function in_array;
 
 class Bus implements BusInterface
 {
-    /** @var Event[] */
+    /**
+     * @var array<int, array{
+     *     event: Event,
+     *     transport: string|null,
+     *     delayMs: int|null,
+     *     retryOptions: array{
+     *         currentTry: int,
+     *         maxTries: int,
+     *         interval: int,
+     *     }|null
+     * }>
+     */
     private array $delayedEvents;
 
     public function __construct(
@@ -39,9 +50,25 @@ class Bus implements BusInterface
         $this->delayedEvents = [];
     }
 
-    final public function addDelayedEvent(Event $event): void
-    {
-        $this->delayedEvents[] = $event;
+    /**
+     * @param array{
+     *     currentTry: int,
+     *     maxTries: int,
+     *     interval: int,
+     * }|null $retryOptions
+     */
+    final public function addDelayedEvent(
+        Event $event,
+        ?string $transport = null,
+        ?int $delayMs = null,
+        ?array $retryOptions = null
+    ): void {
+        $this->delayedEvents[] = [
+            'event' => $event,
+            'transport' => $transport,
+            'delayMs' => $delayMs,
+            'retryOptions' => $retryOptions,
+        ];
     }
 
     /**
@@ -107,7 +134,12 @@ class Bus implements BusInterface
     {
         foreach ($this->delayedEvents as $event) {
             try {
-                $this->dispatchEvent($event);
+                $this->dispatchEvent(
+                    $event['event'],
+                    transport: $event['transport'],
+                    delayMs: $event['delayMs'],
+                    retryOptions: $event['retryOptions'],
+                );
             } catch (Throwable) {
             }
         }
