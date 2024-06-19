@@ -25,6 +25,10 @@ class UserService implements UserServiceInterface
     {
         $this->clearAuthentication();
 
+        if ($apiKey === '') {
+            throw new InvalidAuthorizationException();
+        }
+
         $user = $this->sharedUserCache->read("API_{$apiKey}");
         if ($user === null) {
             $user = $this->sharedUserCache->read($apiKey);
@@ -48,9 +52,10 @@ class UserService implements UserServiceInterface
         if ($user === null) {
             $user = $this->sharedUserCache->read("ADMIN_{$tenantId}");
         }
+
         $this->user = $user;
 
-        if ($user === null) {
+        if ($user === null || $user->apiKey === '') {
             throw new InvalidAuthorizationException();
         }
 
@@ -61,6 +66,11 @@ class UserService implements UserServiceInterface
     public function authenticateUser(string $apiKey): void
     {
         $this->clearAuthentication();
+
+        if ($apiKey === '') {
+            throw new InvalidAuthorizationException();
+        }
+
 
         $user = $this->sharedUserCache->read($apiKey);
         $this->user = $user;
