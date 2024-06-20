@@ -35,7 +35,7 @@ class Clock
     public static function fromString(string $dateTime): self
     {
         try {
-            return new self(new DateTimeImmutable($dateTime));
+            return (new self(new DateTimeImmutable($dateTime)))->setTimezone('UTC');
         } catch (Throwable $e) {
             throw NektriaException::new($e);
         }
