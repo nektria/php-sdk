@@ -16,6 +16,7 @@ namespace Nektria\Util\Console;
 use Symfony\Component\Console\Exception\InvalidArgumentException;
 
 use function count;
+use function sprintf;
 use function strlen;
 
 final class Color

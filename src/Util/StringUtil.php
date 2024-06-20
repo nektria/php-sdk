@@ -8,6 +8,8 @@ use Nektria\Exception\NektriaException;
 use Symfony\Component\String\Slugger\AsciiSlugger;
 use Throwable;
 
+use function sprintf;
+
 use const STR_PAD_LEFT;
 
 class StringUtil
