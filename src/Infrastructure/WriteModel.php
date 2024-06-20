@@ -38,9 +38,11 @@ abstract class WriteModel
     /**
      * @param T $domain
      */
-    protected function deleteEntity(EntityInterface $domain): void
+    protected function deleteEntity(EntityInterface $domain, bool $secure = true): void
     {
-        $this->checkFromService();
+        if ($secure) {
+            $this->checkFromService();
+        }
 
         try {
             $this->manager->remove($domain);
@@ -97,9 +99,11 @@ abstract class WriteModel
     /**
      * @param T $domain
      */
-    protected function saveEntity(EntityInterface $domain): void
+    protected function saveEntity(EntityInterface $domain, bool $secure = true): void
     {
-        $this->checkFromService();
+        if ($secure) {
+            $this->checkFromService();
+        }
 
         try {
             $domain->refresh();
