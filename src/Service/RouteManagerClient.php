@@ -392,6 +392,35 @@ readonly class RouteManagerClient
     }
 
     /**
+     * @param array{
+     *      code: string,
+     *      quantity: int
+     *  }[] $boxes
+     */
+    public function saveOrderBoxes(string $orderNumber, array $boxes): void
+    {
+        $this->requestClient->put(
+            "{$this->routeManagerHost}/api/admin/orders/{$orderNumber}/boxes",
+            data: [
+                'boxes' => $boxes,
+            ],
+            headers: $this->getHeaders(),
+        );
+    }
+
+    public function saveOrderStatus(string $orderNumber, string $status, Clock $at): void
+    {
+        $this->requestClient->put(
+            "{$this->routeManagerHost}/api/admin/orders/{$orderNumber}/boxes",
+            data: [
+                'status' => $status,
+                'updatedAt' => $at->iso8601String(),
+            ],
+            headers: $this->getHeaders(),
+        );
+    }
+
+    /**
      * @return array<string, string>
      */
     private function getHeaders(): array
