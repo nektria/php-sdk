@@ -395,7 +395,7 @@ readonly class RouteManagerClient
      * @param array{
      *      code: string,
      *      quantity: int
-     *  }[] $boxes
+     * }[] $boxes
      */
     public function saveOrderBoxes(string $orderNumber, array $boxes): void
     {
