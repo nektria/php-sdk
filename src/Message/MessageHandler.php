@@ -27,6 +27,13 @@ readonly abstract class MessageHandler
         self::CONTAINER_BOX->set($container);
     }
 
+    protected function checkAccessToTenant(string $tenantId): void
+    {
+        if ($tenantId !== $this->tenant()->id) {
+            throw new InsufficientCredentialsException();
+        }
+    }
+
     protected function checkAccessToWarehouse(string $warehouseId): void
     {
         if (!$this->hasAccessToWarehouse($warehouseId)) {
