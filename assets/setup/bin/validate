@@ -3,8 +3,6 @@ bin/console &> /dev/null
 
 trap "exit 1" ERR
 
-USE_GOOGLE=''
-
 print_usage() {
   printf "Usage: bin/phpstan [-g] \n"
 }
@@ -21,14 +19,14 @@ bin/tools/check-dumps
 
 if [ "$USE_GOOGLE" = '1' ]; then
   bin/tools/composer-validate -g
-  bin/console doctrine:schema:validate -e test
+  bin/doctrine
   bin/tools/phpstan -g
   bin/tools/php-cs-fixer -g
   bin/tools/phpcs -g
   bin/console debug:static-analysis
 else
   docker exec -i __PROJECT__ composer global update
-  bin/tools/composer-validate
+  bin/doctrine
   bin/docker/console doctrine:schema:validate
   bin/tools/phpstan
   bin/tools/php-cs-fixer
