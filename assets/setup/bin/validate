@@ -21,6 +21,7 @@ bin/tools/check-dumps
 
 if [ "$USE_GOOGLE" = '1' ]; then
   bin/tools/composer-validate -g
+  bin/console doctrine:schema:validate
   bin/tools/phpstan -g
   bin/tools/php-cs-fixer -g
   bin/tools/phpcs -g
@@ -28,6 +29,7 @@ if [ "$USE_GOOGLE" = '1' ]; then
 else
   docker exec -i __PROJECT__ composer global update
   bin/tools/composer-validate
+  bin/docker/console doctrine:schema:validate
   bin/tools/phpstan
   bin/tools/php-cs-fixer
   bin/tools/phpcs
