@@ -19,5 +19,19 @@ print_usage() {
   printf "Usage: bin/doctrine [-g] \n"
 }
 
-bin/console doctrine:schema:validate -e test
+while getopts 'g' flag; do
+  case "$flag" in
+    g) USE_GOOGLE='1';;
+    *) print_usage
+       exit 1 ;;
+  esac
+done
+
+if [ "$USE_GOOGLE" = '1' ]; then
+  bin/console doctrine:schema:validate -e test
+else
+  bin/docker/console doctrine:schema:validate -e test
+fi
+
+
 
