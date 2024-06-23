@@ -6,13 +6,16 @@ namespace Nektria\Console\Debug;
 
 use Nektria\Console\Console;
 use Nektria\Exception\NektriaException;
+use Nektria\Infrastructure\ArrayDocumentReadModel;
 use Nektria\Service\ContextService;
 use Nektria\Util\FileUtil;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 class SetupAssetsConsole extends Console
 {
     public function __construct(
-        private readonly ContextService $contextService
+        private readonly ContextService $contextService,
+        private readonly ContainerInterface $container,
     ) {
         parent::__construct('debug:setup:assets');
     }
@@ -20,6 +23,7 @@ class SetupAssetsConsole extends Console
     protected function play(): void
     {
         $this->copyDir('vendor/nektria/php-sdk/assets/setup', '.');
+        $this->fixMigrations();
         $this->output()->writeln('done');
 
         exec('chmod -R +x bin/*');
@@ -66,5 +70,17 @@ class SetupAssetsConsole extends Console
     private function fix(string $text): string
     {
         return str_replace('__PROJECT__', $this->contextService->project(), $text);
+    }
+
+    private function fixMigrations(): void
+    {
+        /** @var ArrayDocumentReadModel|null $readModel */
+        $readModel = $this->container->get(ArrayDocumentReadModel::class);
+
+        if ($readModel === null) {
+            return;
+        }
+
+        $readModel->fixMigrations();
     }
 }
