@@ -6,10 +6,8 @@ namespace Nektria\Console\Debug;
 
 use Nektria\Console\Console;
 use Nektria\Exception\NektriaException;
-use Nektria\Infrastructure\ArrayDocumentReadModel;
 use Nektria\Service\ContextService;
 use Nektria\Util\FileUtil;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 
 class SetupAssetsConsole extends Console
 {
