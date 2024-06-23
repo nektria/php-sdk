@@ -27,11 +27,7 @@ while getopts 'g' flag; do
   esac
 done
 
-if [ "$USE_GOOGLE" = '1' ]; then
-  bin/console doctrine:schema:validate -e test
-else
-  bin/docker/console doctrine:schema:validate -e test
-fi
+bin/docker/console doctrine:schema:validate -e test || bin/console doctrine:schema:validate -e test
 
 
 
