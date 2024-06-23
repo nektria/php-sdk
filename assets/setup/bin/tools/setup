@@ -1,3 +1,4 @@
 #!/usr/bin/env bash
 
 bin/docker/console debug:setup:assets || bin/console debug:setup:assets
+git
