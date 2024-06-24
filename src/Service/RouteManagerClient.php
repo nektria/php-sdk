@@ -123,6 +123,7 @@ use Throwable;
  *     type: string,
  *     updatedAt: string,
  *     vehicleId: string|null,
+ *     warehouseId: string,
  * }
  *
  * @phpstan-type RMShopper array{
