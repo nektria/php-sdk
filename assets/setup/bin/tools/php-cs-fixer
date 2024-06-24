@@ -22,4 +22,3 @@ else
   docker exec -i __PROJECT__ /root/.composer/vendor/bin/php-cs-fixer fix src tests --allow-risky=yes --config=server/__PROJECT__-dev/php-cs-fixer.dist.php
   docker exec -i __PROJECT__ rm .php-cs-fixer.cache &>/dev/null || true
 fi
-

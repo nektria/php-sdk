@@ -19,7 +19,7 @@ bin/tools/check-dumps
 
 if [ "$USE_GOOGLE" = '1' ]; then
   bin/tools/composer-validate -g
-  bin/tools/doctrine
+  bin/tools/doctrine -g
   bin/tools/phpstan -g
   bin/tools/php-cs-fixer -g
   bin/tools/phpcs -g
