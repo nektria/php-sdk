@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace Nektria\Document;
 
+use ArrayAccess;
 use IteratorAggregate;
+use Nektria\Exception\NektriaException;
 use Nektria\Service\ContextService;
 use Nektria\Util\ArrayUtil;
 use Traversable;
@@ -15,7 +17,7 @@ use function count;
  * @implements IteratorAggregate<int, T>
  * @template T of Document
  */
-readonly class DocumentCollection extends Document implements IteratorAggregate
+readonly class DocumentCollection extends Document implements IteratorAggregate, ArrayAccess
 {
     /**
      * @param T[] $items
@@ -109,6 +111,26 @@ readonly class DocumentCollection extends Document implements IteratorAggregate
             $this->items,
             static fn (Document $item) => $item->toArray(ContextService::dummy())[$field] ?? 'null'
         );
+    }
+
+    public function offsetExists(mixed $offset): bool
+    {
+        return isset($this->items[$offset]);
+    }
+
+    public function offsetGet(mixed $offset): mixed
+    {
+        return $this->items[$offset];
+    }
+
+    public function offsetSet(mixed $offset, mixed $value): void
+    {
+        throw new NektriaException('DocumentCollection is read-only');
+    }
+
+    public function offsetUnset(mixed $offset): void
+    {
+        throw new NektriaException('DocumentCollection is read-only');
     }
 
     /**
