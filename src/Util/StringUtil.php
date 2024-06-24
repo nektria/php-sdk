@@ -14,6 +14,11 @@ use const STR_PAD_LEFT;
 
 class StringUtil
 {
+    public static function capitalize(string $input): string
+    {
+        return ucwords(strtolower($input));
+    }
+
     public static function className(object $class): string
     {
         $path = explode('\\', $class::class);
