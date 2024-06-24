@@ -67,7 +67,7 @@ class ExcelFile
         }
     }
 
-    public function transformToDate(Clock|LocalClock $clock): string
+    public function transformToDate(Clock | LocalClock $clock): string
     {
         return "{$clock->day()}/{$clock->month()}/{$clock->year()}";
     }
