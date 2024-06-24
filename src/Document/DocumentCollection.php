@@ -4,14 +4,17 @@ declare(strict_types=1);
 
 namespace Nektria\Document;
 
+use IteratorAggregate;
 use Nektria\Service\ContextService;
+use Traversable;
 
 use function count;
 
 /**
+ * @implements IteratorAggregate<int, T>
  * @template T of Document
  */
-readonly class DocumentCollection extends Document
+readonly class DocumentCollection extends Document implements IteratorAggregate
 {
     /**
      * @param T[] $items
@@ -79,12 +82,11 @@ readonly class DocumentCollection extends Document
         return $this->items[$key];
     }
 
-    /**
-     * @return T[]
-     */
-    public function items(): array
+    public function getIterator(): Traversable
     {
-        return $this->items;
+        foreach ($this->items as $key => $val) {
+            yield $key => $val;
+        }
     }
 
     /**
@@ -110,7 +112,7 @@ readonly class DocumentCollection extends Document
     {
         $list = [];
 
-        foreach ($this->items() as $item) {
+        foreach ($this as $item) {
             $list[] = $item->toArray($context);
         }
 
