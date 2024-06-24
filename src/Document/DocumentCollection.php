@@ -139,6 +139,14 @@ readonly class DocumentCollection extends Document implements IteratorAggregate,
     }
 
     /**
+     * @return DocumentCollection<T>
+     */
+    public function reverse(): self
+    {
+        return new self(array_reverse($this->items));
+    }
+
+    /**
      * @return mixed[]
      */
     public function toArray(ContextService $context): array
