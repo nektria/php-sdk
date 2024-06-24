@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Nektria\Util;
 
+use Nektria\Dto\Clock;
+use Nektria\Dto\LocalClock;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
@@ -63,5 +65,10 @@ class ExcelFile
         foreach ($values as $i => $iValue) {
             $this->setCell($row, $column + $i, $iValue);
         }
+    }
+
+    public function transformToDate(Clock|LocalClock $clock): string
+    {
+        return "{$clock->day()}/{$clock->month()}/{$clock->year()}";
     }
 }
