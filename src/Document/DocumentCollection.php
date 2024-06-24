@@ -90,6 +90,14 @@ readonly class DocumentCollection extends Document implements IteratorAggregate
     }
 
     /**
+     * @return T[]
+     */
+    public function items(): array
+    {
+        return $this->items;
+    }
+
+    /**
      * @return T|null
      */
     public function last()
