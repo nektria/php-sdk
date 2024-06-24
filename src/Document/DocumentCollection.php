@@ -112,6 +112,9 @@ readonly class DocumentCollection extends Document implements IteratorAggregate,
         return isset($this->items[$offset]);
     }
 
+    /**
+     * @return T
+     */
     public function offsetGet(mixed $offset): mixed
     {
         return $this->items[$offset];
