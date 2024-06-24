@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Nektria\Document;
 
 use ArrayAccess;
+use Countable;
 use IteratorAggregate;
 use Nektria\Exception\NektriaException;
 use Nektria\Service\ContextService;
@@ -18,7 +19,7 @@ use function count;
  * @implements IteratorAggregate<int, T>
  * @template T of Document
  */
-readonly class DocumentCollection extends Document implements IteratorAggregate, ArrayAccess
+readonly class DocumentCollection extends Document implements IteratorAggregate, ArrayAccess, Countable
 {
     /**
      * @param T[] $items
