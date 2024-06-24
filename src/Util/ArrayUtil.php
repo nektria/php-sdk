@@ -76,6 +76,16 @@ class ArrayUtil
     }
 
     /**
+     * @template T of array
+     * @param T[] $list
+     * @return array<string, T>
+     */
+    public static function mapifyArray(array $list, string $field): array
+    {
+        return self::mapify($list, static fn (array $item) => $item[$field] ?? 'null');
+    }
+
+    /**
      * @template T of EntityInterface
      * @param T[] $list
      * @return array<string, T>
