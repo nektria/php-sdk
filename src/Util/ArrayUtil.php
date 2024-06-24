@@ -76,6 +76,16 @@ class ArrayUtil
     }
 
     /**
+     * @template T of EntityInterface
+     * @param T[] $list
+     * @return array<string, T>
+     */
+    public static function mapifyEntities(array $list): array
+    {
+        return self::mapify($list, static fn (EntityInterface $item) => $item->id());
+    }
+
+    /**
      * @template T
      * @param T[] $list
      * @return T[]
@@ -83,15 +93,5 @@ class ArrayUtil
     public static function unique(array $list): array
     {
         return array_values(array_unique($list));
-    }
-
-    /**
-     * @template T of EntityInterface
-     * @param T[] $list
-     * @return array<string, T>
-     */
-    public function mapifyEntities(array $list): array
-    {
-        return self::mapify($list, static fn (EntityInterface $item) => $item->id());
     }
 }
