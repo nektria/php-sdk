@@ -37,7 +37,7 @@ readonly class DocumentCollection extends Document implements IteratorAggregate,
      */
     public static function merge(self $a, self $b): self
     {
-        return new self(array_merge($a->items, $b->items));
+        return new self([...$a->items, ...$b->items]);
     }
 
     /**
