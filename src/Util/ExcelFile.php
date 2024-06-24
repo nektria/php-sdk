@@ -14,7 +14,7 @@ class ExcelFile
     private string $worksheet;
 
     private function __construct(
-        private readonly string $file,
+        public readonly string $file,
         private readonly XLSXWriter $spreadsheet,
     ) {
         $this->worksheet = 'Sheet1';
