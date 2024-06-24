@@ -93,6 +93,14 @@ readonly class DocumentCollection extends Document implements IteratorAggregate
     }
 
     /**
+     * @return T[]
+     */
+    public function list(): array
+    {
+        return $this->items;
+    }
+
+    /**
      * @return array<string, T>
      */
     public function mapify(string $field): array
