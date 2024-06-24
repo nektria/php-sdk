@@ -6,6 +6,7 @@ namespace Nektria\Document;
 
 use IteratorAggregate;
 use Nektria\Service\ContextService;
+use Nektria\Util\ArrayUtil;
 use Traversable;
 
 use function count;
@@ -45,20 +46,14 @@ readonly class DocumentCollection extends Document implements IteratorAggregate
     }
 
     /**
-     * @param callable(T): string $callback
      * @return array<string, T[]>
      */
-    public function classify(callable $callback): array
+    public function classify(string $field): array
     {
-        $result = [];
-
-        foreach ($this->items as $item) {
-            $key = $callback($item);
-            $result[$key] ??= [];
-            $result[$key][] = $item;
-        }
-
-        return $result;
+        return ArrayUtil::classify(
+            $this->items,
+            static fn (Document $item) => $item->toArray(ContextService::dummy())[$field] ?? 'null'
+        );
     }
 
     public function count(): int
@@ -90,19 +85,22 @@ readonly class DocumentCollection extends Document implements IteratorAggregate
     }
 
     /**
-     * @return T[]
-     */
-    public function items(): array
-    {
-        return $this->items;
-    }
-
-    /**
      * @return T|null
      */
     public function last()
     {
         return $this->items[$this->count() - 1] ?? null;
+    }
+
+    /**
+     * @return array<string, T>
+     */
+    public function mapify(string $field): array
+    {
+        return ArrayUtil::mapify(
+            $this->items,
+            static fn (Document $item) => $item->toArray(ContextService::dummy())[$field] ?? 'null'
+        );
     }
 
     /**

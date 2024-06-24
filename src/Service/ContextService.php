@@ -31,6 +31,8 @@ class ContextService
 
     public const string TEST = 'test';
 
+    public static ?ContextService $dummyCS;
+
     private string $context;
 
     private ?string $tenantId;
@@ -48,6 +50,13 @@ class ContextService
         $this->traceId = StringUtil::uuid4();
         $this->userId = null;
         $this->tenantId = null;
+    }
+
+    public static function dummy(): self
+    {
+        self::$dummyCS ??= new self(new SharedVariableCache('', ''), self::INTERNAL, 'dummy');
+
+        return self::$dummyCS;
     }
 
     public function context(): string

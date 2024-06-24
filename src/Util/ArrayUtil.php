@@ -4,15 +4,17 @@ declare(strict_types=1);
 
 namespace Nektria\Util;
 
+use IteratorAggregate;
+
 class ArrayUtil
 {
     /**
      * @template T
-     * @param T[] $list
+     * @param array<int, T>|IteratorAggregate<int, T> $list
      * @param callable(T): string $callback
      * @return array<string, T[]>
      */
-    public static function classify(array $list, callable $callback): array
+    public static function classify(array | IteratorAggregate $list, callable $callback): array
     {
         $result = [];
         foreach ($list as $item) {
@@ -53,11 +55,11 @@ class ArrayUtil
 
     /**
      * @template T
-     * @param T[] $list
+     * @param array<int,T>|IteratorAggregate<int, T> $list
      * @param callable(T): string $callback
      * @return array<string, T>
      */
-    public static function mapify(array $list, callable $callback, bool $keepFirst = false): array
+    public static function mapify(array | IteratorAggregate $list, callable $callback, bool $keepFirst = false): array
     {
         $result = [];
         foreach ($list as $item) {
