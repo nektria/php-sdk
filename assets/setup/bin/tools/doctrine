@@ -34,4 +34,3 @@ else
   bin/docker/console debug:migrarions:fix
   bin/docker/console doctrine:schema:validate
 fi
-
