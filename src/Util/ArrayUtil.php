@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Nektria\Util;
 
 use IteratorAggregate;
+use Nektria\Entity\EntityInterface;
 
 class ArrayUtil
 {
@@ -82,5 +83,15 @@ class ArrayUtil
     public static function unique(array $list): array
     {
         return array_values(array_unique($list));
+    }
+
+    /**
+     * @template T of EntityInterface
+     * @param T[] $list
+     * @return array<string, T>
+     */
+    public function mapifyEntities(array $list): array
+    {
+        return self::mapify($list, static fn (EntityInterface $item) => $item->id());
     }
 }
