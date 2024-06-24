@@ -14,6 +14,7 @@ use Traversable;
 use function count;
 
 /**
+ * @implements ArrayAccess<int, T>
  * @implements IteratorAggregate<int, T>
  * @template T of Document
  */
@@ -69,14 +70,6 @@ readonly class DocumentCollection extends Document implements IteratorAggregate,
     public function first()
     {
         return $this->items[0] ?? null;
-    }
-
-    /**
-     * @return T
-     */
-    public function get(int $key): Document
-    {
-        return $this->items[$key];
     }
 
     public function getIterator(): Traversable
