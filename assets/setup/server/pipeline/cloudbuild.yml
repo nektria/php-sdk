@@ -1,18 +1,4 @@
 steps:
-  - name: gcr.io/cloud-builders/git
-    entrypoint: sh
-    secretEnv: ['GITHUB_TOKEN']
-    args:
-      - '-c'
-      - >
-
-        git config --global credential.helper 'store --file=/tmp/creds'
-
-        echo "https://$$GITHUB_TOKEN:x-oauth-basic@github.com" > /tmp/creds
-
-        git clone https://github.com/nektria/__PROJECT__.git 
-
-        git fetch --unshallow --quiet
 
   - id: Load PHP image
     name: gcr.io/cloud-builders/docker
@@ -36,7 +22,7 @@ steps:
     entrypoint: sh
     args: [ "/app/pipeline", "$BRANCH_NAME", "$_APP" ]
 
-  - id: Push new __PROJECT__ image
+  - id: Push new yieldmanager image
     name: gcr.io/cloud-builders/docker
     entrypoint: bash
     args:
@@ -45,7 +31,7 @@ steps:
 
         set -e  >/dev/null 2>&1
 
-        SERIAL_NUMBER=$(git rev-list --count HEAD)
+        SERIAL_NUMBER=$(TZ="Europe/Madrid" date +"%y%m%d.%H%M")
 
         if [ "$BRANCH_NAME" = "$_BRANCH" ];then TAG=v$$SERIAL_NUMBER; else TAG="v$$SERIAL_NUMBER-$BRANCH_NAME"; fi; >/dev/null 2>&1
 
@@ -58,10 +44,5 @@ steps:
         echo Version: eu.gcr.io/nektria/$_APP:$$TAG
 
 substitutions:
-  _BRANCH: main
-  _APP: __PROJECT__
-
-availableSecrets:
-  secretManager:
-    - versionName: projects/73093926400/secrets/GITHUB_TOKEN/versions/latest
-      env: 'GITHUB_TOKEN'
+  _BRANCH: master
+  _APP: yieldmanager
