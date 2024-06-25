@@ -45,4 +45,4 @@ steps:
 
 substitutions:
   _BRANCH: main
-  _APP: yieldmanager
+  _APP: __PROJECT__
