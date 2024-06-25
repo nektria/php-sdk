@@ -22,7 +22,7 @@ steps:
     entrypoint: sh
     args: [ "/app/pipeline", "$BRANCH_NAME", "$_APP" ]
 
-  - id: Push new yieldmanager image
+  - id: Push new __PROJECT__ image
     name: gcr.io/cloud-builders/docker
     entrypoint: bash
     args:
