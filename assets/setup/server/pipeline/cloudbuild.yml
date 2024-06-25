@@ -44,5 +44,5 @@ steps:
         echo Version: eu.gcr.io/nektria/$_APP:$$TAG
 
 substitutions:
-  _BRANCH: master
+  _BRANCH: main
   _APP: yieldmanager
