@@ -1,6 +1,18 @@
 steps:
   - name: gcr.io/cloud-builders/git
-    args: [ "fetch", "--unshallow", "--quiet" ]
+    entrypoint: sh
+    secretEnv: ['GITHUB_TOKEN']
+    args:
+      - '-c'
+      - >
+        
+        git config --global credential.helper 'store --file=/tmp/creds'
+        
+        echo "https://$$GITHUB_TOKEN:x-oauth-basic@github.com" > /tmp/creds
+        
+        git clone https://github.com/nektria/__PROJECT__.git 
+        
+        git fetch --unshallow --quiet
 
   - id: Load PHP image
     name: gcr.io/cloud-builders/docker
@@ -46,3 +58,8 @@ steps:
 substitutions:
   _BRANCH: master
   _APP: __PROJECT__
+
+availableSecrets:
+  secretManager:
+    - versionName: projects/73093926400/secrets/GITHUB_TOKEN/versions/latest
+      env: 'GITHUB_TOKEN'
