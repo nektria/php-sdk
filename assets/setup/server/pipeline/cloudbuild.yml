@@ -5,13 +5,13 @@ steps:
     args:
       - '-c'
       - >
-        
+
         git config --global credential.helper 'store --file=/tmp/creds'
-        
+
         echo "https://$$GITHUB_TOKEN:x-oauth-basic@github.com" > /tmp/creds
-        
+
         git clone https://github.com/nektria/__PROJECT__.git 
-        
+
         git fetch --unshallow --quiet
 
   - id: Load PHP image
