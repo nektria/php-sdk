@@ -24,6 +24,7 @@ steps:
     args:
       - '-c'
       - >
+
         set -e
 
         echo "Building tests services"
@@ -41,6 +42,7 @@ steps:
     args:
       - '-c'
       - >
+
         set -e  >/dev/null 2>&1
 
         SERIAL_NUMBER=$(git rev-list --count HEAD)
@@ -56,7 +58,7 @@ steps:
         echo Version: eu.gcr.io/nektria/$_APP:$$TAG
 
 substitutions:
-  _BRANCH: master
+  _BRANCH: main
   _APP: __PROJECT__
 
 availableSecrets:
