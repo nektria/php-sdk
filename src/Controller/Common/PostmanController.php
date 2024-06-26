@@ -454,9 +454,9 @@ readonly class PostmanController extends Controller
                 } elseif ($value === null) {
                     $value = 'null';
                 } elseif (is_array($value)) {
-                    $value = $value;
-                } else {
                     $value = implode(',', $value);
+                } else {
+                    $value = (string) $value;
                 }
 
                 $query[] = [
