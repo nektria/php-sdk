@@ -412,7 +412,7 @@ readonly class RouteManagerClient
     public function saveOrderStatus(string $orderNumber, string $status, Clock $at): void
     {
         $this->requestClient->put(
-            "{$this->routeManagerHost}/api/admin/orders/{$orderNumber}/boxes",
+            "{$this->routeManagerHost}/api/admin/orders/{$orderNumber}/status",
             data: [
                 'status' => $status,
                 'updatedAt' => $at->iso8601String(),
