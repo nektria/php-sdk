@@ -474,7 +474,7 @@ readonly class PostmanController extends Controller
                         'raw' => $url,
                         'host' => [$host],
                         'path' => [$path],
-                        'query' => $query,
+                        'query' => is_array($query) ? implode(',', $query) : $query,
                     ],
                 ],
                 'event' => [
