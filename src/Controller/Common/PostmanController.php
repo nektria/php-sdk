@@ -456,7 +456,7 @@ readonly class PostmanController extends Controller
                 } elseif (is_array($value)) {
                     $value = $value;
                 } else {
-                    $value = (string) $value;
+                    $value = implode(',', $value);
                 }
 
                 $query[] = [
@@ -474,7 +474,7 @@ readonly class PostmanController extends Controller
                         'raw' => $url,
                         'host' => [$host],
                         'path' => [$path],
-                        'query' => is_array($query) ? implode(',', $query) : $query,
+                        'query' => $query,
                     ],
                 ],
                 'event' => [
