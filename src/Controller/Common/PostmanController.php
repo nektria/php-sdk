@@ -18,6 +18,7 @@ use Symfony\Component\Process\Process;
 use Throwable;
 
 use function count;
+use function is_array;
 
 readonly class PostmanController extends Controller
 {
