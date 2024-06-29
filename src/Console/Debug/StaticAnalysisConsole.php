@@ -149,7 +149,7 @@ class StaticAnalysisConsole extends Console
             }
         } elseif ($endpoint['method'] === 'GET') {
             $function = explode('::', $endpoint['defaults']['_controller'])[1];
-            if (!str_starts_with($function, 'get') && !str_starts_with($function, 'list')) {
+            if (!str_starts_with($function, 'get')) {
                 $messages[] = 'Function must start by either "get" or "list"';
             }
         } elseif ($endpoint['method'] === 'PUT') {
@@ -162,15 +162,21 @@ class StaticAnalysisConsole extends Console
             if (!str_starts_with($function, 'delete')) {
                 $messages[] = 'Function must start by "delete"';
             }
-        } elseif ($endpoint['method'] === 'POST' || $endpoint['method'] === 'PATCH') {
+        } elseif ($endpoint['method'] === 'PATCH') {
+            $function = explode('::', $endpoint['defaults']['_controller'])[1];
+            if (!str_starts_with($function, 'execute')) {
+                $messages[] = 'Function must start by "execute"';
+            }
+        } elseif ($endpoint['method'] === 'POST') {
             $function = explode('::', $endpoint['defaults']['_controller'])[1];
             if (
                 str_starts_with($function, 'delete')
                 || str_starts_with($function, 'get')
+                || str_starts_with($function, 'execute')
                 || str_starts_with($function, 'list')
                 || str_starts_with($function, 'save')
             ) {
-                $messages[] = 'Function must not start by "delete", "get", "list" or "save"';
+                $messages[] = 'Function must not start by "delete", "get", "list", "execute" or "save"';
             }
         } else {
             $messages[] = "Method '{$endpoint['method']}' not supported";
