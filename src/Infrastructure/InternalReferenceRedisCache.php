@@ -19,7 +19,7 @@ abstract class InternalReferenceRedisCache extends RedisCache
     /**
      * @param InternalRedisCache<T> $internalRedisCache
      */
-    protected function __construct(
+    public function __construct(
         private readonly InternalRedisCache $internalRedisCache,
         string $redisDsn,
         string $redisPrefix,
