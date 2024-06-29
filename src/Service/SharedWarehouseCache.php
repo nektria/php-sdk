@@ -10,7 +10,7 @@ use Nektria\Infrastructure\SharedRedisCache;
 /**
  * @extends SharedRedisCache<WarehouseSharedInfo>
  */
-class SharedWarehouseCacheCache extends SharedRedisCache
+class SharedWarehouseCache extends SharedRedisCache
 {
     public function read(string $id): ?WarehouseSharedInfo
     {
