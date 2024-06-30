@@ -114,14 +114,15 @@ use Throwable;
  * }
  *
  * @phpstan-type RMRoute array{
+ *     cost: float,
  *     createdAt: string,
  *     distance: int,
  *     driverArrivedAtWarehouseAt: string,
  *     driverId: string|null,
- *     executionWindow: array{
- *         startTime: string,
- *         endTime: string,
- *     },
+ *     executionWindowStartTime: string,
+ *     executionWindowStartTime: string,
+ *     expectedWindowEndTime: string,
+ *     expectedWindowStartTime: string,
  *     id: string,
  *     name: string,
  *     pickingShiftId: string,
@@ -129,6 +130,8 @@ use Throwable;
  *     stagingArea: string|null,
  *     steps: RMStep[],
  *     time: int,
+ *     totalDistance: int,
+ *     totalTravelTime: int,
  *     type: string,
  *     updatedAt: string,
  *     vehicleId: string|null,
