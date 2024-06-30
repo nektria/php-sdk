@@ -455,6 +455,17 @@ readonly class RouteManagerClient
         );
     }
 
+    public function savePickingShiftStatus(string $pickingShiftId, string $status): void
+    {
+        $this->requestClient->put(
+            "{$this->routeManagerHost}/api/admin/picking-shifts/{$pickingShiftId}/status",
+            data: [
+                'status' => $status,
+            ],
+            headers: $this->getHeaders(),
+        );
+    }
+
     /**
      * @return array<string, string>
      */
