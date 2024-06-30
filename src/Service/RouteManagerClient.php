@@ -92,6 +92,15 @@ use Throwable;
  *      updatedAt: string,
  *      warehouseId: string,
  * }
+ * @phpstan-type RMPickingShiftPlanning array{
+ *      id: string,
+ *      ordersWithoutRoute: RMOrder[],
+ *      routes: RMRoute[],
+ *      transportSmartChecks: array{
+ *          type: string,
+ *          message: string,
+ *      }[],
+ * }
  *
  * @phpstan-type RMPing array{
  *      response: string
@@ -280,6 +289,17 @@ readonly class RouteManagerClient
      * @return RMPickingShift
      */
     public function getPickingShift(string $id): array
+    {
+        return $this->requestClient->get(
+            "{$this->routeManagerHost}/api/admin/picking-shifts/{$id}",
+            headers: $this->getHeaders(),
+        )->json();
+    }
+
+    /**
+     * @return RMPickingShiftPlanning
+     */
+    public function getPickingShiftPlanning(string $id): array
     {
         return $this->requestClient->get(
             "{$this->routeManagerHost}/api/admin/picking-shifts/{$id}",
