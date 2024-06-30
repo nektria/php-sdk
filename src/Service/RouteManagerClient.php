@@ -305,7 +305,7 @@ readonly class RouteManagerClient
     public function getPickingShiftPlanning(string $id): array
     {
         return $this->requestClient->get(
-            "{$this->routeManagerHost}/api/admin/picking-shifts/{$id}",
+            "{$this->routeManagerHost}/api/admin/picking-shifts/{$id}/planning",
             headers: $this->getHeaders(),
         )->json();
     }
