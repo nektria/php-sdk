@@ -344,17 +344,6 @@ readonly class RouteManagerClient
     }
 
     /**
-     * @return RMRoute[]
-     */
-    public function getRoutesFromPickingShift(string $pickingShiftId): array
-    {
-        return $this->requestClient->get(
-            "{$this->routeManagerHost}/api/admin/picking-shifts/{$pickingShiftId}/routes",
-            headers: $this->getHeaders(),
-        )->json();
-    }
-
-    /**
      * @return RMVehicle
      */
     public function getVehicle(string $id): array
