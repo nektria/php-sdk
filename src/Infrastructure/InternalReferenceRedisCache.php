@@ -80,7 +80,7 @@ abstract class InternalReferenceRedisCache extends RedisCache
                 throw new RuntimeException($lastError);
             }
 
-            return unserialize($item);
+            return unserialize($item, ['allowed_classes' => true]);
         } catch (Throwable) {
             return null;
         }
