@@ -300,12 +300,34 @@ readonly class RouteManagerClient
     }
 
     /**
+     * @return RMOrder[]
+     */
+    public function getPickingShiftOrders(string $pickingShiftId): array
+    {
+        return $this->requestClient->get(
+            "{$this->routeManagerHost}/api/admin/picking-shifts/{$pickingShiftId}/orders",
+            headers: $this->getHeaders(),
+        )->json();
+    }
+
+    /**
      * @return RMPickingShiftPlanning
      */
     public function getPickingShiftPlanning(string $id): array
     {
         return $this->requestClient->get(
             "{$this->routeManagerHost}/api/admin/picking-shifts/{$id}/planning",
+            headers: $this->getHeaders(),
+        )->json();
+    }
+
+    /**
+     * @return RMRoute[]
+     */
+    public function getPickingShiftRoutes(string $pickingShiftId): array
+    {
+        return $this->requestClient->get(
+            "{$this->routeManagerHost}/api/admin/picking-shifts/{$pickingShiftId}/routes",
             headers: $this->getHeaders(),
         )->json();
     }
@@ -355,31 +377,9 @@ readonly class RouteManagerClient
     }
 
     /**
-     * @return RMOrder[]
-     */
-    public function listPickingShiftOrders(string $pickingShiftId): array
-    {
-        return $this->requestClient->get(
-            "{$this->routeManagerHost}/api/admin/picking-shifts/{$pickingShiftId}/orders",
-            headers: $this->getHeaders(),
-        )->json();
-    }
-
-    /**
-     * @return RMRoute[]
-     */
-    public function listPickingShiftRoutes(string $pickingShiftId): array
-    {
-        return $this->requestClient->get(
-            "{$this->routeManagerHost}/api/admin/picking-shifts/{$pickingShiftId}/routes",
-            headers: $this->getHeaders(),
-        )->json();
-    }
-
-    /**
      * @return RMPickingShift[]
      */
-    public function listWarehousePickingShifts(string $warehouseId, Clock $date): array
+    public function getWarehousePickingShifts(string $warehouseId, Clock $date): array
     {
         return $this->requestClient->get(
             "{$this->routeManagerHost}/api/admin/warehouses/{$warehouseId}/picking-shifts",
@@ -393,7 +393,7 @@ readonly class RouteManagerClient
     /**
      * @return RMWarehouse[]
      */
-    public function listWarehouses(): array
+    public function getWarehouses(): array
     {
         return $this->requestClient->get(
             "{$this->routeManagerHost}/api/admin/warehouses",
