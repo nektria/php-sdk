@@ -455,6 +455,28 @@ readonly class RouteManagerClient
         );
     }
 
+    public function saveRouteDriver(string $routeId, string $driverId): void
+    {
+        $this->requestClient->put(
+            "{$this->routeManagerHost}/api/admin/routes/{$routeId}/driver",
+            data: [
+                'driverId' => $driverId,
+            ],
+            headers: $this->getHeaders(),
+        );
+    }
+
+    public function saveRouteName(string $routeId, string $name): void
+    {
+        $this->requestClient->put(
+            "{$this->routeManagerHost}/api/admin/routes/{$routeId}/name",
+            data: [
+                'name' => $name,
+            ],
+            headers: $this->getHeaders(),
+        );
+    }
+
     /**
      * @return array<string, string>
      */
