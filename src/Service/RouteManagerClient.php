@@ -119,7 +119,7 @@ use Throwable;
  *     distance: int,
  *     driverArrivedAtWarehouseAt: string,
  *     driverId: string|null,
- *     executionWindowStartTime: string,
+ *     executionWindowEndTime: string,
  *     executionWindowStartTime: string,
  *     expectedWindowEndTime: string,
  *     expectedWindowStartTime: string,
