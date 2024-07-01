@@ -181,7 +181,6 @@ readonly class RequestClient
                 $url,
                 $options,
             );
-            $end = floor(microtime(true) * 1000) - $start;
 
             $content = $response->getContent(false);
             $status = $response->getStatusCode();
@@ -195,6 +194,8 @@ readonly class RequestClient
                 $headers,
                 $respHeaders,
             );
+
+            $end = floor(microtime(true) * 1000) - $start;
         } catch (Throwable $e) {
             throw NektriaException::new($e);
         }
