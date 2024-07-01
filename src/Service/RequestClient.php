@@ -175,7 +175,7 @@ readonly class RequestClient
                 $options['body'] = $body;
             }
 
-            $start = floor(microtime(true) * 1000);
+            $start = microtime(true);
             $response = $this->client->request(
                 $method,
                 $url,
@@ -195,7 +195,7 @@ readonly class RequestClient
                 $respHeaders,
             );
 
-            $end = floor(microtime(true) * 1000) - $start;
+            $end = (microtime(true) - $start) * 1000;
         } catch (Throwable $e) {
             throw NektriaException::new($e);
         }
