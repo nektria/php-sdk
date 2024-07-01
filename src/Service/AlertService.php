@@ -350,6 +350,7 @@ class AlertService
             [
                 'Authorization' => "Bot {$token}",
             ],
+            enableDebugFallback: false,
         );
         $this->sharedDiscordCache->removeLastMessage($channel);
     }
