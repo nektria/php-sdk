@@ -1,27 +1,22 @@
 #!/bin/bash
 trap "exit 1" ERR
 
-USE_LOCAL=''
-USE_GOOGLE=''
+PIPELINE=''
 DOCKER_IMAGE='php-sdk'
 
 print_usage() {
-  printf "Usage: bin/php-cs-fixer [-l|g] \n"
+  printf "Usage: bin/phpcs [-p] \n"
 }
 
-while getopts 'lg' flag; do
+while getopts 'p' flag; do
   case "$flag" in
-    l) USE_LOCAL='1';;
-    g) USE_GOOGLE='1';;
+    p) PIPELINE='1';;
     *) print_usage
        exit 1 ;;
   esac
 done
 
-if [ "$USE_LOCAL" = '1' ]; then
-  php -d memory_limit=-1 vendor/bin/phpcbf src --colors --standard=PSR12
-  php -d memory_limit=-1 vendor/bin/phpcs src --colors --standard=PSR12
-elif [ "$USE_GOOGLE" = '1' ]; then
+if [ "$PIPELINE" = '1' ]; then
   php -d memory_limit=-1 /builder/home/.composer/vendor/bin/phpcs src --standard=PSR12
 else
   docker exec -i "$DOCKER_IMAGE" vendor/bin/phpcbf src --colors --standard=PSR12

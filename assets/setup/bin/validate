@@ -23,13 +23,13 @@ if [ "$USE_GOOGLE" = '1' ]; then
   bin/tools/phpstan -g
   bin/tools/php-cs-fixer -g
   bin/tools/phpcs -g
-  bin/console debug:static-analysis
+  bin/console debug:static-analysis -c
 else
   docker exec -i __PROJECT__ composer global update
   bin/tools/doctrine
   bin/tools/phpstan
   bin/tools/php-cs-fixer
   bin/tools/phpcs
-  bin/console debug:static-analysis
+  bin/console debug:static-analysis -c
 fi
 

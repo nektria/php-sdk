@@ -1,21 +1,21 @@
 #!/bin/bash
 trap "exit 1" ERR
 
-USE_GOOGLE=''
+PIPELINE=''
 
 print_usage() {
-  printf "Usage: bin/phpstan [-g] \n"
+  printf "Usage: bin/phpstan [-p] \n"
 }
 
-while getopts 'g' flag; do
+while getopts 'p' flag; do
   case "$flag" in
-    g) USE_GOOGLE='1';;
+    p) PIPELINE='1';;
     *) print_usage
        exit 1 ;;
   esac
 done
 
-if [ "$USE_GOOGLE" = '1' ]; then
+if [ "$PIPELINE" = '1' ]; then
   bin/console > /dev/null
   vendor/bin/phpunit --stop-on-failure --stop-on-error --testdox --configuration /workspace/server/pipeline/phpunit.xml.dist
 else

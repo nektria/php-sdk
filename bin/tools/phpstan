@@ -5,7 +5,7 @@ PIPELINE=''
 DOCKER_IMAGE='php-sdk'
 
 print_usage() {
-  printf "Usage: bin/tools/phpstan [-l|g] \n"
+  printf "Usage: bin/tools/phpstan [-p] \n"
 }
 
 while getopts 'p' flag; do

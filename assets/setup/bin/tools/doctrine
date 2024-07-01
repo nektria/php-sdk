@@ -28,10 +28,10 @@ while getopts 'g' flag; do
 done
 
 if [ "$USE_GOOGLE" = '1' ]; then
-  bin/console d:m:m -n -e test
-  bin/console debug:migrarions:fix -e test
+  bin/console doctrine:migrations:migrate -n -e test
+  bin/console debug:migrarions:fix -e test -c
   bin/console doctrine:schema:validate -e test
 else
-  bin/docker/console debug:migrarions:fix
+  bin/docker/console debug:migrarions:fix -c
   bin/docker/console doctrine:schema:validate
 fi
