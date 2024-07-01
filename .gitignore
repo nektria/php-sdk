@@ -27,3 +27,5 @@ NK_VERSION
 server/php-sdk/.phpunit.result.cache
 .phpunit.result.cache
 ###< phpunit/phpunit ###
+
+.phpactor.json
