@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace Nektria\Dto;
 
+use Nektria\Util\StringUtil;
+use Symfony\Component\String\Slugger\AsciiSlugger;
+
 readonly class Address
 {
     public function __construct(
@@ -16,6 +19,21 @@ readonly class Address
         public float $latitude,
         public float $longitude,
     ) {
+    }
+
+    public function slug(): string
+    {
+        if ($this->addressLine1 === '') {
+            return '';
+        }
+
+        $slugger = new AsciiSlugger();
+
+        return strtolower($slugger->slug(
+            StringUtil::trim(
+                "{$this->addressLine1} {$this->addressLine2} {$this->postalCode} {$this->city} {$this->countryCode}",
+            ),
+        )->toString());
     }
 
     /**
