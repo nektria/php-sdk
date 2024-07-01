@@ -73,6 +73,14 @@ readonly class DocumentCollection extends Document implements IteratorAggregate,
         return $this->items[0] ?? null;
     }
 
+    /**
+     * @return T
+     */
+    public function get(int $key): Document
+    {
+        return $this->items[$key];
+    }
+
     public function getIterator(): Traversable
     {
         foreach ($this->items as $key => $val) {
@@ -131,7 +139,7 @@ readonly class DocumentCollection extends Document implements IteratorAggregate,
     }
 
     /**
-     * @return T
+     * @return T|null
      */
     public function opt(int $key): ?Document
     {
