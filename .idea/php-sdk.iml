@@ -132,6 +132,7 @@
       <excludeFolder url="file://$MODULE_DIR$/vendor/symfony/lock" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/spaze/phpstan-disallowed-calls" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/mk-j/php_xlsxwriter" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/ergebnis/phpstan-rules" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />

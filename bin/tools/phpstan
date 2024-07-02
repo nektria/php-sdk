@@ -17,9 +17,9 @@ while getopts 'p' flag; do
 done
 
 if [ "$PIPELINE" = '1' ]; then
-  php -d memory_limit=-1 vendor/bin/phpstan analyze -c server/php-sdk/phpstan.neon --no-progress
+  php -d memory_limit=-1 vendor/bin/phpstan analyze -c server/php-sdk-dev/phpstan.neon --no-progress
 else
   bin/docker/console cache:clear > /dev/null 2>&1
-  docker exec -i "$DOCKER_IMAGE" php -d memory_limit=-1 vendor/bin/phpstan analyze -c server/php-sdk/phpstan.neon -v
+  docker exec -i "$DOCKER_IMAGE" php -d memory_limit=-1 vendor/bin/phpstan analyze -c server/php-sdk-dev/phpstan.neon -v
 fi
 

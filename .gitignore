@@ -24,7 +24,7 @@ NK_VERSION
 
 ###> phpunit/phpunit ###
 /phpunit.xml
-server/php-sdk/.phpunit.result.cache
+server/php-sdk-dev/.phpunit.result.cache
 .phpunit.result.cache
 ###< phpunit/phpunit ###
 

@@ -17,8 +17,8 @@ while getopts 'p' flag; do
 done
 
 if [ "$PIPELINE" = '1' ]; then
-  php -d memory_limit=-1 vendor/bin/php-cs-fixer fix src --allow-risky=yes --using-cache=no --dry-run --config=server/php-sdk/php-cs-fixer.dist.php
+  php -d memory_limit=-1 vendor/bin/php-cs-fixer fix src --allow-risky=yes --using-cache=no --dry-run --config=server/php-sdk-dev/php-cs-fixer.dist.php
 else
-  docker exec -i "$DOCKER_IMAGE" php -d memory_limit=-1 vendor/bin/php-cs-fixer fix src --allow-risky=yes --using-cache=no --config=server/php-sdk/php-cs-fixer.dist.php
+  docker exec -i "$DOCKER_IMAGE" php -d memory_limit=-1 vendor/bin/php-cs-fixer fix src --allow-risky=yes --using-cache=no --config=server/php-sdk-dev/php-cs-fixer.dist.php
 fi
 

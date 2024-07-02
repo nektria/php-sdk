@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Nektria\Util;
 
-class ValidateOpt
+readonly class ValidateOpt
 {
     // dates
 

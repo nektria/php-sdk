@@ -9,6 +9,7 @@ includes:
     - '%currentWorkingDirectory%/vendor/phpstan/phpstan-doctrine/rules.neon'
     - '%currentWorkingDirectory%/vendor/phpstan/phpstan/conf/bleedingEdge.neon'
     - '%currentWorkingDirectory%/vendor/spaze/phpstan-disallowed-calls/extension.neon'
+    #- '%currentWorkingDirectory%/vendor/ergebnis/phpstan-rules/rules.neon'
 
 parameters:
     level: 8
@@ -53,3 +54,7 @@ services:
         class: Nektria\PHPStan\ValidateClassFieldsReturnsNotNullExtension
         tags:
             - phpstan.typeSpecifier.staticMethodTypeSpecifyingExtension
+    -
+        class: Ergebnis\PHPStan\Rules\Files\DeclareStrictTypesRule
+        tags:
+            - phpstan.rules.rule

@@ -148,6 +148,7 @@
       <path value="$PROJECT_DIR$/vendor/symfony/lock" />
       <path value="$PROJECT_DIR$/vendor/spaze/phpstan-disallowed-calls" />
       <path value="$PROJECT_DIR$/vendor/mk-j/php_xlsxwriter" />
+      <path value="$PROJECT_DIR$/vendor/ergebnis/phpstan-rules" />
     </include_path>
   </component>
   <component name="PhpProjectSharedConfiguration" php_language_level="8.3" />
