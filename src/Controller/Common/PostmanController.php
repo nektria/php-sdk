@@ -441,7 +441,7 @@ readonly class PostmanController extends Controller
         $fixedName = ucwords($fixedName);
 
         $file = str_replace('\\', '/', explode('::', $data['defaults']['_controller'])[0]) . '.php';
-        $file = str_replace(['App', 'Nektria/'], ['/app/src', '/app/vendor/nektria/php-sdk-dev/src/'], $file);
+        $file = str_replace(['App', 'Nektria/'], ['/app/src', '/app/vendor/nektria/php-sdk/src/'], $file);
 
         $json = $this->buildPostmanRequestBody($file, $name);
 
