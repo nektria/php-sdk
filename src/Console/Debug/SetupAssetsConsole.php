@@ -19,7 +19,7 @@ class SetupAssetsConsole extends Console
 
     protected function play(): void
     {
-        $this->copyDir('vendor/nektria/php-sdk-dev/assets/setup', '.');
+        $this->copyDir('vendor/nektria/php-sdk/assets/setup', '.');
         $this->output()->writeln('done');
 
         exec('chmod -R +x bin/*');
