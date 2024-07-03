@@ -7,6 +7,8 @@ namespace Nektria\Util;
 use IteratorAggregate;
 use Nektria\Entity\EntityInterface;
 
+use function count;
+
 class ArrayUtil
 {
     /**
@@ -52,6 +54,16 @@ class ArrayUtil
             'added' => array_diff($new, $old),
             'removed' => array_diff($old, $new),
         ];
+    }
+
+    /**
+     * @template T
+     * @param T[] $smallOne
+     * @param T[] $bigOne
+     */
+    public static function isSubset(array $smallOne, array $bigOne): bool
+    {
+        return count(array_diff($smallOne, $bigOne)) === 0;
     }
 
     /**
