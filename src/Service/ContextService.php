@@ -67,7 +67,7 @@ class ContextService
     public function debugMode(): bool
     {
         return
-            $this->isPlayEnvironment()
+            $this->isLocalEnvironament()
             || $this->sharedVariableCache->hasKey("debug_bbf6c8f_{$this->project}")
             || $this->traceId === '3e65f252-8a06-4361-a264-0cd60b7a26c5';
     }
@@ -81,7 +81,7 @@ class ContextService
         $data = [];
         foreach ($projects as $project) {
             $key = "debug_bbf6c8f_{$project}";
-            $data[$project] = $this->isPlayEnvironment() || $this->sharedVariableCache->hasKey($key);
+            $data[$project] = $this->isLocalEnvironament() || $this->sharedVariableCache->hasKey($key);
         }
 
         return $data;
