@@ -101,13 +101,13 @@ class Bus implements BusInterface
         if ($retryOptions !== null) {
             if ($this->contextService->env() === ContextService::DEV) {
                 $stamps[] = new RetryStamp(
-                    max(1, $retryOptions['currentTry']),
+                    max(1, $retryOptions['currentTry'] ?? 1),
                     min(10, $retryOptions['maxTries']),
                     min(10_000, $retryOptions['interval']),
                 );
             } else {
                 $stamps[] = new RetryStamp(
-                    max(1, $retryOptions['currentTry']),
+                    max(1, $retryOptions['currentTry'] ?? 1),
                     $retryOptions['maxTries'],
                     $retryOptions['interval'],
                 );
@@ -174,13 +174,13 @@ class Bus implements BusInterface
         if ($retryOptions !== null) {
             if ($this->contextService->env() === ContextService::DEV) {
                 $stamps[] = new RetryStamp(
-                    max(1, $retryOptions['currentTry']),
+                    max(1, $retryOptions['currentTry'] ?? 1),
                     min(10, $retryOptions['maxTries']),
                     min(10_000, $retryOptions['interval']),
                 );
             } else {
                 $stamps[] = new RetryStamp(
-                    max(1, $retryOptions['currentTry']),
+                    max(1, $retryOptions['currentTry'] ?? 1),
                     $retryOptions['maxTries'],
                     $retryOptions['interval'],
                 );
