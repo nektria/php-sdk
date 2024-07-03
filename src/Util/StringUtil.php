@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Nektria\Util;
 
 use Nektria\Exception\NektriaException;
+use Random\Randomizer;
 use Symfony\Component\String\Slugger\AsciiSlugger;
 use Throwable;
 
@@ -14,6 +15,42 @@ use const STR_PAD_LEFT;
 
 class StringUtil
 {
+    public const string LOWER_CASE = 'abcdefghijklmnopqrstuvwxyz';
+
+    public const string NUMBERS = '0123456789';
+
+    public const string SYMBOLS = '!@#$%^&*()_+{}|:<>?';
+
+    public const string UPPER_CASE = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+
+    public static function bytes(
+        int $length,
+        bool $lowerCase = true,
+        bool $upperCase = true,
+        bool $numbers = true,
+        bool $symbols = false,
+    ): string {
+        $randomizer = new Randomizer();
+        $chars = '';
+        if ($lowerCase) {
+            $chars .= self::LOWER_CASE;
+        }
+        if ($upperCase) {
+            $chars .= self::UPPER_CASE;
+        }
+        if ($numbers) {
+            $chars .= self::NUMBERS;
+        }
+        if ($symbols) {
+            $chars .= self::SYMBOLS;
+        }
+
+        return $randomizer->getBytesFromString(
+            $chars,
+            $length,
+        );
+    }
+
     public static function capitalize(string $input): string
     {
         return ucwords(strtolower($input));

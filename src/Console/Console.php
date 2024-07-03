@@ -6,7 +6,6 @@ namespace Nektria\Console;
 
 use Nektria\Document\Document;
 use Nektria\Document\ThrowableDocument;
-use Nektria\Dto\Clock;
 use Nektria\Exception\NektriaException;
 use Nektria\Infrastructure\BusInterface;
 use Nektria\Infrastructure\UserServiceInterface;
@@ -181,6 +180,14 @@ abstract class Console extends BaseCommand
         return $this->container;
     }
 
+    protected function copy(string $text): bool
+    {
+        $status = 0;
+        exec("echo '{$text}' | pbcopy &> /dev/null", result_code: $status);
+
+        return $status === 0;
+    }
+
     /**
      * @param array{
      *     currentTry: int,
@@ -302,23 +309,7 @@ abstract class Console extends BaseCommand
                 new ThrowableDocument($e),
             );
 
-            if (!((bool) $this->input()->getOption('clean'))) {
-                $now = Clock::now();
-                $this->output()->writeln("\n\n<red>{$now->toLocal('Europe/Madrid')->dateTimeString()}</red>");
-
-                if ($isSilent) {
-                    return 1;
-                }
-
-                throw $e;
-            }
-
-            return 1;
-        }
-
-        if (!((bool) $this->input()->getOption('clean'))) {
-            $now = Clock::now();
-            $this->output()->writeln("\n\n<green>{$now->toLocal('Europe/Madrid')->dateTimeString()}</green>");
+            throw $e;
         }
 
         return 0;
