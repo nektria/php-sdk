@@ -46,6 +46,9 @@ abstract class MessageListener implements EventSubscriberInterface
 {
     private float $executionTime;
 
+    /** @var Query<Document>|Command|Event|null */
+    private Query | Command | Event | null $message;
+
     private string $messageCompletedAt;
 
     private string $messageStartedAt;
@@ -62,6 +65,7 @@ abstract class MessageListener implements EventSubscriberInterface
         $this->executionTime = microtime(true);
         $this->messageCompletedAt = Clock::now()->iso8601String();
         $this->messageStartedAt = $this->messageCompletedAt;
+        $this->message = null;
     }
 
     /**
@@ -86,6 +90,7 @@ abstract class MessageListener implements EventSubscriberInterface
         $message = $event->getEnvelope()->getMessage();
         $maxRetries = 1;
 
+        $this->message = null;
         if ($message instanceof Command || $message instanceof Event || $message instanceof Query) {
             $this->decreaseCounter($message);
         }
@@ -220,6 +225,7 @@ abstract class MessageListener implements EventSubscriberInterface
         $this->messageCompletedAt = Clock::now()->iso8601String();
         $message = $event->getEnvelope()->getMessage();
 
+        $this->message = null;
         if ($message instanceof Command || $message instanceof Event || $message instanceof Query) {
             $this->decreaseCounter($message);
         }
@@ -266,8 +272,8 @@ abstract class MessageListener implements EventSubscriberInterface
     public function onWorkerMessageReceived(WorkerMessageReceivedEvent $event): void
     {
         $message = $event->getEnvelope()->getMessage();
-
         if ($message instanceof Command || $message instanceof Event || $message instanceof Query) {
+            $this->message = $message;
             $this->increaseCounter($message);
             $this->decreasePendingCounter($message);
         }
@@ -298,6 +304,9 @@ abstract class MessageListener implements EventSubscriberInterface
 
     public function onWorkerStoppedEvent(): void
     {
+        if ($this->message !== null) {
+            $this->decreaseCounter($this->message);
+        }
         $this->cleanMemory();
 
         gc_collect_cycles();
