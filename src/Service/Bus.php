@@ -34,7 +34,7 @@ class Bus implements BusInterface
      *     transport: string|null,
      *     delayMs: int|null,
      *     retryOptions: array{
-     *         currentTry: int,
+     *         currentTry?: int,
      *         maxTries: int,
      *         interval: int,
      *     }|null
@@ -52,7 +52,7 @@ class Bus implements BusInterface
 
     /**
      * @param array{
-     *     currentTry: int,
+     *     currentTry?: int,
      *     maxTries: int,
      *     interval: int,
      * }|null $retryOptions
@@ -73,7 +73,7 @@ class Bus implements BusInterface
 
     /**
      * @param array{
-     *     currentTry: int,
+     *     currentTry?: int,
      *     maxTries: int,
      *     interval: int,
      * }|null $retryOptions
@@ -148,7 +148,7 @@ class Bus implements BusInterface
 
     /**
      * @param array{
-     *     currentTry: int,
+     *     currentTry?: int,
      *     maxTries: int,
      *     interval: int,
      * }|null $retryOptions

@@ -13,7 +13,7 @@ interface BusInterface
 {
     /**
      * @param array{
-     *     currentTry: int,
+     *     currentTry?: int,
      *     maxTries: int,
      *     interval: int,
      * }|null $retryOptions
@@ -27,7 +27,7 @@ interface BusInterface
 
     /**
      * @param array{
-     *     currentTry: int,
+     *     currentTry?: int,
      *     maxTries: int,
      *     interval: int,
      * }|null $retryOptions
@@ -43,7 +43,7 @@ interface BusInterface
 
     /**
      * @param array{
-     *     currentTry: int,
+     *     currentTry?: int,
      *     maxTries: int,
      *     interval: int,
      * }|null $retryOptions
