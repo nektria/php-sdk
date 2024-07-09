@@ -405,4 +405,9 @@ class LocalClock
     {
         return $this->dateTime->format('Y');
     }
+
+    public function yearAndWeek(): string
+    {
+        return $this->dateTime->format('Y-W');
+    }
 }
