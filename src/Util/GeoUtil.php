@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Nektria\Util;
 
 use Nektria\Document\WarehouseSharedInfo;
