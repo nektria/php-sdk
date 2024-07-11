@@ -8,9 +8,7 @@ use Nektria\Document\WarehouseSharedInfo;
 
 readonly class GeoUtil
 {
-
     /**
-     * @param WarehouseSharedInfo $warehouse
      * @param array{latitude: float, longitude: float} $from
      * @param array{latitude: float, longitude: float} $to
      * @return int distance in meters
