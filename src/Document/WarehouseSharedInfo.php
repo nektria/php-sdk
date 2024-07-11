@@ -21,6 +21,8 @@ readonly class WarehouseSharedInfo extends Document
         public array $areas,
         public bool $enabled,
         public Address $address,
+        public float $latitudeFactor,
+        public float $longitudeFactor,
     ) {
     }
 
@@ -31,6 +33,8 @@ readonly class WarehouseSharedInfo extends Document
             'areas' => $this->areas,
             'enabled' => $this->enabled,
             'id' => $this->id,
+            'latitudeFactor' => $this->latitudeFactor,
+            'longitudeFactor' => $this->longitudeFactor,
             'name' => $this->name,
             'tenantId' => $this->tenantId,
             'timezone' => $this->timezone,
