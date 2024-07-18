@@ -12,7 +12,6 @@ use function count;
 
 abstract class RedisCache
 {
-
     public readonly string $fqn;
 
     private static ?Redis $connection = null;
@@ -23,8 +22,7 @@ abstract class RedisCache
         string $redisDsn,
         string $env,
         string $prefix
-    )
-    {
+    ) {
         $parts = explode('\\', static::class);
         $name = substr(end($parts), 0, -5);
         $this->fqn = "{$prefix}_{$name}_{$env}";
@@ -77,7 +75,7 @@ abstract class RedisCache
                         }
                     }
                 }
-            } while ((int)$it > 0);
+            } while ((int) $it > 0);
 
             return [$count, $size * $count];
         } catch (Throwable $e) {
@@ -99,7 +97,7 @@ abstract class RedisCache
                 $parts['host'] ?? 'localhost',
                 $parts['port'] ?? 6379,
                 0,
-                (string)getenv('HOSTNAME'),
+                (string) getenv('HOSTNAME'),
             );
 
             if (isset($parts['pass'])) {
