@@ -91,6 +91,7 @@ readonly class ToolsController extends Controller
         $args = $this->requestData->getArray('args') ?? [];
         $args[] = '--clean';
         $command = new Process(array_merge(['../bin/console', $command], $args));
+        $command->setTimeout(600);
         $command->run();
 
         return $this->buildResponseForProcess($command);
