@@ -139,6 +139,20 @@ class Clock
         }
     }
 
+    public function dateTimeString(?string $timeZone = null): string
+    {
+        try {
+            $dateTime = $this->dateTime;
+            if ($timeZone !== null) {
+                $dateTime = $dateTime->setTimezone(new DateTimeZone($timeZone));
+            }
+
+            return $dateTime->format('Y-m-d\TH:i:s');
+        } catch (Throwable $e) {
+            throw NektriaException::new($e);
+        }
+    }
+
     public function day(): string
     {
         return $this->dateTime->format('d');
