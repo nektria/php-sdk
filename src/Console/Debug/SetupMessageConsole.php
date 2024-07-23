@@ -71,11 +71,11 @@ class SetupMessageConsole extends Console
         }
 
         if ($type === 'Query') {
-            $fromPath = 'vendor/nektria/php-sdk-dev/assets/message/Query';
-            $fromPathHandler = 'vendor/nektria/php-sdk-dev/assets/message/QueryHandler';
+            $fromPath = 'vendor/nektria/php-sdk/assets/message/Query';
+            $fromPathHandler = 'vendor/nektria/php-sdk/assets/message/QueryHandler';
         } elseif ($type === 'Command') {
-            $fromPath = 'vendor/nektria/php-sdk-dev/assets/message/Command';
-            $fromPathHandler = 'vendor/nektria/php-sdk-dev/assets/message/CommandHandler';
+            $fromPath = 'vendor/nektria/php-sdk/assets/message/Command';
+            $fromPathHandler = 'vendor/nektria/php-sdk/assets/message/CommandHandler';
         } else {
             throw new NektriaException('Message type is invalid.');
         }
