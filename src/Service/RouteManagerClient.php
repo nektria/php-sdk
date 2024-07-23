@@ -472,7 +472,6 @@ readonly class RouteManagerClient
             "{$this->routeManagerHost}/api/admin/routes/{$routeId}/name",
             data: [
                 'name' => $name,
-                'name' => $name,
             ],
             headers: $this->getHeaders(),
         );
