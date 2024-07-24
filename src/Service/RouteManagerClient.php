@@ -456,13 +456,12 @@ readonly class RouteManagerClient
     }
 
     /**
-     * @param string $id
      * @param array{
      *     platform?: string
      * } $order
-     * @return void
      */
-    public function saveRoute(string $id, array $order): void {
+    public function saveRoute(string $id, array $order): void
+    {
         $this->requestClient->put(
             "{$this->routeManagerHost}/api/admin/routes/{$id}",
             data: $order,
