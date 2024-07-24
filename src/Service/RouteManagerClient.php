@@ -460,11 +460,13 @@ readonly class RouteManagerClient
      *     platform?: string
      * } $route
      */
-    public function saveRoute(string $id, array $route): void
+    public function saveRoute(string $id, ?string $platform): void
     {
         $this->requestClient->put(
             "{$this->routeManagerHost}/api/admin/routes/{$id}",
-            data: $route,
+            data: [
+                'platform' => $platform,
+            ],
             headers: $this->getHeaders(),
         );
     }
