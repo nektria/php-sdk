@@ -16,6 +16,21 @@ readonly class ProxyClient
     ) {
     }
 
+    public function assignPlatforms(string $routeId): void
+    {
+        $proxyHost = $this->userService->retrieveUser()->tenant->metadata->proxyHost();
+
+        if ($proxyHost === null) {
+            return;
+        }
+
+        $this->requestClient->patch(
+            "{$proxyHost}/api/admin/routes/{$routeId}/assign-platforms",
+            headers: $this->getHeaders(),
+            enableDebugFallback: true,
+        );
+    }
+
     public function executeTask(string $task): void
     {
         $proxyHost = $this->userService->retrieveUser()->tenant->metadata->proxyHost();
