@@ -455,11 +455,6 @@ readonly class RouteManagerClient
         );
     }
 
-    /**
-     * @param array{
-     *     platform?: string
-     * } $route
-     */
     public function saveRoute(string $id, ?string $platform): void
     {
         $this->requestClient->put(
