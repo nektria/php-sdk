@@ -7,7 +7,7 @@ print_usage() {
   printf "Usage: bin/phpstan [-g] \n"
 }
 
-while getopts 'g' flag; do
+while getopts 'gt' flag; do
   case "$flag" in
     g) USE_GOOGLE='1';;
     *) print_usage

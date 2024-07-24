@@ -16,7 +16,7 @@ readonly class ProxyClient
     ) {
     }
 
-    public function assignPlatforms(string $routeId): void
+    public function assignPlatforms(string $pickingShiftId): void
     {
         $proxyHost = $this->userService->retrieveUser()->tenant->metadata->proxyHost();
 
@@ -25,7 +25,7 @@ readonly class ProxyClient
         }
 
         $this->requestClient->patch(
-            "{$proxyHost}/api/admin/routes/{$routeId}/assign-platforms",
+            "{$proxyHost}/api/admin/picking-shifts/{$pickingShiftId}/assign-platforms",
             headers: $this->getHeaders(),
             enableDebugFallback: true,
         );
