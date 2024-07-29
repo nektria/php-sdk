@@ -398,6 +398,30 @@ readonly class RouteManagerClient
         return $this->requestClient->get("{$this->routeManagerHost}/ping")->json();
     }
 
+    /**
+     * @param string[] $warehouses
+     */
+    public function saveDriver(
+        string $driverId,
+        string $name,
+        string $identificationDocument,
+        string $phoneNumber,
+        array $warehouses
+    ): void
+    {
+        $this->requestClient->put(
+            "{$this->routeManagerHost}/api/admin/drivers/{$driverId}",
+            data: [
+                'id' => $driverId,
+                'identificationDocument' => $identificationDocument,
+                'name' => $name,
+                'phoneNumber' => $phoneNumber,
+                'warehouses' => $warehouses,
+            ],
+            headers: $this->getHeaders(),
+        );
+    }
+
     public function saveDriverCoordinates(
         string $driverId,
         float $latitude,
