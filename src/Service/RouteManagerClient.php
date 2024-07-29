@@ -407,8 +407,7 @@ readonly class RouteManagerClient
         string $identificationDocument,
         string $phoneNumber,
         array $warehouses
-    ): void
-    {
+    ): void {
         $this->requestClient->put(
             "{$this->routeManagerHost}/api/admin/drivers/{$driverId}",
             data: [
