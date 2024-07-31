@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Nektria\Controller\Web;
+namespace Nektria\Controller\Admin;
 
 use Nektria\Controller\Controller;
 use Nektria\Document\ArrayDocument;
@@ -10,10 +10,9 @@ use Nektria\Document\DocumentResponse;
 use Nektria\Service\RequestClient;
 use Nektria\Util\Controller\Route;
 use Symfony\Component\DependencyInjection\ContainerInterface;
-
 use function is_string;
 
-#[Route('/rabbit')]
+#[Route('/api/admin/rabbit')]
 readonly class RabbitController extends Controller
 {
     #[Route('')]
