@@ -10,6 +10,7 @@ use Nektria\Document\DocumentResponse;
 use Nektria\Service\RequestClient;
 use Nektria\Util\Controller\Route;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+
 use function is_string;
 
 #[Route('/api/admin/rabbit')]
