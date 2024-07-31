@@ -11,6 +11,8 @@ use Nektria\Service\RequestClient;
 use Nektria\Util\Controller\Route;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
+use function is_string;
+
 #[Route('/rabbit')]
 readonly class RabbitController extends Controller
 {
@@ -18,8 +20,7 @@ readonly class RabbitController extends Controller
     public function getStatus(
         ContainerInterface $container,
         RequestClient $requestClient,
-    ): DocumentResponse
-    {
+    ): DocumentResponse {
         if (!$container->hasParameter('rabbitDsn')) {
             return $this->emptyResponse();
         }
