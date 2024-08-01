@@ -36,6 +36,10 @@ use Throwable;
  * @phpstan-type RMOrder array{
  *      address: RMAddress,
  *      area: string,
+ *      boxes: array{
+ *          code: string,
+ *          quantity: int,
+ *      }[],
  *      createdAt: string,
  *      deliveryComment: string,
  *      finishedAt: string|null,
@@ -72,7 +76,6 @@ use Throwable;
  * }
  *
  * @phpstan-type RMOrderMetadata array{
- *      boxes: RMBox[],
  *      priority: int|null,
  *      returnPickUp: bool,
  *      tags: string[],
