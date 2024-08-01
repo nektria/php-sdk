@@ -16,7 +16,7 @@ while getopts 'g' flag; do
 done
 
 if [ "$USE_GOOGLE" = '1' ]; then
-  php -d memory_limit=-1 /builder/home/vendor/bin/php-cs-fixer fix src tests --allow-risky=yes --dry-run --config=server/__PROJECT__-dev/php-cs-fixer.dist.php
+  php -d memory_limit=-1 /builder/home/.composer/vendor/bin/php-cs-fixer fix src tests --allow-risky=yes --dry-run --config=server/__PROJECT__-dev/php-cs-fixer.dist.php
 else
   docker exec -i __PROJECT__ rm .php-cs-fixer.cache &>/dev/null || true
   docker exec -i __PROJECT__ /root/.composer/vendor/bin/php-cs-fixer fix src tests --allow-risky=yes --config=server/__PROJECT__-dev/php-cs-fixer.dist.php
