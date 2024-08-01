@@ -321,6 +321,7 @@ abstract class RequestListener implements EventSubscriberInterface
             $headers[$key] = $event->getRequest()->headers->get($key);
         }
 
+        
         if (isset($requestContent['email'])) {
             $requestContent['email'] = '********';
         }
