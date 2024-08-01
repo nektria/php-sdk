@@ -18,7 +18,6 @@ parameters:
         - ../../tests
 
     excludePaths:
-        - /workspace/.composer/vendor
         - /builder/home/.composer/vendor
 
     symfony:
