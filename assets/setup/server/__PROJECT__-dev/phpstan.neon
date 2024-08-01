@@ -19,7 +19,7 @@ parameters:
 
     excludePaths:
         - /root/.composer/vendor
-        - /builder/home/.composer/vendor
+        - /root/.composer/vendor
 
     symfony:
         container_xml_path: '%currentWorkingDirectory%/var/cache/dev/App_KernelDevDebugContainer.xml'
