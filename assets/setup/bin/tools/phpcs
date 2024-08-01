@@ -16,7 +16,7 @@ while getopts 'g' flag; do
 done
 
 if [ "$USE_GOOGLE" = '1' ]; then
-  php -d memory_limit=-1 /root/.composer/vendor/bin/phpcs src tests --standard=PSR12
+  php -d memory_limit=-1 /builder/home/vendor/bin/phpcs src tests --standard=PSR12
 else
   docker exec -i __PROJECT__ /root/.composer/vendor/bin/phpcbf src tests --colors --standard=PSR12
   docker exec -i __PROJECT__ /root/.composer/vendor/bin/phpcs src tests --colors --standard=PSR12
