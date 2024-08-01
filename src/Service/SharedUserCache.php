@@ -47,7 +47,7 @@ class SharedUserCache extends SharedRedisCache
             $user = new User(
                 id: $data['id'],
                 email: $data['email'],
-                name: $data['name'] ?? '',
+                name: $data['name'],
                 warehouses: $data['warehouses'],
                 apiKey: $data['apiKey'],
                 role: $data['role'],
