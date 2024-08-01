@@ -21,6 +21,7 @@ composer config --list --global
 bin/tools/check-dumps
 
 if [ "$USE_GOOGLE" = '1' ]; then
+  echo "GOOOGLE"
   bin/tools/composer-validate -g
   bin/tools/doctrine -g
   bin/tools/phpstan -g
@@ -28,6 +29,7 @@ if [ "$USE_GOOGLE" = '1' ]; then
   bin/tools/phpcs -g
   bin/console debug:static-analysis -c
 else
+  echo "LOCAL"
   docker exec -i __PROJECT__ composer global update
   bin/tools/doctrine
   bin/tools/phpstan

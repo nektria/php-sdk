@@ -16,9 +16,11 @@ while getopts 'g' flag; do
 done
 
 if [ "$USE_GOOGLE" = '1' ]; then
+  echo "GOOOGLE"
   bin/console > /dev/null
   php -d memory_limit=-1 /builder/home/.composer/vendor/bin/phpstan analyze -c dev/phpstan.neon --no-progress -c server/pipeline/phpstan.neon
 else
+  echo "LOCAL"
   docker exec -i __PROJECT__ bin/console > /dev/null
   docker exec -i __PROJECT__ php -d memory_limit=-1 /root/.composer/vendor/bin/phpstan analyze --no-progress -c server/__PROJECT__-dev/phpstan.neon
 fi
