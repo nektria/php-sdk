@@ -16,7 +16,7 @@ use function is_string;
 #[Route('/api/admin/rabbit')]
 readonly class RabbitController extends Controller
 {
-    #[Route('')]
+    #[Route('', method: 'GET')]
     public function getStatus(
         ContainerInterface $container,
         RequestClient $requestClient,
