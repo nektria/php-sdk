@@ -17,7 +17,7 @@ while getopts 'p' flag; do
 done
 
 if [ "$PIPELINE" = '1' ]; then
-  php -d memory_limit=-1 /root/.composer/vendor/bin/phpcs src --standard=PSR12
+  php -d memory_limit=-1 /builder/home/.composer/vendor/bin/phpcs src --standard=PSR12
 else
   docker exec -i "$DOCKER_IMAGE" vendor/bin/phpcbf src --colors --standard=PSR12
   docker exec -i "$DOCKER_IMAGE" vendor/bin/phpcs src --colors --standard=PSR12
