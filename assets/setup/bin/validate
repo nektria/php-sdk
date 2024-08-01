@@ -16,6 +16,8 @@ while getopts 'gd' flag; do
   esac
 done
 
+composer config --list --global
+
 bin/tools/check-dumps
 
 if [ "$USE_GOOGLE" = '1' ]; then
