@@ -313,7 +313,7 @@ abstract class RequestListener implements EventSubscriberInterface
             $header = strtolower($key);
 
             if ($header === 'x-authorization' || $header === 'x-api-id') {
-                $headers[$key] = $event->getRequest()->headers->get($key); //'********';
+                $headers[$key] = $event->getRequest()->headers->get($key); // '********';
 
                 continue;
             }
