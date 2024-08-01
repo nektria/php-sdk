@@ -6,6 +6,7 @@ namespace Nektria\Service;
 
 use Nektria\Document\User;
 use Nektria\Infrastructure\SharedRedisCache;
+use Throwable;
 
 /**
  * @extends SharedRedisCache<array{
@@ -31,43 +32,47 @@ class SharedUserCache extends SharedRedisCache
 
     public function read(string $key): ?User
     {
-        $data = $this->getItem($key);
+        try {
+            $data = $this->getItem($key);
 
-        if ($data === null) {
-            return null;
-        }
-
-        if ($data['id'] === $key) {
-            $tenant = $this->sharedTenantCache->read($data['tenantId']);
-
-            if ($tenant === null) {
+            if ($data === null) {
                 return null;
             }
 
-            $user = new User(
-                id: $data['id'],
-                email: $data['email'],
-                name: $data['name'],
-                warehouses: $data['warehouses'],
-                apiKey: $data['apiKey'],
-                role: $data['role'],
-                tenantId: $tenant->id,
-                tenant: $tenant,
-                dniNie: $data['dniNie'],
-            );
+            if ($data['id'] === $key) {
+                $tenant = $this->sharedTenantCache->read($data['tenantId']);
 
-            $this->save($key, $user);
+                if ($tenant === null) {
+                    return null;
+                }
+
+                $user = new User(
+                    id: $data['id'],
+                    email: $data['email'],
+                    name: $data['name'],
+                    warehouses: $data['warehouses'],
+                    apiKey: $data['apiKey'],
+                    role: $data['role'],
+                    tenantId: $tenant->id,
+                    tenant: $tenant,
+                    dniNie: $data['dniNie'],
+                );
+
+                $this->save($key, $user);
+
+                return $user;
+            }
+
+            $user = $this->read($data['id']);
+
+            if ($user !== null) {
+                $this->save($key, $user);
+            }
 
             return $user;
+        } catch (Throwable) {
+            return null;
         }
-
-        $user = $this->read($data['id']);
-
-        if ($user !== null) {
-            $this->save($key, $user);
-        }
-
-        return $user;
     }
 
     public function remove(string $id): void
