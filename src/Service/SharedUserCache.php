@@ -9,13 +9,14 @@ use Nektria\Infrastructure\SharedRedisCache;
 
 /**
  * @extends SharedRedisCache<array{
- *     id: string,
- *     tenantId: string,
- *     email: string,
- *     role: string,
- *     warehouses: string[],
  *     apiKey: string,
  *     dniNie: string|null,
+ *     email: string,
+ *     id: string,
+ *     name: string,
+ *     role: string,
+ *     tenantId: string,
+ *     warehouses: string[],
  * }>
  */
 class SharedUserCache extends SharedRedisCache
@@ -44,14 +45,15 @@ class SharedUserCache extends SharedRedisCache
             }
 
             $user = new User(
-                $data['id'],
-                $data['email'],
-                $data['warehouses'],
-                $data['apiKey'],
-                $data['role'],
-                $tenant->id,
-                $tenant,
-                $data['dniNie'],
+                id: $data['id'],
+                email: $data['email'],
+                name: $data['name'] ?? '',
+                warehouses: $data['warehouses'],
+                apiKey: $data['apiKey'],
+                role: $data['role'],
+                tenantId: $tenant->id,
+                tenant: $tenant,
+                dniNie: $data['dniNie'],
             );
 
             $this->save($key, $user);
@@ -76,13 +78,14 @@ class SharedUserCache extends SharedRedisCache
     public function save(string $key, User $user): void
     {
         $data = [
-            'id' => $user->id,
-            'tenantId' => $user->tenant->id,
-            'email' => $user->email,
-            'role' => $user->role,
-            'warehouses' => $user->warehouses,
             'apiKey' => $user->apiKey,
             'dniNie' => $user->dniNie,
+            'email' => $user->email,
+            'id' => $user->id,
+            'name' => $user->name,
+            'role' => $user->role,
+            'tenantId' => $user->tenant->id,
+            'warehouses' => $user->warehouses,
         ];
 
         if ($key !== $user->id) {
