@@ -14,9 +14,9 @@ class UserService implements UserServiceInterface
     protected ?User $user;
 
     public function __construct(
-        protected readonly ContextService $contextService,
-        protected readonly SharedUserCache $sharedUserCache,
-        protected readonly RoleManager $roleManager,
+        protected readonly ContextService    $contextService,
+        protected readonly SharedUserV2Cache $sharedUserCache,
+        protected readonly RoleManager       $roleManager,
     ) {
         $this->user = null;
     }

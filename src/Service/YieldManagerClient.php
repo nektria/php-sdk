@@ -220,10 +220,10 @@ use Nektria\Dto\LocalClock;
 readonly class YieldManagerClient
 {
     public function __construct(
-        private ContextService $contextService,
-        private SharedUserCache $sharedUserCache,
-        private RequestClient $requestClient,
-        private string $yieldManagerHost
+        private ContextService    $contextService,
+        private SharedUserV2Cache $sharedUserCache,
+        private RequestClient     $requestClient,
+        private string            $yieldManagerHost
     ) {
     }
 

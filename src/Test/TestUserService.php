@@ -10,7 +10,7 @@ use Nektria\Dto\TenantMetadata;
 use Nektria\Exception\InvalidAuthorizationException;
 use Nektria\Service\ContextService;
 use Nektria\Service\RoleManager;
-use Nektria\Service\SharedUserCache;
+use Nektria\Service\SharedUserV2Cache;
 use Nektria\Service\UserService;
 
 class TestUserService extends UserService
@@ -19,9 +19,9 @@ class TestUserService extends UserService
     private array $users = [];
 
     public function __construct(
-        ContextService $contextService,
-        SharedUserCache $sharedUserCache,
-        RoleManager $roleManager
+        ContextService    $contextService,
+        SharedUserV2Cache $sharedUserCache,
+        RoleManager       $roleManager
     ) {
         parent::__construct($contextService, $sharedUserCache, $roleManager);
 
