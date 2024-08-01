@@ -48,6 +48,12 @@ use Throwable;
  *      note: string,
  *      pickingShiftId: string|null,
  *      productLines: int,
+ *      products: array{
+ *          code: string,
+ *          name: string,
+ *          weight: int,
+ *          quantity: int,
+ *      }[],
  *      proxyAssignedAt: string|null,
  *      routeId: string|null,
  *      shopper: RMShopper|null,
@@ -68,7 +74,6 @@ use Throwable;
  * @phpstan-type RMOrderMetadata array{
  *      boxes: RMBox[],
  *      priority: int|null,
- *      products: RMProduct[],
  *      returnPickUp: bool,
  *      tags: string[],
  * }
@@ -92,6 +97,7 @@ use Throwable;
  *      updatedAt: string,
  *      warehouseId: string,
  * }
+ *
  * @phpstan-type RMPickingShiftPlanning array{
  *      id: string,
  *      ordersWithoutRoute: RMOrder[],
