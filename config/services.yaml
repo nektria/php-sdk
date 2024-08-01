@@ -28,7 +28,7 @@ services:
   Nektria\Service\SharedDiscordCache: ~
   Nektria\Service\SharedLogCache: ~
   Nektria\Service\SharedTenantCache: ~
-  Nektria\Service\SharedUserCache: ~
+  Nektria\Service\SharedUserV2Cache: ~
   Nektria\Service\SharedVariableCache: ~
   Nektria\Service\UserService: ~
   Nektria\Test\TestRunnerListener: ~
