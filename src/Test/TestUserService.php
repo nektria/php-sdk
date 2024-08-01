@@ -19,9 +19,9 @@ class TestUserService extends UserService
     private array $users = [];
 
     public function __construct(
-        ContextService    $contextService,
+        ContextService $contextService,
         SharedUserV2Cache $sharedUserCache,
-        RoleManager       $roleManager
+        RoleManager $roleManager
     ) {
         parent::__construct($contextService, $sharedUserCache, $roleManager);
 

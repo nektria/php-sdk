@@ -6,7 +6,6 @@ namespace Nektria\Service;
 
 use Nektria\Document\User;
 use Nektria\Infrastructure\SharedRedisCache;
-use Throwable;
 
 /**
  * @extends SharedRedisCache<array{
@@ -22,13 +21,11 @@ use Throwable;
  */
 class SharedUserV2Cache extends SharedRedisCache
 {
-
     public function __construct(
         private readonly SharedTenantCache $sharedTenantCache,
-        string                             $redisDsn,
-        string                             $env
-    )
-    {
+        string $redisDsn,
+        string $env
+    ) {
         parent::__construct($redisDsn, $env);
     }
 

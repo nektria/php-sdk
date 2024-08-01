@@ -9,9 +9,9 @@ use Nektria\Infrastructure\UserServiceInterface;
 readonly class ProxyClient
 {
     public function __construct(
-        private ContextService       $contextService,
-        private SharedUserV2Cache    $sharedUserCache,
-        private RequestClient        $requestClient,
+        private ContextService $contextService,
+        private SharedUserV2Cache $sharedUserCache,
+        private RequestClient $requestClient,
         private UserServiceInterface $userService,
     ) {
     }
