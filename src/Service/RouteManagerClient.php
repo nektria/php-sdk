@@ -76,7 +76,6 @@ use Throwable;
  * }
  *
  * @phpstan-type RMOrderMetadata array{
- *      priority: int|null,
  *      returnPickUp: bool,
  *      tags: string[],
  * }
@@ -90,6 +89,7 @@ use Throwable;
  *      id: string,
  *      name: string,
  *      pickingShiftCode: string,
+ *      priority: int,
  *      status: string,
  *      tags: string[],
  *      timeWindows: RMTimeWindow[],
@@ -183,7 +183,6 @@ use Throwable;
  *     endTime: string,
  *     id: string,
  *     pickingShiftId: string,
- *     priority: int,
  *     startTime: string,
  *     updatedAt: string,
  *     warehouseId: string,
