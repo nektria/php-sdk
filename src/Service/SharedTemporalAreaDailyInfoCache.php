@@ -26,10 +26,7 @@ use Nektria\Infrastructure\SharedRedisCache;
  */
 class SharedTemporalAreaDailyInfoCache extends SharedRedisCache
 {
-
     /**
-     * @param string $tenantId
-     * @param LocalClock $date
      * @return TemporalAreaDailyInfo
      */
     public function read(string $tenantId, LocalClock $date, string $area): array
@@ -59,11 +56,7 @@ class SharedTemporalAreaDailyInfoCache extends SharedRedisCache
     }
 
     /**
-     * @param string $tenantId
-     * @param LocalClock $date
-     * @param string $area
      * @param TemporalAreaDailyInfo $data
-     * @return void
      */
     public function save(string $tenantId, LocalClock $date, string $area, array $data): void
     {
