@@ -495,8 +495,8 @@ abstract class RequestListener implements EventSubscriberInterface
             $response->headers->set('Access-Control-Allow-Headers', implode(', ', [
                 'Accept', 'Accept-Encoding', 'Accept-Language', 'Access-Control-Request-Headers',
                 'Access-Control-Request-Method', 'Connection', 'Content-Length', 'Content-Type', 'Host', 'Origin',
-                'Referer', 'User-Agent', 'X-Authorization', 'X-Api-Id', 'X-Nektria-App', 'X-Trace', 'Cross-Origin-Embedder-Policy',
-                'Cross-Origin-Opener-Policy', 'X-Tenant', 'X-Api-Version', 'X-Origin',
+                'Referer', 'User-Agent', 'X-Authorization', 'X-Api-Id', 'X-Nektria-App', 'X-Trace',
+                'Cross-Origin-Embedder-Policy', 'Cross-Origin-Opener-Policy', 'X-Tenant', 'X-Api-Version', 'X-Origin',
             ]));
         }
     }
