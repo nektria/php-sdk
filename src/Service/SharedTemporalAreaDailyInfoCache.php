@@ -22,7 +22,7 @@ use Nektria\Infrastructure\SharedRedisCache;
  *     warehouseId: string|null,
  *  }
  *
- * @extends SharedRedisCache<array<string, array<string, TemporalAreaDailyInfo[]>>>
+ * @extends SharedRedisCache<array<string, array<string, TemporalAreaDailyInfo>>>
  */
 class SharedTemporalAreaDailyInfoCache extends SharedRedisCache
 {
