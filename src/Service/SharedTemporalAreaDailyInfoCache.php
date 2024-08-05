@@ -50,6 +50,14 @@ class SharedTemporalAreaDailyInfoCache extends SharedRedisCache
         ];
     }
 
+    /**
+     * @return array<string, array<string, TemporalAreaDailyInfo>>
+     */
+    public function readFull(string $tenantId): array
+    {
+        return $this->getItem($tenantId) ?? [];
+    }
+
     public function remove(string $tenantId): void
     {
         $this->removeItem($tenantId);
