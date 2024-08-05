@@ -58,6 +58,13 @@ class SharedTemporalAreaDailyInfoCache extends SharedRedisCache
         $this->removeItem($tenantId);
     }
 
+    /**
+     * @param string $tenantId
+     * @param LocalClock $date
+     * @param string $area
+     * @param TemporalAreaDailyInfo $data
+     * @return void
+     */
     public function save(string $tenantId, LocalClock $date, string $area, array $data): void
     {
         $tenantData = $this->getItem($tenantId) ?? [];
