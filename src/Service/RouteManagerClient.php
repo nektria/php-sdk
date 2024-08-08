@@ -249,9 +249,6 @@ readonly class RouteManagerClient
         }
     }
 
-    /**
-     * @param string[] $warehouses
-     */
     public function deleteDriver(
         string $driverId,
     ): void {
