@@ -249,6 +249,18 @@ readonly class RouteManagerClient
         }
     }
 
+    /**
+     * @param string[] $warehouses
+     */
+    public function deleteDriver(
+        string $driverId,
+    ): void {
+        $this->requestClient->delete(
+            "{$this->routeManagerHost}/api/admin/drivers/{$driverId}",
+            headers: $this->getHeaders(),
+        );
+    }
+
     public function deleteOrder(string $orderNumber): void
     {
         $this->requestClient->delete(
@@ -419,7 +431,6 @@ readonly class RouteManagerClient
         $this->requestClient->put(
             "{$this->routeManagerHost}/api/admin/drivers/{$driverId}",
             data: [
-                'id' => $driverId,
                 'identificationDocument' => $identificationDocument,
                 'name' => $name,
                 'phoneNumber' => $phoneNumber,
