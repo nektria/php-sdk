@@ -53,6 +53,10 @@ class MetricsClient
         ?float $routeConnectivity = null,
         ?float $slotConnectivity = null
     ): void {
+        if ($this->contextService->isTest()) {
+            return;
+        }
+
         $this->requestClient->put(
             "{$this->metricsHost}/api/admin/warehouse/{$warehouseId}/daily-infos",
             data: [
