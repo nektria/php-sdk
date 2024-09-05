@@ -58,7 +58,7 @@ class MetricsClient
         }
 
         $this->requestClient->put(
-            "{$this->metricsHost}/api/admin/warehouse/{$warehouseId}/daily-infos",
+            "{$this->metricsHost}/api/admin/warehouses/{$warehouseId}/daily-infos",
             data: [
                 'date' => $date->dateString(),
                 'globalConnectivity' => $globalConnectivity,
