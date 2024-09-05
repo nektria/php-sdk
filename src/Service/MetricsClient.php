@@ -46,6 +46,25 @@ class MetricsClient
         return $this->requestClient->get("{$this->metricsHost}/ping")->json();
     }
 
+    public function saveWarehouseDailyInfo(
+        string $warehouseId,
+        LocalClock $date,
+        ?float $globalConnectivity = null,
+        ?float $routeConnectivity = null,
+        ?float $slotConnectivity = null
+    ): void {
+        $this->requestClient->put(
+            "{$this->metricsHost}/api/admin/warehouse/{$warehouseId}/daily-infos",
+            data: [
+                'date' => $date->dateString(),
+                'globalConnectivity' => $globalConnectivity,
+                'routeConnectivity' => $routeConnectivity,
+                'slotConnectivity' => $slotConnectivity,
+            ],
+            headers: $this->getHeaders(),
+        );
+    }
+
     /**
      * @return array<string, string>
      */
