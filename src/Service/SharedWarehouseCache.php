@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Nektria\Service;
 
 use Nektria\Document\WarehouseSharedInfo;
+use Nektria\Exception\ResourceNotFoundException;
 use Nektria\Infrastructure\SharedRedisCache;
 
 /**
@@ -12,12 +13,12 @@ use Nektria\Infrastructure\SharedRedisCache;
  */
 class SharedWarehouseCache extends SharedRedisCache
 {
-    public function read(string $id): ?WarehouseSharedInfo
+    public function read(string $id): WarehouseSharedInfo
     {
         $data = $this->getItem($id);
 
         if ($data === null) {
-            return null;
+            throw new ResourceNotFoundException('Warehouse', $id);
         }
 
         $this->save($data);
