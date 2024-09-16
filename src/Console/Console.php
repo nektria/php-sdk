@@ -41,6 +41,8 @@ abstract class Console extends BaseCommand
     {
         parent::__construct($name);
         $this->container = null;
+        $this->input = null;
+        $this->output = null;
     }
 
     /**

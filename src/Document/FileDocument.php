@@ -18,7 +18,7 @@ readonly class FileDocument extends Document
         $this->size = filesize($file);
     }
 
-    public function toArray(ContextService $context): mixed
+    public function toArray(ContextService $context): array
     {
         return [
             'path' => $this->file,

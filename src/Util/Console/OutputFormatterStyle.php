@@ -14,9 +14,9 @@ class OutputFormatterStyle implements OutputFormatterStyleInterface
 
     private string $foreground;
 
-    private ?bool $handlesHrefGracefully;
+    private bool $handlesHrefGracefully;
 
-    private ?string $href;
+    private string $href;
 
     /** @var string[] */
     private array $options;
@@ -36,14 +36,7 @@ class OutputFormatterStyle implements OutputFormatterStyleInterface
 
     public function apply(string $text): string
     {
-        if (null === $this->handlesHrefGracefully) {
-            $this->handlesHrefGracefully =
-                ('JetBrains-JediTerm' !== getenv('TERMINAL_EMULATOR'))
-                && ((getenv('KONSOLE_VERSION') === false)
-                    || (int) getenv('KONSOLE_VERSION') > 201100);
-        }
-
-        if (null !== $this->href && $this->handlesHrefGracefully) {
+        if ($this->handlesHrefGracefully) {
             $text = "\033]8;;$this->href\033\\$text\033]8;;\033\\";
         }
 

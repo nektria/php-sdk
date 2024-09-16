@@ -21,6 +21,7 @@ class LockMessageService
     public function __construct(
         private readonly string $redisDsn
     ) {
+        $this->lock = null;
     }
 
     public function acquire(string $name, float $ttl = 300): void

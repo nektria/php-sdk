@@ -69,7 +69,7 @@ abstract class RedisCache
                     $count += count($keys);
                     if ($size === 0 && count($keys) > 0) {
                         try {
-                            $memoryUsage = $this->init()->rawCommand('MEMORY', 'USAGE', $keys[0]);
+                            $memoryUsage = $this->init()->rawcommand('MEMORY', 'USAGE', $keys[0]);
                             $size += $memoryUsage;
                         } catch (Throwable) {
                         }

@@ -8,5 +8,8 @@ use Nektria\Service\ContextService;
 
 readonly abstract class Document
 {
-    abstract public function toArray(ContextService $context): mixed;
+    /**
+     * @return mixed[]
+     */
+    abstract public function toArray(ContextService $context): array;
 }

@@ -57,7 +57,7 @@ readonly class ThrowableDocument extends Document
         $this->throwable = $throwable;
     }
 
-    public function toArray(ContextService $context): mixed
+    public function toArray(ContextService $context): array
     {
         $exception = $this->throwable;
         if ($exception instanceof NektriaException) {

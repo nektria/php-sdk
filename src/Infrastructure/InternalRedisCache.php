@@ -98,7 +98,7 @@ abstract class InternalRedisCache extends RedisCache
     {
         try {
             $realKeys = array_map(fn (string $key) => "{$this->fqn}:{$key}", $keys);
-            $items = $this->init()->mGet($realKeys);
+            $items = $this->init()->mget($realKeys);
 
             $results = [];
             foreach ($keys as $index => $key) {

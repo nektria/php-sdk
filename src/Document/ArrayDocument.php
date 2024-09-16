@@ -17,7 +17,7 @@ readonly class ArrayDocument extends Document
         return $this->data;
     }
 
-    public function toArray(ContextService $context): mixed
+    public function toArray(ContextService $context): array
     {
         return $this->data;
     }

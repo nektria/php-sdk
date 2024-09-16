@@ -18,7 +18,7 @@ readonly class Tenant extends Document
     ) {
     }
 
-    public function toArray(ContextService $context): mixed
+    public function toArray(ContextService $context): array
     {
         if (in_array($context->context(), [ContextService::ADMIN, ContextService::INTERNAL], true)) {
             return [
