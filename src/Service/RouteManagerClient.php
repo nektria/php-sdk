@@ -266,6 +266,15 @@ readonly class RouteManagerClient
         );
     }
 
+    public function deleteTrafficChief(
+        string $trafficChiefId,
+    ): void {
+        $this->requestClient->delete(
+            "{$this->routeManagerHost}/api/admin/traffic-chiefs/{$trafficChiefId}",
+            headers: $this->getHeaders(),
+        );
+    }
+
     public function executeSaveDriverCoordinatesFromOrder(
         string $orderNumber,
         float $latitude,
@@ -522,6 +531,22 @@ readonly class RouteManagerClient
             "{$this->routeManagerHost}/api/admin/routes/{$routeId}/name",
             data: [
                 'name' => $name,
+            ],
+            headers: $this->getHeaders(),
+        );
+    }
+
+    /**
+     * @param string[] $warehouses
+     */
+    public function saveTrafficChief(
+        string $trafficChiefId,
+        array $warehouses
+    ): void {
+        $this->requestClient->put(
+            "{$this->routeManagerHost}/api/admin/traffic-chiefs/{$trafficChiefId}",
+            data: [
+                'warehouses' => $warehouses,
             ],
             headers: $this->getHeaders(),
         );
