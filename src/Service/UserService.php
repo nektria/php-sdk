@@ -7,6 +7,7 @@ namespace Nektria\Service;
 use Nektria\Document\Tenant;
 use Nektria\Document\User;
 use Nektria\Exception\InvalidAuthorizationException;
+use Nektria\Exception\ResourceNotFoundException;
 use Nektria\Infrastructure\UserServiceInterface;
 
 class UserService implements UserServiceInterface
@@ -113,6 +114,17 @@ class UserService implements UserServiceInterface
         } else {
             $this->roleManager->checkAtLeast($this->user->role, $roles);
         }
+    }
+
+    public function retrieve(string $id): User
+    {
+        $user = $this->sharedUserCache->read($id);
+
+        if ($user === null) {
+            throw new ResourceNotFoundException('User', $id);
+        }
+
+        return $user;
     }
 
     public function retrieveTenant(): Tenant
