@@ -16,6 +16,8 @@ interface UserServiceInterface
 
     public function clearAuthentication(): void;
 
+    public function retrieve(string $id): User;
+
     public function retrieveUser(): User;
 
     public function user(): ?User;
