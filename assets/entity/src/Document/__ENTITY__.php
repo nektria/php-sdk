@@ -17,7 +17,7 @@ readonly class __ENTITY__ extends Document
     ) {
     }
 
-    public function toArray(ContextService $context): mixed
+    public function toArray(ContextService $context): array
     {
         return [
             'id' => $this->id,

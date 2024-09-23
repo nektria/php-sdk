@@ -25,7 +25,7 @@ class SetupMessageConsole extends Console
             't',
             InputOption::VALUE_REQUIRED,
             'Query or Command.',
-            ''
+            '',
         );
 
         $this->addOption(
@@ -33,7 +33,7 @@ class SetupMessageConsole extends Console
             'm',
             InputOption::VALUE_REQUIRED,
             'Message name.',
-            ''
+            '',
         );
 
         $this->addOption(
@@ -41,7 +41,7 @@ class SetupMessageConsole extends Console
             'r',
             InputOption::VALUE_REQUIRED,
             'Resource name.',
-            ''
+            '',
         );
     }
 
@@ -76,6 +76,9 @@ class SetupMessageConsole extends Console
         } elseif ($type === 'Command') {
             $fromPath = 'vendor/nektria/php-sdk/assets/message/Command';
             $fromPathHandler = 'vendor/nektria/php-sdk/assets/message/CommandHandler';
+        } elseif ($type === 'Event') {
+            $fromPath = 'vendor/nektria/php-sdk/assets/message/Event';
+            $fromPathHandler = 'vendor/nektria/php-sdk/assets/message/EventHandler';
         } else {
             throw new NektriaException('Message type is invalid.');
         }
@@ -154,7 +157,7 @@ class SetupMessageConsole extends Console
                 $pathResource,
                 $message,
             ],
-            $text
+            $text,
         );
     }
 }

@@ -13,6 +13,7 @@ print_usage() {
 while getopts 'pd' flag; do
   case "$flag" in
     p) PIPELINE='1';;
+    d) true;;
     *) print_usage
        exit 1 ;;
   esac
