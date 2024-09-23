@@ -541,12 +541,14 @@ readonly class RouteManagerClient
      */
     public function saveTrafficChief(
         string $trafficChiefId,
-        array $warehouses
+        array $warehouses,
+        string $name,
     ): void {
         $this->requestClient->put(
             "{$this->routeManagerHost}/api/admin/traffic-chiefs/{$trafficChiefId}",
             data: [
                 'warehouses' => $warehouses,
+                'name' => $name,
             ],
             headers: $this->getHeaders(),
         );
