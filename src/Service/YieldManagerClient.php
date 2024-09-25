@@ -382,6 +382,7 @@ readonly class YieldManagerClient
 
     public function saveOrder(
         string $orderNumber,
+        ?string $area = null,
         ?string $shopperCode = null,
         ?int $weight = null,
         ?int $productLines = null,
@@ -410,6 +411,7 @@ readonly class YieldManagerClient
                     'longitude' => $longitude,
                     'elevator' => $elevator,
                 ],
+                'area' => $area,
                 'capacities' => [
                     'productLines' => $productLines,
                 ],
