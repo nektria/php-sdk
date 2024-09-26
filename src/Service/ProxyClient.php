@@ -76,6 +76,21 @@ readonly class ProxyClient
         );
     }
 
+    public function sendOrderIsCreated(string $orderNumber): void
+    {
+        $proxyHost = $this->userService->retrieveUser()->tenant->metadata->proxyHost();
+
+        if ($proxyHost === null) {
+            return;
+        }
+
+        $this->requestClient->patch(
+            "{$proxyHost}/api/admin/orders/{$orderNumber}/created",
+            headers: $this->getHeaders(),
+            enableDebugFallback: true,
+        );
+    }
+
     public function sendOrderIsUpdated(string $orderNumber): void
     {
         $proxyHost = $this->userService->retrieveUser()->tenant->metadata->proxyHost();
