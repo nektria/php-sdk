@@ -93,7 +93,7 @@ class Clock
     public function __toString(): string
     {
         try {
-            return $this->dateTime->format('Y-m-d\TH:i:s');
+            return $this->microDateTimeString();
         } catch (Throwable $e) {
             throw NektriaException::new($e);
         }
