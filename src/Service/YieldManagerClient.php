@@ -7,6 +7,7 @@ namespace Nektria\Service;
 use Nektria\Document\Tenant;
 use Nektria\Document\User;
 use Nektria\Dto\LocalClock;
+use Nektria\Dto\TenantMetadata;
 use Nektria\Exception\RequestException;
 
 /**
@@ -317,7 +318,7 @@ readonly class YieldManagerClient
             tenant: new Tenant(
                 id: $data['tenant']['id'],
                 name: $data['tenant']['name'],
-                metadata: $data['tenant']['metadata'],
+                metadata: new TenantMetadata($data['tenant']['metadata']),
             ),
             dniNie: $data['dniNie']
         );
