@@ -10,6 +10,7 @@ services:
       string $env: '%kernel.environment%'
       string $project: 'sdk'
       string $redisDsn: 'none'
+      string $yieldManagerHost: 'none'
 
   Nektria\Console\:
     resource: '../src/Console'
