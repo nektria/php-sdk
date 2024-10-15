@@ -31,6 +31,7 @@ services:
   Nektria\Service\SharedUserV2Cache: ~
   Nektria\Service\SharedVariableCache: ~
   Nektria\Service\UserService: ~
+  Nektria\Service\YieldManagerClient: ~
   Nektria\Test\TestRunnerListener: ~
 
   Symfony\Component\DependencyInjection\ContainerInterface: '@service_container'
