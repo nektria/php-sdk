@@ -4,7 +4,10 @@ declare(strict_types=1);
 
 namespace Nektria\Service;
 
+use Nektria\Document\Tenant;
+use Nektria\Document\User;
 use Nektria\Dto\LocalClock;
+use Nektria\Exception\RequestException;
 
 /**
  * @phpstan-type YMTimeWindow array{
@@ -286,6 +289,34 @@ readonly class YieldManagerClient
             ],
             headers: $this->getHeaders(),
         )->json();
+    }
+
+    public function getUser(string $userId): ?User
+    {
+        try {
+            $data = $this->requestClient->get(
+                "{$this->yieldManagerHost}/api/admin/users/{$userId}",
+                headers: $this->getHeaders(),
+            )->json();
+        } catch (RequestException) {
+            return null;
+        }
+
+        return new User(
+            id: $data['id'],
+            email: $data['email'],
+            name: $data['name'],
+            warehouses: $data['warehouses'],
+            apiKey: $data['apiKey'],
+            role: $data['role'],
+            tenantId: $data['tenant']['id'],
+            tenant: new Tenant(
+                id: $data['tenant']['id'],
+                name: $data['tenant']['name'],
+                metadata: $data['tenant']['metadata'],
+            ),
+            dniNie: $data['dniNie']
+        );
     }
 
     /**

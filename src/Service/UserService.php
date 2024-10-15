@@ -15,9 +15,10 @@ class UserService implements UserServiceInterface
     protected ?User $user;
 
     public function __construct(
-        protected readonly ContextService $contextService,
-        protected readonly SharedUserV2Cache $sharedUserCache,
-        protected readonly RoleManager $roleManager,
+        private readonly ContextService $contextService,
+        private readonly SharedUserV2Cache $sharedUserCache,
+        private readonly RoleManager $roleManager,
+        private readonly YieldManagerClient $yieldManagerClient,
     ) {
         $this->user = null;
     }
@@ -90,6 +91,21 @@ class UserService implements UserServiceInterface
         $this->user = null;
     }
 
+    public function retrieve(string $id): User
+    {
+        $user = $this->sharedUserCache->read($id);
+
+        if ($user === null && $this->contextService->project() !== 'yieldmanager') {
+            $user = $this->yieldManagerClient->getUser($id);
+        }
+
+        if ($user === null) {
+            throw new ResourceNotFoundException('User', $id);
+        }
+
+        return $user;
+    }
+
     public function retrieveUser(): User
     {
         if ($this->user === null) {
@@ -114,17 +130,6 @@ class UserService implements UserServiceInterface
         } else {
             $this->roleManager->checkAtLeast($this->user->role, $roles);
         }
-    }
-
-    public function retrieve(string $id): User
-    {
-        $user = $this->sharedUserCache->read($id);
-
-        if ($user === null) {
-            throw new ResourceNotFoundException('User', $id);
-        }
-
-        return $user;
     }
 
     public function retrieveTenant(): Tenant
