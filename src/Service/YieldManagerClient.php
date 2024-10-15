@@ -293,6 +293,10 @@ readonly class YieldManagerClient
 
     public function getUser(string $userId): ?User
     {
+        if ($this->contextService->isTest()) {
+            return null;
+        }
+
         try {
             $data = $this->requestClient->get(
                 "{$this->yieldManagerHost}/api/admin/users/{$userId}",

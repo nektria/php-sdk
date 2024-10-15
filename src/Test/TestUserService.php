@@ -12,6 +12,7 @@ use Nektria\Service\ContextService;
 use Nektria\Service\RoleManager;
 use Nektria\Service\SharedUserV2Cache;
 use Nektria\Service\UserService;
+use Nektria\Service\YieldManagerClient;
 
 class TestUserService extends UserService
 {
@@ -21,9 +22,10 @@ class TestUserService extends UserService
     public function __construct(
         ContextService $contextService,
         SharedUserV2Cache $sharedUserCache,
-        RoleManager $roleManager
+        RoleManager $roleManager,
+        YieldManagerClient $yieldManagerClient,
     ) {
-        parent::__construct($contextService, $sharedUserCache, $roleManager);
+        parent::__construct($contextService, $sharedUserCache, $roleManager, $yieldManagerClient);
 
         $tenant = new Tenant(
             id: '74a0c280-a76f-4231-aa85-97a20da592ab',
