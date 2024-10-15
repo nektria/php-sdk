@@ -306,7 +306,7 @@ readonly class YieldManagerClient
             return null;
         }
 
-        return new User(
+        $user = new User(
             id: $data['id'],
             email: $data['email'],
             name: $data['name'],
@@ -321,6 +321,10 @@ readonly class YieldManagerClient
             ),
             dniNie: $data['dniNie']
         );
+
+        $this->sharedUserCache->save($userId, $user);
+
+        return $user;
     }
 
     /**
