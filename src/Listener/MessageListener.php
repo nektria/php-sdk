@@ -245,7 +245,7 @@ abstract class MessageListener implements EventSubscriberInterface
                 $exchangeName = $exchangeStamp->getAmqpEnvelope()->getExchangeName();
             }
 
-            $this->logService->debug([
+            $this->logService->info([
                 'context' => 'messenger',
                 'event' => $message::class,
                 'body' => $data,
