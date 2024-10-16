@@ -41,11 +41,12 @@ class ArrayUtil
     }
 
     /**
-     * @param string[] $new
-     * @param string[] $old
+     * @template T
+     * @param T[] $new
+     * @param T[] $old
      * @return array{
-     *     added: string[],
-     *     removed: string[],
+     *     added: T[],
+     *     removed: T[],
      * }
      */
     public static function diff(array $new, array $old): array
@@ -105,6 +106,18 @@ class ArrayUtil
     public static function mapifyEntities(array $list): array
     {
         return self::mapify($list, static fn (EntityInterface $item) => $item->id());
+    }
+
+    /**
+     * @template T of array
+     * @param T[] $array1
+     * @param T[] $array2
+     */
+    public static function sameItems(array $array1, array $array2): bool
+    {
+        $diffs = self::diff($array1, $array2);
+
+        return count($diffs['added']) === 0 && count($diffs['removed']) === 0;
     }
 
     /**
