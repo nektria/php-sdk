@@ -89,7 +89,7 @@ class ArrayUtil
     }
 
     /**
-     * @template T of array
+     * @template T
      * @param T[] $list
      * @return array<string, T>
      */
@@ -109,7 +109,7 @@ class ArrayUtil
     }
 
     /**
-     * @template T of array
+     * @template T
      * @param T[] $array1
      * @param T[] $array2
      */
