@@ -38,6 +38,7 @@ use Nektria\Infrastructure\SharedRedisCache;
  * }
  *
  * @extends SharedRedisCache<array{
+ *     aiAssistantId: string|null,
  *     id: string,
  *     name: string,
  *     metadata: TenantMetadataArray
@@ -53,9 +54,10 @@ class SharedTenantCache extends SharedRedisCache
         }
 
         return new Tenant(
-            $data['id'],
-            $data['name'],
-            new TenantMetadata($data['metadata']),
+            id: $data['id'],
+            name: $data['name'],
+            metadata: new TenantMetadata($data['metadata']),
+            aiAssistantId: $data['aiAssistantId'],
         );
     }
 
@@ -64,6 +66,7 @@ class SharedTenantCache extends SharedRedisCache
         $this->setItem(
             $tenant->id,
             [
+                'aiAssistantId' => $tenant->aiAssistantId,
                 'id' => $tenant->id,
                 'name' => $tenant->name,
                 'metadata' => $tenant->metadata->data(),

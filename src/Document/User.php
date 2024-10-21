@@ -23,7 +23,8 @@ readonly class User extends Document
         public string $role,
         public string $tenantId,
         public Tenant $tenant,
-        public ?string $dniNie
+        public ?string $dniNie,
+        public ?string $aiThreadId,
     ) {
         $this->socketInfo = new SocketInfo();
     }
@@ -55,6 +56,7 @@ readonly class User extends Document
 
         if ($context->context() === ContextService::ADMIN) {
             return [
+                'aiThreadId' => $this->aiThreadId,
                 'allowedTopics' => $this->socketInfo->topics(),
                 'apiKey' => $this->apiKey,
                 'dniNie' => $this->dniNie,

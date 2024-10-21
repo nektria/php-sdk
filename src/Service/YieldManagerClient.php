@@ -319,8 +319,10 @@ readonly class YieldManagerClient
                 id: $data['tenant']['id'],
                 name: $data['tenant']['name'],
                 metadata: new TenantMetadata($data['tenant']['metadata']),
+                aiAssistantId: $data['tenant']['aiAssistantId'],
             ),
-            dniNie: $data['dniNie']
+            dniNie: $data['dniNie'],
+            aiThreadId: $data['aiThreadId'],
         );
 
         $this->sharedUserCache->save($userId, $user);

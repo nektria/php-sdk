@@ -9,6 +9,7 @@ use Nektria\Infrastructure\SharedRedisCache;
 
 /**
  * @extends SharedRedisCache<array{
+ *     aiThreadId: string|null,
  *     apiKey: string,
  *     dniNie: string|null,
  *     email: string,
@@ -54,6 +55,7 @@ class SharedUserV2Cache extends SharedRedisCache
                 tenantId: $tenant->id,
                 tenant: $tenant,
                 dniNie: $data['dniNie'],
+                aiThreadId: $data['aiThreadId'],
             );
 
             $this->save($key, $user);
@@ -78,6 +80,7 @@ class SharedUserV2Cache extends SharedRedisCache
     public function save(string $key, User $user): void
     {
         $data = [
+            'aiThreadId' => $user->aiThreadId,
             'apiKey' => $user->apiKey,
             'dniNie' => $user->dniNie,
             'email' => $user->email,

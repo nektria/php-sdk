@@ -31,6 +31,7 @@ class TestUserService extends UserService
             id: '74a0c280-a76f-4231-aa85-97a20da592ab',
             name: 'Test',
             metadata: new TenantMetadata([]),
+            aiAssistantId: null,
         );
 
         $this->users['ak1000'] = new User(
@@ -43,6 +44,7 @@ class TestUserService extends UserService
             tenantId: $tenant->id,
             tenant: $tenant,
             dniNie: null,
+            aiThreadId: null,
         );
 
         $this->users['ak1001'] = new User(
@@ -55,6 +57,7 @@ class TestUserService extends UserService
             tenantId: $tenant->id,
             tenant: $tenant,
             dniNie: null,
+            aiThreadId: null,
         );
 
         $this->users['ak2000'] = new User(
@@ -67,6 +70,7 @@ class TestUserService extends UserService
             tenantId: $tenant->id,
             tenant: $tenant,
             dniNie: null,
+            aiThreadId: null,
         );
 
         $this->users['ak2001'] = new User(
@@ -79,12 +83,14 @@ class TestUserService extends UserService
             tenantId: $tenant->id,
             tenant: $tenant,
             dniNie: null,
+            aiThreadId: null,
         );
 
         $tenant = new Tenant(
             id: '1aef7923-4b88-4d1f-b7b5-c409d962c60c',
             name: 'Test2',
             metadata: new TenantMetadata([]),
+            aiAssistantId: null,
         );
 
         $this->users['ak3000'] = new User(
@@ -97,6 +103,7 @@ class TestUserService extends UserService
             tenantId: $tenant->id,
             tenant: $tenant,
             dniNie: null,
+            aiThreadId: null,
         );
 
         $this->users['ak3001'] = new User(
@@ -109,6 +116,7 @@ class TestUserService extends UserService
             tenantId: $tenant->id,
             tenant: $tenant,
             dniNie: null,
+            aiThreadId: null,
         );
 
         $this->users['ak4000'] = new User(
@@ -121,6 +129,7 @@ class TestUserService extends UserService
             tenantId: $tenant->id,
             tenant: $tenant,
             dniNie: null,
+            aiThreadId: null,
         );
 
         $this->users['ak4001'] = new User(
@@ -133,6 +142,7 @@ class TestUserService extends UserService
             tenantId: $tenant->id,
             tenant: $tenant,
             dniNie: null,
+            aiThreadId: null,
         );
     }
 
