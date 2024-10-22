@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Nektria\Service;
 
-use DomainException;
 use Nektria\Document\User;
 use Nektria\Infrastructure\SharedRedisCache;
 
