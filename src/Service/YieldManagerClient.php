@@ -325,8 +325,6 @@ readonly class YieldManagerClient
             aiThreadId: $data['aiThreadId'],
         );
 
-        $this->sharedUserCache->save($userId, $user);
-
         return $user;
     }
 
