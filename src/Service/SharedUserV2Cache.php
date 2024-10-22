@@ -79,14 +79,6 @@ class SharedUserV2Cache extends SharedRedisCache
 
     public function save(string $key, User $user): void
     {
-        if ($user->aiThreadId === null && $user->id === 'd8968dae-28e2-4113-9918-9eafec3c7a95') {
-            return;
-        }
-
-        if ($user->aiThreadId === null && $user->id === '491ca3560bde4b31ee1b00141e2dce8d4b08cfb8') {
-            return;
-        }
-
         $data = [
             'aiThreadId' => $user->aiThreadId,
             'apiKey' => $user->apiKey,
