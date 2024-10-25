@@ -469,6 +469,62 @@ readonly class YieldManagerClient
         );
     }
 
+    public function saveWarehouseDailyInfoDayOff(
+        string $warehouseId,
+        LocalClock $date,
+        bool $dayOff
+    ): void {
+        $this->requestClient->put(
+            "{$this->yieldManagerHost}/api/admin/warehouses/{$warehouseId}/{$date->dateString()}/day-off",
+            data: [
+                'dayOff' => $dayOff,
+            ],
+            headers: $this->getHeaders(),
+        );
+    }
+
+    public function saveWarehouseDailyInfoMaxOrders(
+        string $warehouseId,
+        LocalClock $date,
+        int $maxOrders
+    ): void {
+        $this->requestClient->put(
+            "{$this->yieldManagerHost}/api/admin/warehouses/{$warehouseId}/{$date->dateString()}/max-orders",
+            data: [
+                'maxOrders' => $maxOrders,
+            ],
+            headers: $this->getHeaders(),
+        );
+    }
+
+    public function saveWarehouseDailyInfoMaxProductLines(
+        string $warehouseId,
+        LocalClock $date,
+        int $maxProductLines
+    ): void {
+        $this->requestClient->put(
+            "{$this->yieldManagerHost}/api/admin/warehouses/{$warehouseId}/{$date->dateString()}/max-product-lines",
+            data: [
+                'maxProductLines' => $maxProductLines,
+            ],
+            headers: $this->getHeaders(),
+        );
+    }
+
+    public function saveWarehouseDailyInfoMaxWeight(
+        string $warehouseId,
+        LocalClock $date,
+        int $maxWeight
+    ): void {
+        $this->requestClient->put(
+            "{$this->yieldManagerHost}/api/admin/warehouses/{$warehouseId}/{$date->dateString()}/max-weight",
+            data: [
+                'maxWeight' => $maxWeight,
+            ],
+            headers: $this->getHeaders(),
+        );
+    }
+
     /**
      * @return array<string, string>
      */
