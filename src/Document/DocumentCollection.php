@@ -66,6 +66,15 @@ readonly class DocumentCollection extends Document implements IteratorAggregate,
     }
 
     /**
+     * @param callable(T): bool $callback
+     * @return DocumentCollection<T>
+     */
+    public function filter(callable $callback): self
+    {
+        return new self(array_filter($this->items, $callback));
+    }
+
+    /**
      * @return T|null
      */
     public function first()
