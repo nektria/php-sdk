@@ -372,6 +372,34 @@ readonly class YieldManagerClient
         return $this->requestClient->get("{$this->yieldManagerHost}/ping")->json();
     }
 
+    public function removeAreaFromExpressShifts(
+        LocalClock $date,
+        string $area
+    ): void {
+        $this->requestClient->put(
+            "{$this->yieldManagerHost}/api/admin/areas/delete-areas-to-express-shifts",
+            data: [
+                'area' => $area,
+                'date' => $date->dateString(),
+            ],
+            headers: $this->getHeaders(),
+        );
+    }
+
+    public function removeAreaFromShifts(
+        LocalClock $date,
+        string $area
+    ): void {
+        $this->requestClient->put(
+            "{$this->yieldManagerHost}/api/admin/areas/delete-areas-to-shifts",
+            data: [
+                'area' => $area,
+                'date' => $date->dateString(),
+            ],
+            headers: $this->getHeaders(),
+        );
+    }
+
     public function saveExpressOrder(
         string $orderNumber,
         ?string $shopperCode = null,
