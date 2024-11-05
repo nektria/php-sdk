@@ -231,6 +231,34 @@ readonly class YieldManagerClient
     ) {
     }
 
+    public function deleteAreaFromExpressShifts(
+        LocalClock $date,
+        string $area
+    ): void {
+        $this->requestClient->put(
+            "{$this->yieldManagerHost}/api/admin/areas/delete-areas-to-express-shifts",
+            data: [
+                'area' => $area,
+                'date' => $date->dateString(),
+            ],
+            headers: $this->getHeaders(),
+        );
+    }
+
+    public function deleteAreaFromShifts(
+        LocalClock $date,
+        string $area
+    ): void {
+        $this->requestClient->put(
+            "{$this->yieldManagerHost}/api/admin/areas/delete-areas-to-shifts",
+            data: [
+                'area' => $area,
+                'date' => $date->dateString(),
+            ],
+            headers: $this->getHeaders(),
+        );
+    }
+
     public function deleteOrder(string $orderNumber): void
     {
         $this->requestClient->delete(
@@ -370,34 +398,6 @@ readonly class YieldManagerClient
     public function ping(): array
     {
         return $this->requestClient->get("{$this->yieldManagerHost}/ping")->json();
-    }
-
-    public function removeAreaFromExpressShifts(
-        LocalClock $date,
-        string $area
-    ): void {
-        $this->requestClient->put(
-            "{$this->yieldManagerHost}/api/admin/areas/delete-areas-to-express-shifts",
-            data: [
-                'area' => $area,
-                'date' => $date->dateString(),
-            ],
-            headers: $this->getHeaders(),
-        );
-    }
-
-    public function removeAreaFromShifts(
-        LocalClock $date,
-        string $area
-    ): void {
-        $this->requestClient->put(
-            "{$this->yieldManagerHost}/api/admin/areas/delete-areas-to-shifts",
-            data: [
-                'area' => $area,
-                'date' => $date->dateString(),
-            ],
-            headers: $this->getHeaders(),
-        );
     }
 
     public function saveExpressOrder(
