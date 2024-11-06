@@ -231,7 +231,7 @@ readonly class YieldManagerClient
     ) {
     }
 
-    public function deleteAreaFromExpressShifts(
+    public function removeAreaFromExpressShifts(
         LocalClock $date,
         string $area
     ): void {

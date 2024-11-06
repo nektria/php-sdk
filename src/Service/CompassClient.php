@@ -76,7 +76,7 @@ readonly class CompassClient
      * @param CompassAddress $address
      * @return CompassCoordinate
      */
-    public function getCoordinates(array $address): array
+    public function getCoordinates(array $address, bool $useExternalService = false): array
     {
         if (
             $address['addressLine1'] === ''
@@ -88,6 +88,8 @@ readonly class CompassClient
                 'longitude' => 0,
             ];
         }
+
+        $address['useExternalService'] = $useExternalService;
 
         unset($address['latitude'], $address['longitude']);
 
