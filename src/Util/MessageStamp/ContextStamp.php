@@ -10,7 +10,8 @@ class ContextStamp implements StampInterface
 {
     public function __construct(
         public readonly string $traceId,
-        public readonly ?string $tenantId
+        public readonly string $context,
+        public readonly ?string $tenantId,
     ) {
     }
 }

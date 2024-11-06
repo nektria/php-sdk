@@ -153,6 +153,7 @@ abstract class MessageListener implements EventSubscriberInterface
             $this->logService->temporalLogs();
             $this->logService->exception($originalException, [
                 'context' => 'messenger',
+                'role' => $this->contextService->context(),
                 'event' => $class,
                 'body' => $data,
                 'messageReceivedAt' => $this->messageStartedAt,
@@ -247,6 +248,7 @@ abstract class MessageListener implements EventSubscriberInterface
 
             $this->logService->info([
                 'context' => 'messenger',
+                'role' => $this->contextService->context(),
                 'event' => $message::class,
                 'body' => $data,
                 'executionTime' => $time,
@@ -282,7 +284,12 @@ abstract class MessageListener implements EventSubscriberInterface
             /** @var ContextStamp|null $contextStamp */
             $contextStamp = $event->getEnvelope()->last(ContextStamp::class);
             if ($contextStamp !== null) {
-                $this->contextService->setContext('rabbit');
+                try {
+                    // TODO remove this try catch after DIA deploy
+                    $this->contextService->setContext($contextStamp->context);
+                } catch (Throwable) {
+                    $this->contextService->setContext(ContextService::SYSTEM);
+                }
                 $this->contextService->setTraceId($contextStamp->traceId);
                 if ($contextStamp->tenantId !== null) {
                     $this->userService->authenticateSystem($contextStamp->tenantId);

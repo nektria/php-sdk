@@ -14,13 +14,13 @@ use Symfony\Component\Console\ConsoleEvents;
 use Symfony\Component\Console\Event\ConsoleErrorEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
-abstract class ConsoleListener implements EventSubscriberInterface
+readonly abstract class ConsoleListener implements EventSubscriberInterface
 {
     public function __construct(
-        private readonly ContextService $contextService,
-        private readonly VariableCache $variableCache,
-        private readonly AlertService $alertService,
-        private readonly LogService $logService,
+        private ContextService $contextService,
+        private VariableCache $variableCache,
+        private AlertService $alertService,
+        private LogService $logService,
     ) {
     }
 
@@ -37,7 +37,7 @@ abstract class ConsoleListener implements EventSubscriberInterface
     public function onConsoleError(ConsoleErrorEvent $event): void
     {
         $command = $event->getCommand();
-        $this->contextService->setContext('Console');
+        $this->contextService->setContext(ContextService::SYSTEM);
 
         if ($command instanceof Console || $command === null) {
             return;

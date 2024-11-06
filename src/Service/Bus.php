@@ -89,8 +89,9 @@ class Bus implements BusInterface
 
         $stamps = [
             new ContextStamp(
-                $this->contextService->traceId(),
-                $this->contextService->tenantId(),
+                traceId: $this->contextService->traceId(),
+                context: $this->contextService->context(),
+                tenantId: $this->contextService->tenantId(),
             ),
         ];
 
@@ -162,8 +163,9 @@ class Bus implements BusInterface
     ): void {
         $stamps = [
             new ContextStamp(
-                $this->contextService->traceId(),
-                $this->contextService->tenantId(),
+                traceId: $this->contextService->traceId(),
+                context: $this->contextService->context(),
+                tenantId: $this->contextService->tenantId(),
             ),
         ];
 
@@ -216,8 +218,9 @@ class Bus implements BusInterface
 
             $result = $this->bus->dispatch($query, [
                 new ContextStamp(
-                    $this->contextService->traceId(),
-                    $this->contextService->tenantId(),
+                    traceId: $this->contextService->traceId(),
+                    context: $this->contextService->context(),
+                    tenantId: $this->contextService->tenantId(),
                 ),
             ])->last(HandledStamp::class);
 

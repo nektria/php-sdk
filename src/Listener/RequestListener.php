@@ -353,6 +353,7 @@ abstract class RequestListener implements EventSubscriberInterface
                     $this->logService->debug([
                         'headers' => $headers,
                         'context' => 'request',
+                        'role' => $this->contextService->context(),
                         'route_name' => $route,
                         'ref' => $this->contextService->userId() ?? 'anonymous',
                         'request' => $requestContent,
@@ -369,6 +370,7 @@ abstract class RequestListener implements EventSubscriberInterface
                     $this->logService->info([
                         'headers' => $headers,
                         'context' => 'request',
+                        'role' => $this->contextService->context(),
                         'route_name' => $route,
                         'userId' => $this->contextService->userId() ?? 'anon',
                         'request' => $requestContent,
@@ -386,6 +388,7 @@ abstract class RequestListener implements EventSubscriberInterface
                 $this->logService->warning([
                     'headers' => $headers,
                     'context' => 'request',
+                    'role' => $this->contextService->context(),
                     'route_name' => $route,
                     'ref' => $this->contextService->userId() ?? 'anonymous',
                     'request' => $requestContent,
@@ -402,6 +405,7 @@ abstract class RequestListener implements EventSubscriberInterface
                 $this->logService->error([
                     'headers' => $headers,
                     'context' => 'request',
+                    'role' => $this->contextService->context(),
                     'route_name' => $route,
                     'ref' => $this->contextService->userId() ?? 'anonymous',
                     'request' => $requestContent,
