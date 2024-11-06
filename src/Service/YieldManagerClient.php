@@ -231,6 +231,20 @@ readonly class YieldManagerClient
     ) {
     }
 
+    public function deleteAreaFromExpressShifts(
+        LocalClock $date,
+        string $area
+    ): void {
+        $this->requestClient->patch(
+            "{$this->yieldManagerHost}/api/admin/areas/delete-areas-to-express-shifts",
+            data: [
+                'area' => $area,
+                'date' => $date->dateString(),
+            ],
+            headers: $this->getHeaders(),
+        );
+    }
+
     public function deleteAreaFromShifts(
         LocalClock $date,
         string $area
@@ -384,20 +398,6 @@ readonly class YieldManagerClient
     public function ping(): array
     {
         return $this->requestClient->get("{$this->yieldManagerHost}/ping")->json();
-    }
-
-    public function removeAreaFromExpressShifts(
-        LocalClock $date,
-        string $area
-    ): void {
-        $this->requestClient->patch(
-            "{$this->yieldManagerHost}/api/admin/areas/delete-areas-to-express-shifts",
-            data: [
-                'area' => $area,
-                'date' => $date->dateString(),
-            ],
-            headers: $this->getHeaders(),
-        );
     }
 
     public function saveExpressOrder(
