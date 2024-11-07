@@ -327,6 +327,9 @@ abstract class RequestListener implements EventSubscriberInterface
         if (isset($requestContent['password'])) {
             $requestContent['password'] = '********';
         }
+        if (isset($requestContent['oldPassword'])) {
+            $requestContent['oldPassword'] = '********';
+        }
         if (isset($requestContent['dniNie'])) {
             $requestContent['dniNie'] = '********';
         }
