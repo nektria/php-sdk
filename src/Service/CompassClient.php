@@ -81,16 +81,16 @@ readonly class CompassClient
      */
     public function fixCoordinates(array $address): array
     {
-        $isInvalid = $this->sharedInvalidCoordinatesCache->isInvalid($address['latitude'], $address['longitude']);
-
-        if ($isInvalid === false) {
+        // $isInvalid = $this->sharedInvalidCoordinatesCache->isInvalid($address['latitude'], $address['longitude']);
+        $this->sharedInvalidCoordinatesCache->delete($address['latitude'], $address['longitude']);
+        /*if ($isInvalid === false) {
             $this->sharedInvalidCoordinatesCache->save($address['latitude'], $address['longitude'], false);
 
             return [
                 'latitude' => $address['latitude'],
                 'longitude' => $address['longitude'],
             ];
-        }
+        }*/
 
         if (
             $address['addressLine1'] === ''
