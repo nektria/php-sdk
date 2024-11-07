@@ -101,11 +101,17 @@ readonly class CompassClient
             ];
         }
 
-        return $this->requestClient->patch(
+        $coordinates = $this->requestClient->patch(
             "{$this->compassHost}/api/admin/addresses/fix-address",
             data: $address,
             headers: $this->getHeaders(),
         )->json();
+
+        if ($coordinates['latitude'] !== 0.0 && $coordinates['longitude'] !== 0.0) {
+            $this->sharedInvalidCoordinatesCache->save($address['latitude'], $address['longitude'], false);
+        }
+
+        return $coordinates;
     }
 
     /**
