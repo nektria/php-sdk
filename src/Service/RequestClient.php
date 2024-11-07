@@ -167,7 +167,18 @@ readonly class RequestClient
 
         try {
             if ($method === 'GET') {
-                $params = http_build_query($data);
+                $params = '';
+                foreach ($data as $key => $value) {
+                    if ($value === true) {
+                        $value = 'true';
+                    } elseif ($value === false) {
+                        $value = 'false';
+                    }
+                    if ($params !== '') {
+                        $params .= '&';
+                    }
+                    $params .= "{$key}={$value}";
+                }
                 if ($params !== '') {
                     $url .= "?{$params}";
                 }
