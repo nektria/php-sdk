@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Nektria\Dto;
 
 use Nektria\Util\StringUtil;
+use Nektria\Util\Validate;
 use Symfony\Component\String\Slugger\AsciiSlugger;
 
 readonly class Address
@@ -19,6 +20,13 @@ readonly class Address
         public float $latitude,
         public float $longitude,
     ) {
+        Validate::notEmpty($this->addressLine1);
+        Validate::notEmpty($this->postalCode);
+        Validate::notEmpty($this->city);
+        Validate::minLength($this->countryCode, 2);
+        Validate::maxLength($this->countryCode, 2);
+        Validate::latitude($this->latitude);
+        Validate::longitude($this->longitude);
     }
 
     public function shortSlug(): string
