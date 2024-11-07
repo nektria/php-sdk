@@ -91,8 +91,8 @@ readonly class CompassClient
             ];
         }
 
-        return $this->requestClient->get(
-            "{$this->compassHost}/api/admin/addresses/coordinates",
+        return $this->requestClient->patch(
+            "{$this->compassHost}/api/admin/addresses/fix-address",
             data: $address,
             headers: $this->getHeaders(),
         )->json();
