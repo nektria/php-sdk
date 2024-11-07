@@ -13,11 +13,13 @@ use function count;
  *
  * @phpstan-type CompassAddress array{
  *     addressLine1: string,
+ *     addressLine2: string,
+ *     elevator: bool,
  *     postalCode: string,
  *     city: string,
  *     countryCode: string,
- *     latitude?: ?float,
- *     longitude?: ?float,
+ *     latitude: float,
+ *     longitude: float,
  * }
  *
  * @phpstan-type CompassCoordinate array{
@@ -76,7 +78,7 @@ readonly class CompassClient
      * @param CompassAddress $address
      * @return CompassCoordinate
      */
-    public function getCoordinates(array $address, bool $useExternalService = false): array
+    public function fixCoordinates(array $address): array
     {
         if (
             $address['addressLine1'] === ''
@@ -84,14 +86,34 @@ readonly class CompassClient
             || $this->contextService->isTest()
         ) {
             return [
-                'latitude' => 0,
-                'longitude' => 0,
+                'latitude' => $address['latitude'],
+                'longitude' => $address['longitude'],
             ];
         }
 
-        $address['useExternalService'] = $useExternalService;
+        return $this->requestClient->get(
+            "{$this->compassHost}/api/admin/addresses/coordinates",
+            data: $address,
+            headers: $this->getHeaders(),
+        )->json();
+    }
 
-        unset($address['latitude'], $address['longitude']);
+    /**
+     * @param CompassAddress $address
+     * @return CompassCoordinate
+     */
+    public function getCoordinates(array $address): array
+    {
+        if (
+            $address['addressLine1'] === ''
+            || $address['postalCode'] === '08999'
+            || $this->contextService->isTest()
+        ) {
+            return [
+                'latitude' => $address['latitude'],
+                'longitude' => $address['longitude'],
+            ];
+        }
 
         return $this->requestClient->get(
             "{$this->compassHost}/api/admin/addresses/coordinates",
@@ -135,8 +157,6 @@ readonly class CompassClient
         $result = [];
 
         for ($i = 1; $i < $totalWaypoints; ++$i) {
-            $coordinate = $coordinates[$i];
-            $prevCoordinate = $coordinates[$i - 1];
             $cell = $data[$i - 1];
 
             $c1 = "{$cell['originLatitude']},{$cell['originLongitude']}";
