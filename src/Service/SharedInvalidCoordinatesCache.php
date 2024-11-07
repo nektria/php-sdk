@@ -16,9 +16,9 @@ class SharedInvalidCoordinatesCache extends SharedRedisCache
         $this->removeItem("{$latitude},{$longitude}");
     }
 
-    public function isInvalid(float $latitude, float $longitude): ?bool
+    public function isInvalid(float $latitude, float $longitude): bool
     {
-        return $this->getItem("{$latitude},{$longitude}");
+        return $this->getItem("{$latitude},{$longitude}") ?? false;
     }
 
     public function save(float $latitude, float $longitude, bool $isInvalid): void

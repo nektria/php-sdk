@@ -8041,12 +8041,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/Roave/SecurityAdvisories.git",
-                "reference": "54f5b5d225a5c90b86985bb4c563e9b284364687"
+                "reference": "6a1fc4a9cdfec3cd0b8095a424e8c9909f2841ee"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Roave/SecurityAdvisories/zipball/54f5b5d225a5c90b86985bb4c563e9b284364687",
-                "reference": "54f5b5d225a5c90b86985bb4c563e9b284364687",
+                "url": "https://api.github.com/repos/Roave/SecurityAdvisories/zipball/6a1fc4a9cdfec3cd0b8095a424e8c9909f2841ee",
+                "reference": "6a1fc4a9cdfec3cd0b8095a424e8c9909f2841ee",
                 "shasum": ""
             },
             "conflict": {
@@ -8231,6 +8231,7 @@
                 "feehi/cms": "<=2.1.1",
                 "feehi/feehicms": "<=2.1.1",
                 "fenom/fenom": "<=2.12.1",
+                "filament/actions": ">=3.2,<3.2.123",
                 "filament/infolists": ">=3,<3.2.115",
                 "filament/tables": ">=3,<3.2.115",
                 "filegator/filegator": "<7.8",
@@ -8872,7 +8873,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2024-11-07T09:04:54+00:00"
+            "time": "2024-11-07T17:04:55+00:00"
         },
         {
             "name": "sebastian/cli-parser",
