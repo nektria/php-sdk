@@ -54,7 +54,7 @@ readonly class ThrowableDocument extends Document
             $this->status = Response::HTTP_INTERNAL_SERVER_ERROR;
         }
 
-        $this->throwable = $throwable;
+        $this->throwable = $exception;
     }
 
     public function toArray(ContextService $context): array
