@@ -84,6 +84,8 @@ readonly class CompassClient
         $isInvalid = $this->sharedInvalidCoordinatesCache->isInvalid($address['latitude'], $address['longitude']);
 
         if ($isInvalid === false) {
+            $this->sharedInvalidCoordinatesCache->save($address['latitude'], $address['longitude'], false);
+
             return [
                 'latitude' => $address['latitude'],
                 'longitude' => $address['longitude'],
