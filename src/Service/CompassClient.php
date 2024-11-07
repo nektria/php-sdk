@@ -110,7 +110,7 @@ readonly class CompassClient
         )->json();
 
         if ($coordinates['latitude'] !== 0.0 && $coordinates['longitude'] !== 0.0) {
-            $this->sharedInvalidCoordinatesCache->save($address['latitude'], $address['longitude'], false);
+            $this->sharedInvalidCoordinatesCache->save($coordinates['latitude'], $coordinates['longitude'], false);
         }
 
         return $coordinates;
