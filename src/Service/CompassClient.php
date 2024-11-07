@@ -68,8 +68,9 @@ readonly class CompassClient
 {
     public function __construct(
         private ContextService $contextService,
-        private SharedUserV2Cache $sharedUserCache,
         private RequestClient $requestClient,
+        private SharedInvalidCoordinatesCache $sharedInvalidCoordinatesCache,
+        private SharedUserV2Cache $sharedUserCache,
         private string $compassHost
     ) {
     }
@@ -80,6 +81,15 @@ readonly class CompassClient
      */
     public function fixCoordinates(array $address): array
     {
+        $isInvalid = $this->sharedInvalidCoordinatesCache->isInvalid($address['latitude'], $address['longitude']);
+
+        if ($isInvalid === false) {
+            return [
+                'latitude' => $address['latitude'],
+                'longitude' => $address['longitude'],
+            ];
+        }
+
         if (
             $address['addressLine1'] === ''
             || $address['postalCode'] === '08999'
