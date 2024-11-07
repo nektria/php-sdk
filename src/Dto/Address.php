@@ -21,6 +21,21 @@ readonly class Address
     ) {
     }
 
+    public function shortSlug(): string
+    {
+        if ($this->addressLine1 === '') {
+            return '';
+        }
+
+        $slugger = new AsciiSlugger();
+
+        return strtolower($slugger->slug(
+            StringUtil::trim(
+                "{$this->addressLine1} {$this->postalCode} {$this->city} {$this->countryCode}",
+            ),
+        )->toString());
+    }
+
     public function slug(): string
     {
         if ($this->addressLine1 === '') {
