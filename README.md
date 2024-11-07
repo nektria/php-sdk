@@ -10,3 +10,4 @@ Php tools used for Nektria PHP software.
 
 * Generate A Uuid
   * `bin/console debug:random:uuid`
+
