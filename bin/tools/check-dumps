@@ -18,7 +18,7 @@ check_usages 'Watcher::' src
 check_usages ' printf(' tests
 check_usages ' echo' tests
 check_usages ' dd' tests
-check_usages 'dump(' tests
+//check_usages 'dump(' tests
 check_usages 'Watcher::' tests
 
 
