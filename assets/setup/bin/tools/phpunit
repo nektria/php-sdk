@@ -20,7 +20,7 @@ if [ "$USE_GOOGLE" = '1' ]; then
   vendor/bin/phpunit --stop-on-failure --testdox --configuration /workspace/server/pipeline/phpunit.xml.dist
 else
   docker exec -it __PROJECT__ bin/console > /dev/null
-  docker exec -it __PROJECT__ /root/.composer/vendor/bin/phpunit --stop-on-failure --stop-on-error --configuration /app/server/__PROJECT__-dev/phpunit.xml.dist "$@"
+  docker exec -it __PROJECT__ /app/vendor/bin/phpunit --stop-on-failure --stop-on-error --configuration /app/server/__PROJECT__-dev/phpunit.xml.dist "$@"
 fi
 
 rm -Rf server/pipeline/.phpunit.result.cache
