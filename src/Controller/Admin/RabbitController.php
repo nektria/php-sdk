@@ -9,6 +9,7 @@ use Nektria\Document\ArrayDocument;
 use Nektria\Document\DocumentResponse;
 use Nektria\Service\RequestClient;
 use Nektria\Util\Controller\Route;
+use Nektria\Util\StringUtil;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 use function is_string;
@@ -29,6 +30,7 @@ readonly class RabbitController extends Controller
         if (!is_string($rabbitDsn)) {
             return $this->emptyResponse();
         }
+
         $host = str_replace(['amqp', '5672'], ['http', '15672'], $rabbitDsn);
 
         $content = $requestClient->get(
@@ -36,20 +38,16 @@ readonly class RabbitController extends Controller
         )->json();
 
         $data = [];
-
         foreach ($content as $queue) {
-            $name = str_pad($queue['name'], 35);
-            $vhost = $queue['vhost'];
-            $ready = str_pad((string) $queue['messages_ready'], 6);
-            $unacked = str_pad((string) $queue['messages_unacknowledged'], 6);
-            $speed = $queue['messages_unacknowledged_details']['rate'];
+            $name = StringUtil::trim($queue['name']);
+            $ready = (int) $queue['messages_ready'];
+            $unacked = (int) $queue['messages_unacknowledged'];
+            $speed = (float) $queue['messages_unacknowledged_details']['rate'];
 
-            $data[] = [
-                'vhost' => $vhost,
-                'name' => $name,
+            $data[$name] = [
                 'ready' => $ready,
-                'unacked' => $unacked,
-                'speed' => $speed,
+                'unacknowledged' => $unacked,
+                'rate' => $speed,
             ];
         }
 

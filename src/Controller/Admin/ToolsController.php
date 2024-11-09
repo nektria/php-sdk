@@ -14,6 +14,7 @@ use Nektria\Service\RequestClient;
 use Nektria\Util\Controller\Route;
 use Nektria\Util\FileUtil;
 use Nektria\Util\JsonUtil;
+use Nektria\Util\StringUtil;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Process\Process;
@@ -134,7 +135,7 @@ readonly class ToolsController extends Controller
 
         $data = [];
         foreach ($content as $queue) {
-            $name = $queue['name'];
+            $name = StringUtil::trim($queue['name']);
             $ready = (int) $queue['messages_ready'];
             $unacked = (int) $queue['messages_unacknowledged'];
             $speed = (float) $queue['messages_unacknowledged_details']['rate'];
