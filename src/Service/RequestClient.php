@@ -224,7 +224,7 @@ readonly class RequestClient
             ], "{$status} {$method} {$url}");
         }
 
-        if ($status >= 300) {
+        if ($status >= 500) {
             $errorContent = $content;
 
             try {
@@ -240,7 +240,26 @@ readonly class RequestClient
                 'url' => $url,
             ], "{$method} {$url} failed with status {$status}");
 
-            throw new RequestException($response, silent: $status >= 500);
+            throw new RequestException($response);
+        }
+
+        if ($status >= 400) {
+            $errorContent = $content;
+
+            try {
+                $errorContent = JsonUtil::decode($content);
+            } catch (Throwable) {
+            }
+
+            $this->logService->warning([
+                'method' => $method,
+                'request' => $data,
+                'response' => $errorContent,
+                'status' => $status,
+                'url' => $url,
+            ], "{$method} {$url} failed with status {$status}");
+
+            throw new RequestException($response);
         }
 
         return $response;
