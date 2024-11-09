@@ -6,6 +6,7 @@ namespace Nektria\Controller\Admin;
 
 use Nektria\Controller\Controller;
 use Nektria\Document\ArrayDocument;
+use Nektria\Document\DocumentCollection;
 use Nektria\Document\DocumentResponse;
 use Nektria\Service\RequestClient;
 use Nektria\Util\Controller\Route;
@@ -44,13 +45,14 @@ readonly class RabbitController extends Controller
             $unacked = (int) $queue['messages_unacknowledged'];
             $speed = (float) $queue['messages_unacknowledged_details']['rate'];
 
-            $data[$name] = [
+            $data[] = new ArrayDocument([
+                'name' => $name,
                 'ready' => $ready,
                 'unacknowledged' => $unacked,
                 'rate' => $speed,
-            ];
+            ]);
         }
 
-        return $this->documentResponse(new ArrayDocument($data));
+        return $this->documentResponse(new DocumentCollection($data));
     }
 }
