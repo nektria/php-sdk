@@ -26,7 +26,7 @@ class TestUserService extends UserService
         YieldManagerClient $yieldManagerClient,
     ) {
         parent::__construct($contextService, $sharedUserCache, $roleManager, $yieldManagerClient);
-
+        dump('TestUserService::__construct');
         $tenant = new Tenant(
             id: '74a0c280-a76f-4231-aa85-97a20da592ab',
             name: 'Test',
