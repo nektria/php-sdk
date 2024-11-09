@@ -71,7 +71,7 @@ class TestCase extends WebTestCase
 
     protected function boot(): void
     {
-        dump("booting");
+        dump('booting');
         /** @var TestRunnerListener $runnerListener */
         $runnerListener = self::getContainer()->get(TestRunnerListener::class);
 
