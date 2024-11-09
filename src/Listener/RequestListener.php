@@ -260,9 +260,9 @@ abstract class RequestListener implements EventSubscriberInterface
 
         $logLevel = null;
         if (
-            str_starts_with($route, 'nektria_') ||
-            str_starts_with($route, 'app_admin_tools_') ||
-            str_starts_with($route, 'app_common_')
+            str_starts_with($route, 'nektria_')
+            || str_starts_with($route, 'app_admin_tools_')
+            || str_starts_with($route, 'app_common_')
         ) {
             $logLevel = self::LOG_LEVEL_NONE;
         } else {
