@@ -71,7 +71,6 @@ class TestCase extends WebTestCase
 
     protected function boot(): void
     {
-        dump('booting');
         /** @var TestRunnerListener $runnerListener */
         $runnerListener = self::getContainer()->get(TestRunnerListener::class);
 
@@ -86,7 +85,6 @@ class TestCase extends WebTestCase
                 if ($method === 'boot') {
                     continue;
                 }
-                dump($method);
 
                 if (str_starts_with($method, 'boot')) {
                     $this->inits[$method] = true;

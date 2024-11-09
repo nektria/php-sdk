@@ -12,13 +12,13 @@ check_usages() {
 check_usages ' printf(' src
 check_usages ' echo' src
 check_usages ' dd' src
-//check_usages 'dump(' src
+check_usages 'dump(' src
 check_usages 'Watcher::' src
 
 check_usages ' printf(' tests
 check_usages ' echo' tests
 check_usages ' dd' tests
-//check_usages 'dump(' tests
+check_usages 'dump(' tests
 check_usages 'Watcher::' tests
 
 
