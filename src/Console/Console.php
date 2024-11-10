@@ -200,7 +200,7 @@ abstract class Console extends BaseCommand
     protected function dispatchCommand(
         CommandMessage $command,
         string $tenantId,
-        ?bool $async = false,
+        bool $async = false,
         ?int $delayMs = null,
         ?array $retryOptions = null
     ): void {
