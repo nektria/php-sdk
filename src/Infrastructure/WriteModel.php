@@ -124,8 +124,6 @@ abstract class WriteModel
             $reflector = new ReflectionClass($domain);
             $properties = $reflector->getProperties();
             foreach ($properties as $property) {
-                $attrs = $property->getAttributes(HardProperty::class);
-
                 $name = $property->getName();
 
                 if (count($property->getAttributes(IgnoreProperty::class)) > 0) {
