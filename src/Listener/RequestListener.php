@@ -265,7 +265,7 @@ abstract class RequestListener implements EventSubscriberInterface
         ) {
             $logLevel = self::LOG_LEVEL_NONE;
         } else {
-            $logLevel = $this->assignLogLevel($event->getRequest());
+            $logLevel = $this->assignLogLevel($route);
         }
 
         $responseContentRaw = ($this->originalResponse ?? $event->getResponse())->getContent();
@@ -458,7 +458,7 @@ abstract class RequestListener implements EventSubscriberInterface
         }
     }
 
-    abstract protected function assignLogLevel(Request $request): ?string;
+    abstract protected function assignLogLevel(string $route): ?string;
 
     protected function validateUser(User $user): bool
     {
