@@ -38,6 +38,52 @@ abstract class WriteModel
     }
 
     /**
+     * @return string[]
+     */
+    public function debugChanges(EntityInterface $domain): array
+    {
+        $unitOfWork = $this->manager()->getUnitOfWork();
+        $originalData = $unitOfWork->getOriginalEntityData($domain);
+        $list = [];
+
+        $persistenceType = PersistenceType::None;
+        if (($originalData['id'] ?? null) === null) {
+            $persistenceType = PersistenceType::New;
+        }
+
+        if ($persistenceType === PersistenceType::None) {
+            $reflector = new ReflectionClass($domain);
+            $properties = $reflector->getProperties();
+            foreach ($properties as $property) {
+                $name = $property->getName();
+
+                if (count($property->getAttributes(IgnoreProperty::class)) > 0) {
+                    continue;
+                }
+
+                $value = $property->getValue($domain);
+                $originalValue = $originalData[$name] ?? null;
+
+                if ($value instanceof Clock || $value instanceof LocalClock) {
+                    $value = $value->dateTimeString();
+                }
+
+                if ($originalValue instanceof Clock || $originalValue instanceof LocalClock) {
+                    $originalValue = $originalValue->dateTimeString();
+                }
+
+                if ($originalValue !== $value) {
+                    if (count($property->getAttributes(HardProperty::class)) > 0) {
+                        $list[] = $name;
+                    }
+                }
+            }
+        }
+
+        return $list;
+    }
+
+    /**
      * @param T $domain
      */
     public function getPersistenceType(EntityInterface $domain): PersistenceType
