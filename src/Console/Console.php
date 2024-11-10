@@ -200,12 +200,12 @@ abstract class Console extends BaseCommand
     protected function dispatchCommand(
         CommandMessage $command,
         string $tenantId,
-        ?string $transport = null,
+        ?bool $async = false,
         ?int $delayMs = null,
         ?array $retryOptions = null
     ): void {
         $this->userService()->authenticateSystem($tenantId);
-        $this->bus()->dispatchCommand($command, $transport, $delayMs, $retryOptions);
+        $this->bus()->dispatchCommand($command, $async ? 'system' : null, $delayMs, $retryOptions);
         $this->userService()->clearAuthentication();
     }
 
