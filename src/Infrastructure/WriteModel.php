@@ -7,11 +7,17 @@ namespace Nektria\Infrastructure;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use Nektria\Dto\Clock;
+use Nektria\Dto\LocalClock;
 use Nektria\Entity\EntityInterface;
 use Nektria\Entity\EventEntity;
 use Nektria\Exception\NektriaException;
+use Nektria\Util\Annotation\HardProperty;
+use ReflectionClass;
 use RuntimeException;
 use Throwable;
+
+use function count;
 
 /**
  * @template T of EntityInterface
@@ -99,10 +105,56 @@ abstract class WriteModel
     /**
      * @param T $domain
      */
-    protected function saveEntity(EntityInterface $domain, bool $secure = true): void
+    protected function saveEntity(EntityInterface $domain, bool $secure = true): PersistenceType
     {
         if ($secure) {
             $this->checkFromService();
+        }
+
+        $unitOfWork = $this->manager()->getUnitOfWork();
+        $originalData = $unitOfWork->getOriginalEntityData($domain);
+
+        $persistenceType = PersistenceType::None;
+        if (($originalData['id'] ?? null) === null) {
+            $persistenceType = PersistenceType::New;
+        }
+
+        if ($persistenceType === PersistenceType::None) {
+            $reflector = new ReflectionClass($domain);
+            $properties = $reflector->getProperties();
+            foreach ($properties as $property) {
+                $attrs = $property->getAttributes(HardProperty::class);
+
+                $name = $property->getName();
+
+                if ($name === 'createdAt' || $name === 'updatedAt') {
+                    continue;
+                }
+
+                $value = $property->getValue($domain);
+                $originalValue = $originalData[$name] ?? null;
+
+                if ($value instanceof Clock || $value instanceof LocalClock) {
+                    $value = $value->dateTimeString();
+                }
+
+                if ($originalValue instanceof Clock || $originalValue instanceof LocalClock) {
+                    $originalValue = $originalValue->dateTimeString();
+                }
+
+                if ($originalValue !== $value) {
+                    if (count($attrs) > 0) {
+                        $persistenceType = PersistenceType::HardUpdate;
+
+                        break;
+                    }
+                    $persistenceType = PersistenceType::SoftUpdate;
+                }
+            }
+        }
+
+        if ($persistenceType === PersistenceType::None) {
+            return $persistenceType;
         }
 
         try {
@@ -110,6 +162,8 @@ abstract class WriteModel
             $this->manager->persist($domain);
             $this->manager->flush();
             $this->manager->detach($domain);
+
+            return $persistenceType;
         } catch (Throwable $e) {
             $this->resetManager();
 
@@ -123,7 +177,7 @@ abstract class WriteModel
                     $this->manager->flush();
                     $this->manager->detach($domain);
 
-                    return;
+                    return $persistenceType;
                 } catch (Throwable) {
                     $this->resetManager();
 
