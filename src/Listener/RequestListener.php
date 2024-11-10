@@ -258,7 +258,6 @@ abstract class RequestListener implements EventSubscriberInterface
             return;
         }
 
-        $logLevel = null;
         if (
             str_starts_with($route, 'nektria_')
             || str_starts_with($route, 'app_admin_tools_')
@@ -266,7 +265,7 @@ abstract class RequestListener implements EventSubscriberInterface
         ) {
             $logLevel = self::LOG_LEVEL_NONE;
         } else {
-            $logLevel = $this->assignLogLevel($route);
+            $logLevel = $this->assignLogLevel($event->getRequest());
         }
 
         $responseContentRaw = ($this->originalResponse ?? $event->getResponse())->getContent();
@@ -459,7 +458,7 @@ abstract class RequestListener implements EventSubscriberInterface
         }
     }
 
-    abstract protected function assignLogLevel(string $route): ?string;
+    abstract protected function assignLogLevel(Request $request): ?string;
 
     protected function validateUser(User $user): bool
     {
