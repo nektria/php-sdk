@@ -6,17 +6,21 @@ namespace Nektria\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Nektria\Dto\Clock;
+use Nektria\Util\Annotation\IgnoreProperty;
 use Nektria\Util\StringUtil;
 
 abstract class Entity implements EntityInterface
 {
+    #[IgnoreProperty]
     #[ORM\Column(type: 'clock')]
     protected Clock $createdAt;
 
+    #[IgnoreProperty]
     #[ORM\Id]
     #[ORM\Column(type: 'guid')]
     protected string $id;
 
+    #[IgnoreProperty]
     #[ORM\Column(type: 'clock')]
     protected Clock $updatedAt;
 

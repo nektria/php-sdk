@@ -13,6 +13,7 @@ use Nektria\Entity\EntityInterface;
 use Nektria\Entity\EventEntity;
 use Nektria\Exception\NektriaException;
 use Nektria\Util\Annotation\HardProperty;
+use Nektria\Util\Annotation\IgnoreProperty;
 use ReflectionClass;
 use RuntimeException;
 use Throwable;
@@ -127,7 +128,7 @@ abstract class WriteModel
 
                 $name = $property->getName();
 
-                if ($name === 'createdAt' || $name === 'updatedAt') {
+                if (count($property->getAttributes(IgnoreProperty::class)) > 0) {
                     continue;
                 }
 
@@ -143,7 +144,7 @@ abstract class WriteModel
                 }
 
                 if ($originalValue !== $value) {
-                    if (count($attrs) > 0) {
+                    if (count($property->getAttributes(HardProperty::class)) > 0) {
                         $persistenceType = PersistenceType::HardUpdate;
 
                         break;
