@@ -286,6 +286,17 @@ readonly class YieldManagerClient
     }
 
     /**
+     * @return YMShift
+     */
+    public function getShiftFromOrder(string $orderNumber): array
+    {
+        return $this->requestClient->get(
+            "{$this->yieldManagerHost}/api/admin/orders/{$orderNumber}",
+            headers: $this->getHeaders(),
+        )->json();
+    }
+
+    /**
      * @return YMShift[]
      */
     public function getShiftsFromDateAndArea(LocalClock $date, string $area): array
