@@ -291,7 +291,7 @@ readonly class YieldManagerClient
     public function getShiftFromOrder(string $orderNumber): array
     {
         return $this->requestClient->get(
-            "{$this->yieldManagerHost}/api/admin/orders/{$orderNumber}",
+            "{$this->yieldManagerHost}/api/admin/orders/{$orderNumber}/shift",
             headers: $this->getHeaders(),
         )->json();
     }
