@@ -245,6 +245,24 @@ readonly class YieldManagerClient
         );
     }
 
+    /**
+     * @return array<string, string>
+     */
+    private function getHeaders(): array
+    {
+        $tenantId = $this->contextService->tenantId() ?? 'none';
+        $apiKey = $this->sharedUserCache->read("ADMIN_{$tenantId}")->apiKey ?? 'none';
+
+        return [
+            'Accept' => 'application/json',
+            'Content-type' => 'application/json',
+            'X-Api-Id' => $apiKey,
+            'X-Nektria-App' => 'yieldmanager',
+            'X-Trace' => $this->contextService->traceId(),
+            'X-Origin' => $this->contextService->project(),
+        ];
+    }
+
     public function deleteAreaFromShifts(
         LocalClock $date,
         string $area
@@ -265,6 +283,21 @@ readonly class YieldManagerClient
             "{$this->yieldManagerHost}/api/admin/orders/{$orderNumber}",
             headers: $this->getHeaders(),
         );
+    }
+
+    /**
+     * @return YMShift[]
+     */
+    public function getShiftsFromDateAndArea(LocalClock $date, string $area): array
+    {
+        return $this->requestClient->get(
+            "{$this->yieldManagerHost}/api/admin/shifts-by-date-and-area",
+            data: [
+                'date' => $date->dateString(),
+                'area' => $area,
+            ],
+            headers: $this->getHeaders(),
+        )->json();
     }
 
     /**
@@ -551,23 +584,5 @@ readonly class YieldManagerClient
             ],
             headers: $this->getHeaders(),
         );
-    }
-
-    /**
-     * @return array<string, string>
-     */
-    private function getHeaders(): array
-    {
-        $tenantId = $this->contextService->tenantId() ?? 'none';
-        $apiKey = $this->sharedUserCache->read("ADMIN_{$tenantId}")->apiKey ?? 'none';
-
-        return [
-            'Accept' => 'application/json',
-            'Content-type' => 'application/json',
-            'X-Api-Id' => $apiKey,
-            'X-Nektria-App' => 'yieldmanager',
-            'X-Trace' => $this->contextService->traceId(),
-            'X-Origin' => $this->contextService->project(),
-        ];
     }
 }
