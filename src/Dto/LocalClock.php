@@ -70,9 +70,9 @@ class LocalClock
         return $a->isBefore($b) ? $a : $b;
     }
 
-    public static function now(): self
+    public static function now(string $timezone = 'Europe/Madrid'): self
     {
-        return new self();
+        return Clock::now()->toLocal($timezone);
     }
 
     /**
