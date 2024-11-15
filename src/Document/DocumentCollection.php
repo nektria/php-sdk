@@ -60,18 +60,9 @@ readonly class DocumentCollection extends Document implements IteratorAggregate,
         );
     }
 
-    /**
-     * @return mixed[]
-     */
-    public function toArray(ContextService $context): array
+    public function count(): int
     {
-        $list = [];
-
-        foreach ($this as $item) {
-            $list[] = $item->toArray($context);
-        }
-
-        return $list;
+        return count($this->items);
     }
 
     /**
@@ -112,11 +103,6 @@ readonly class DocumentCollection extends Document implements IteratorAggregate,
     public function last()
     {
         return $this->items[$this->count() - 1] ?? null;
-    }
-
-    public function count(): int
-    {
-        return count($this->items);
     }
 
     /**
@@ -175,5 +161,19 @@ readonly class DocumentCollection extends Document implements IteratorAggregate,
     public function reverse(): self
     {
         return new self(array_reverse($this->items));
+    }
+
+    /**
+     * @return mixed[]
+     */
+    public function toArray(ContextService $context): array
+    {
+        $list = [];
+
+        foreach ($this as $item) {
+            $list[] = $item->toArray($context);
+        }
+
+        return $list;
     }
 }

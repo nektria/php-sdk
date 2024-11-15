@@ -106,6 +106,11 @@ class UserService implements UserServiceInterface
         return $user;
     }
 
+    public function retrieveTenant(): Tenant
+    {
+        return $this->retrieveUser()->tenant;
+    }
+
     public function retrieveUser(): User
     {
         if ($this->user === null) {
@@ -130,10 +135,5 @@ class UserService implements UserServiceInterface
         } else {
             $this->roleManager->checkAtLeast($this->user->role, $roles);
         }
-    }
-
-    public function retrieveTenant(): Tenant
-    {
-        return $this->retrieveUser()->tenant;
     }
 }

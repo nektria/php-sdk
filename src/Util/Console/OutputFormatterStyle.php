@@ -55,6 +55,11 @@ class OutputFormatterStyle implements OutputFormatterStyleInterface
         $this->color = new Color($this->foreground, $this->background, $this->options);
     }
 
+    public function setHref(string $url): void
+    {
+        $this->href = $url;
+    }
+
     public function setOption(string $option): void
     {
         $this->options[] = $option;
@@ -78,10 +83,5 @@ class OutputFormatterStyle implements OutputFormatterStyleInterface
         }
 
         $this->color = new Color($this->foreground, $this->background, $this->options);
-    }
-
-    public function setHref(string $url): void
-    {
-        $this->href = $url;
     }
 }
