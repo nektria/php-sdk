@@ -128,6 +128,17 @@ readonly class ArrayDataFetcher
         return $value?->replaceTimezone($timezone)->removeTimeZone();
     }
 
+    public function getClockFromLocal(string $field, string $timezone): ?Clock
+    {
+        $value = $this->getLocalClock($field);
+
+        if ($value === null) {
+            return null;
+        }
+
+        return $value->toUTC($timezone);
+    }
+
     public function getClockTz(string $field): ?Clock
     {
         return $this->getClock($field);
@@ -371,13 +382,13 @@ readonly class ArrayDataFetcher
 
     public function retrieveClockFromLocal(string $field, string $timezone): Clock
     {
-        $value = $this->getLocalClock($field);
+        $value = $this->getClockFromLocal($field, $timezone);
 
         if ($value === null) {
             throw new MissingRequestParamException($field);
         }
 
-        return $value->toUTC($timezone);
+        return $value;
     }
 
     public function retrieveClockTz(string $field): Clock
