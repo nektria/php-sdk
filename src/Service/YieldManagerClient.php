@@ -361,7 +361,7 @@ readonly class YieldManagerClient
             return null;
         }
 
-        $user = new User(
+        return new User(
             id: $data['id'],
             email: $data['email'],
             name: $data['name'],
@@ -378,8 +378,6 @@ readonly class YieldManagerClient
             dniNie: $data['dniNie'],
             aiThreadId: $data['aiThreadId'],
         );
-
-        return $user;
     }
 
     /**
