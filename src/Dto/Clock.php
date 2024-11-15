@@ -54,14 +54,20 @@ class Clock
         }
     }
 
-    public static function max(self $a, self $b): self
+    /**
+     * @param CtTimeFormat $in
+     */
+    public static function max(self $a, self $b, string $in = 'seconds'): self
     {
-        return $a->isAfter($b) ? $a : $b;
+        return $a->isAfter($b, $in) ? $a : $b;
     }
 
-    public static function min(self $a, self $b): self
+    /**
+     * @param CtTimeFormat $in
+     */
+    public static function min(self $a, self $b, string $in = 'seconds'): self
     {
-        return $a->isBefore($b) ? $a : $b;
+        return $a->isBefore($b, $in) ? $a : $b;
     }
 
     public static function now(): self
