@@ -499,7 +499,7 @@ readonly class RouteManagerClient
         ?array $tags,
         ?array $products,
         ?array $boxes,
-        ?string $notes
+        ?string $note
     ): void {
         $this->requestClient->put(
             "{$this->routeManagerHost}/api/admin/orders/{$orderNumber}",
@@ -519,7 +519,7 @@ readonly class RouteManagerClient
                 'tags' => $tags,
                 'warehouseId' => $warehouseId,
                 'weight' => $weight,
-                'note' => $notes,
+                'note' => $note,
             ],
             headers: $this->getHeaders(),
         );
