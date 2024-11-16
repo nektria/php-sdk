@@ -344,11 +344,11 @@ abstract class RequestListener implements EventSubscriberInterface
         if ($logLevel !== self::LOG_LEVEL_NONE) {
             if ($status < 400) {
                 $isDebug = true;
-                if ($event->getRequest()->getMethod() !== 'GET') {
+                if ($event->getRequest()->getMethod() !== Request::METHOD_GET) {
                     $isDebug = false;
                 } else {
-                    $isDebug = $this->contextService->context() !== ContextService::PUBLIC
-                        && $this->contextService->context() !== ContextService::PUBLIC_V2;
+                    $isDebug = $this->contextService->context() === ContextService::INTERNAL
+                        || $this->contextService->context() === ContextService::ADMIN;
                 }
 
                 if ($logLevel !== null) {
