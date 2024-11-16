@@ -6,7 +6,6 @@ namespace Nektria\Controller\Admin;
 
 use Nektria\Controller\Controller;
 use Nektria\Document\ArrayDocument;
-use Nektria\Document\DocumentCollection;
 use Nektria\Document\DocumentResponse;
 use Nektria\Service\RequestClient;
 use Nektria\Service\SharedVariableCache;
@@ -41,9 +40,13 @@ readonly class RabbitController extends Controller
             "{$host}/api/queues",
         )->json();
 
-        $data = [];
         $messages = $this->getPendingMessages($sharedVariableCache, []);
         $messages = $this->getProcessingMessages($sharedVariableCache, $messages);
+
+        $data = [
+            'queues' => [],
+            'messages' => $messages,
+        ];
 
         foreach ($content as $queue) {
             $name = StringUtil::trim($queue['name']);
@@ -51,18 +54,15 @@ readonly class RabbitController extends Controller
             $unacked = (int) $queue['messages_unacknowledged'];
             $speed = (float) $queue['messages_unacknowledged_details']['rate'];
 
-            $data[] = new ArrayDocument([
-                'queues' => [
-                    'name' => $name,
-                    'ready' => $ready,
-                    'unacknowledged' => $unacked,
-                    'rate' => $speed,
-                ],
-                'messages' => $messages
-            ]);
+            $data['queues'][] = [
+                'name' => $name,
+                'ready' => $ready,
+                'unacknowledged' => $unacked,
+                'rate' => $speed,
+            ];
         }
 
-        return $this->documentResponse(new DocumentCollection($data));
+        return $this->documentResponse(new ArrayDocument($data));
     }
 
     /**
