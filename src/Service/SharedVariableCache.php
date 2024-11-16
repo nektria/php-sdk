@@ -11,7 +11,15 @@ use Nektria\Infrastructure\SharedRedisCache;
  */
 class SharedVariableCache extends SharedRedisCache
 {
-    public const DEFAULT = '1';
+    public const string DEFAULT = '1';
+
+    public function __construct(
+        string $redisDsn,
+        string $env,
+    ) {
+        $redisDsn = str_replace('/0', '/1', $redisDsn);
+        parent::__construct($redisDsn, $env);
+    }
 
     public function deleteKey(string $key): void
     {
