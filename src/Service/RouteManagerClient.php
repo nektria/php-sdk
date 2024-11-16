@@ -251,9 +251,8 @@ readonly class RouteManagerClient
         }
     }
 
-    public function deleteDriver(
-        string $driverId,
-    ): void {
+    public function deleteDriver(string $driverId): void
+    {
         $this->requestClient->delete(
             "{$this->routeManagerHost}/api/admin/drivers/{$driverId}",
             headers: $this->getHeaders(),
@@ -264,6 +263,14 @@ readonly class RouteManagerClient
     {
         $this->requestClient->delete(
             "{$this->routeManagerHost}/api/admin/orders/{$orderNumber}",
+            headers: $this->getHeaders(),
+        );
+    }
+
+    public function deletePickingShift(string $pickingShiftId): void
+    {
+        $this->requestClient->delete(
+            "{$this->routeManagerHost}/api/admin/picking-shifts/{$pickingShiftId}",
             headers: $this->getHeaders(),
         );
     }
