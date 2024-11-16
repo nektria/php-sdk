@@ -21,9 +21,8 @@ readonly class RabbitController extends Controller
     #[Route('', method: 'GET')]
     public function getStatus(
         ContainerInterface $container,
-        RequestClient      $requestClient,
-    ): DocumentResponse
-    {
+        RequestClient $requestClient,
+    ): DocumentResponse {
         if (!$container->hasParameter('rabbitDsn')) {
             return $this->emptyResponse();
         }
@@ -42,9 +41,9 @@ readonly class RabbitController extends Controller
         $data = [];
         foreach ($content as $queue) {
             $name = StringUtil::trim($queue['name']);
-            $ready = (int)$queue['messages_ready'];
-            $unacked = (int)$queue['messages_unacknowledged'];
-            $speed = (float)$queue['messages_unacknowledged_details']['rate'];
+            $ready = (int) $queue['messages_ready'];
+            $unacked = (int) $queue['messages_unacknowledged'];
+            $speed = (float) $queue['messages_unacknowledged_details']['rate'];
 
             $data[] = new ArrayDocument([
                 'queues' => [
