@@ -20,13 +20,13 @@ readonly class Address
         public float $latitude,
         public float $longitude,
     ) {
-        Validate::notEmpty($this->addressLine1);
-        Validate::notEmpty($this->postalCode);
-        Validate::notEmpty($this->city);
-        Validate::minLength($this->countryCode, 2);
-        Validate::maxLength($this->countryCode, 2);
-        Validate::latitude($this->latitude);
-        Validate::longitude($this->longitude);
+        // Validate::notEmpty($this->addressLine1);
+        // Validate::notEmpty($this->postalCode);
+        // Validate::notEmpty($this->city);
+        // Validate::minLength($this->countryCode, 2);
+        // Validate::maxLength($this->countryCode, 2);
+        // Validate::latitude($this->latitude);
+        // Validate::longitude($this->longitude);
     }
 
     public function shortSlug(): string

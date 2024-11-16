@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Nektria\Util;
 
+use Nektria\Dto\Address;
 use Nektria\Dto\Clock;
 use Nektria\Dto\LocalClock;
 use Nektria\Exception\InvalidRequestParamException;
@@ -33,19 +34,7 @@ readonly class ArrayDataFetcher
         return $this->data;
     }
 
-    /**
-     * @return array{
-     *     addressLine1: string,
-     *     addressLine2: string,
-     *     city: string,
-     *     countryCode: string,
-     *     elevator: ?bool,
-     *     latitude: ?float,
-     *     longitude: ?float,
-     *     postalCode: string,
-     * }|null
-     */
-    public function getAddress(string $field): ?array
+    public function getAddress(string $field): ?Address
     {
         if (!$this->hasField($field)) {
             return null;
@@ -54,19 +43,29 @@ readonly class ArrayDataFetcher
         $latitude = $this->getFloat("{$field}.latitude");
         $longitude = $this->getFloat("{$field}.longitude");
 
-        ValidateOpt::latitude($latitude);
-        ValidateOpt::longitude($longitude);
+        if (
+            $latitude === null
+            || $longitude === null
+            || $latitude === 0.0
+            || $longitude === 0.0
+        ) {
+            $latitude = 0.0;
+            $longitude = 0.0;
+        }
 
-        return [
-            'addressLine1' => $this->retrieveString("{$field}.addressLine1"),
-            'addressLine2' => $this->getString("{$field}.addressLine2") ?? '',
-            'city' => $this->retrieveString("{$field}.city"),
-            'countryCode' => $this->retrieveString("{$field}.countryCode"),
-            'elevator' => $this->getBool("{$field}.elevator"),
-            'latitude' => $latitude,
-            'longitude' => $longitude,
-            'postalCode' => $this->retrieveString("{$field}.postalCode"),
-        ];
+        Validate::latitude($latitude);
+        Validate::longitude($longitude);
+
+        return new Address(
+            addressLine1: $this->retrieveString("{$field}.addressLine1"),
+            addressLine2: $this->getString("{$field}.addressLine2") ?? '',
+            elevator: $this->getBool("{$field}.elevator") ?? true,
+            postalCode: $this->retrieveString("{$field}.postalCode"),
+            city: $this->retrieveString("{$field}.city"),
+            countryCode: $this->retrieveString("{$field}.countryCode"),
+            latitude: $latitude,
+            longitude: $longitude,
+        );
     }
 
     /**
@@ -321,19 +320,7 @@ readonly class ArrayDataFetcher
         return $this->getValue($field) !== null;
     }
 
-    /**
-     * @return array{
-     *     addressLine1: string,
-     *     addressLine2: string,
-     *     city: string,
-     *     countryCode: string,
-     *     elevator: ?bool,
-     *     latitude: ?float,
-     *     longitude: ?float,
-     *     postalCode: string,
-     * }
-     */
-    public function retrieveAddress(string $field): array
+    public function retrieveAddress(string $field): Address
     {
         $value = $this->getAddress($field);
 

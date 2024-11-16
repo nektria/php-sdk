@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace Nektria\Service;
 
+use Nektria\Dto\Address;
 use Nektria\Dto\Clock;
+use Nektria\Dto\LocalClock;
 use Throwable;
 
 /**
@@ -458,6 +460,66 @@ readonly class RouteManagerClient
                 'latitude' => $latitude,
                 'longitude' => $longitude,
                 'at' => $at->iso8601String(),
+            ],
+            headers: $this->getHeaders(),
+        );
+    }
+
+    /**
+     * @param array{
+     *      name: string,
+     *      phoneNumber: string,
+     *      shopperCode: string,
+     * }|null $shopper
+     * @param array{
+     *      code: string,
+     *      name: string,
+     *      quantity: int,
+     *      weight: int
+     * }[]|null $products
+     * @param array{
+     *      code: string,
+     *      quantity: int
+     *  }[]|null $boxes
+     * @param string[]|null $tags
+     */
+    public function saveOrder(
+        string $orderNumber,
+        ?string $warehouseId,
+        ?string $pickingShiftId,
+        ?array $shopper,
+        ?Address $address,
+        ?string $area,
+        ?LocalClock $startTime,
+        ?LocalClock $endTime,
+        ?string $status,
+        ?int $weight,
+        ?int $productLines,
+        ?bool $returnal,
+        ?array $tags,
+        ?array $products,
+        ?array $boxes,
+        ?string $notes
+    ): void {
+        $this->requestClient->put(
+            "{$this->routeManagerHost}/api/admin/orders/{$orderNumber}",
+            data: [
+                'address' => $address?->toArray(),
+                'area' => $area,
+                'boxes' => $boxes,
+                'endTime' => $endTime?->dateTimeString(),
+                'orderNumber' => $orderNumber,
+                'pickingShiftId' => $pickingShiftId,
+                'productLines' => $productLines,
+                'products' => $products,
+                'returnal' => $returnal,
+                'shopper' => $shopper,
+                'startTime' => $startTime?->dateTimeString(),
+                'status' => $status,
+                'tags' => $tags,
+                'warehouseId' => $warehouseId,
+                'weight' => $weight,
+                'note' => $notes,
             ],
             headers: $this->getHeaders(),
         );
