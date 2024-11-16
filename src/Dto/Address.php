@@ -63,7 +63,7 @@ readonly class Address
             ),
         )->toString());
     }
-    
+
     /**
      * @return array{
      *     addressLine1: string,
