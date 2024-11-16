@@ -9,7 +9,9 @@ use Nektria\Document\ArrayDocument;
 use Nektria\Document\DocumentCollection;
 use Nektria\Document\DocumentResponse;
 use Nektria\Service\RequestClient;
+use Nektria\Service\SharedVariableCache;
 use Nektria\Util\Controller\Route;
+use Nektria\Util\JsonUtil;
 use Nektria\Util\StringUtil;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
@@ -20,6 +22,7 @@ readonly class RabbitController extends Controller
 {
     #[Route('', method: 'GET')]
     public function getStatus(
+        SharedVariableCache $sharedVariableCache,
         ContainerInterface $container,
         RequestClient $requestClient,
     ): DocumentResponse {
@@ -39,6 +42,9 @@ readonly class RabbitController extends Controller
         )->json();
 
         $data = [];
+        $messages = $this->getPendingMessages($sharedVariableCache, []);
+        $messages = $this->getProcessingMessages($sharedVariableCache, $messages);
+
         foreach ($content as $queue) {
             $name = StringUtil::trim($queue['name']);
             $ready = (int) $queue['messages_ready'];
@@ -51,10 +57,75 @@ readonly class RabbitController extends Controller
                     'ready' => $ready,
                     'unacknowledged' => $unacked,
                     'rate' => $speed,
-                ]
+                ],
+                'messages' => $messages
             ]);
         }
 
         return $this->documentResponse(new DocumentCollection($data));
+    }
+
+    /**
+     * @param array<string, array<string, number>> $result
+     * @return array<string, array<string, number>>
+     */
+    private function getPendingMessages(SharedVariableCache $sharedVariableCache, array $result): array
+    {
+        $data = JsonUtil::decode($sharedVariableCache->readString('bus_messages_pending', '[]'));
+
+        $projects = [];
+        foreach ($data as $item) {
+            [$project, $clzz] = explode('_', $item);
+
+            $projects[$project] ??= [];
+            $projects[$project][] = $clzz;
+        }
+
+        ksort($projects);
+        foreach ($projects as $project => $clzzs) {
+            sort($clzzs);
+            foreach ($clzzs as $clzz) {
+                $times = $sharedVariableCache->readInt("bus_messages_pending_{$project}_{$clzz}");
+                if ($times > 0) {
+                    $result[$project] ??= [];
+                    $result[$project][$clzz] ??= 0;
+                    $result[$project][$clzz] += $times;
+                }
+            }
+        }
+
+        return $result;
+    }
+
+    /**
+     * @param array<string, array<string, number>> $result
+     * @return array<string, array<string, number>>
+     */
+    private function getProcessingMessages(SharedVariableCache $sharedVariableCache, array $result): array
+    {
+        $data = JsonUtil::decode($sharedVariableCache->readString('bus_messages', '[]'));
+
+        $projects = [];
+        foreach ($data as $item) {
+            [$project, $clzz] = explode('_', $item);
+
+            $projects[$project] ??= [];
+            $projects[$project][] = $clzz;
+        }
+
+        ksort($projects);
+        foreach ($projects as $project => $clzzs) {
+            sort($clzzs);
+            foreach ($clzzs as $clzz) {
+                $times = $sharedVariableCache->readInt("bus_messages_{$project}_{$clzz}");
+                if ($times > 0) {
+                    $result[$project] ??= [];
+                    $result[$project][$clzz] ??= 0;
+                    $result[$project][$clzz] += $times;
+                }
+            }
+        }
+
+        return $result;
     }
 }
