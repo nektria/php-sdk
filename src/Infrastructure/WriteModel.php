@@ -206,12 +206,15 @@ abstract class WriteModel
             $this->checkFromService();
         }
 
-        if ($this->getPersistenceType($domain) === PersistenceType::None) {
+        $persistenceType = $this->getPersistenceType($domain);
+        if ($persistenceType === PersistenceType::None) {
             return;
         }
 
         try {
-            $domain->refresh();
+            if ($persistenceType === PersistenceType::HardUpdate) {
+                $domain->refresh();
+            }
             $this->manager->persist($domain);
             $this->manager->flush();
             $this->manager->detach($domain);
