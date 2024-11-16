@@ -29,6 +29,11 @@ readonly class Address
         // Validate::longitude($this->longitude);
     }
 
+    public function hasCoordinates(): bool
+    {
+        return $this->latitude !== 0.0 && $this->longitude !== 0.0;
+    }
+
     public function shortSlug(): string
     {
         if ($this->addressLine1 === '') {
@@ -58,7 +63,7 @@ readonly class Address
             ),
         )->toString());
     }
-
+    
     /**
      * @return array{
      *     addressLine1: string,
