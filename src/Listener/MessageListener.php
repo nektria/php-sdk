@@ -383,14 +383,17 @@ abstract class MessageListener implements EventSubscriberInterface
     {
         $project = $this->contextService->project();
         $clzz = $message::class;
-        $data = JsonUtil::decode($this->sharedVariableCache->readString('bus_messages_pending', '[]'));
         $key = "{$project}_{$clzz}";
+        $data = JsonUtil::decode($this->sharedVariableCache->readString('bus_messages_pending', '[]'));
         if (!in_array($key, $data, true)) {
             $data[] = $key;
         }
         sort($data);
         $this->sharedVariableCache->saveString('bus_messages_pending', JsonUtil::encode($data), 3600);
-        $times = min(100_000, $this->sharedVariableCache->readInt("bus_messages_pending_{$key}") + 1);
+
+        $this->sharedVariableCache->beginTransaction();
+        $times = min(1_000_000, $this->sharedVariableCache->readInt("bus_messages_pending_{$key}") + 1);
         $this->sharedVariableCache->saveInt("bus_messages_pending_{$key}", $times, ttl: 3600);
+        $this->sharedVariableCache->closeTransaction();
     }
 }

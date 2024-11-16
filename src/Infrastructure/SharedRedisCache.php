@@ -18,7 +18,18 @@ abstract class SharedRedisCache extends RedisCache
         string $redisDsn,
         string $env,
     ) {
+        $redisDsn = str_replace('/0', '/1', $redisDsn);
         parent::__construct($redisDsn, $env, 'shared');
+    }
+
+    public function beginTransaction(): void
+    {
+        $this->init()->multi();
+    }
+
+    public function closeTransaction(): void
+    {
+        $this->init()->exec();
     }
 
     public function empty(): void
