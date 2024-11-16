@@ -467,9 +467,9 @@ readonly class RouteManagerClient
 
     /**
      * @param array{
-     *      name: string,
-     *      phoneNumber: string,
-     *      shopperCode: string,
+     *      name: string|null,
+     *      phoneNumber: string|null,
+     *      shopperCode: string|null,
      * }|null $shopper
      * @param array{
      *      code: string,
