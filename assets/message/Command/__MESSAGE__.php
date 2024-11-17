@@ -11,11 +11,13 @@ use Nektria\Util\Annotation\RolesRequired;
 #[RolesRequired([RoleManager::ROLE_USER])]
 readonly class __MESSAGE__ implements Command
 {
-    public function __construct() {
+    public function __construct(
+        public string $__ENTITY_CC__Id,
+    ) {
     }
 
     public function ref(): string
     {
-        return '???';
+        return $this->__ENTITY_CC__Id;
     }
 }

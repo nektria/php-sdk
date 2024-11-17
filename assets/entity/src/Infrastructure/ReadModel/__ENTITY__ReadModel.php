@@ -15,22 +15,22 @@ use Nektria\Infrastructure\ReadModel;
  */
 class __ENTITY__ReadModel extends ReadModel
 {
-    public function opt(string $id): ?__ENTITY__
+    public function opt(string $__ENTITY_CC__Id): ?__ENTITY__
     {
         return $this->getResult(
-            'WHERE id=:id',
+            'WHERE id=:__ENTITY_CC__Id',
             [
-                'id' => $id
+                '__ENTITY_CC__Id' => $__ENTITY_CC__Id
             ],
         );
     }
 
-    public function read(string $id): __ENTITY__
+    public function read(string $__ENTITY_CC__Id): __ENTITY__
     {
-        $data = $this->opt($id);
+        $data = $this->opt($__ENTITY_CC__Id);
 
         if ($data === null) {
-            throw new ResourceNotFoundException('__ENTITY__', $id);
+            throw new ResourceNotFoundException('__ENTITY__', $__ENTITY_CC__Id);
         }
 
         return $data;

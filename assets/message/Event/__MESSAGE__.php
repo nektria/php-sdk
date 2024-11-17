@@ -8,11 +8,13 @@ use Nektria\Message\Event;
 
 readonly class __MESSAGE__ implements Event
 {
-    public function __construct() {
+    public function __construct(
+        public string $__ENTITY_CC__Id,
+    ) {
     }
 
     public function ref(): string
     {
-        return '???';
+        return $this->__ENTITY_CC__Id;
     }
 }
