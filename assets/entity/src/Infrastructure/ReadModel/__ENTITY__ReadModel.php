@@ -27,12 +27,7 @@ class __ENTITY__ReadModel extends ReadModel
 
     public function read(string $id): __ENTITY__
     {
-        $data = $this->getResult(
-            'WHERE id=:id',
-            [
-                'id' => $id
-            ],
-        );
+        $data = $this->opt($id);
 
         if ($data === null) {
             throw new ResourceNotFoundException('__ENTITY__', $id);
