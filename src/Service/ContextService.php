@@ -34,11 +34,9 @@ class ContextService
     public static ?ContextService $dummyCS;
 
     private string $context;
-
+    private bool $forceSync;
     private ?string $tenantId;
-
     private string $traceId;
-
     private ?string $userId;
 
     public function __construct(
@@ -50,6 +48,7 @@ class ContextService
         $this->traceId = StringUtil::uuid4();
         $this->userId = null;
         $this->tenantId = null;
+        $this->forceSync = false;
     }
 
     public static function dummy(): self
@@ -90,6 +89,14 @@ class ContextService
     public function env(): string
     {
         return $this->env;
+    }
+
+    /**
+     * @return bool
+     */
+    public function forceSync(): bool
+    {
+        return $this->forceSync;
     }
 
     public function isAuthenticated(): bool
@@ -165,6 +172,11 @@ class ContextService
                 $this->sharedVariableCache->deleteKey($key);
             }
         }
+    }
+
+    public function setForceSync(bool $forceSync): void
+    {
+        $this->forceSync = $forceSync;
     }
 
     public function setTenantId(?string $tenantId): void

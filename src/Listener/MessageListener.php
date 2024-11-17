@@ -84,131 +84,137 @@ abstract class MessageListener implements EventSubscriberInterface
 
     public function onMessengerException(WorkerMessageFailedEvent $event): void
     {
-        $retryStamp = $event->getEnvelope()->last(RetryStamp::class);
-        $transportStamp = $event->getEnvelope()->last(TransportNamesStamp::class);
-        $this->messageCompletedAt = Clock::now()->iso8601String();
-        $message = $event->getEnvelope()->getMessage();
-        $maxRetries = 1;
+        try {
+            $retryStamp = $event->getEnvelope()->last(RetryStamp::class);
+            $transportStamp = $event->getEnvelope()->last(TransportNamesStamp::class);
+            $this->messageCompletedAt = Clock::now()->iso8601String();
+            $message = $event->getEnvelope()->getMessage();
+            $maxRetries = 1;
 
-        $this->message = null;
-        if ($message instanceof Command || $message instanceof Event || $message instanceof Query) {
-            $this->decreaseCounter($message);
-        }
-
-        if ($retryStamp !== null) {
-            $maxRetries = $retryStamp->maxRetries;
-            $nextTry = $retryStamp->currentTry + 1;
-            if ($nextTry <= $retryStamp->maxRetries) {
-                $transport = null;
-                if ($transportStamp !== null) {
-                    $transport = $transportStamp->getTransportNames()[0];
-                }
-
-                if ($message instanceof Command) {
-                    $this->bus->dispatchCommand(
-                        $message,
-                        transport: $transport,
-                        delayMs: $retryStamp->intervalMs,
-                        retryOptions: [
-                            'currentTry' => $nextTry,
-                            'maxTries' => $retryStamp->maxRetries,
-                            'interval' => $retryStamp->intervalMs,
-                        ],
-                    );
-                } elseif ($message instanceof Event) {
-                    $this->bus->dispatchEvent($message);
-                }
-            }
-        }
-
-        if ($message instanceof Command || $message instanceof Event) {
-            $encoders = [new JsonEncoder()];
-            $normalizers = [new PropertyNormalizer(), new DateTimeNormalizer(), new ObjectNormalizer()];
-            $serializer = new Serializer($normalizers, $encoders);
-            $data = JsonUtil::decode($serializer->serialize($message, 'json'));
-            $exception = $event->getThrowable();
-            $class = $message::class;
-            $classHash = str_replace('\\', '_', $class);
-            $messageClass = StringUtil::className($message);
-
-            if ($exception instanceof HandlerFailedException && $exception->getPrevious() !== null) {
-                $exception = $exception->getPrevious();
+            $this->message = null;
+            if ($message instanceof Command || $message instanceof Event || $message instanceof Query) {
+                $this->decreaseCounter($message);
             }
 
-            if (!($exception instanceof ThrowableDocument)) {
-                $exception = new ThrowableDocument($exception);
-            }
-
-            $originalException = $exception->throwable;
-            if ($originalException instanceof DriverException || $originalException instanceof ConnectionException) {
-                touch('/tmp/entity_manager_is_closed');
-            }
-
-            $exchangeName = '?';
-            $exchangeStamp = $event->getEnvelope()->last(AmqpReceivedStamp::class);
-            if ($exchangeStamp !== null) {
-                $exchangeName = $exchangeStamp->getAmqpEnvelope()->getExchangeName();
-            }
-
-            $this->logService->temporalLogs();
-            $this->logService->exception($originalException, [
-                'context' => 'messenger',
-                'role' => $this->contextService->context(),
-                'event' => $class,
-                'body' => $data,
-                'messageReceivedAt' => $this->messageStartedAt,
-                'messageCompletedAt' => $this->messageCompletedAt,
-                'queue' => $exchangeName,
-                'maxRetries' => $maxRetries,
-                'httpRequest' => [
-                    'requestUrl' => "/{$messageClass}/{$message->ref()}",
-                    'requestMethod' => 'QUEUE',
-                    'status' => 500,
-                    'latency' => max(0.001, round(microtime(true) - $this->executionTime, 3)) . 's',
-                ],
-            ]);
-
-            $tenantName = $this->userService->user()?->tenant->name ?? 'none';
-
-            $key = "{$tenantName}-messenger-{$classHash}";
-            $key2 = "{$tenantName}-messenger-{$classHash}_count";
-            if ($this->contextService->env() === ContextService::DEV || $this->variableCache->refreshKey($key)) {
-                $ignoreMessages = [
-                    'Redelivered message from AMQP detected that will be rejected and trigger the retry logic.',
-                ];
-
-                $times = $this->variableCache->readInt($key2, 1);
-
-                if (!in_array($originalException->getMessage(), $ignoreMessages, true)) {
-                    $sendAlert = true;
-                    if ($originalException instanceof ResourceNotFoundException) {
-                        $sendAlert = false;
+            if ($retryStamp !== null) {
+                $maxRetries = $retryStamp->maxRetries;
+                $nextTry = $retryStamp->currentTry + 1;
+                if ($nextTry <= $retryStamp->maxRetries) {
+                    $transport = null;
+                    if ($transportStamp !== null) {
+                        $transport = $transportStamp->getTransportNames()[0];
                     }
 
-                    if ($sendAlert) {
-                        $this->alertService->sendThrowable(
-                            $this->userService->user()?->tenant->name ?? 'none',
-                            'RABBIT',
-                            "/{$messageClass}/{$message->ref()}",
-                            $data,
-                            $exception,
-                            $times,
+                    if ($message instanceof Command) {
+                        $this->bus->dispatchCommand(
+                            $message,
+                            transport: $transport,
+                            delayMs: $retryStamp->intervalMs,
+                            retryOptions: [
+                                'currentTry' => $nextTry,
+                                'maxTries' => $retryStamp->maxRetries,
+                                'interval' => $retryStamp->intervalMs,
+                            ],
                         );
+                    } elseif ($message instanceof Event) {
+                        $this->bus->dispatchEvent($message);
                     }
                 }
-
-                $this->variableCache->saveInt($key2, 0);
-            } else {
-                $times = $this->variableCache->readInt($key2);
-                $this->variableCache->saveInt($key2, $times + 1);
             }
+
+            if ($message instanceof Command || $message instanceof Event) {
+                $encoders = [new JsonEncoder()];
+                $normalizers = [new PropertyNormalizer(), new DateTimeNormalizer(), new ObjectNormalizer()];
+                $serializer = new Serializer($normalizers, $encoders);
+                $data = JsonUtil::decode($serializer->serialize($message, 'json'));
+                $exception = $event->getThrowable();
+                $class = $message::class;
+                $classHash = str_replace('\\', '_', $class);
+                $messageClass = StringUtil::className($message);
+
+                if ($exception instanceof HandlerFailedException && $exception->getPrevious() !== null) {
+                    $exception = $exception->getPrevious();
+                }
+
+                if (!($exception instanceof ThrowableDocument)) {
+                    $exception = new ThrowableDocument($exception);
+                }
+
+                $originalException = $exception->throwable;
+                if (
+                    $originalException instanceof DriverException
+                    || $originalException instanceof ConnectionException
+                ) {
+                    touch('/tmp/entity_manager_is_closed');
+                }
+
+                $exchangeName = '?';
+                $exchangeStamp = $event->getEnvelope()->last(AmqpReceivedStamp::class);
+                if ($exchangeStamp !== null) {
+                    $exchangeName = $exchangeStamp->getAmqpEnvelope()->getExchangeName();
+                }
+
+                $this->logService->temporalLogs();
+                $this->logService->exception($originalException, [
+                    'context' => 'messenger',
+                    'role' => $this->contextService->context(),
+                    'event' => $class,
+                    'body' => $data,
+                    'messageReceivedAt' => $this->messageStartedAt,
+                    'messageCompletedAt' => $this->messageCompletedAt,
+                    'queue' => $exchangeName,
+                    'maxRetries' => $maxRetries,
+                    'httpRequest' => [
+                        'requestUrl' => "/{$messageClass}/{$message->ref()}",
+                        'requestMethod' => 'QUEUE',
+                        'status' => 500,
+                        'latency' => max(0.001, round(microtime(true) - $this->executionTime, 3)) . 's',
+                    ],
+                ]);
+
+                $tenantName = $this->userService->user()?->tenant->name ?? 'none';
+
+                $key = "{$tenantName}-messenger-{$classHash}";
+                $key2 = "{$tenantName}-messenger-{$classHash}_count";
+                if ($this->contextService->env() === ContextService::DEV || $this->variableCache->refreshKey($key)) {
+                    $ignoreMessages = [
+                        'Redelivered message from AMQP detected that will be rejected and trigger the retry logic.',
+                    ];
+
+                    $times = $this->variableCache->readInt($key2, 1);
+
+                    if (!in_array($originalException->getMessage(), $ignoreMessages, true)) {
+                        $sendAlert = true;
+                        if ($originalException instanceof ResourceNotFoundException) {
+                            $sendAlert = false;
+                        }
+
+                        if ($sendAlert) {
+                            $this->alertService->sendThrowable(
+                                $this->userService->user()?->tenant->name ?? 'none',
+                                'RABBIT',
+                                "/{$messageClass}/{$message->ref()}",
+                                $data,
+                                $exception,
+                                $times,
+                            );
+                        }
+                    }
+
+                    $this->variableCache->saveInt($key2, 0);
+                } else {
+                    $times = $this->variableCache->readInt($key2);
+                    $this->variableCache->saveInt($key2, $times + 1);
+                }
+            }
+
+            $this->userService->clearAuthentication();
+
+            $this->cleanMemory();
+
+            gc_collect_cycles();
+        } catch (Throwable) {
         }
-
-        $this->userService->clearAuthentication();
-
-        $this->cleanMemory();
-
-        gc_collect_cycles();
     }
 
     public function onSendMessageToTransports(SendMessageToTransportsEvent $event): void

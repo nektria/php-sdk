@@ -169,8 +169,12 @@ class Bus implements BusInterface
             ),
         ];
 
-        if ($transport !== null) {
+        if ($transport !== null && !$this->contextService->forceSync()) {
             $stamps[] = new TransportNamesStamp([$transport]);
+        }
+
+        if ($this->contextService->forceSync()) {
+            $stamps[] = new TransportNamesStamp(['sync']);
         }
 
         if ($retryOptions !== null) {
