@@ -15,6 +15,16 @@ use Nektria\Infrastructure\ReadModel;
  */
 class __ENTITY__ReadModel extends ReadModel
 {
+    public function opt(string $id): ?__ENTITY__
+    {
+        return $this->getResult(
+            'WHERE id=:id',
+            [
+                'id' => $id
+            ],
+        );
+    }
+
     public function read(string $id): __ENTITY__
     {
         $data = $this->getResult(
