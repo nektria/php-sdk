@@ -13,12 +13,5 @@ class PingConsole extends Console
 
     protected function play(): void
     {
-        if (file_exists('/tmp/entity_manager_is_closed')) {
-            unlink('/tmp/entity_manager_is_closed');
-
-            // throw new RuntimeException('Entity manager is closed');
-        }
-
-        $this->output()->writeln('pong');
     }
 }
