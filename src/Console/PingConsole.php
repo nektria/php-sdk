@@ -13,5 +13,6 @@ class PingConsole extends Console
 
     protected function play(): void
     {
+
     }
 }
