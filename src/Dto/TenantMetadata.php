@@ -168,6 +168,13 @@ class TenantMetadata
         return $this->data['gridViewerOrdersPrefix'];
     }
 
+    public function hideFutureSlotsStatus(): bool
+    {
+        $this->data['hideFutureSlotsStatusForGridViewers'] ??= false;
+
+        return $this->data['hideFutureSlotsStatusForGridViewers'];
+    }
+
     /**
      * @return string[]
      */
