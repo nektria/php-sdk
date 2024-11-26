@@ -168,7 +168,7 @@ class TenantMetadata
         return $this->data['gridViewerOrdersPrefix'];
     }
 
-    public function hideFutureSlotsStatus(): bool
+    public function hideFutureSlotsStatusForGridViewers(): bool
     {
         $this->data['hideFutureSlotsStatusForGridViewers'] ??= false;
 
@@ -284,6 +284,7 @@ class TenantMetadata
             'gridMode' => $this->gridMode(),
             'gridVersion' => $this->gridVesion(),
             'gridViewerOrdersPrefix' => $this->gridViewerOrdersPrefix(),
+            'hideFutureSlotsStatusForGridViewers' => $this->hideFutureSlotsStatusForGridViewers(),
             'ignoreRoutesOnLogsList' => $this->ignoreRoutesOnLogsList(),
             'longSpeed' => $this->longSpeed(),
             'nextStepEnabled' => $this->nextStepEnabled(),
