@@ -489,6 +489,7 @@ readonly class RouteManagerClient
      *      quantity: int
      *  }[]|null $boxes
      * @param string[]|null $tags
+     * @param array<string, mixed>|null $metadata
      */
     public function saveOrder(
         string $orderNumber,
@@ -506,7 +507,8 @@ readonly class RouteManagerClient
         ?array $tags,
         ?array $products,
         ?array $boxes,
-        ?string $note
+        ?string $note,
+        ?array $metadata,
     ): void {
         $this->requestClient->put(
             "{$this->routeManagerHost}/api/admin/orders/{$orderNumber}",
@@ -527,6 +529,7 @@ readonly class RouteManagerClient
                 'warehouseId' => $warehouseId,
                 'weight' => $weight,
                 'note' => $note,
+                'metadata' => $metadata,
             ],
             headers: $this->getHeaders(),
         );
