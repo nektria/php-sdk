@@ -38,13 +38,13 @@ readonly class Metadata extends Document
     /**
      * @param mixed[] $data
      */
-    public function mergeData(array $data): self
+    public function mergeData(array $data): static
     {
         if (ArrayUtil::isSubset($data, $this->data)) {
             return $this;
         }
 
-        return new self([...$this->data, ...$data]);
+        return new static([...$this->data, ...$data]);
     }
 
     public function toArray(ContextService $context): array
@@ -52,7 +52,7 @@ readonly class Metadata extends Document
         return $this->data;
     }
 
-    public function updateField(string $field, mixed $value): self
+    public function updateField(string $field, mixed $value): static
     {
         if ($this->getField($field) === $value) {
             return $this;
@@ -61,6 +61,6 @@ readonly class Metadata extends Document
         $data = [...$this->data];
         $data[$field] = $value;
 
-        return new self($data);
+        return new static($data);
     }
 }
