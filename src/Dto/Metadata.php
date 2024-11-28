@@ -6,7 +6,6 @@ namespace Nektria\Dto;
 
 use Nektria\Document\Document;
 use Nektria\Service\ContextService;
-use Nektria\Util\ArrayUtil;
 
 readonly class Metadata extends Document
 {
@@ -40,11 +39,12 @@ readonly class Metadata extends Document
      */
     public function mergeData(array $data): static
     {
-        if (ArrayUtil::isSubset($data, $this->data)) {
-            return $this;
+        $newMetadata = [...$this->data];
+        foreach ($data as $key => $value) {
+            $newMetadata[$key] = $value;
         }
 
-        return new static([...$this->data, ...$data]);
+        return new static($newMetadata);
     }
 
     public function toArray(ContextService $context): array
