@@ -393,6 +393,20 @@ readonly class RouteManagerClient
     }
 
     /**
+     * @return RMRoute[]
+     */
+    public function getRoutesFromWarehouse(string $warehouseId, LocalClock $date): array
+    {
+        return $this->requestClient->get(
+            "{$this->routeManagerHost}/api/admin/warehouses/{$warehouseId}/routes",
+            data: [
+                'date' => $date->dateString(),
+            ],
+            headers: $this->getHeaders(),
+        )->json();
+    }
+
+    /**
      * @return RMVehicle
      */
     public function getVehicle(string $id): array
