@@ -324,6 +324,20 @@ readonly class RouteManagerClient
     }
 
     /**
+     * @return RMOrder[]
+     */
+    public function getOrdersFromWarehouse(string $warehouseId, LocalClock $date): array
+    {
+        return $this->requestClient->get(
+            "{$this->routeManagerHost}/api/admin/warehouses/{$warehouseId}",
+            data: [
+                'date' => $date->dateString(),
+            ],
+            headers: $this->getHeaders(),
+        )->json();
+    }
+
+    /**
      * @return RMPickingShift
      */
     public function getPickingShift(string $id): array
