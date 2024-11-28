@@ -575,11 +575,24 @@ readonly class RouteManagerClient
         );
     }
 
-    public function saveRoute(string $id, ?string $platform): void
-    {
+    /**
+     * @param array<int, array{
+     *      orders: array<int, string>,
+     *  }>|null $itinerary
+     */
+    public function saveRoute(
+        string $id,
+        ?string $name,
+        ?string $pickingShiftId,
+        ?array $itinerary,
+        ?string $platform
+    ): void {
         $this->requestClient->put(
             "{$this->routeManagerHost}/api/admin/routes/{$id}",
             data: [
+                'name' => $name,
+                'pickingShiftId' => $pickingShiftId,
+                'itinerary' => $itinerary,
                 'platform' => $platform,
             ],
             headers: $this->getHeaders(),
