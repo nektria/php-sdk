@@ -329,7 +329,7 @@ readonly class RouteManagerClient
     public function getOrdersFromWarehouse(string $warehouseId, LocalClock $date): array
     {
         return $this->requestClient->get(
-            "{$this->routeManagerHost}/api/admin/warehouses/{$warehouseId}",
+            "{$this->routeManagerHost}/api/admin/warehouses/{$warehouseId}/orders",
             data: [
                 'date' => $date->dateString(),
             ],
