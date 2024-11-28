@@ -77,10 +77,7 @@ use Throwable;
  *      weight: int,
  * }
  *
- * @phpstan-type RMOrderMetadata array{
- *      returnPickUp: bool,
- *      tags: string[],
- * }
+ * @phpstan-type RMOrderMetadata array<string, mixed>
  *
  * @phpstan-type RMPickingShift array{
  *      closesAt: string,
