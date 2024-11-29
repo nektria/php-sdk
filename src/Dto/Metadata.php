@@ -16,7 +16,7 @@ readonly class Metadata extends Document
      * @param mixed[] $data
      */
     final public function __construct(
-        array $data
+        array $data = []
     ) {
         $this->data = $data;
     }
