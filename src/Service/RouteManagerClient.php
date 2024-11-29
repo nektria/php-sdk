@@ -7,6 +7,7 @@ namespace Nektria\Service;
 use Nektria\Dto\Address;
 use Nektria\Dto\Clock;
 use Nektria\Dto\LocalClock;
+use Nektria\Dto\Metadata;
 use Throwable;
 
 /**
@@ -463,15 +464,17 @@ readonly class RouteManagerClient
      */
     public function saveDriver(
         string $driverId,
-        string $name,
-        string $identificationDocument,
-        string $phoneNumber,
-        array $warehouses
+        ?string $name,
+        ?string $identificationDocument,
+        ?string $phoneNumber,
+        ?array $warehouses,
+        ?Metadata $metadata,
     ): void {
         $this->requestClient->put(
             "{$this->routeManagerHost}/api/admin/drivers/{$driverId}",
             data: [
                 'identificationDocument' => $identificationDocument,
+                'metadata' => $metadata?->data(),
                 'name' => $name,
                 'phoneNumber' => $phoneNumber,
                 'warehouses' => $warehouses,
