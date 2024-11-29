@@ -7,6 +7,7 @@ namespace Nektria\Util;
 use Nektria\Dto\Address;
 use Nektria\Dto\Clock;
 use Nektria\Dto\LocalClock;
+use Nektria\Dto\Metadata;
 use Nektria\Exception\InvalidRequestParamException;
 use Nektria\Exception\MissingRequestParamException;
 use Throwable;
@@ -282,6 +283,17 @@ readonly class ArrayDataFetcher
         return $this->getLocalClock($field);
     }
 
+    public function getMetadata(string $field): ?Metadata
+    {
+        $value = $this->getArray($field);
+
+        if ($value === null) {
+            return null;
+        }
+
+        return new Metadata($value);
+    }
+
     public function getString(string $field): ?string
     {
         $value = $this->getValue($field);
@@ -500,6 +512,17 @@ readonly class ArrayDataFetcher
     public function retrieveLocalDate(string $field): LocalClock
     {
         $value = $this->getLocalClock($field);
+
+        if ($value === null) {
+            throw new MissingRequestParamException($field);
+        }
+
+        return $value;
+    }
+
+    public function retrieveMetadata(string $field): Metadata
+    {
+        $value = $this->getMetadata($field);
 
         if ($value === null) {
             throw new MissingRequestParamException($field);
