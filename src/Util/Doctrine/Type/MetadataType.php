@@ -20,10 +20,7 @@ class MetadataType extends JsonType
         return JsonUtil::encode($phpValue->data());
     }
 
-    /**
-     * @return Metadata
-     */
-    protected function convertToPhp(string $databaseValue): array
+    protected function convertToPhp(string $databaseValue): Metadata
     {
         return new Metadata(JsonUtil::decode($databaseValue));
     }
