@@ -521,6 +521,30 @@ readonly class YieldManagerClient
         );
     }
 
+    /**
+     * @param string[]|null $warehouses
+     */
+    public function saveUser(
+        string $email,
+        ?string $password,
+        ?string $name,
+        ?string $role,
+        ?array $warehouses,
+        bool $forceSync = false,
+    ): void {
+        $this->requestClient->put(
+            "{$this->yieldManagerHost}/api/admin/users",
+            data: [
+                'name' => $name,
+                'email' => $email,
+                'role' => $role,
+                'password' => $password,
+                'warehouses' => $warehouses,
+            ],
+            headers: $this->getHeaders($forceSync),
+        );
+    }
+
     public function saveWarehouseDailyInfoDayOff(
         string $warehouseId,
         LocalClock $date,
@@ -580,10 +604,22 @@ readonly class YieldManagerClient
     /**
      * @return array<string, string>
      */
-    private function getHeaders(): array
+    private function getHeaders(bool $forceSync = false): array
     {
         $tenantId = $this->contextService->tenantId() ?? 'none';
         $apiKey = $this->sharedUserCache->read("ADMIN_{$tenantId}")->apiKey ?? 'none';
+
+        if ($forceSync) {
+            return [
+                'Accept' => 'application/json',
+                'Content-type' => 'application/json',
+                'X-Api-Id' => $apiKey,
+                'X-Nektria-App' => 'yieldmanager',
+                'X-Trace' => $this->contextService->traceId(),
+                'X-Origin' => $this->contextService->project(),
+                'X-Sync' => '1',
+            ];
+        }
 
         return [
             'Accept' => 'application/json',
