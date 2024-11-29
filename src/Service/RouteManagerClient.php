@@ -311,6 +311,17 @@ readonly class RouteManagerClient
     }
 
     /**
+     * @return RMDriver[]
+     */
+    public function getDriversFromWarehouse(string $warehouseId): array
+    {
+        return $this->requestClient->get(
+            "{$this->routeManagerHost}/api/admin/warehouses/{$warehouseId}/drivers",
+            headers: $this->getHeaders(),
+        )->json();
+    }
+
+    /**
      * @return RMOrder
      */
     public function getOrder(string $orderNumber): array
