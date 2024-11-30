@@ -32,9 +32,10 @@ use Throwable;
  *      identificationDocument: string,
  *      latitude: float,
  *      longitude: float,
+ *      metadata: array<string, mixed>,
+ *      name: string,
  *      positionUpdatedAt: string,
  *      warehouses: string[],
- *      metadata: array<string, mixed>,
  * }
  *
  * @phpstan-type RMOrder array{
