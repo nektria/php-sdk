@@ -34,6 +34,7 @@ use Throwable;
  *      longitude: float,
  *      positionUpdatedAt: string,
  *      warehouses: string[],
+ *      metadata: array<string, mixed>,
  * }
  *
  * @phpstan-type RMOrder array{
@@ -126,6 +127,7 @@ use Throwable;
  *     cost: float,
  *     createdAt: string,
  *     distance: int,
+ *     driver: RMDriver|null,
  *     driverArrivedAtWarehouseAt: string,
  *     driverId: string|null,
  *     executionWindowEndTime: string,
