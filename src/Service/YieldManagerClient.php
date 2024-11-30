@@ -604,7 +604,7 @@ readonly class YieldManagerClient
     /**
      * @return array<string, string>
      */
-    private function getHeaders(bool $forceSync = false): array
+    protected function getHeaders(bool $forceSync = false): array
     {
         $tenantId = $this->contextService->tenantId() ?? 'none';
         $apiKey = $this->sharedUserCache->read("ADMIN_{$tenantId}")->apiKey ?? 'none';
