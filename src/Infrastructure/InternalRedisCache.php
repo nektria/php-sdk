@@ -26,6 +26,16 @@ abstract class InternalRedisCache extends RedisCache
         }
     }
 
+    public function beginTransaction(): void
+    {
+        $this->init()->multi();
+    }
+
+    public function closeTransaction(): void
+    {
+        $this->init()->exec();
+    }
+
     public function empty(): void
     {
         try {
