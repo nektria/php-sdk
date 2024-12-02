@@ -16,6 +16,15 @@ class VariableCache extends InternalRedisCache
 
     public const int DEFAULT_TTL = 300;
 
+    public function __construct(
+        string $redisDsn,
+        string $redisPrefix,
+        string $env,
+    ) {
+        $redisDsn = str_replace('/0', '/2', $redisDsn);
+        parent::__construct($redisDsn, $redisPrefix, $env);
+    }
+
     public function deleteKey(string $key): void
     {
         $this->removeItem($key);
