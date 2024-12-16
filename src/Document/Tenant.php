@@ -24,7 +24,7 @@ readonly class Tenant extends Document
                 'aiAssistantId' => $this->aiAssistantId,
                 'id' => $this->id,
                 'name' => $this->name,
-                'metadata' => $this->metadata->toArray(),
+                'metadata' => $this->metadata->toArray($context),
             ];
         }
 
@@ -32,7 +32,7 @@ readonly class Tenant extends Document
             return [
                 'id' => $this->id,
                 'name' => $this->name,
-                'metadata' => $this->metadata->toArray(),
+                'metadata' => $this->metadata->toArray($context),
             ];
         }
 

@@ -9,33 +9,7 @@ use Nektria\Dto\TenantMetadata;
 use Nektria\Infrastructure\SharedRedisCache;
 
 /**
- * @phpstan-type TenantMetadataArray array{
- *     autoDuplicateLastWeek: bool,
- *     availableTags: string[],
- *     blockWarehouse: bool,
- *     dayOffExtendsCutoff: bool,
- *     deliveryTime: number | null,
- *     ecoMode: string,
- *     expressGridDisabled: bool,
- *     extendPickingShiftsDisabled: bool,
- *     extraLongSpeed: number,
- *     forceDriverAssignation: bool,
- *     forceTags: bool,
- *     gridMode: string,
- *     gridVersion: number,
- *     gridViewerOrdersPrefix: string,
- *     ignoreRoutesOnLogsList: string[],
- *     longSpeed: number,
- *     nextStepEnabled: bool,
- *     parkingTime: number,
- *     proxyHost: string|null,
- *     recoverCoords: bool,
- *     shortSpeed: number,
- *     syncRMOrder: bool,
- *     syncRMShift: bool,
- *     syncRMWarehouse: bool,
- *     useAddressInsteadOfShopperCode: bool,
- * }
+ * @phpstan-type TenantMetadataArray mixed
  *
  * @extends SharedRedisCache<array{
  *     aiAssistantId: string|null,

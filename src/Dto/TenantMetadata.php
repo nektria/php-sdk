@@ -9,7 +9,7 @@ use Nektria\Service\SharedTenantCache;
 /**
  * @phpstan-import-type TenantMetadataArray from SharedTenantCache
  */
-class TenantMetadata
+readonly class TenantMetadata extends Metadata
 {
     public const string ECHO_MODE_ALWAYS = 'always';
 
@@ -19,37 +19,20 @@ class TenantMetadata
 
     public const string GRID_MODE_DEFAULT = 'default';
 
-    /** @var mixed[] */
-    private array $data;
-
-    /**
-     * @param mixed[] $data
-     */
-    public function __construct(array $data)
-    {
-        $this->data = $data;
-    }
-
     public function autoDuplicateLastWeek(): bool
     {
-        $this->data['autoDuplicateLastWeek'] ??= true;
-
-        return $this->data['autoDuplicateLastWeek'];
+        return $this->getField('autoDuplicateLastWeek') ?? true;
     }
 
     /** @return string[] */
     public function availableTags(): array
     {
-        $this->data['availableTags'] ??= [];
-
-        return $this->data['availableTags'];
+        return $this->getField('availableTags') ?? [];
     }
 
     public function blockWarehouse(): bool
     {
-        $this->data['blockWarehouse'] ??= true;
-
-        return $this->data['blockWarehouse'];
+        return $this->getField('blockWarehouse') ?? true;
     }
 
     /**
@@ -57,49 +40,32 @@ class TenantMetadata
      */
     public function capacitiesEmailRecipients(): array
     {
-        $this->data['capacitiesEmailRecipients'] ??= [];
-
-        return $this->data['capacitiesEmailRecipients'];
+        return $this->getField('capacitiesEmailRecipients') ?? [];
     }
 
     public function countComplementaryOrders(): bool
     {
-        $this->data['countComplementaryOrders'] ??= true;
-
-        return $this->data['countComplementaryOrders'];
-    }
-
-    public function data(): mixed
-    {
-        return $this->data;
+        return $this->getField('countComplementaryOrders') ?? true;
     }
 
     public function dayOffExtendsCutoff(): bool
     {
-        $this->data['dayOffExtendsCutoff'] ??= false;
-
-        return $this->data['dayOffExtendsCutoff'];
+        return $this->getField('dayOffExtendsCutoff') ?? false;
     }
 
     public function deliveryTime(): ?int
     {
-        $this->data['deliveryTime'] ??= null;
-
-        return $this->data['deliveryTime'];
+        return $this->getField('deliveryTime');
     }
 
     public function ecoMode(): string
     {
-        $this->data['ecoMode'] ??= self::ECHO_MODE_DEFAULT;
-
-        return $this->data['ecoMode'];
+        return $this->getField('ecoMode') ?? self::ECHO_MODE_DEFAULT;
     }
 
     public function expressGridDisabled(): bool
     {
-        $this->data['expressGridDisabled'] ??= false;
-
-        return $this->data['expressGridDisabled'];
+        return $this->getField('expressGridDisabled') ?? false;
     }
 
     public function expressGridEnabled(): bool
@@ -109,70 +75,52 @@ class TenantMetadata
 
     public function extendPickingShiftsDisabled(): bool
     {
-        $this->data['extendPickingShiftsDisabled'] ??= true;
-
-        return $this->data['extendPickingShiftsDisabled'];
+        return $this->getField('extendPickingShiftsDisabled') ?? true;
     }
 
     public function extraLongSpeed(): int
     {
-        $this->data['extraLongSpeed'] ??= 1440;
-
-        return $this->data['extraLongSpeed'];
+        return $this->getField('extraLongSpeed') ?? 1440;
     }
 
     public function forceDriverAssignation(): bool
     {
-        $this->data['forceDriverAssignation'] ??= false;
-
-        return $this->data['forceDriverAssignation'];
+        return $this->getField('forceDriverAssignation') ?? false;
     }
 
     public function forceTags(): bool
     {
-        $this->data['forceTags'] ??= false;
-
-        return $this->data['forceTags'];
+        return $this->getField('forceTags') ?? false;
     }
 
     public function freeSlotPriceForincentivizedShoppers(): bool
     {
-        $this->data['freeSlotPriceForincentivizedShoppers'] ??= false;
-
-        return $this->data['freeSlotPriceForincentivizedShoppers'];
+        return $this->getField('freeSlotPriceForincentivizedShoppers') ?? false;
     }
 
     public function getDiscordChannelFor(string $channel): ?string
     {
-        return $this->data["{$channel}Channel"] ?? null;
+        return $this->getField("{$channel}Channel");
     }
 
     public function gridMode(): string
     {
-        $this->data['gridMode'] ??= self::GRID_MODE_DEFAULT;
-
-        return $this->data['gridMode'];
+        return $this->getField('gridMode') ?? self::GRID_MODE_DEFAULT;
     }
 
     public function gridVesion(): int
     {
-        $this->data['gridVersion'] ??= 1;
-
-        return $this->data['gridVersion'];
+        return $this->getField('gridVersion') ?? 1;
     }
 
     public function gridViewerOrdersPrefix(): string
     {
-        $this->data['gridViewerOrdersPrefix'] ??= '';
-
-        return $this->data['gridViewerOrdersPrefix'];
+        return $this->getField('gridViewerOrdersPrefix') ?? '';
     }
 
     public function hideFutureSlotsStatusForGridViewers(): bool
     {
-        $this->data['hideFutureSlotsStatusForGridViewers'] ??= false;
-
-        return $this->data['hideFutureSlotsStatusForGridViewers'];
+        return $this->getField('hideFutureSlotsStatusForGridViewers') ?? false;
     }
 
     /**
@@ -180,55 +128,37 @@ class TenantMetadata
      */
     public function ignoreRoutesOnLogsList(): array
     {
-        $this->data['ignoreRoutesOnLogsList'] ??= [];
-
-        return $this->data['ignoreRoutesOnLogsList'];
+        return $this->getField('ignoreRoutesOnLogsList') ?? [];
     }
 
     public function longSpeed(): int
     {
-        $this->data['longSpeed'] ??= 720;
-
-        return $this->data['longSpeed'];
+        return $this->getField('longSpeed') ?? 720;
     }
 
     public function nextStepEnabled(): bool
     {
-        $this->data['nextStepEnabled'] = $this->data['nextStepEnabled'] ?? false;
-
-        return $this->data['nextStepEnabled'];
+        return $this->getField('nextStepEnabled') ?? false;
     }
 
     public function parkingTime(): int
     {
-        $this->data['parkingTime'] ??= 3;
-
-        return $this->data['parkingTime'];
+        return $this->getField('parkingTime') ?? 3;
     }
 
     public function proxyHost(): ?string
     {
-        $this->data['proxyHost'] ??= null;
-
-        if ($this->data['proxyHost'] === '') {
-            $this->data['proxyHost'] = null;
-        }
-
-        return $this->data['proxyHost'];
+        return $this->getField('proxyHost');
     }
 
     public function recoverCoords(): bool
     {
-        $this->data['recoverCoords'] ??= false;
-
-        return $this->data['recoverCoords'];
+        return $this->getField('recoverCoords') ?? false;
     }
 
     public function shortSpeed(): int
     {
-        $this->data['shortSpeed'] ??= 240;
-
-        return $this->data['shortSpeed'];
+        return $this->getField('shortSpeed') ?? 240;
     }
 
     /**
@@ -236,73 +166,26 @@ class TenantMetadata
      */
     public function specialClients(): array
     {
-        $this->data['specialClients'] ??= [];
-
-        return $this->data['specialClients'];
+        return $this->getField('specialClients') ?? [];
     }
 
     public function syncRMOrder(): bool
     {
-        $this->data['syncRMOrder'] ??= false;
-
-        return $this->data['syncRMOrder'];
+        return $this->getField('syncRMOrder') ?? false;
     }
 
     public function syncRMShift(): bool
     {
-        $this->data['syncRMShift'] ??= false;
-
-        return $this->data['syncRMShift'];
+        return $this->getField('syncRMShift') ?? false;
     }
 
     public function syncRMWarehouse(): bool
     {
-        $this->data['syncRMWarehouse'] ??= false;
-
-        return $this->data['syncRMWarehouse'];
-    }
-
-    /**
-     * @return TenantMetadataArray
-     */
-    public function toArray(): array
-    {
-        return [
-            'autoDuplicateLastWeek' => $this->autoDuplicateLastWeek(),
-            'availableTags' => $this->availableTags(),
-            'blockWarehouse' => $this->blockWarehouse(),
-            'countComplementaryOrders' => $this->countComplementaryOrders(),
-            'dayOffExtendsCutoff' => $this->dayOffExtendsCutoff(),
-            'deliveryTime' => $this->deliveryTime(),
-            'ecoMode' => $this->ecoMode(),
-            'expressGridDisabled' => $this->expressGridDisabled(),
-            'extendPickingShiftsDisabled' => $this->extendPickingShiftsDisabled(),
-            'extraLongSpeed' => $this->extraLongSpeed(),
-            'forceDriverAssignation' => $this->forceDriverAssignation(),
-            'forceTags' => $this->forceTags(),
-            'freeSlotPriceForincentivizedShoppers' => $this->freeSlotPriceForincentivizedShoppers(),
-            'gridMode' => $this->gridMode(),
-            'gridVersion' => $this->gridVesion(),
-            'gridViewerOrdersPrefix' => $this->gridViewerOrdersPrefix(),
-            'hideFutureSlotsStatusForGridViewers' => $this->hideFutureSlotsStatusForGridViewers(),
-            'ignoreRoutesOnLogsList' => $this->ignoreRoutesOnLogsList(),
-            'longSpeed' => $this->longSpeed(),
-            'nextStepEnabled' => $this->nextStepEnabled(),
-            'parkingTime' => $this->parkingTime(),
-            'proxyHost' => $this->proxyHost(),
-            'recoverCoords' => $this->recoverCoords(),
-            'shortSpeed' => $this->shortSpeed(),
-            'syncRMOrder' => $this->syncRMOrder(),
-            'syncRMShift' => $this->syncRMShift(),
-            'syncRMWarehouse' => $this->syncRMWarehouse(),
-            'useAddressInsteadOfShopperCode' => $this->useAddressInsteadOfShopperCode(),
-        ];
+        return $this->getField('syncRMWarehouse') ?? false;
     }
 
     public function useAddressInsteadOfShopperCode(): bool
     {
-        $this->data['useAddressInsteadOfShopperCode'] ??= false;
-
-        return $this->data['useAddressInsteadOfShopperCode'];
+        return $this->getField('useAddressInsteadOfShopperCode') ?? false;
     }
 }
