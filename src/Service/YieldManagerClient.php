@@ -224,10 +224,10 @@ use Nektria\Exception\RequestException;
 readonly class YieldManagerClient
 {
     public function __construct(
-        private ContextService $contextService,
-        private SharedUserV2Cache $sharedUserCache,
-        private RequestClient $requestClient,
-        private string $yieldManagerHost
+        protected ContextService $contextService,
+        protected SharedUserV2Cache $sharedUserCache,
+        protected RequestClient $requestClient,
+        protected string $yieldManagerHost
     ) {
     }
 
