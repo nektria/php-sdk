@@ -69,6 +69,7 @@ use Throwable;
  *      status: string,
  *      statusUpdatedAt: string,
  *      stepId: string|null,
+ *      tags: string[],
  *      tenantId: string,
  *      timeRange: array{
  *          endTime: string,
