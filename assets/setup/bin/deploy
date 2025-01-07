@@ -5,4 +5,4 @@ git add .
 git commit -am "auto commit"
 git pull
 git push
-docker exec -it nektria-hub bin/console nektria:deploy -w __PROJECT__
+docker exec -it hub bin/console nektria:deploy -w __PROJECT__
