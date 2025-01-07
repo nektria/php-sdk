@@ -4,55 +4,53 @@ declare(strict_types=1);
 
 namespace Nektria\Util;
 
-use Nektria\Dto\Clock;
-use Nektria\Dto\LocalClock;
-use Nektria\Exception\NektriaException;
-use XLSXWriter;
+use PhpOffice\PhpSpreadsheet\IOFactory;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 
-class ExcelFile
+readonly class ExcelFile
 {
-    private string $worksheet;
+    private Spreadsheet $spreadsheet;
 
     private function __construct(
-        public readonly string $file,
-        private readonly XLSXWriter $spreadsheet,
+        public string $file,
     ) {
-        $this->worksheet = 'Sheet1';
+        $this->spreadsheet = IOFactory::load($this->file);
     }
 
     public static function new(string $file): self
     {
-        return new self($file, new XLSXWriter());
+        $spreadsheet = new Spreadsheet();
+        $spreadsheet->setActiveSheetIndex(0);
+        $writer = new Xlsx($spreadsheet);
+        $writer->save($file);
+
+        return new self($file);
     }
 
     public function save(): void
     {
-        $this->spreadsheet->writeToFile($this->file);
+        $writer = new Xlsx($this->spreadsheet);
+        $writer->save($this->file);
     }
 
-    public function setCell(int $row, int $column, string $value): void
+    public function setCell(string $cell, string $value): void
     {
-        throw new NektriaException('Not implemented');
+        $this->spreadsheet->getActiveSheet()->setCellValue($cell, $value);
     }
 
-    /**
-     * @param string[] $values
-     */
-    public function setCol(int $row, int $column, array $values): void
+    public function getCell(string $cell): string
     {
-        throw new NektriaException('Not implemented');
+        return $this->spreadsheet->getActiveSheet()->getCell($cell)->getValue();
     }
 
-    /**
-     * @param string[] $values
-     */
-    public function setRow(int $row, int $column, array $values): void
+    public function getCell2(string $column, string $row): string
     {
-        $this->spreadsheet->writeSheetRow($this->worksheet, $values);
+        return $this->spreadsheet->getActiveSheet()->getCell($column . $row)->getValue();
     }
 
-    public function transformToDate(Clock | LocalClock $clock): string
+    public function setCell2(string $column, string $row, string $value): void
     {
-        return "{$clock->day()}/{$clock->month()}/{$clock->year()}";
+        $this->spreadsheet->getActiveSheet()->setCellValue($column . $row, $value);
     }
 }
