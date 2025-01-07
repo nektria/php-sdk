@@ -11,7 +11,6 @@ use Nektria\Document\Tenant;
 use Nektria\Document\User;
 use Nektria\Exception\MissingRequestFileException;
 use Nektria\Exception\MissingRequestParamException;
-use Nektria\Exception\ResourceNotFoundException;
 use Nektria\Infrastructure\BusInterface;
 use Nektria\Infrastructure\UserServiceInterface;
 use Nektria\Message\Command;
@@ -150,7 +149,8 @@ readonly class Controller
         return $this->userService->retrieveUser();
     }
 
-    protected function getFile(string $field): ?string {
+    protected function getFile(string $field): ?string
+    {
         /** @var UploadedFile|null $file */
         $file = $this->request->files->get($field);
 
@@ -161,7 +161,8 @@ readonly class Controller
         return $file->getRealPath();
     }
 
-    protected function retrieveFile(string $field): ?string {
+    protected function retrieveFile(string $field): ?string
+    {
         $file = $this->getFile($field);
 
         if ($file === null) {
