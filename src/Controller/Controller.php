@@ -92,6 +92,18 @@ readonly class Controller
         return new DocumentResponse(new ArrayDocument([]), $this->context, Response::HTTP_NO_CONTENT);
     }
 
+    protected function getFile(string $field): ?string
+    {
+        /** @var UploadedFile|null $file */
+        $file = $this->request->files->get($field);
+
+        if ($file === null) {
+            return null;
+        }
+
+        return $file->getRealPath();
+    }
+
     protected function getFileReader(string $field, string $separator = ','): ?FileReader
     {
         /** @var UploadedFile|null $uploadedFile */
@@ -123,6 +135,17 @@ readonly class Controller
         return new DocumentResponse($document, $this->context, $status);
     }
 
+    protected function retrieveFile(string $field): string
+    {
+        $file = $this->getFile($field);
+
+        if ($file === null) {
+            throw new MissingRequestParamException($field);
+        }
+
+        return $file;
+    }
+
     protected function retrieveFileReader(string $field, string $separator = ','): FileReader
     {
         $fileReader = $this->getFileReader($field, $separator);
@@ -147,28 +170,5 @@ readonly class Controller
     protected function retrieveUser(): User
     {
         return $this->userService->retrieveUser();
-    }
-
-    protected function getFile(string $field): ?string
-    {
-        /** @var UploadedFile|null $file */
-        $file = $this->request->files->get($field);
-
-        if ($file === null) {
-            return null;
-        }
-
-        return $file->getRealPath();
-    }
-
-    protected function retrieveFile(string $field): ?string
-    {
-        $file = $this->getFile($field);
-
-        if ($file === null) {
-            throw new MissingRequestParamException($field);
-        }
-
-        return $file;
     }
 }
