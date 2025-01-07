@@ -60,7 +60,8 @@ readonly class ExcelFile
         $this->spreadsheet->getActiveSheet()->setCellValue($column . $row, $value);
     }
 
-    public function getLocalClock(string $cell): LocalClock {
+    public function getLocalClock(string $cell): LocalClock
+    {
         $unixTimestamp = (((int) $this->getCell($cell)) - 25569) * 86400;
 
         return LocalClock::now()->setTimestamp($unixTimestamp);
