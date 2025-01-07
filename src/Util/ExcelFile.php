@@ -46,7 +46,7 @@ readonly class ExcelFile
 
     public function getCell(string $cell): string
     {
-        return $this->spreadsheet->getActiveSheet()->getCell($cell)->getValue();
+        return (string) $this->spreadsheet->getActiveSheet()->getCell($cell)->getValue();
     }
 
     public function getCell2(string $column, string $row): string
