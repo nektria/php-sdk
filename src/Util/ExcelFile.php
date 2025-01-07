@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Nektria\Util;
 
+use Nektria\Dto\LocalClock;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
@@ -57,5 +58,11 @@ readonly class ExcelFile
     public function setCell2(string $column, string $row, string $value): void
     {
         $this->spreadsheet->getActiveSheet()->setCellValue($column . $row, $value);
+    }
+
+    public function getLocalClock(string $cell): LocalClock {
+        $unixTimestamp = (((int) $this->getCell($cell)) - 25569) * 86400;
+
+        return LocalClock::now()->setTimestamp($unixTimestamp);
     }
 }
