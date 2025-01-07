@@ -151,7 +151,7 @@ readonly class Controller
     }
 
     protected function getFile(string $field): ?string {
-        /** @var UploadedFile $file */
+        /** @var UploadedFile|null $file */
         $file = $this->request->files->get($field);
 
         if ($file === null) {
