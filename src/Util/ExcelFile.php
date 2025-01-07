@@ -34,6 +34,28 @@ readonly class ExcelFile
         return new self($file);
     }
 
+    public function getCell(string $cell): string
+    {
+        return (string) $this->spreadsheet->getActiveSheet()->getCell($cell)->getValue();
+    }
+
+    public function getCell2(string $column, string $row): string
+    {
+        return $this->getCell($column . $row);
+    }
+
+    public function getLocalClock(string $cell): LocalClock
+    {
+        $unixTimestamp = (((int) $this->getCell($cell)) - 25569) * 86400;
+
+        return LocalClock::now()->setTimestamp($unixTimestamp);
+    }
+
+    public function getLocalClock2(string $column, string $row): LocalClock
+    {
+        return $this->getLocalClock($column . $row);
+    }
+
     public function save(): void
     {
         $writer = new Xlsx($this->spreadsheet);
@@ -45,25 +67,8 @@ readonly class ExcelFile
         $this->spreadsheet->getActiveSheet()->setCellValue($cell, $value);
     }
 
-    public function getCell(string $cell): string
-    {
-        return (string) $this->spreadsheet->getActiveSheet()->getCell($cell)->getValue();
-    }
-
-    public function getCell2(string $column, string $row): string
-    {
-        return $this->spreadsheet->getActiveSheet()->getCell($column . $row)->getValue();
-    }
-
     public function setCell2(string $column, string $row, string $value): void
     {
-        $this->spreadsheet->getActiveSheet()->setCellValue($column . $row, $value);
-    }
-
-    public function getLocalClock(string $cell): LocalClock
-    {
-        $unixTimestamp = (((int) $this->getCell($cell)) - 25569) * 86400;
-
-        return LocalClock::now()->setTimestamp($unixTimestamp);
+        $this->setCell($column . $row, $value);
     }
 }
