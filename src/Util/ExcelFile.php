@@ -22,6 +22,7 @@ readonly class ExcelFile
     {
         return new self($file);
     }
+
     public static function new(string $file): self
     {
         $spreadsheet = new Spreadsheet();
