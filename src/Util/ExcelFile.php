@@ -18,6 +18,10 @@ readonly class ExcelFile
         $this->spreadsheet = IOFactory::load($this->file);
     }
 
+    public static function load(string $file): self
+    {
+        return new self($file);
+    }
     public static function new(string $file): self
     {
         $spreadsheet = new Spreadsheet();
