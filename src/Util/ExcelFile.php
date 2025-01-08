@@ -39,7 +39,7 @@ readonly class ExcelFile
         return (string) $this->spreadsheet->getActiveSheet()->getCell($cell)->getValue();
     }
 
-    public function getCell2(string $column, string $row): string
+    public function getCell2(string $column, string|int $row): string
     {
         return $this->getCell($column . $row);
     }
@@ -51,7 +51,7 @@ readonly class ExcelFile
         return LocalClock::now()->setTimestamp($unixTimestamp);
     }
 
-    public function getLocalClock2(string $column, string $row): LocalClock
+    public function getLocalClock2(string $column, string|int $row): LocalClock
     {
         return $this->getLocalClock($column . $row);
     }
@@ -67,7 +67,7 @@ readonly class ExcelFile
         $this->spreadsheet->getActiveSheet()->setCellValue($cell, $value);
     }
 
-    public function setCell2(string $column, string $row, string $value): void
+    public function setCell2(string $column, string|int $row, string $value): void
     {
         $this->setCell($column . $row, $value);
     }
