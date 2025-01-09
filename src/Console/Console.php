@@ -16,6 +16,7 @@ use Nektria\Util\Console\OutputFormatterStyle;
 use Nektria\Util\StringUtil;
 use RuntimeException;
 use Symfony\Component\Console\Command\Command as BaseCommand;
+use Symfony\Component\Console\Cursor;
 use Symfony\Component\Console\Helper\QuestionHelper;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -188,6 +189,11 @@ abstract class Console extends BaseCommand
         exec("echo '{$text}' | pbcopy &> /dev/null", result_code: $status);
 
         return $status === 0;
+    }
+
+    protected function cursor(): Cursor
+    {
+        return new Cursor($this->output());
     }
 
     /**
