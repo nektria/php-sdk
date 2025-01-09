@@ -332,4 +332,10 @@ abstract class Console extends BaseCommand
 
         return $userService;
     }
+
+    protected function clearPreviousLine(): void
+    {
+        $this->cursor()->moveUp();
+        $this->cursor()->clearLine()
+    }
 }
