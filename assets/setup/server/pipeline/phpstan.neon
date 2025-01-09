@@ -21,7 +21,7 @@ parameters:
         - /builder/home/.composer/vendor
 
     symfony:
-        container_xml_path: '%currentWorkingDirectory%/var/cache/dev/App_KernelDevDebugContainer.xml'
+        containerXmlPath: '%currentWorkingDirectory%/var/cache/dev/App_KernelDevDebugContainer.xml'
 
     disallowedNamespaces:
         -
