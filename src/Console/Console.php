@@ -174,6 +174,12 @@ abstract class Console extends BaseCommand
         $this->output()->write("\033\143");
     }
 
+    protected function clearPreviousLine(): void
+    {
+        $this->cursor()->moveUp();
+        $this->cursor()->clearLine();
+    }
+
     protected function container(): ContainerInterface
     {
         if ($this->container === null) {
@@ -331,11 +337,5 @@ abstract class Console extends BaseCommand
         $userService = $this->container()->get(UserServiceInterface::class);
 
         return $userService;
-    }
-
-    protected function clearPreviousLine(): void
-    {
-        $this->cursor()->moveUp();
-        $this->cursor()->clearLine()
     }
 }
