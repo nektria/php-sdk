@@ -44,7 +44,7 @@ trait RequestHelper
             $decodedJson = JsonUtil::decode($responseContent);
         }
 
-        self::assertEquals($expected, $response->getStatusCode(), $decodedJson['message'] ?? '');
+        self::assertSame($expected, $response->getStatusCode(), $decodedJson['message'] ?? '');
     }
 
     public function area(): string

@@ -15,6 +15,7 @@ use PHPStan\Analyser\TypeSpecifier;
 use PHPStan\Analyser\TypeSpecifierAwareExtension;
 use PHPStan\Analyser\TypeSpecifierContext;
 use PHPStan\Reflection\MethodReflection;
+use PHPStan\Type\Type;
 use PHPStan\Type\TypeCombinator;
 
 class ValidateClassFieldsReturnsNotNullExtension implements TypeSpecifierAwareExtension
@@ -61,7 +62,7 @@ class ValidateClassFieldsReturnsNotNullExtension implements TypeSpecifierAwareEx
                 $newType = TypeCombinator::removeNull($propertyType);
                 $propertyExpr = new PropertyFetch($objectExpr, $fieldName);
                 $specifiedTypes = $specifiedTypes->unionWith(
-                    $this->typeSpecifier->create($propertyExpr, $newType, TypeSpecifierContext::createTruthy()),
+                    $this->typeSpecifier->create($propertyExpr, $newType, TypeSpecifierContext::createTruthy(), $scope),
                 );
             }
         }

@@ -22,7 +22,12 @@ readonly class CsvFileReader extends FileReader
     {
         $row = fgetcsv($this->resource, separator: $this->separator);
         while ($row !== false) {
-            yield $row;
+            $fixRow = [];
+            foreach ($row as $value) {
+                $fixRow[] = $value ?? '';
+            }
+
+            yield $fixRow;
 
             $row = fgetcsv($this->resource, separator: $this->separator);
         }

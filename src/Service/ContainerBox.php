@@ -27,12 +27,8 @@ class ContainerBox
             throw new NektriaException('Container not set.');
         }
 
-        /** @var T|null $service */
+        /** @var T $service */
         $service = $this->container->get($class);
-
-        if ($service === null) {
-            throw new NektriaException("Service '{$class}' not found.");
-        }
 
         return $service;
     }

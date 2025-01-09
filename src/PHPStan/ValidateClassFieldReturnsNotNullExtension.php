@@ -46,6 +46,6 @@ class ValidateClassFieldReturnsNotNullExtension implements TypeSpecifierAwareExt
         $typeBefore = $scope->getType($expr);
         $type = TypeCombinator::removeNull($typeBefore);
 
-        return $this->typeSpecifier->create($expr, $type, TypeSpecifierContext::createTruthy());
+        return $this->typeSpecifier->create($expr, $type, TypeSpecifierContext::createTruthy(), $scope);
     }
 }

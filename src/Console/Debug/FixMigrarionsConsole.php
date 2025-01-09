@@ -18,12 +18,8 @@ class FixMigrarionsConsole extends Console
 
     protected function play(): void
     {
-        /** @var ArrayDocumentReadModel|null $readModel */
+        /** @var ArrayDocumentReadModel $readModel */
         $readModel = $this->container->get(ArrayDocumentReadModel::class);
-
-        if ($readModel === null) {
-            return;
-        }
 
         $readModel->fixMigrations();
     }

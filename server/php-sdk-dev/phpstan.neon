@@ -20,8 +20,8 @@ parameters:
     excludePaths:
         - '%currentWorkingDirectory%/vendor'
 
-    #symfony:
-        #container_xml_path: '%currentWorkingDirectory%/var/cache/dev/Nektria_KernelDevDebugContainer.xml'
+    symfony:
+        #containerXmlPath: '%currentWorkingDirectory%/var/cache/dev/Nektria_KernelDevDebugContainer.xml'
 
     disallowedNamespaces:
         -
