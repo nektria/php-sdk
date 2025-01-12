@@ -5,8 +5,6 @@ services:
       dockerfile: server/php-sdk-dev/Dockerfile
     container_name: php-sdk
     restart: 'unless-stopped'
-    networks:
-      - default
     volumes:
       - ../../.:/app
       - /app/var
