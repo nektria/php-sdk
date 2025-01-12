@@ -19,6 +19,10 @@ if [ "$PROJECT" = 'proxy-sertradis' ]; then
   exit 0
 fi
 
+if [ "$PROJECT" = 'hub' ]; then
+  exit 0
+fi
+
 print_usage() {
   printf "Usage: bin/doctrine [-g] \n"
 }
