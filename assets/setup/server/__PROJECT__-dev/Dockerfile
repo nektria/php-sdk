@@ -12,10 +12,10 @@ RUN composer global require friendsofphp/php-cs-fixer:dev-master
 RUN composer global require squizlabs/php_codesniffer
 RUN composer global require phpunit/phpunit
 
-ADD server/hub-dev/php.ini /etc/php83/conf.d/nektria_custom.ini
+ADD server/__PROJECT__-dev/php.ini /etc/php83/conf.d/nektria_custom.ini
 COPY . /app
 
 RUN composer install
 RUN bin/console debug:setup:assets -q
 
-CMD sh server/hub-dev/web.sh
+CMD sh server/__PROJECT__-dev/web.sh
