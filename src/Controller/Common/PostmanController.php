@@ -57,7 +57,7 @@ readonly class PostmanController extends Controller
             'routemanager' => '{{host_rm}}',
             'compass' => '{{host_compass}}',
             'metrics' => '{{host_metrics}}',
-            'proxy-fontvella', 'proxy-carrefour', 'proxy-dia' => '{{host_proxy}}',
+            'proxy-sertradis', 'proxy-fontvella', 'proxy-carrefour', 'proxy-dia' => '{{host_proxy}}',
             default => '',
         };
 
