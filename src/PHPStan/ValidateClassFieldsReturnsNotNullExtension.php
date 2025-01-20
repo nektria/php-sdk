@@ -61,7 +61,12 @@ class ValidateClassFieldsReturnsNotNullExtension implements TypeSpecifierAwareEx
                 $newType = TypeCombinator::removeNull($propertyType);
                 $propertyExpr = new PropertyFetch($objectExpr, $fieldName);
                 $specifiedTypes = $specifiedTypes->unionWith(
-                    $this->typeSpecifier->create($propertyExpr, $newType, TypeSpecifierContext::createTruthy(), $scope),
+                    $this->typeSpecifier->create(
+                        $propertyExpr,
+                        $newType,
+                        TypeSpecifierContext::createTruthy(),
+                        scope: $scope
+                    ),
                 );
             }
         }
