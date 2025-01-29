@@ -641,11 +641,11 @@ readonly class RouteManagerClient
      */
     public function saveRoute(
         string $id,
-        ?string $name,
-        ?string $pickingShiftId,
-        ?array $itinerary,
-        ?string $platform,
-        ?Metadata $metadata,
+        ?string $name = null,
+        ?string $pickingShiftId = null,
+        ?array $itinerary = null,
+        ?string $platform = null,
+        ?Metadata $metadata = null,
     ): void {
         $this->requestClient->put(
             "{$this->routeManagerHost}/api/admin/routes/{$id}",
