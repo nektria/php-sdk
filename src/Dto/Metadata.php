@@ -33,7 +33,7 @@ readonly class Metadata extends Document
         return $this->data[$field] ?? null;
     }
 
-    public function merge(?Metadata $metadata): static
+    public function merge(?self $metadata): static
     {
         return $this->mergeData($metadata?->data());
     }
