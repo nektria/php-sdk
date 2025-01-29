@@ -34,10 +34,14 @@ readonly class Metadata extends Document
     }
 
     /**
-     * @param mixed[] $data
+     * @param mixed[]|null $data
      */
-    public function mergeData(array $data): static
+    public function mergeData(?array $data): static
     {
+        if ($data === null) {
+            return $this;
+        }
+
         $newMetadata = [...$this->data];
         foreach ($data as $key => $value) {
             $newMetadata[$key] = $value;
