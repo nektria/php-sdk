@@ -67,10 +67,10 @@ use function count;
 readonly class CompassClient
 {
     public function __construct(
-        private ContextService $contextService,
+        protected ContextService $contextService,
+        protected SharedUserV2Cache $sharedUserCache,
         private RequestClient $requestClient,
         private SharedInvalidCoordinatesCache $sharedInvalidCoordinatesCache,
-        private SharedUserV2Cache $sharedUserCache,
         private string $compassHost
     ) {
     }

@@ -234,8 +234,8 @@ use Throwable;
 readonly class RouteManagerClient
 {
     public function __construct(
-        private ContextService $contextService,
-        private SharedUserV2Cache $sharedUserCache,
+        protected ContextService $contextService,
+        protected SharedUserV2Cache $sharedUserCache,
         private RequestClient $requestClient,
         private string $routeManagerHost
     ) {

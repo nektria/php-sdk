@@ -20,8 +20,8 @@ use Nektria\Dto\LocalClock;
 class MetricsClient
 {
     public function __construct(
-        private readonly ContextService $contextService,
-        private readonly SharedUserV2Cache $sharedUserCache,
+        protected ContextService $contextService,
+        protected SharedUserV2Cache $sharedUserCache,
         private readonly RequestClient $requestClient,
         private readonly string $metricsHost
     ) {
