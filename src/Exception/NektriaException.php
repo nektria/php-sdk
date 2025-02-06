@@ -17,7 +17,7 @@ class NektriaException extends NektriaRuntimeException
         return new self($e->getMessage(), $e->getCode(), $e);
     }
 
-    public static function realException(Throwable $e): Throwable
+    public static function parse(Throwable $e): Throwable
     {
         if ($e instanceof self) {
             return $e->realException();
