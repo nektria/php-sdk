@@ -8,6 +8,15 @@ use Throwable;
 
 class NektriaException extends NektriaRuntimeException
 {
+    public static function getReal(Throwable $e)
+    {
+        if ($e instanceof self) {
+            return $e->getReal($e->getPrevious());
+        }
+
+        return $e;
+    }
+
     public static function new(Throwable $e): self
     {
         if ($e instanceof self) {
