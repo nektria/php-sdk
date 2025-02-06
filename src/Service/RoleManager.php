@@ -90,7 +90,43 @@ class RoleManager
     /**
      * @param string[] $targetRoles
      */
-    public function checkAtLeast(string $role, array $targetRoles): bool
+    public function canAtLeast(string $role, array $targetRoles): void
+    {
+        if ($role === self::ROLE_ADMIN) {
+            return true;
+        }
+
+        if ($role === self::ROLE_SYSTEM) {
+            return true;
+        }
+
+        if (!isset(self::HIERARCHY[$role])) {
+            throw new InsufficientCredentialsException();
+        }
+
+        if (in_array(self::ROLE_ANY, $targetRoles, true)) {
+            return true;
+        }
+
+        if (in_array($role, $targetRoles, true)) {
+            return true;
+        }
+
+        foreach ($targetRoles as $targetRole) {
+            $roleIsGranted = $targetRole === $role || in_array($targetRole, self::HIERARCHY[$role], true);
+
+            if ($roleIsGranted) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * @param string[] $targetRoles
+     */
+    public function checkAtLeast(string $role, array $targetRoles): void
     {
         if ($role === self::ROLE_ADMIN) {
             return true;
