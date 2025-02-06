@@ -58,13 +58,9 @@ readonly abstract class MessageHandler
             return true;
         }
 
-        try {
-            if ($this->roleManager()->checkAtLeast($user->role, [RoleManager::ROLE_ADMIN])) {
+            if ($this->roleManager()->canAtLeast($user->role, [RoleManager::ROLE_ADMIN])) {
                 return true;
             }
-        } catch (InsufficientCredentialsException) {
-        }
-
         if (!in_array($warehouseId, $user->warehouses, true)) {
             return false;
         }
