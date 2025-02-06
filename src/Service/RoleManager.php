@@ -90,7 +90,7 @@ class RoleManager
     /**
      * @param string[] $targetRoles
      */
-    public function canAtLeast(string $role, array $targetRoles): void
+    public function canAtLeast(string $role, array $targetRoles): bool
     {
         if ($role === self::ROLE_ADMIN) {
             return true;
@@ -101,7 +101,7 @@ class RoleManager
         }
 
         if (!isset(self::HIERARCHY[$role])) {
-            throw new InsufficientCredentialsException();
+            return false;
         }
 
         if (in_array(self::ROLE_ANY, $targetRoles, true)) {
@@ -129,11 +129,11 @@ class RoleManager
     public function checkAtLeast(string $role, array $targetRoles): void
     {
         if ($role === self::ROLE_ADMIN) {
-            return true;
+            return;
         }
 
         if ($role === self::ROLE_SYSTEM) {
-            return true;
+            return;
         }
 
         if (!isset(self::HIERARCHY[$role])) {
@@ -141,18 +141,18 @@ class RoleManager
         }
 
         if (in_array(self::ROLE_ANY, $targetRoles, true)) {
-            return true;
+            return;
         }
 
         if (in_array($role, $targetRoles, true)) {
-            return true;
+            return;
         }
 
         foreach ($targetRoles as $targetRole) {
             $roleIsGranted = $targetRole === $role || in_array($targetRole, self::HIERARCHY[$role], true);
 
             if ($roleIsGranted) {
-                return true;
+                return;
             }
         }
 
