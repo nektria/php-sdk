@@ -468,17 +468,17 @@ abstract class RequestListener implements EventSubscriberInterface
 
     abstract protected function assignLogLevel(string $route): ?string;
 
-    protected function validateUser(User $user): bool
-    {
-        return true;
-    }
-
     /**
      * @return string[]
      */
-    private function ignoreLogs(): array
+    protected function ignoreLogs(): array
     {
         return [];
+    }
+
+    protected function validateUser(User $user): bool
+    {
+        return true;
     }
 
     private function isCorsNeeded(RequestEvent | ResponseEvent $event): bool
