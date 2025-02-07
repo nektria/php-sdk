@@ -360,22 +360,26 @@ abstract class RequestListener implements EventSubscriberInterface
                 }
 
                 if ($isDebug) {
-                    $this->logService->debug([
-                        'headers' => $headers,
-                        'context' => 'request',
-                        'role' => $this->contextService->context(),
-                        'route_name' => $route,
-                        'ref' => $this->contextService->userId() ?? 'anonymous',
-                        'request' => $requestContent,
-                        'size' => $length,
-                        'response' => $responseContent,
-                        'httpRequest' => [
-                            'requestMethod' => $event->getRequest()->getMethod(),
-                            'requestUrl' => $path,
-                            'status' => ($this->originalResponse ?? $event->getResponse())->getStatusCode(),
-                            'latency' => round($this->executionTime, 3) . 's',
+                    $this->logService->debug(
+                        [
+                            'headers' => $headers,
+                            'context' => 'request',
+                            'role' => $this->contextService->context(),
+                            'route_name' => $route,
+                            'ref' => $this->contextService->userId() ?? 'anonymous',
+                            'request' => $requestContent,
+                            'size' => $length,
+                            'response' => $responseContent,
+                            'httpRequest' => [
+                                'requestMethod' => $event->getRequest()->getMethod(),
+                                'requestUrl' => $path,
+                                'status' => ($this->originalResponse ?? $event->getResponse())->getStatusCode(),
+                                'latency' => round($this->executionTime, 3) . 's',
+                            ],
                         ],
-                    ], $resume);
+                        $resume,
+                        in_array($route, $this->ignoreLogs(), true)
+                    );
                 } else {
                     $this->logService->info([
                         'headers' => $headers,
@@ -467,6 +471,14 @@ abstract class RequestListener implements EventSubscriberInterface
     protected function validateUser(User $user): bool
     {
         return true;
+    }
+
+    /**
+     * @return string[]
+     */
+    private function ignoreLogs(): array
+    {
+        return [];
     }
 
     private function isCorsNeeded(RequestEvent | ResponseEvent $event): bool

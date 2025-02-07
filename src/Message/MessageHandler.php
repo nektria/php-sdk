@@ -61,6 +61,7 @@ readonly abstract class MessageHandler
         if ($this->roleManager()->canAtLeast($user->role, [RoleManager::ROLE_ADMIN])) {
             return true;
         }
+
         if (!in_array($warehouseId, $user->warehouses, true)) {
             return false;
         }

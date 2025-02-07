@@ -43,9 +43,9 @@ class LogService
     /**
      * @param mixed[] $payload
      */
-    public function debug(array $payload, string $message): void
+    public function debug(array $payload, string $message, bool $ignoreRedis = false): void
     {
-        if ($this->channel === false || !$this->contextService->debugMode()) {
+        if (!$ignoreRedis && ($this->channel === false || !$this->contextService->debugMode())) {
             $this->sharedLogCache->addLog([
                 'context' => $this->contextService->context(),
                 'message' => $message,
@@ -54,6 +54,10 @@ class LogService
                 'tenantId' => $this->contextService->tenantId() ?? 'none',
             ]);
 
+            return;
+        }
+
+        if ($this->channel === false) {
             return;
         }
 
