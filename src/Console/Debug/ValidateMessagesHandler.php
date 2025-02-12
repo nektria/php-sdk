@@ -8,6 +8,8 @@ use Nektria\Console\Console;
 use Nektria\Exception\NektriaException;
 use Throwable;
 
+use function in_array;
+
 class ValidateMessagesHandler extends Console
 {
     public function __construct()
@@ -45,6 +47,11 @@ class ValidateMessagesHandler extends Console
                 continue;
             }
 
+            $ignoredFiles = ['Command.php', 'Event.php', 'MessageHandler.php', 'Query.php'];
+            if (in_array($file, $ignoredFiles, true)) {
+                continue;
+            }
+
             if (is_file("{$folder}/{$file}")) {
                 $destFile = str_replace('.php', 'Handler.php', $file);
 
@@ -72,6 +79,11 @@ class ValidateMessagesHandler extends Console
             if (is_dir("{$folder}/{$file}")) {
                 $this->validateFolder2("{$folder}/{$file}");
 
+                continue;
+            }
+
+            $ignoredFiles = ['Command.php', 'Event.php', 'MessageHandler.php', 'Query.php'];
+            if (in_array($file, $ignoredFiles, true)) {
                 continue;
             }
 
