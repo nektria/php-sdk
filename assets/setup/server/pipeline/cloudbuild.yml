@@ -15,7 +15,7 @@ steps:
 
         echo "Building tests services"
 
-        docker compose -f server/pipeline/cloudbuild-services.yml up -d 
+        docker-compose -f server/pipeline/cloudbuild-services.yml up -d 
 
   - id: validating code
     name: eu.gcr.io/nektria/php:8.3
