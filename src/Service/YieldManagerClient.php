@@ -526,10 +526,10 @@ readonly class YieldManagerClient
      */
     public function saveUser(
         string $email,
-        ?string $password,
-        ?string $name,
-        ?string $role,
-        ?array $warehouses,
+        ?string $password = null,
+        ?string $name = null,
+        ?string $role = null,
+        ?array $warehouses = null,
         bool $forceSync = false,
     ): void {
         $this->requestClient->put(
