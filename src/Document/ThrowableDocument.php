@@ -12,6 +12,7 @@ use Nektria\Exception\InvalidRequestParamException;
 use Nektria\Exception\MissingFieldRequiredToCreateClassException;
 use Nektria\Exception\MissingRequestParamException;
 use Nektria\Exception\NektriaException;
+use Nektria\Exception\RequestException;
 use Nektria\Exception\ResourceNotFoundException;
 use Nektria\Service\ContextService;
 use Symfony\Component\HttpFoundation\Response;
@@ -50,6 +51,8 @@ readonly class ThrowableDocument extends Document
             $this->status = Response::HTTP_NOT_FOUND;
         } elseif ($exception instanceof HttpException) {
             $this->status = $exception->getStatusCode();
+        } elseif ($exception instanceof RequestException) {
+            $this->status = $exception->response()->status;
         } else {
             $this->status = Response::HTTP_INTERNAL_SERVER_ERROR;
         }
@@ -97,6 +100,13 @@ readonly class ThrowableDocument extends Document
 
         if ($this->status !== Response::HTTP_INTERNAL_SERVER_ERROR) {
             $message = $exception->getMessage();
+
+            if ($exception instanceof RequestException) {
+                try {
+                    $message = $exception->response()->json()['message'];
+                } catch (Throwable) {
+                }
+            }
         }
 
         return [
