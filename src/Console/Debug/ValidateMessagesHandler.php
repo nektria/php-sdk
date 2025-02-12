@@ -31,19 +31,22 @@ class ValidateMessagesHandler extends Console
     {
         $files = scandir($folder);
         $dest = str_replace('/Message', '/MessageHandler', $folder);
-
         if ($files === false) {
             return;
         }
 
         foreach ($files as $file) {
-            if (!str_ends_with($file, '.php')) {
+            if ($file === '.' || $file === '..') {
                 continue;
             }
 
             if (is_dir("{$folder}/{$file}")) {
                 $this->validateFolder1("{$folder}/{$file}");
 
+                continue;
+            }
+
+            if (!str_ends_with($file, '.php')) {
                 continue;
             }
 
@@ -54,7 +57,6 @@ class ValidateMessagesHandler extends Console
 
             if (is_file("{$folder}/{$file}")) {
                 $destFile = str_replace('.php', 'Handler.php', $file);
-
                 if (!file_exists("{$dest}/{$destFile}")) {
                     throw new NektriaException("Handler file for message {$folder}/{$file} is missing.");
                 }
@@ -72,13 +74,17 @@ class ValidateMessagesHandler extends Console
         }
 
         foreach ($files as $file) {
-            if (!str_ends_with($file, '.php')) {
+            if ($file === '.' || $file === '..') {
                 continue;
             }
 
             if (is_dir("{$folder}/{$file}")) {
                 $this->validateFolder2("{$folder}/{$file}");
 
+                continue;
+            }
+
+            if (!str_ends_with($file, '.php')) {
                 continue;
             }
 
