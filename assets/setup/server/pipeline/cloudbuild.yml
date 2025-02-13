@@ -20,7 +20,30 @@ steps:
   - id: validating code
     name: eu.gcr.io/nektria/php:8.3
     entrypoint: sh
-    args: [ "/app/pipeline", "$BRANCH_NAME", "$_APP" ]
+    args:
+      - '-c'
+      - >
+        
+        set -e
+
+        unset APP_ENV
+
+        composer install --no-interaction >/dev/null 2>&1
+
+        composer global require phpstan/phpstan phpstan/phpstan-mockery phpstan/phpstan-phpunit phpstan/phpstan-strict-rules shipmonk/phpstan-rules phpstan/phpstan-symfony phpstan/phpstan-doctrine spaze/phpstan-disallowed-calls ergebnis/phpstan-rules --no-interaction
+
+        composer global require friendsofphp/php-cs-fixer:dev-master --no-interaction
+
+        composer global require squizlabs/php_codesniffer --no-interaction
+
+        bin/console debug:version "$1" --clean > NK_VERSION
+
+        bin/validate -g
+
+        bin/tools/phpunit -g
+
+        rm -Rf var/logs var/cache tests pipeline services upload-image
+
 
   - id: Push new __PROJECT__ image
     name: gcr.io/cloud-builders/docker
