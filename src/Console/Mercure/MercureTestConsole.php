@@ -8,6 +8,7 @@ use Nektria\Console\Console;
 use Nektria\Document\ArrayDocument;
 use Nektria\Service\ContextService;
 use Nektria\Service\SocketService;
+use Symfony\Component\Console\Input\InputArgument;
 
 class MercureTestConsole extends Console
 {
@@ -18,8 +19,15 @@ class MercureTestConsole extends Console
         parent::__construct('admin:mercure:test');
     }
 
+    protected function configure(): void
+    {
+        $this->addArgument('tenant', InputArgument::REQUIRED);
+    }
+
     protected function play(): void
     {
+        $this->userService()->authenticateSystem($this->readArgument('tenant'));
+
         $this->socketService->publish('mercure.test', new ArrayDocument([
             'project' => $this->contextService->project(),
             'message' => 'Hello'
