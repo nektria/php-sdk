@@ -169,6 +169,9 @@ abstract class RequestListener implements EventSubscriberInterface
         } elseif (str_starts_with($route, 'app_web_') || str_starts_with($route, 'nektria_web_')) {
             $this->contextService->setContext(ContextService::INTERNAL);
             $this->userService->authenticateUser($apiKey);
+            if ($this->userService->user() !== null) {
+                $this->contextService->setUserId($this->userService->user()->id);
+            }
         }
 
         if (!$this->validateUser($this->userService->retrieveUser())) {

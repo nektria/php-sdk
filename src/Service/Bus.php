@@ -92,6 +92,7 @@ class Bus implements BusInterface
                 traceId: $this->contextService->traceId(),
                 context: $this->contextService->context(),
                 tenantId: $this->contextService->tenantId(),
+                userId: $this->contextService->userId(),
             ),
         ];
 
@@ -170,6 +171,7 @@ class Bus implements BusInterface
                 traceId: $this->contextService->traceId(),
                 context: $this->contextService->context(),
                 tenantId: $this->contextService->tenantId(),
+                userId: $this->contextService->userId(),
             ),
         ];
 
@@ -229,6 +231,7 @@ class Bus implements BusInterface
                     traceId: $this->contextService->traceId(),
                     context: $this->contextService->context(),
                     tenantId: $this->contextService->tenantId(),
+                    userId: $this->contextService->userId(),
                 ),
             ])->last(HandledStamp::class);
 

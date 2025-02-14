@@ -6,12 +6,13 @@ namespace Nektria\Util\MessageStamp;
 
 use Symfony\Component\Messenger\Stamp\StampInterface;
 
-class ContextStamp implements StampInterface
+readonly class ContextStamp implements StampInterface
 {
     public function __construct(
-        public readonly string $traceId,
-        public readonly string $context,
-        public readonly ?string $tenantId,
+        public string $traceId,
+        public string $context,
+        public ?string $tenantId,
+        public ?string $userId
     ) {
     }
 }
