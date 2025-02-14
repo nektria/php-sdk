@@ -33,6 +33,7 @@ services:
   Nektria\Service\SharedTenantCache: ~
   Nektria\Service\SharedUserV2Cache: ~
   Nektria\Service\SharedVariableCache: ~
+  Nektria\Service\SocketService: ~
   Nektria\Service\UserService: ~
   Nektria\Service\YieldManagerClient: ~
   Nektria\Test\TestRunnerListener: ~

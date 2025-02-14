@@ -4,15 +4,12 @@ declare(strict_types=1);
 
 namespace Nektria\Service;
 
-use App\Shared\Exceptions\MercureClientException;
 use Nektria\Document\Document;
 use Nektria\Exception\NektriaException;
 use Nektria\Util\JsonUtil;
 use Symfony\Component\Mercure\HubInterface;
 use Symfony\Component\Mercure\Update;
 use Throwable;
-
-use function explode;
 
 readonly class SocketService
 {
@@ -24,9 +21,6 @@ readonly class SocketService
     ) {
     }
 
-    /**
-     * @param mixed[] $event
-     */
     public function publish(string $type, Document $data): void
     {
         if ($this->mercureToken === 'none' || $this->mercureHost === 'none') {
