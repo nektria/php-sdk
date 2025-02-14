@@ -28,7 +28,7 @@ class MercureTestConsole extends Console
     {
         $this->userService()->authenticateSystem($this->readArgument('tenant'));
 
-        $this->socketService->publish('mercure.test', new ArrayDocument([
+        $this->socketService->publishToTenant('mercure.test', new ArrayDocument([
             'project' => $this->contextService->project(),
             'message' => 'Hello'
         ]));

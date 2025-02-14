@@ -21,7 +21,7 @@ readonly class SocketService
     ) {
     }
 
-    public function publish(string $type, Document $data): void
+    public function publishToTenant(string $type, Document $data): void
     {
         if ($this->mercureToken === 'none' || $this->mercureHost === 'none') {
             return;
@@ -31,7 +31,31 @@ readonly class SocketService
         $tmpContext->setContext(ContextService::INTERNAL);
 
         try {
-            $this->hub->publish(new Update("/v1/{$this->contextService->tenantId()}", JsonUtil::encode([
+            $this->hub->publish(new Update("/{$this->contextService->tenantId()}", JsonUtil::encode([
+                'type' => $type,
+                'payload' => $data->toArray($tmpContext),
+            ]), true));
+        } catch (Throwable $e) {
+            throw NektriaException::new($e);
+        }
+    }
+
+    public function publishToUser(string $type, Document $data): void
+    {
+        if ($this->mercureToken === 'none' || $this->mercureHost === 'none') {
+            return;
+        }
+
+        if ($this->contextService->userId() === null) {
+            return;
+        }
+
+        $tmpContext = clone $this->contextService;
+        $tmpContext->setContext(ContextService::INTERNAL);
+
+        try {
+            $userId = $this->contextService->userId();
+            $this->hub->publish(new Update("/{$userId}", JsonUtil::encode([
                 'type' => $type,
                 'payload' => $data->toArray($tmpContext),
             ]), true));
