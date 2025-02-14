@@ -11,6 +11,8 @@ services:
       string $project: 'sdk'
       string $redisDsn: 'none'
       string $yieldManagerHost: 'none'
+      string $mercureToken: 'none'
+      string $mercureHost: 'none'
 
   Nektria\Console\:
     resource: '../src/Console'
