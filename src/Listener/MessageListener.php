@@ -308,6 +308,10 @@ abstract class MessageListener implements EventSubscriberInterface
                 [],
                 new ThrowableDocument($e),
             );
+
+            if ($e instanceof DriverException) {
+                throw $e;
+            }
         }
     }
 
