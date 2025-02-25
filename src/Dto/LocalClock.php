@@ -254,6 +254,11 @@ class LocalClock
         }
     }
 
+    public function minute(): string
+    {
+        return $this->dateTime->format('i');
+    }
+
     public function modify(string $modifier): self
     {
         return new self($this->dateTime->modify($modifier));
