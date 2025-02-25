@@ -128,6 +128,31 @@ use Nektria\Exception\RequestException;
  *     totalGrids: int,
  * }
  *
+ * @phpstan-type YMWarehouseRule array{
+ *     appliedShifts: string[],
+ *     capacityRatio: float,
+ *     createdAt: string,
+ *     cutoff: string|null,
+ *     date: string,
+ *     distance: int,
+ *     id: string,
+ *     maxOrders: int|null,
+ *     maxProductLines: int|null,
+ *     maxWeight: int|null,
+ *     metadata: array<string, mixed>,
+ *     multiplier: float,
+ *     orders: int,
+ *     penalty: int,
+ *     rule: string,
+ *     shifts: string[],
+ *     timeLeft: int,
+ *     timeWindowsInvolved: int,
+ *     totalStock: int,
+ *     updatedAt: string,
+ *     usedStock: int,
+ *     warehouseId: string,
+ * }
+ *
  * @phpstan-type YMShift array{
  *     applySecondaryAreas: bool,
  *     areas: string[],
@@ -411,6 +436,21 @@ readonly class YieldManagerClient
             "{$this->yieldManagerHost}/api/admin/warehouses/{$warehouseId}/resume",
             data: [
                 'date' => $date->dateString(),
+            ],
+            headers: $this->getHeaders(),
+        )->json();
+    }
+
+    /**
+     * @return YMWarehouseRule[]
+     */
+    public function getWarehouseRules(string $warehouseId, LocalClock $date): array
+    {
+        return $this->requestClient->get(
+            "{$this->yieldManagerHost}/api/bo/warehouses/{$warehouseId}/rules",
+            data: [
+                'startDate' => $date->dateString(),
+                'endDate' => $date->dateString(),
             ],
             headers: $this->getHeaders(),
         )->json();
