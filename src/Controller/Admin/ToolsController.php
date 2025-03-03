@@ -98,6 +98,18 @@ readonly class ToolsController extends Controller
         return $this->buildResponseForProcess($command);
     }
 
+    #[Route('/rabbit-delays/enable', method: 'PATCH')]
+    public function executeDisableRabbitDelays(ContextService $contextService): JsonResponse
+    {
+        $enable = $this->requestData->retrieveBool('enable');
+        $lifetime = $this->requestData->getInt('lifetime') ?? 3600;
+        $projects = $this->requestData->retrieveStringArray('projects');
+
+        $contextService->setDelaysRabbit($enable, $projects, $lifetime);
+
+        return $this->emptyResponse();
+    }
+
     #[Route('/database/migrations', method: 'GET')]
     public function executeDoctrineMigrationStatus(): Response
     {
@@ -114,6 +126,18 @@ readonly class ToolsController extends Controller
         $command->run();
 
         return $this->buildResponseForProcess($command);
+    }
+
+    #[Route('/rabbit-delays/enable', method: 'PATCH')]
+    public function executeEnableRabbitDelays(ContextService $contextService): JsonResponse
+    {
+        $enable = $this->requestData->retrieveBool('enable');
+        $lifetime = $this->requestData->getInt('lifetime') ?? 3600;
+        $projects = $this->requestData->retrieveStringArray('projects');
+
+        $contextService->setDebugMode($enable, $projects, $lifetime);
+
+        return $this->emptyResponse();
     }
 
     #[Route('/debug/status', method: 'PATCH')]

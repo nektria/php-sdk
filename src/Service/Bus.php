@@ -45,7 +45,7 @@ class Bus implements BusInterface
     public function __construct(
         private readonly MessageBusInterface $bus,
         private readonly ContextService $contextService,
-        private readonly UserServiceInterface $userService
+        private readonly UserServiceInterface $userService,
     ) {
         $this->delayedEvents = [];
     }
@@ -63,12 +63,16 @@ class Bus implements BusInterface
         ?int $delayMs = null,
         ?array $retryOptions = null
     ): void {
-        $this->delayedEvents[] = [
-            'event' => $event,
-            'transport' => $transport,
-            'delayMs' => $delayMs,
-            'retryOptions' => $retryOptions,
-        ];
+        if ($this->contextService->delayRabbit()) {
+            $this->dispatchEvent($event, $transport, $delayMs, $retryOptions);
+        } else {
+            $this->delayedEvents[] = [
+                'event' => $event,
+                'transport' => $transport,
+                'delayMs' => $delayMs,
+                'retryOptions' => $retryOptions,
+            ];
+        }
     }
 
     /**
@@ -208,10 +212,10 @@ class Bus implements BusInterface
         } catch (HandlerFailedException $e) {
             $previous = $e->getPrevious();
             if ($previous !== null) {
-                throw $previous;
+                throw NektriaException::new($previous);
             }
 
-            throw $e;
+            throw NektriaException::new($e);
         }
     }
 

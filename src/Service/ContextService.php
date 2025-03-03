@@ -71,8 +71,8 @@ class ContextService
     {
         return
             $this->isLocalEnvironament()
-            || $this->sharedVariableCache->hasKey("debug_bbf6c8f_{$this->project}")
-            || $this->traceId === '3e65f252-8a06-4361-a264-0cd60b7a26c5';
+            || $this->traceId === '00000000-0000-4000-8000-000000000000'
+            || $this->sharedVariableCache->hasKey("debug_bbf6c8f_{$this->project}");
     }
 
     /**
@@ -83,8 +83,26 @@ class ContextService
     {
         $data = [];
         foreach ($projects as $project) {
-            $key = "debug_bbf6c8f_{$project}";
-            $data[$project] = $this->isLocalEnvironament() || $this->sharedVariableCache->hasKey($key);
+            $data[$project] = $this->isLocalEnvironament() || $this->debugMode();
+        }
+
+        return $data;
+    }
+
+    public function delayRabbit(): bool
+    {
+        return !$this->sharedVariableCache->hasKey("delay_rabbit_85b20ef3_{$this->project}");
+    }
+
+    /**
+     * @param string[] $projects
+     * @return array<string, bool>
+     */
+    public function delayRabbits(array $projects): array
+    {
+        $data = [];
+        foreach ($projects as $project) {
+            $data[$project] = $this->delayRabbit();
         }
 
         return $data;
@@ -171,6 +189,21 @@ class ContextService
                 $this->sharedVariableCache->saveKey($key, $ttl);
             } else {
                 $this->sharedVariableCache->deleteKey($key);
+            }
+        }
+    }
+
+    /**
+     * @param string[] $projects
+     */
+    public function setDelaysRabbit(bool $enable, array $projects, int $ttl): void
+    {
+        foreach ($projects as $project) {
+            $key = "delay_rabbit_85b20ef3_{$project}";
+            if ($enable) {
+                $this->sharedVariableCache->deleteKey($key);
+            } else {
+                $this->sharedVariableCache->saveKey($key, $ttl);
             }
         }
     }
