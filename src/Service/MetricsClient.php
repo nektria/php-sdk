@@ -72,7 +72,7 @@ class MetricsClient
     /**
      * @return array<string, string>
      */
-    private function getHeaders(): array
+    protected function getHeaders(): array
     {
         $tenantId = $this->contextService->tenantId() ?? 'none';
         $apiKey = $this->sharedUserCache->read("ADMIN_{$tenantId}")->apiKey ?? 'none';
