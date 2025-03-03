@@ -64,14 +64,14 @@ class Bus implements BusInterface
         ?array $retryOptions = null
     ): void {
         if ($this->contextService->delayRabbit()) {
-            $this->dispatchEvent($event, $transport, $delayMs, $retryOptions);
-        } else {
             $this->delayedEvents[] = [
                 'event' => $event,
                 'transport' => $transport,
                 'delayMs' => $delayMs,
                 'retryOptions' => $retryOptions,
             ];
+        } else {
+            $this->dispatchEvent($event, $transport, $delayMs, $retryOptions);
         }
     }
 
@@ -162,7 +162,6 @@ class Bus implements BusInterface
      *     maxTries: int,
      *     interval: int,
      * }|null $retryOptions
-     * @throws Throwable
      */
     final public function dispatchEvent(
         Event $event,
