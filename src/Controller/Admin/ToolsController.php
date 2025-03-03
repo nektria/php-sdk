@@ -113,6 +113,9 @@ readonly class ToolsController extends Controller
     #[Route('/database/migrations', method: 'GET')]
     public function executeDoctrineMigrationStatus(): Response
     {
+        $command = new Process(array_merge(['../bin/console', 'doctrine:migrations:sync-metadata-storage']));
+        $command->run();
+
         $command = new Process(array_merge(['../bin/console', 'doctrine:migration:status']));
         $command->run();
 
