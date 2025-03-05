@@ -502,9 +502,7 @@ readonly class YieldManagerClient
                     'longitude' => $longitude,
                     'elevator' => $elevator,
                 ],
-                'capacities' => [
-                    'productLines' => $productLines,
-                ],
+                'productLines' => $productLines,
                 'shopperCode' => $shopperCode,
                 'weight' => $weight,
             ],
