@@ -10,17 +10,21 @@ use Nektria\Exception\NektriaException;
 use Nektria\Exception\RequestException;
 use Nektria\Util\JsonUtil;
 
-readonly abstract class GoogleClient
+readonly class GoogleClient
 {
     public const string TOKEN_HASH = 'sdk_google_token';
 
     public const int TTL = 3600;
 
+    /**
+     * @param string[] $scopes
+     */
     public function __construct(
         private RequestClient $requestClient,
         private VariableCache $variableCache,
         private ContextService $contextService,
         private string $googleCredentialsFile,
+        private array $scopes,
     ) {
     }
 
@@ -144,11 +148,6 @@ readonly abstract class GoogleClient
     }
 
     /**
-     * @return string[]
-     */
-    abstract protected function getScopes(): array;
-
-    /**
      * @param mixed[] $data
      * @param array<string, string> $headers
      */
@@ -205,7 +204,7 @@ readonly abstract class GoogleClient
         $payload = [
             'iss' => $p12['client_email'],
             // 'scope' => 'https://www.googleapis.com/auth/devstorage.read_write',
-            'scope' => implode(' ', $this->getScopes()),
+            'scope' => implode(' ', $this->scopes),
             'aud' => 'https://oauth2.googleapis.com/token',
             'iat' => $now,
             'exp' => $now + self::TTL,
