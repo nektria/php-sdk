@@ -15,9 +15,10 @@ readonly class RequestClient
 {
     public function __construct(
         private HttpClientInterface $client,
-        private LogService $logService,
-        private ContextService $contextService,
-    ) {
+        private LogService          $logService,
+        private ContextService      $contextService,
+    )
+    {
     }
 
     /**
@@ -27,14 +28,39 @@ readonly class RequestClient
      */
     public function delete(
         string $url,
-        array $data = [],
-        array $headers = [],
-        array $options = [],
-        ?bool $enableDebugFallback = null
-    ): RequestResponse {
+        array  $data = [],
+        array  $headers = [],
+        array  $options = [],
+        ?bool  $enableDebugFallback = null
+    ): RequestResponse
+    {
         return $this->request(
             'DELETE',
             $url,
+            data: $data,
+            headers: $headers,
+            options: $options,
+            enableDebugFallback: $enableDebugFallback,
+        );
+    }
+
+    /**
+     * @param mixed[] $data
+     * @param array<string, string> $headers
+     * @param array<string, string|bool|number> $options
+     */
+    public function file(
+        string $url,
+        string $filename,
+        array  $data = [],
+        array  $headers = [],
+        array  $options = [],
+        ?bool  $enableDebugFallback = null
+    ): RequestResponse
+    {
+        return $this->fileRequest(
+            $url,
+            filename: $filename,
             data: $data,
             headers: $headers,
             options: $options,
@@ -49,11 +75,12 @@ readonly class RequestClient
      */
     public function get(
         string $url,
-        array $data = [],
-        array $headers = [],
-        array $options = [],
-        ?bool $enableDebugFallback = null
-    ): RequestResponse {
+        array  $data = [],
+        array  $headers = [],
+        array  $options = [],
+        ?bool  $enableDebugFallback = null
+    ): RequestResponse
+    {
         return $this->request(
             'GET',
             $url,
@@ -71,12 +98,13 @@ readonly class RequestClient
      */
     public function patch(
         string $url,
-        array $data = [],
-        array $headers = [],
-        array $options = [],
-        bool $sendBodyAsObject = false,
-        ?bool $enableDebugFallback = null
-    ): RequestResponse {
+        array  $data = [],
+        array  $headers = [],
+        array  $options = [],
+        bool   $sendBodyAsObject = false,
+        ?bool  $enableDebugFallback = null
+    ): RequestResponse
+    {
         return $this->request(
             'PATCH',
             $url,
@@ -95,12 +123,13 @@ readonly class RequestClient
      */
     public function post(
         string $url,
-        array $data = [],
-        array $headers = [],
-        array $options = [],
-        bool $sendBodyAsObject = false,
-        ?bool $enableDebugFallback = null
-    ): RequestResponse {
+        array  $data = [],
+        array  $headers = [],
+        array  $options = [],
+        bool   $sendBodyAsObject = false,
+        ?bool  $enableDebugFallback = null
+    ): RequestResponse
+    {
         return $this->request(
             'POST',
             $url,
@@ -119,12 +148,13 @@ readonly class RequestClient
      */
     public function put(
         string $url,
-        array $data = [],
-        array $headers = [],
-        array $options = [],
-        bool $sendBodyAsObject = false,
-        ?bool $enableDebugFallback = null
-    ): RequestResponse {
+        array  $data = [],
+        array  $headers = [],
+        array  $options = [],
+        bool   $sendBodyAsObject = false,
+        ?bool  $enableDebugFallback = null
+    ): RequestResponse
+    {
         return $this->request(
             'PUT',
             $url,
@@ -141,15 +171,145 @@ readonly class RequestClient
      * @param array<string, string> $headers
      * @param array<string, string|bool|number> $options
      */
+    private function fileRequest(
+        string $url,
+        string $filename,
+        array  $data = [],
+        array  $headers = [],
+        array  $options = [],
+        ?bool  $enableDebugFallback = null
+    ): RequestResponse
+    {
+        $body = fopen($filename, 'rb');
+        if ($body === false) {
+            throw new NektriaException("Cannot open file {$filename}.");
+        }
+
+        $contentType = mime_content_type($filename);
+        $headers = array_merge([
+            'Content-Type' => $contentType,
+            'Content-Length' => filesize($filename),
+            'User-Agent' => 'Nektria/1.0',
+            'X-Origin' => $this->contextService->project(),
+        ], $headers);
+
+        $options['verify_peer'] = false;
+        $options['verify_host'] = false;
+        $options['headers'] = $headers;
+
+        try {
+            $params = '';
+            foreach ($data as $key => $value) {
+                if ($value === true) {
+                    $value = 'true';
+                } elseif ($value === false) {
+                    $value = 'false';
+                }
+                if ($params !== '') {
+                    $params .= '&';
+                }
+                $params .= "{$key}={$value}";
+            }
+            if ($params !== '') {
+                $url .= "?{$params}";
+            }
+
+            $options['body'] = $body;
+
+            $start = microtime(true);
+            $response = $this->client->request(
+                'POST',
+                $url,
+                $options,
+            );
+
+            $content = $response->getContent(false);
+            $status = $response->getStatusCode();
+            $respHeaders = $response->getHeaders(false);
+
+            $response = new RequestResponse(
+                'POST',
+                $url,
+                $status,
+                $content,
+                $headers,
+                $respHeaders,
+            );
+
+            $end = (microtime(true) - $start) * 1000;
+        } catch (Throwable $e) {
+            throw NektriaException::new($e);
+        }
+
+        if ($enableDebugFallback ?? str_starts_with($url, 'https')) {
+            $this->logService->debug([
+                'method' => $response->method,
+                'request' => $data,
+                'requestHeaders' => $headers,
+                'response' => $response->json(),
+                'responseHeaders' => $respHeaders,
+                'status' => $response->status,
+                'url' => $url,
+                'duration' => $end
+            ], "{$status} POST {$url}");
+        }
+
+        if ($status >= 500) {
+            $errorContent = $content;
+
+            try {
+                $errorContent = JsonUtil::decode($content);
+            } catch (Throwable) {
+            }
+
+            $this->logService->error([
+                'method' => 'POST',
+                'request' => $data,
+                'response' => $errorContent,
+                'status' => $status,
+                'url' => $url,
+            ], "POST {$url} failed with status {$status}");
+
+            throw new RequestException($response);
+        }
+
+        if ($status >= 400) {
+            $errorContent = $content;
+
+            try {
+                $errorContent = JsonUtil::decode($content);
+            } catch (Throwable) {
+            }
+
+            $this->logService->warning([
+                'method' => 'POST',
+                'request' => $data,
+                'response' => $errorContent,
+                'status' => $status,
+                'url' => $url,
+            ], "POST {$url} failed with status {$status}");
+
+            throw new RequestException($response);
+        }
+
+        return $response;
+    }
+
+    /**
+     * @param mixed[] $data
+     * @param array<string, string> $headers
+     * @param array<string, string|bool|number> $options
+     */
     private function request(
         string $method,
         string $url,
-        array $data = [],
-        array $headers = [],
-        array $options = [],
-        bool $sendBodyAsObject = false,
-        ?bool $enableDebugFallback = null
-    ): RequestResponse {
+        array  $data = [],
+        array  $headers = [],
+        array  $options = [],
+        bool   $sendBodyAsObject = false,
+        ?bool  $enableDebugFallback = null
+    ): RequestResponse
+    {
         $body = JsonUtil::encode($data);
         $headers = array_merge([
             'Content-Type' => 'application/json',

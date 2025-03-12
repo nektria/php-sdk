@@ -1,5 +1,5 @@
 parameters:
-
+  none: none
 services:
   _defaults:
     public: true
@@ -13,6 +13,7 @@ services:
       string $yieldManagerHost: 'none'
       string $mercureToken: 'none'
       string $mercureHost: 'none'
+      string $googleCredentialsFile: '%env(default:none:GOOGLE_CLOUD_CREDENTIALS_PATH)%'
 
   Nektria\Console\:
     resource: '../src/Console'
