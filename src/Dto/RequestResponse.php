@@ -7,19 +7,19 @@ namespace Nektria\Dto;
 use Nektria\Util\JsonUtil;
 use Throwable;
 
-class RequestResponse
+readonly class RequestResponse
 {
     /**
-     * @param array<string, string> $requestHeaders
-     * @param array<string, string[]> $responseHeaders
+     * @param array<string, string|int|bool> $requestHeaders
+     * @param array<string, (string|int|bool)[]> $responseHeaders
      */
     public function __construct(
-        public readonly string $method,
-        public readonly string $url,
-        public readonly int $status,
-        public readonly string $body,
-        public readonly array $requestHeaders,
-        public readonly array $responseHeaders,
+        public string $method,
+        public string $url,
+        public int $status,
+        public string $body,
+        public array $requestHeaders,
+        public array $responseHeaders,
     ) {
     }
 

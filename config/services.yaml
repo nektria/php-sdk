@@ -25,6 +25,7 @@ services:
   Nektria\Service\AlertService: ~
   Nektria\Service\Bus: ~
   Nektria\Service\ContextService: ~
+  Nektria\Service\GoogleClient: ~
   Nektria\Service\HealthService: ~
   Nektria\Service\LogService: ~
   Nektria\Service\RequestClient: ~

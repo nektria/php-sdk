@@ -15,10 +15,9 @@ readonly class RequestClient
 {
     public function __construct(
         private HttpClientInterface $client,
-        private LogService          $logService,
-        private ContextService      $contextService,
-    )
-    {
+        private LogService $logService,
+        private ContextService $contextService,
+    ) {
     }
 
     /**
@@ -28,12 +27,11 @@ readonly class RequestClient
      */
     public function delete(
         string $url,
-        array  $data = [],
-        array  $headers = [],
-        array  $options = [],
-        ?bool  $enableDebugFallback = null
-    ): RequestResponse
-    {
+        array $data = [],
+        array $headers = [],
+        array $options = [],
+        ?bool $enableDebugFallback = null
+    ): RequestResponse {
         return $this->request(
             'DELETE',
             $url,
@@ -52,12 +50,11 @@ readonly class RequestClient
     public function file(
         string $url,
         string $filename,
-        array  $data = [],
-        array  $headers = [],
-        array  $options = [],
-        ?bool  $enableDebugFallback = null
-    ): RequestResponse
-    {
+        array $data = [],
+        array $headers = [],
+        array $options = [],
+        ?bool $enableDebugFallback = null
+    ): RequestResponse {
         return $this->fileRequest(
             $url,
             filename: $filename,
@@ -75,12 +72,11 @@ readonly class RequestClient
      */
     public function get(
         string $url,
-        array  $data = [],
-        array  $headers = [],
-        array  $options = [],
-        ?bool  $enableDebugFallback = null
-    ): RequestResponse
-    {
+        array $data = [],
+        array $headers = [],
+        array $options = [],
+        ?bool $enableDebugFallback = null
+    ): RequestResponse {
         return $this->request(
             'GET',
             $url,
@@ -98,13 +94,12 @@ readonly class RequestClient
      */
     public function patch(
         string $url,
-        array  $data = [],
-        array  $headers = [],
-        array  $options = [],
-        bool   $sendBodyAsObject = false,
-        ?bool  $enableDebugFallback = null
-    ): RequestResponse
-    {
+        array $data = [],
+        array $headers = [],
+        array $options = [],
+        bool $sendBodyAsObject = false,
+        ?bool $enableDebugFallback = null
+    ): RequestResponse {
         return $this->request(
             'PATCH',
             $url,
@@ -123,13 +118,12 @@ readonly class RequestClient
      */
     public function post(
         string $url,
-        array  $data = [],
-        array  $headers = [],
-        array  $options = [],
-        bool   $sendBodyAsObject = false,
-        ?bool  $enableDebugFallback = null
-    ): RequestResponse
-    {
+        array $data = [],
+        array $headers = [],
+        array $options = [],
+        bool $sendBodyAsObject = false,
+        ?bool $enableDebugFallback = null
+    ): RequestResponse {
         return $this->request(
             'POST',
             $url,
@@ -148,13 +142,12 @@ readonly class RequestClient
      */
     public function put(
         string $url,
-        array  $data = [],
-        array  $headers = [],
-        array  $options = [],
-        bool   $sendBodyAsObject = false,
-        ?bool  $enableDebugFallback = null
-    ): RequestResponse
-    {
+        array $data = [],
+        array $headers = [],
+        array $options = [],
+        bool $sendBodyAsObject = false,
+        ?bool $enableDebugFallback = null
+    ): RequestResponse {
         return $this->request(
             'PUT',
             $url,
@@ -174,18 +167,18 @@ readonly class RequestClient
     private function fileRequest(
         string $url,
         string $filename,
-        array  $data = [],
-        array  $headers = [],
-        array  $options = [],
-        ?bool  $enableDebugFallback = null
-    ): RequestResponse
-    {
+        array $data = [],
+        array $headers = [],
+        array $options = [],
+        ?bool $enableDebugFallback = null
+    ): RequestResponse {
         $body = fopen($filename, 'rb');
         if ($body === false) {
             throw new NektriaException("Cannot open file {$filename}.");
         }
 
         $contentType = mime_content_type($filename);
+
         $headers = array_merge([
             'Content-Type' => $contentType,
             'Content-Length' => filesize($filename),
@@ -303,13 +296,12 @@ readonly class RequestClient
     private function request(
         string $method,
         string $url,
-        array  $data = [],
-        array  $headers = [],
-        array  $options = [],
-        bool   $sendBodyAsObject = false,
-        ?bool  $enableDebugFallback = null
-    ): RequestResponse
-    {
+        array $data = [],
+        array $headers = [],
+        array $options = [],
+        bool $sendBodyAsObject = false,
+        ?bool $enableDebugFallback = null
+    ): RequestResponse {
         $body = JsonUtil::encode($data);
         $headers = array_merge([
             'Content-Type' => 'application/json',

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Nektria\Service;
 
 use Firebase\JWT\JWT;
@@ -9,18 +11,19 @@ use Nektria\Util\JsonUtil;
 
 readonly class GoogleClient
 {
-    const string TOKEN_HASH = 'sdk_google_token';
-    const int TTL = 3600 * 24 * 7;
+    public const string TOKEN_HASH = 'sdk_google_token';
+
+    public const int TTL = 3600 * 24 * 7;
 
     public function __construct(
         private RequestClient $requestClient,
         private SharedVariableCache $sharedVariableCache,
         private string $googleCredentialsFile,
-    )
-    {
+    ) {
     }
 
-    public function token(): string {
+    public function token(): string
+    {
         if ($this->googleCredentialsFile === 'none') {
             throw new NektriaException('Google is not configured.');
         }
@@ -60,11 +63,15 @@ readonly class GoogleClient
 
         $token = $authData->json()['access_token'];
 
-        $this->sharedVariableCache->saveString(self::TOKEN_HASH, $token, self::TOKEN_HASH);
+        $this->sharedVariableCache->saveString(self::TOKEN_HASH, $token, self::TTL);
 
         return $token;
     }
 
+    /**
+     * @param mixed[] $data
+     * @param array<string, string> $headers
+     */
     protected function post(
         string $url,
         array $data = [],

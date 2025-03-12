@@ -1,17 +1,16 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Nektria\Util\File;
 
-use App\Service\AbstractService;
 use Nektria\Exception\NektriaException;
 
 readonly class JpegImageManipulator implements ImageManipulator
 {
     public function __construct(
         public string $filename
-    )
-    {
+    ) {
     }
 
     public function resizeTo(string $destFile, int $maxSize): void
@@ -26,8 +25,8 @@ readonly class JpegImageManipulator implements ImageManipulator
         $height = $data[1];
 
         $currentMaxSize = max($with, $height);
-        $newWidth = max((int)($maxSize * ($with / $currentMaxSize)), 1);
-        $newHeight = max((int)($maxSize * ($height / $currentMaxSize)), 1);
+        $newWidth = max((int) ($maxSize * ($with / $currentMaxSize)), 1);
+        $newHeight = max((int) ($maxSize * ($height / $currentMaxSize)), 1);
 
         $destImage = imagecreatetruecolor($newWidth, $newHeight);
 

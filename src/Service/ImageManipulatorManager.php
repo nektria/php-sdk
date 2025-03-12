@@ -10,7 +10,8 @@ use Nektria\Util\File\JpegImageManipulator;
 
 class ImageManipulatorManager
 {
-    public function getManipulator(string $filename): ImageManipulator {
+    public function getManipulator(string $filename): ImageManipulator
+    {
 
         $type = mime_content_type($filename);
         if ($type === 'image/jpeg') {
