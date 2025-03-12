@@ -192,7 +192,11 @@ readonly abstract class GoogleClient
         }
 
         if ($this->variableCache->hasKey(self::TOKEN_HASH)) {
-            return $this->variableCache->readString(self::TOKEN_HASH);
+            $token = $this->variableCache->readString(self::TOKEN_HASH);
+
+            if ($token !== null) {
+                return $token;
+            }
         }
 
         $p12 = JsonUtil::file($this->googleCredentialsFile);
