@@ -17,14 +17,14 @@ readonly class GoogleClient
     public const int TTL = 3600;
 
     /**
-     * @param string[] $scopes
+     * @param string[] $googleScopes
      */
     public function __construct(
-        private RequestClient $requestClient,
-        private VariableCache $variableCache,
+        private RequestClient  $requestClient,
+        private VariableCache  $variableCache,
         private ContextService $contextService,
-        private string $googleCredentialsFile,
-        private array $scopes,
+        private string         $googleCredentialsFile,
+        private array          $googleScopes,
     ) {
     }
 
@@ -204,7 +204,7 @@ readonly class GoogleClient
         $payload = [
             'iss' => $p12['client_email'],
             // 'scope' => 'https://www.googleapis.com/auth/devstorage.read_write',
-            'scope' => implode(' ', $this->scopes),
+            'scope' => implode(' ', $this->googleScopes),
             'aud' => 'https://oauth2.googleapis.com/token',
             'iat' => $now,
             'exp' => $now + self::TTL,
