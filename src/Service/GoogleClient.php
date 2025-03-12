@@ -74,7 +74,8 @@ readonly class GoogleClient
                 ]
             );
         } catch (RequestException $e) {
-            throw new NektriaException($e->response()->json()['_response']);
+            $json = $e->response()->json();
+            throw new NektriaException($json['_response'] ?? $json['error']['message']);
         }
     }
 
@@ -190,20 +191,12 @@ readonly class GoogleClient
             throw new NektriaException('Google is not configured.');
         }
 
-        if ($this->variableCache->hasKey(self::TOKEN_HASH)) {
-            $token = $this->variableCache->readString(self::TOKEN_HASH);
-
-            if ($token !== null) {
-                return $token;
-            }
-        }
 
         $p12 = JsonUtil::file($this->googleCredentialsFile);
 
         $now = time();
         $payload = [
             'iss' => $p12['client_email'],
-            // 'scope' => 'https://www.googleapis.com/auth/devstorage.read_write',
             'scope' => implode(' ', $this->googleScopes),
             'aud' => 'https://oauth2.googleapis.com/token',
             'iat' => $now,
@@ -232,7 +225,12 @@ readonly class GoogleClient
             throw new NektriaException($e->response()->json()['error_description']);
         }
 
-        $token = $authData->json()['access_token'];
+        $json = $authData->json();
+        if (($json['access_token'] ?? null) === null) {
+            throw new NektriaException('Google token not received');
+        }
+
+        $token = $json['access_token'];
 
         $this->variableCache->saveString(self::TOKEN_HASH, $token, self::TTL);
 
