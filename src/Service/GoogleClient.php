@@ -10,7 +10,7 @@ use Nektria\Exception\NektriaException;
 use Nektria\Exception\RequestException;
 use Nektria\Util\JsonUtil;
 
-readonly class GoogleClient
+readonly abstract class GoogleClient
 {
     public const string TOKEN_HASH = 'sdk_google_token';
 
@@ -18,7 +18,7 @@ readonly class GoogleClient
 
     public function __construct(
         private RequestClient $requestClient,
-        private SharedVariableCache $sharedVariableCache,
+        private VariableCache $variableCache,
         private ContextService $contextService,
         private string $googleCredentialsFile,
     ) {
@@ -144,6 +144,11 @@ readonly class GoogleClient
     }
 
     /**
+     * @return string[]
+     */
+    abstract protected function getScopes(): array;
+
+    /**
      * @param mixed[] $data
      * @param array<string, string> $headers
      */
@@ -186,8 +191,8 @@ readonly class GoogleClient
             throw new NektriaException('Google is not configured.');
         }
 
-        if ($this->sharedVariableCache->hasKey(self::TOKEN_HASH)) {
-            return $this->sharedVariableCache->readString(self::TOKEN_HASH);
+        if ($this->variableCache->hasKey(self::TOKEN_HASH)) {
+            return $this->variableCache->readString(self::TOKEN_HASH);
         }
 
         $p12 = JsonUtil::file($this->googleCredentialsFile);
@@ -195,7 +200,8 @@ readonly class GoogleClient
         $now = time();
         $payload = [
             'iss' => $p12['client_email'],
-            'scope' => 'https://www.googleapis.com/auth/devstorage.read_write',
+            //'scope' => 'https://www.googleapis.com/auth/devstorage.read_write',
+            'scope' => implode(' ', $this->getScopes()),
             'aud' => 'https://oauth2.googleapis.com/token',
             'iat' => $now,
             'exp' => $now + self::TTL,
@@ -225,7 +231,7 @@ readonly class GoogleClient
 
         $token = $authData->json()['access_token'];
 
-        $this->sharedVariableCache->saveString(self::TOKEN_HASH, $token, self::TTL);
+        $this->variableCache->saveString(self::TOKEN_HASH, $token, self::TTL);
 
         return $token;
     }

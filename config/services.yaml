@@ -13,7 +13,6 @@ services:
       string $yieldManagerHost: 'none'
       string $mercureToken: 'none'
       string $mercureHost: 'none'
-      string $googleCredentialsFile: '%env(default:none:GOOGLE_CLOUD_CREDENTIALS_PATH)%'
 
   Nektria\Console\:
     resource: '../src/Console'
@@ -25,7 +24,6 @@ services:
   Nektria\Service\AlertService: ~
   Nektria\Service\Bus: ~
   Nektria\Service\ContextService: ~
-  Nektria\Service\GoogleClient: ~
   Nektria\Service\HealthService: ~
   Nektria\Service\LogService: ~
   Nektria\Service\RequestClient: ~
