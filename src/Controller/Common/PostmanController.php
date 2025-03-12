@@ -385,15 +385,13 @@ readonly class PostmanController extends Controller
      *     request: array{
      *         body?: array{
      *             mode: string,
-     *             raw: string,
-     *             formdata?:
-     *                 array{
-     *                    key: string,
-     *                    type: string,
-     *                    src: string[]
-     *                 }[]
-     *             }
-     *             options: array{
+     *             raw?: string,
+     *             formdata?: array{
+     *                key: string,
+     *                type: string,
+     *                src: string[]
+     *             }[],
+     *             options?: array{
      *                 raw: array{
      *                     language: string
      *                 }
@@ -498,15 +496,15 @@ readonly class PostmanController extends Controller
         }
 
         if ($json !== null && $method === 'POST' && str_contains($key, '_upload')) {
-
             $formData = [];
             foreach (array_keys($json) as $field) {
                 $formData[] = [
                     'key' => $field,
                     'type' => 'file',
-                    'value' => [],
+                    'src' => [],
                 ];
             }
+
             return [
                 'name' => $fixedName,
                 'request' => [
