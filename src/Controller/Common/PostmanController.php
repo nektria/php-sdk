@@ -462,7 +462,7 @@ readonly class PostmanController extends Controller
                 } elseif (is_array($value)) {
                     $value = implode(',', $value);
                 } else {
-                    $value = (string)$value;
+                    $value = (string) $value;
                 }
 
                 $query[] = [
@@ -637,9 +637,9 @@ readonly class PostmanController extends Controller
             }
 
             if (
-                !str_contains($line, '->requestData->') &&
-                !str_contains($line, '->getFile(') &&
-                !str_contains($line, '->retrieveFile(')
+                !str_contains($line, '->requestData->')
+                && !str_contains($line, '->getFile(')
+                && !str_contains($line, '->retrieveFile(')
             ) {
                 continue;
             }
@@ -681,7 +681,7 @@ readonly class PostmanController extends Controller
                 'File' => [],
                 'Array' => [],
                 'Bool' => true,
-                'Clock', 'ClockAsLocal', 'LocalClock', 'ClockFromLocal' => (string)$defaultNow,
+                'Clock', 'ClockAsLocal', 'LocalClock', 'ClockFromLocal' => (string) $defaultNow,
                 'ClockTz' => $defaultNow->iso8601String(),
                 'Date', 'LocalDate' => $defaultNow->dateString(),
                 'Float' => 1.2,
@@ -696,9 +696,9 @@ readonly class PostmanController extends Controller
             };
 
             if (str_contains($name, 'startTime')) {
-                $sample = (string)$defaultStartTime;
+                $sample = (string) $defaultStartTime;
             } elseif (str_contains($name, 'endTime')) {
-                $sample = (string)$defaultEndTime;
+                $sample = (string) $defaultEndTime;
             }
 
             if ($sample === '?') {
