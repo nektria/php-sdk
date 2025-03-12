@@ -490,6 +490,43 @@ readonly class PostmanController extends Controller
             ];
         }
 
+        if ($json !== null && $method === 'POST' && str_contains($key, '_upload')) {
+
+            $formData = [];
+            foreach (array_keys($json) as $field) {
+                $formData[] = [
+                    'key' => $field,
+                    'type' => 'file',
+                    'value' => [],
+                ];
+            }
+            return [
+                'name' => $fixedName,
+                'request' => [
+                    'body' => [
+                        'mode' => 'formdata',
+                        'formdata' => $formData,
+                    ],
+                    'description' => $description,
+                    'method' => $method,
+                    'url' => [
+                        'raw' => $url,
+                        'host' => [$host],
+                        'path' => [$path],
+                    ],
+                ],
+                'event' => [
+                    [
+                        'listen' => 'prerequest',
+                        'script' => [
+                            'type' => 'text/javascript',
+                            'exec' => $pathArgs,
+                        ],
+                    ],
+                ],
+            ];
+        }
+
         if ($json !== null) {
             return [
                 'name' => $fixedName,
@@ -594,7 +631,7 @@ readonly class PostmanController extends Controller
                 continue;
             }
 
-            if (!str_contains($line, '->requestData->')) {
+            if (!str_contains($line, '->requestData->') && !str_contains($line, '->getFile(')) {
                 continue;
             }
 
@@ -603,7 +640,9 @@ readonly class PostmanController extends Controller
             }
 
             $matches = [];
-            if (str_contains($line, '->requestData->retrieve')) {
+            if (str_contains($line, '->getFile')) {
+                $pattern = '/get(\w+)\((\'|")([^\'"]+)\2/';
+            } elseif (str_contains($line, '->requestData->retrieve')) {
                 $pattern = '/requestData->retrieve(\w+)\((\'|")([^\'"]+)\2/';
             } else {
                 $pattern = '/requestData->get(\w+)\((\'|")([^\'"]+)\2/';
@@ -628,6 +667,7 @@ readonly class PostmanController extends Controller
                     'longitude' => 0.2,
                     'postalCode' => 'string',
                 ],
+                'File' => [],
                 'Array' => [],
                 'Bool' => true,
                 'Clock', 'ClockAsLocal', 'LocalClock', 'ClockFromLocal' => (string) $defaultNow,
