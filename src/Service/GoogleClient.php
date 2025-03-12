@@ -41,7 +41,7 @@ readonly class GoogleClient
                 ],
             );
 
-            $tmpFilename = tempnam(sys_get_temp_dir(), $filename);
+            $tmpFilename = "/tmp/{$filename}";
             file_put_contents($tmpFilename, $data->body);
 
             return $tmpFilename;
