@@ -386,6 +386,13 @@ readonly class PostmanController extends Controller
      *         body?: array{
      *             mode: string,
      *             raw: string,
+     *             formdata?:
+     *                 array{
+     *                    key: string,
+     *                    type: string,
+     *                    src: string[]
+     *                 }[]
+     *             }
      *             options: array{
      *                 raw: array{
      *                     language: string
