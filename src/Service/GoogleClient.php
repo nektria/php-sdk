@@ -204,7 +204,7 @@ readonly abstract class GoogleClient
         $now = time();
         $payload = [
             'iss' => $p12['client_email'],
-            //'scope' => 'https://www.googleapis.com/auth/devstorage.read_write',
+            // 'scope' => 'https://www.googleapis.com/auth/devstorage.read_write',
             'scope' => implode(' ', $this->getScopes()),
             'aud' => 'https://oauth2.googleapis.com/token',
             'iat' => $now,
