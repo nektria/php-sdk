@@ -20,11 +20,11 @@ readonly class GoogleClient
      * @param string[] $googleScopes
      */
     public function __construct(
-        private RequestClient  $requestClient,
-        private VariableCache  $variableCache,
+        private RequestClient $requestClient,
+        private VariableCache $variableCache,
         private ContextService $contextService,
-        private string         $googleCredentialsFile,
-        private array          $googleScopes,
+        private string $googleCredentialsFile,
+        private array $googleScopes,
     ) {
     }
 
