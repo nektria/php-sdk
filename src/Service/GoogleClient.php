@@ -75,6 +75,7 @@ readonly class GoogleClient
             );
         } catch (RequestException $e) {
             $json = $e->response()->json();
+
             throw new NektriaException($json['_response'] ?? $json['error']['message']);
         }
     }
@@ -190,7 +191,6 @@ readonly class GoogleClient
         if ($this->googleCredentialsFile === 'none') {
             throw new NektriaException('Google is not configured.');
         }
-
 
         $p12 = JsonUtil::file($this->googleCredentialsFile);
 
