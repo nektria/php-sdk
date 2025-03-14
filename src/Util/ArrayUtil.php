@@ -8,9 +8,27 @@ use IteratorAggregate;
 use Nektria\Entity\EntityInterface;
 
 use function count;
+use function in_array;
 
 class ArrayUtil
 {
+    /**
+     * @template T
+     * @param T[] $list
+     * @param T $item
+     * @return T[]
+     */
+    public static function addUnique(array $list, mixed $item): array
+    {
+        if (in_array($item, $list, true)) {
+            return $list;
+        }
+
+        $list[] = $item;
+
+        return self::unique($list);
+    }
+
     /**
      * @template T
      * @param array<int, T>|IteratorAggregate<int, T> $list
@@ -106,6 +124,24 @@ class ArrayUtil
     public static function mapifyEntities(array $list): array
     {
         return self::mapify($list, static fn (EntityInterface $item) => $item->id());
+    }
+
+    /**
+     * @template T
+     * @param T[] $list
+     * @param T $item
+     * @return T[]
+     */
+    public static function remove(array $list, mixed $item): array
+    {
+        $key = array_search($item, $list, true);
+        if ($key === false) {
+            return $list;
+        }
+
+        unset($list[$key]);
+
+        return array_values($list);
     }
 
     /**
