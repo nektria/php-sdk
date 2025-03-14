@@ -28,6 +28,47 @@ readonly class GoogleClient
     ) {
     }
 
+    public function storageDeleteFile(
+        string $folder,
+        string $filename,
+        ?string $project = null
+    ): void {
+        try {
+            $project ??= $this->contextService->project();
+            $folder = urlencode("{$project}/{$folder}/");
+            $bucket = "nektria-{$this->contextService->env()}";
+
+            $this->delete(
+                "https://storage.googleapis.com/storage/v1/b/{$bucket}/o/{$folder}{$filename}",
+                headers: [
+                    'Content-Type' => 'application/json',
+                ]
+            );
+        } catch (RequestException $e) {
+            throw new NektriaException($e->response()->json()['_response']);
+        }
+    }
+
+    public function storageDeleteFolder(
+        string $folder,
+        ?string $project = null
+    ): void {
+        try {
+            $project ??= $this->contextService->project();
+            $folder = urlencode("{$project}/{$folder}/");
+            $bucket = "nektria-{$this->contextService->env()}";
+
+            $this->delete(
+                "https://storage.googleapis.com/storage/v1/b/{$bucket}/folders/{$folder}",
+                headers: [
+                    'Content-Type' => 'application/json',
+                ]
+            );
+        } catch (RequestException $e) {
+            throw new NektriaException($e->response()->json()['_response']);
+        }
+    }
+
     public function storageDownloadFile(
         string $folder,
         string $filename,
@@ -77,6 +118,35 @@ readonly class GoogleClient
             $json = $e->response()->json();
 
             throw new NektriaException($json['_response'] ?? $json['error']['message']);
+        }
+    }
+
+    /**
+     * @param array<string, string> $headers
+     */
+    protected function delete(
+        string $url,
+        array $headers = [],
+        bool $retry = true,
+    ): RequestResponse {
+        $token = $this->token();
+        $headers['Authorization'] = "Bearer {$token}";
+
+        try {
+            return $this->requestClient->delete(
+                $url,
+                headers: $headers,
+            );
+        } catch (RequestException $e) {
+            if ($retry && $e->response()->status === 401) {
+                return $this->delete(
+                    $url,
+                    headers: $headers,
+                    retry: false,
+                );
+            }
+
+            throw $e;
         }
     }
 
