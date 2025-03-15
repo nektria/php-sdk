@@ -26,7 +26,7 @@ readonly class FileDocument extends Document
     {
         $parts = explode(DIRECTORY_SEPARATOR, $file);
         $filename = $parts[count($parts) - 1];
-        $mime = mime_content_type($filename);
+        $mime = mime_content_type($file);
         if ($mime === false) {
             $mime = 'application/octet-stream';
         }
