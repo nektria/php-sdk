@@ -10,6 +10,7 @@ use Nektria\Document\DocumentResponse;
 use Nektria\Document\FileDocument;
 use Nektria\Document\ThrowableDocument;
 use Nektria\Document\User;
+use Nektria\Dto\Clock;
 use Nektria\Exception\InsufficientCredentialsException;
 use Nektria\Exception\InvalidAuthorizationException;
 use Nektria\Infrastructure\UserServiceInterface;
@@ -228,6 +229,8 @@ abstract class RequestListener implements EventSubscriberInterface
             $fileResponse->headers->set('Content-Type', $response->document->mime);
             if ($response->document->maxAge !== null) {
                 $fileResponse->headers->set('Cache-Control', "public, max-age={$response->document->maxAge}");
+                $clock = Clock::now()->add($response->document->maxAge, 'seconds');
+                $fileResponse->headers->set('Expires', $clock->rfc1123String());
             }
             $fileResponse->setContentDisposition(
                 ResponseHeaderBag::DISPOSITION_ATTACHMENT,
