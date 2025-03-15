@@ -149,8 +149,8 @@ class StaticAnalysisConsole extends Console
             }
         } elseif ($endpoint['method'] === 'GET') {
             $function = explode('::', $endpoint['defaults']['_controller'])[1];
-            if (!str_starts_with($function, 'get')) {
-                $messages[] = 'Function must start by either "get" or "list"';
+            if (!str_starts_with($function, 'get') && !str_starts_with($function, 'download')) {
+                $messages[] = 'Function must start by either "get" or "download"';
             }
         } elseif ($endpoint['method'] === 'PUT') {
             $function = explode('::', $endpoint['defaults']['_controller'])[1];
