@@ -56,7 +56,7 @@ readonly class RequestClient
     ): RequestResponse {
         return $this->fileRequest(
             $url,
-            filename: $filename,
+            $filename,
             data: $data,
             headers: $headers,
             options: $options,
