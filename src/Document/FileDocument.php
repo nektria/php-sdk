@@ -12,31 +12,35 @@ use const DIRECTORY_SEPARATOR;
 
 readonly class FileDocument extends Document
 {
-    private int | bool $size;
+    public string $filename;
+
+    public string $mime;
+
+    public int $size;
 
     public function __construct(
         public string $file,
-        public string $filename,
-        public string $mime,
         public ?int $maxAge = null,
+        ?string $mime = null
     ) {
-        $this->size = filesize($file);
-    }
-
-    public static function fromFile(string $file): self
-    {
-        $parts = explode(DIRECTORY_SEPARATOR, $file);
-        $filename = $parts[count($parts) - 1];
-        $mime = mime_content_type($file);
-        if ($mime === false) {
-            $mime = 'application/octet-stream';
+        $size = filesize($file);
+        if ($size === false) {
+            $size = 0;
         }
 
-        return new self(
-            file: $file,
-            filename: $filename,
-            mime: $mime,
-        );
+        $this->size = $size;
+        $parts = explode(DIRECTORY_SEPARATOR, $file);
+        $this->filename = $parts[count($parts) - 1];
+        if ($mime === null) {
+            $autoMime = mime_content_type($file);
+
+            if ($autoMime === false) {
+                $autoMime = 'application/octet-stream';
+            }
+
+            $mime = $autoMime;
+        }
+        $this->mime = $mime;
     }
 
     public function toArray(ContextService $context): array
