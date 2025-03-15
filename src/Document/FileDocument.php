@@ -6,6 +6,10 @@ namespace Nektria\Document;
 
 use Nektria\Service\ContextService;
 
+use function count;
+
+use const DIRECTORY_SEPARATOR;
+
 readonly class FileDocument extends Document
 {
     private int | bool $size;
@@ -16,6 +20,22 @@ readonly class FileDocument extends Document
         public string $mime,
     ) {
         $this->size = filesize($file);
+    }
+
+    public static function fromFile(string $file): self
+    {
+        $parts = explode(DIRECTORY_SEPARATOR, $file);
+        $filename = $parts[count($parts) - 1];
+        $mime = mime_content_type($filename);
+        if ($mime === false) {
+            $mime = 'application/octet-stream';
+        }
+
+        return new self(
+            file: $file,
+            filename: $filename,
+            mime: $mime,
+        );
     }
 
     public function toArray(ContextService $context): array
