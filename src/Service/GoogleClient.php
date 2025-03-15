@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Nektria\Service;
 
 use Firebase\JWT\JWT;
+use Nektria\Document\FileDocument;
 use Nektria\Dto\RequestResponse;
 use Nektria\Exception\NektriaException;
 use Nektria\Exception\RequestException;
@@ -73,7 +74,7 @@ readonly class GoogleClient
         string $folder,
         string $filename,
         ?string $project = null
-    ): string {
+    ): FileDocument {
         try {
             $project ??= $this->contextService->project();
             $folder = urlencode("{$project}/{$folder}/");
@@ -89,7 +90,7 @@ readonly class GoogleClient
             $tmpFilename = "/tmp/{$filename}";
             file_put_contents($tmpFilename, $data->body);
 
-            return $tmpFilename;
+            return new FileDocument($tmpFilename);
         } catch (RequestException $e) {
             throw new NektriaException($e->response()->json()['_response']);
         }
