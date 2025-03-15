@@ -272,6 +272,10 @@ class Bus implements BusInterface
             /** @var RolesRequired $instance */
             $instance = $attributes[0]->newInstance();
 
+            if (in_array(RoleManager::ROLE_PUBLIC, $instance->roles, true)) {
+                return;
+            }
+
             if (in_array(RoleManager::ROLE_ANY, $instance->roles, true)) {
                 return;
             }

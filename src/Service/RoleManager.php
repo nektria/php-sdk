@@ -77,6 +77,8 @@ class RoleManager
 
     public const string ROLE_MARKETING = 'ROLE_MARKETING';
 
+    public const string ROLE_PUBLIC = 'ROLE_PUBLIC';
+
     public const string ROLE_SYSTEM = 'ROLE_SYSTEM';
 
     public const string ROLE_TRAFFIC_CHIEF = 'ROLE_TRAFFIC_CHIEF';
