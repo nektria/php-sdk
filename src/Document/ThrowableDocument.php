@@ -138,9 +138,9 @@ readonly class ThrowableDocument extends Document
                 ];
             }
 
-            if (str_starts_with($file, '/app/vendor/nektria/php-sdk-dev/src')) {
+            if (str_starts_with($file, '/app/vendor/nektria/php-sdk/src')) {
                 $finalTrace[] = [
-                    'file' => str_replace('/app/vendor/nektria/php-sdk-dev/', '', $file),
+                    'file' => str_replace('/app/vendor/nektria/php-sdk/', '', $file),
                     'line' => $line,
                 ];
             }
