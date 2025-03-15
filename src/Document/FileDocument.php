@@ -18,6 +18,7 @@ readonly class FileDocument extends Document
         public string $file,
         public string $filename,
         public string $mime,
+        public ?int $maxAge = null,
     ) {
         $this->size = filesize($file);
     }
