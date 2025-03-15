@@ -90,7 +90,10 @@ readonly class GoogleClient
             $tmpFilename = "/tmp/{$filename}";
             file_put_contents($tmpFilename, $data->body);
 
-            return new FileDocument($tmpFilename);
+            return new FileDocument(
+                $tmpFilename,
+                filename: $filename,
+            );
         } catch (RequestException $e) {
             throw new NektriaException($e->response()->json()['_response']);
         }
