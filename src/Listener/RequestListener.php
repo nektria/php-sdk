@@ -227,7 +227,7 @@ abstract class RequestListener implements EventSubscriberInterface
             $fileResponse->deleteFileAfterSend();
             $fileResponse->headers->set('Content-Type', $response->document->mime);
             if ($response->document->maxAge !== null) {
-                $fileResponse->headers->set('Cache-Control', (string) $response->document->maxAge);
+                $fileResponse->headers->set('Cache-Control', "public, max-age={$response->document->maxAge}");
             }
             $fileResponse->setContentDisposition(
                 ResponseHeaderBag::DISPOSITION_ATTACHMENT,
