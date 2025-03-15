@@ -53,7 +53,6 @@ readonly class RequestClient
         array $data = [],
         array $headers = [],
         array $options = [],
-        ?bool $enableDebugFallback = null
     ): RequestResponse {
         return $this->fileRequest(
             $url,
@@ -61,7 +60,6 @@ readonly class RequestClient
             data: $data,
             headers: $headers,
             options: $options,
-            enableDebugFallback: $enableDebugFallback,
         );
     }
 
@@ -170,7 +168,6 @@ readonly class RequestClient
         array $data = [],
         array $headers = [],
         array $options = [],
-        ?bool $enableDebugFallback = null
     ): RequestResponse {
         $body = fopen($filename, 'rb');
         if ($body === false) {
@@ -232,19 +229,6 @@ readonly class RequestClient
             $end = (microtime(true) - $start) * 1000;
         } catch (Throwable $e) {
             throw NektriaException::new($e);
-        }
-
-        if ($enableDebugFallback ?? str_starts_with($url, 'https')) {
-            $this->logService->debug([
-                'method' => $response->method,
-                'request' => $data,
-                'requestHeaders' => $headers,
-                'response' => $response->json(),
-                'responseHeaders' => $respHeaders,
-                'status' => $response->status,
-                'url' => $url,
-                'duration' => $end
-            ], "{$status} POST {$url}");
         }
 
         if ($status >= 500) {
@@ -364,16 +348,19 @@ readonly class RequestClient
         }
 
         if ($enableDebugFallback ?? str_starts_with($url, 'https')) {
-            $this->logService->debug([
-                'method' => $response->method,
-                'request' => $data,
-                'requestHeaders' => $headers,
-                'response' => $response->json(),
-                'responseHeaders' => $respHeaders,
-                'status' => $response->status,
-                'url' => $url,
-                'duration' => $end
-            ], "{$status} {$method} {$url}");
+            $contentType = $response->responseHeaders['content-type'] ?? [''];
+            if (str_contains((string) $contentType[0], 'application/json')) {
+                $this->logService->debug([
+                    'method' => $response->method,
+                    'request' => $data,
+                    'requestHeaders' => $headers,
+                    'response' => $response->json(),
+                    'responseHeaders' => $respHeaders,
+                    'status' => $response->status,
+                    'url' => $url,
+                    'duration' => $end
+                ], "{$status} {$method} {$url}");
+            }
         }
 
         if ($status >= 500) {
