@@ -7,9 +7,9 @@
 .php_cs.cache
 .phpactor.json
 .phpunit.result.cache
-/.tmp
 /phpunit.xml
 /tmp
+!/tmp/.gitkeep
 /var/
 /vendor/
 scratch.php
