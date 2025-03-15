@@ -21,7 +21,8 @@ readonly class FileDocument extends Document
     public function __construct(
         public string $file,
         public ?int $maxAge = null,
-        ?string $mime = null
+        ?string $filename = null,
+        ?string $mime = null,
     ) {
         $size = filesize($file);
         if ($size === false) {
@@ -30,7 +31,7 @@ readonly class FileDocument extends Document
 
         $this->size = $size;
         $parts = explode(DIRECTORY_SEPARATOR, $file);
-        $this->filename = $parts[count($parts) - 1];
+        $this->filename = $filename ?? $parts[count($parts) - 1];
         if ($mime === null) {
             $autoMime = mime_content_type($file);
 
