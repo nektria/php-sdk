@@ -34,6 +34,9 @@ parameters:
             class: 'Symfony\Component\HttpFoundation\JsonResponse'
             message: 'Use DocumentResponse'
         -
+            class: 'Symfony\Component\HttpFoundation\Response'
+            message: 'Use DocumentResponse'
+        -
             class: 'Symfony\Component\Routing\Attribute\Route'
             message: 'Use Nektria\Util\Controller\Route instead'
 
