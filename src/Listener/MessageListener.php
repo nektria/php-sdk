@@ -158,7 +158,7 @@ abstract class MessageListener implements EventSubscriberInterface
                 $this->logService->exception($originalException, [
                     'context' => 'messenger',
                     'role' => $this->contextService->context(),
-                    'code' => $class,
+                    'code' => $this->normalizeClass($class),
                     'body' => $data,
                     'messageReceivedAt' => $this->messageStartedAt,
                     'messageCompletedAt' => $this->messageCompletedAt,
@@ -256,7 +256,7 @@ abstract class MessageListener implements EventSubscriberInterface
                 $this->logService->debug([
                     'context' => 'messenger',
                     'role' => $this->contextService->context(),
-                    'code' => $message::class,
+                    'code' => $this->normalizeClass($message::class),
                     'body' => $data,
                     'executionTime' => $time,
                     'messageReceivedAt' => $this->messageStartedAt,
@@ -273,7 +273,7 @@ abstract class MessageListener implements EventSubscriberInterface
                 $this->logService->info([
                     'context' => 'messenger',
                     'role' => $this->contextService->context(),
-                    'code' => $message::class,
+                    'code' => $this->normalizeClass($message::class),
                     'body' => $data,
                     'executionTime' => $time,
                     'messageReceivedAt' => $this->messageStartedAt,
@@ -428,5 +428,10 @@ abstract class MessageListener implements EventSubscriberInterface
         $times = min(1_000_000, $this->sharedVariableCache->readInt("bus_messages_pending_{$key}") + 1);
         $this->sharedVariableCache->saveInt("bus_messages_pending_{$key}", $times, ttl: 3600);
         $this->sharedVariableCache->closeTransaction();
+    }
+
+    private function normalizeClass(string $class): string
+    {
+        return strtolower(str_replace('\\', '_', $class));
     }
 }
