@@ -249,7 +249,7 @@ abstract class MessageListener implements EventSubscriberInterface
             $exchangeName = '?';
             $exchangeStamp = $event->getEnvelope()->last(AmqpReceivedStamp::class);
             if ($exchangeStamp !== null) {
-                $exchangeName = $exchangeStamp->getAmqpEnvelope()->getExchangeName();
+                $exchangeName = $exchangeStamp->getAmqpEnvelope()->getExchangeName() ?? '?';
             }
 
             if (str_ends_with($exchangeName, '.system')) {
