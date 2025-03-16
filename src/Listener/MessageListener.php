@@ -252,22 +252,41 @@ abstract class MessageListener implements EventSubscriberInterface
                 $exchangeName = $exchangeStamp->getAmqpEnvelope()->getExchangeName();
             }
 
-            $this->logService->info([
-                'context' => 'messenger',
-                'role' => $this->contextService->context(),
-                'event' => $message::class,
-                'body' => $data,
-                'executionTime' => $time,
-                'messageReceivedAt' => $this->messageStartedAt,
-                'messageCompletedAt' => $this->messageCompletedAt,
-                'queue' => $exchangeName,
-                'httpRequest' => [
-                    'requestUrl' => $resume,
-                    'requestMethod' => 'QUEUE',
-                    'status' => 200,
-                    'latency' => $time,
-                ],
-            ], $resume);
+            if (str_ends_with($exchangeName, '.system')) {
+                $this->logService->debug([
+                    'context' => 'messenger',
+                    'role' => $this->contextService->context(),
+                    'event' => $message::class,
+                    'body' => $data,
+                    'executionTime' => $time,
+                    'messageReceivedAt' => $this->messageStartedAt,
+                    'messageCompletedAt' => $this->messageCompletedAt,
+                    'queue' => $exchangeName,
+                    'httpRequest' => [
+                        'requestUrl' => $resume,
+                        'requestMethod' => 'QUEUE',
+                        'status' => 200,
+                        'latency' => $time,
+                    ],
+                ], $resume);
+            } else {
+                $this->logService->info([
+                    'context' => 'messenger',
+                    'role' => $this->contextService->context(),
+                    'event' => $message::class,
+                    'body' => $data,
+                    'executionTime' => $time,
+                    'messageReceivedAt' => $this->messageStartedAt,
+                    'messageCompletedAt' => $this->messageCompletedAt,
+                    'queue' => $exchangeName,
+                    'httpRequest' => [
+                        'requestUrl' => $resume,
+                        'requestMethod' => 'QUEUE',
+                        'status' => 200,
+                        'latency' => $time,
+                    ],
+                ], $resume);
+            }
 
             $this->userService->clearAuthentication();
         }
