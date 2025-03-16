@@ -46,6 +46,34 @@ class MetricsClient
         return $this->requestClient->get("{$this->metricsHost}/ping")->json();
     }
 
+    /**
+     * @param int[]|null $geoPolygonsContourSizes
+     */
+    public function saveWarehouse(
+        string $warehouseId,
+        ?string $name,
+        ?float $latitude,
+        ?float $longitude,
+        ?array $geoPolygonsContourSizes,
+        ?string $travelMode
+    ): void {
+        if ($this->contextService->isTest()) {
+            return;
+        }
+
+        $this->requestClient->put(
+            "{$this->metricsHost}/api/admin/warehouses/{$warehouseId}",
+            data: [
+                'name' => $name,
+                'latitude' => $latitude,
+                'longitude' => $longitude,
+                'travelMode' => $travelMode,
+                'geopolygonsContourSizes' => $geoPolygonsContourSizes,
+            ],
+            headers: $this->getHeaders(),
+        );
+    }
+
     public function saveWarehouseDailyInfo(
         string $warehouseId,
         LocalClock $date,
