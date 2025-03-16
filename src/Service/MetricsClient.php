@@ -51,11 +51,11 @@ class MetricsClient
      */
     public function saveWarehouse(
         string $warehouseId,
-        ?string $name,
-        ?float $latitude,
-        ?float $longitude,
-        ?array $geoPolygonsContourSizes,
-        ?string $travelMode
+        ?string $name = null,
+        ?float $latitude = null,
+        ?float $longitude = null,
+        ?array $geoPolygonsContourSizes = null,
+        ?string $travelMode = null,
     ): void {
         if ($this->contextService->isTest()) {
             return;
