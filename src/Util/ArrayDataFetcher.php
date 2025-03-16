@@ -225,6 +225,24 @@ readonly class ArrayDataFetcher
         return max(-2147483648, min((int) $value, 2147483647));
     }
 
+    /**
+     * @return int[]|null
+     */
+    public function getIntArray(string $field): ?array
+    {
+        if (!$this->hasField($field)) {
+            return null;
+        }
+
+        $ret = [];
+        $length = $this->retrieveLength($field);
+        for ($i = 0; $i < $length; ++$i) {
+            $ret[] = $this->retrieveInt("{$field}.{$i}");
+        }
+
+        return $ret;
+    }
+
     public function getLength(string $field): int
     {
         $fieldParts = explode('.', $field);
@@ -438,6 +456,19 @@ readonly class ArrayDataFetcher
     {
         $value = $this->getInt($field);
 
+        if ($value === null) {
+            throw new MissingRequestParamException($field);
+        }
+
+        return $value;
+    }
+
+    /**
+     * @return int[]
+     */
+    public function retrieveIntArray(string $field): array
+    {
+        $value = $this->getIntArray($field);
         if ($value === null) {
             throw new MissingRequestParamException($field);
         }
