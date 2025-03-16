@@ -354,6 +354,7 @@ abstract class RequestListener implements EventSubscriberInterface
             $this->temporalConsumptionCache->increase($this->contextService->tenantId(), $route);
         }
 
+        $routeParams = $event->getRequest()->attributes->get('_route_params');
         if ($logLevel !== self::LOG_LEVEL_NONE) {
             if ($status < 400) {
                 $isDebug = true;
@@ -374,9 +375,10 @@ abstract class RequestListener implements EventSubscriberInterface
                             'headers' => $headers,
                             'context' => 'request',
                             'role' => $this->contextService->context(),
-                            'route_name' => $route,
+                            'code' => $route,
                             'ref' => $this->contextService->userId() ?? 'anonymous',
                             'request' => $requestContent,
+                            'requestParams' => $routeParams,
                             'size' => $length,
                             'response' => $responseContent,
                             'httpRequest' => [
@@ -391,54 +393,59 @@ abstract class RequestListener implements EventSubscriberInterface
                     );
                 } else {
                     $this->logService->info([
-                        'headers' => $headers,
+                        'code' => $route,
                         'context' => 'request',
-                        'role' => $this->contextService->context(),
-                        'route_name' => $route,
-                        'userId' => $this->contextService->userId() ?? 'anon',
-                        'request' => $requestContent,
-                        'size' => $length,
-                        'response' => $responseContent,
+                        'headers' => $headers,
                         'httpRequest' => [
                             'requestMethod' => $event->getRequest()->getMethod(),
                             'requestUrl' => $path,
                             'status' => ($this->originalResponse ?? $event->getResponse())->getStatusCode(),
                             'latency' => round($this->executionTime, 3) . 's',
                         ],
+                        'request' => $requestContent,
+                        'requestParams' => $routeParams,
+                        'response' => $responseContent,
+                        'role' => $this->contextService->context(),
+                        'size' => $length,
+                        'userId' => $this->contextService->userId() ?? 'anon',
                     ], $resume);
                 }
             } elseif ($status < 500) {
                 $this->logService->warning([
-                    'headers' => $headers,
+                    'code' => $route,
                     'context' => 'request',
-                    'role' => $this->contextService->context(),
-                    'route_name' => $route,
-                    'ref' => $this->contextService->userId() ?? 'anonymous',
-                    'request' => $requestContent,
-                    'response' => $responseContent,
+                    'headers' => $headers,
                     'httpRequest' => [
                         'requestMethod' => $event->getRequest()->getMethod(),
                         'requestUrl' => $path,
                         'status' => ($this->originalResponse ?? $event->getResponse())->getStatusCode(),
                         'latency' => round($this->executionTime, 3) . 's',
                     ],
+                    'request' => $requestContent,
+                    'requestParams' => $routeParams,
+                    'response' => $responseContent,
+                    'role' => $this->contextService->context(),
+                    'size' => $length,
+                    'userId' => $this->contextService->userId() ?? 'anon',
                 ], $resume);
             } else {
                 $this->logService->temporalLogs();
                 $this->logService->error([
-                    'headers' => $headers,
+                    'code' => $route,
                     'context' => 'request',
-                    'role' => $this->contextService->context(),
-                    'route_name' => $route,
-                    'ref' => $this->contextService->userId() ?? 'anonymous',
-                    'request' => $requestContent,
-                    'response' => $responseContent,
+                    'headers' => $headers,
                     'httpRequest' => [
                         'requestMethod' => $event->getRequest()->getMethod(),
                         'requestUrl' => $path,
                         'status' => ($this->originalResponse ?? $event->getResponse())->getStatusCode(),
                         'latency' => round($this->executionTime, 3) . 's',
                     ],
+                    'request' => $requestContent,
+                    'requestParams' => $routeParams,
+                    'response' => $responseContent,
+                    'role' => $this->contextService->context(),
+                    'size' => $length,
+                    'userId' => $this->contextService->userId() ?? 'anon',
                 ], $resume);
             }
         }

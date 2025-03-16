@@ -158,7 +158,7 @@ abstract class MessageListener implements EventSubscriberInterface
                 $this->logService->exception($originalException, [
                     'context' => 'messenger',
                     'role' => $this->contextService->context(),
-                    'event' => $class,
+                    'code' => $class,
                     'body' => $data,
                     'messageReceivedAt' => $this->messageStartedAt,
                     'messageCompletedAt' => $this->messageCompletedAt,
@@ -256,7 +256,7 @@ abstract class MessageListener implements EventSubscriberInterface
                 $this->logService->debug([
                     'context' => 'messenger',
                     'role' => $this->contextService->context(),
-                    'event' => $message::class,
+                    'code' => $message::class,
                     'body' => $data,
                     'executionTime' => $time,
                     'messageReceivedAt' => $this->messageStartedAt,
@@ -273,7 +273,7 @@ abstract class MessageListener implements EventSubscriberInterface
                 $this->logService->info([
                     'context' => 'messenger',
                     'role' => $this->contextService->context(),
-                    'event' => $message::class,
+                    'code' => $message::class,
                     'body' => $data,
                     'executionTime' => $time,
                     'messageReceivedAt' => $this->messageStartedAt,
