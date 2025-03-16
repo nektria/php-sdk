@@ -156,7 +156,7 @@ class TestUserService extends UserService
             throw new InvalidAuthorizationException();
         }
 
-        $this->contextService->setTenantId($this->user->tenantId);
+        $this->contextService->setTenant($this->user->tenantId, $this->user->tenant->name);
         $this->contextService->setUserId($this->user->id);
     }
 
@@ -170,7 +170,7 @@ class TestUserService extends UserService
             throw new InvalidAuthorizationException();
         }
 
-        $this->contextService->setTenantId($this->user->tenantId);
+        $this->contextService->setTenant($this->user->tenantId, $this->user->tenant->name);
         $this->contextService->setUserId($this->user->id);
     }
 
@@ -184,7 +184,7 @@ class TestUserService extends UserService
             throw new InvalidAuthorizationException();
         }
 
-        $this->contextService->setTenantId($this->user->tenantId);
+        $this->contextService->setTenant($this->user->tenantId, $this->user->tenant->name);
         $this->contextService->setUserId($this->user->id);
     }
 }

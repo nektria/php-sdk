@@ -39,6 +39,8 @@ class ContextService
 
     private ?string $tenantId;
 
+    private ?string $tenantName;
+
     private string $traceId;
 
     private ?string $userId;
@@ -52,6 +54,7 @@ class ContextService
         $this->traceId = StringUtil::uuid4();
         $this->userId = null;
         $this->tenantId = null;
+        $this->tenantName = null;
         $this->forceSync = false;
     }
 
@@ -213,10 +216,11 @@ class ContextService
         $this->forceSync = $forceSync;
     }
 
-    public function setTenantId(?string $tenantId): void
+    public function setTenant(?string $tenantId, ?string $tenantName): void
     {
         ValidateOpt::uuid4($tenantId);
         $this->tenantId = $tenantId;
+        $this->tenantName = $tenantName;
     }
 
     public function setTraceId(string $traceId): void
@@ -233,6 +237,11 @@ class ContextService
     public function tenantId(): ?string
     {
         return $this->tenantId;
+    }
+
+    public function tenantName(): ?string
+    {
+        return $this->tenantName;
     }
 
     public function traceId(): string

@@ -32,9 +32,7 @@ class LogService
     public function __construct(
         private readonly ContextService $contextService,
         private readonly SharedLogCache $sharedLogCache,
-        private readonly UserService    $userService
-    )
-    {
+    ) {
         $this->channel = fopen('php://stderr', 'wb');
 
         if ($this->contextService->isLocalEnvironament()) {
@@ -48,18 +46,13 @@ class LogService
     public function debug(array $payload, string $message, bool $ignoreRedis = false): void
     {
         if (!$ignoreRedis && ($this->channel === false || !$this->contextService->debugMode())) {
-            $user = $this->userService->user();
-            $tenantName = '';
-            if ($user !== null) {
-                $tenantName = $user->tenant->name;
-            }
             $this->sharedLogCache->addLog([
                 'context' => $this->contextService->context(),
                 'message' => $message,
                 'payload' => $payload,
                 'project' => $this->contextService->project(),
                 'tenantId' => $this->contextService->tenantId() ?? 'none',
-                'tenant' => $tenantName,
+                'tenant' => $this->contextService->tenantName() ?? 'none',
             ]);
 
             return;
@@ -107,12 +100,6 @@ class LogService
         $clearTrace = $tmp->trace();
 
         try {
-            $user = $this->userService->user();
-            $tenantName = '';
-            if ($user !== null) {
-                $tenantName = $user->tenant->name;
-            }
-
             $data = [
                 'message' => $exception->getMessage(),
                 'logName' => 'projects/nektria/logs/error',
@@ -122,7 +109,7 @@ class LogService
                     'context' => $this->contextService->context(),
                     'env' => $this->contextService->env(),
                     'tenantId' => $this->contextService->tenantId(),
-                    'tenant' => $tenantName,
+                    'tenant' => $this->contextService->tenantName() ?? 'none',
                 ],
                 'logging.googleapis.com/trace_sampled' => false,
             ];
@@ -160,10 +147,9 @@ class LogService
      */
     public function send(
         string $level,
-        array  $payload,
+        array $payload,
         string $message,
-    ): void
-    {
+    ): void {
         match ($level) {
             self::INFO => $this->info($payload, $message),
             self::WARNING => $this->warning($payload, $message),
@@ -181,12 +167,6 @@ class LogService
 
         $logs = $this->sharedLogCache->getLogs();
 
-        $user = $this->userService->user();
-        $tenantName = '';
-        if ($user !== null) {
-            $tenantName = $user->tenant->name;
-        }
-
         foreach ($logs as $log) {
             $data = [
                 'message' => $log['message'],
@@ -197,7 +177,7 @@ class LogService
                     'context' => $log['context'],
                     'env' => $this->contextService->env(),
                     'tenantId' => $log['tenantId'],
-                    'tenant' => $tenantName,
+                    'tenant' => $this->contextService->tenantName() ?? 'none',
                 ],
                 'logging.googleapis.com/trace' => $this->contextService->traceId(),
                 'logging.googleapis.com/trace_sampled' => false,
@@ -225,17 +205,10 @@ class LogService
      * @return mixed[]
      */
     private function build(
-        array  $payload,
+        array $payload,
         string $message,
         string $level
-    ): array
-    {
-        $user = $this->userService->user();
-        $tenantName = '';
-        if ($user !== null) {
-            $tenantName = $user->tenant->name;
-        }
-
+    ): array {
         $data = [
             'message' => $message,
             'logName' => "projects/nektria/logs/{$this->contextService->project()}",
@@ -245,7 +218,7 @@ class LogService
                 'context' => $this->contextService->context(),
                 'env' => $this->contextService->env(),
                 'tenantId' => $this->contextService->tenantId(),
-                'tenant' => $tenantName,
+                'tenant' => $this->contextService->tenantName() ?? 'none',
             ],
             'logging.googleapis.com/trace' => $this->contextService->traceId(),
             'logging.googleapis.com/trace_sampled' => false,

@@ -42,7 +42,7 @@ class UserService implements UserServiceInterface
             throw new InvalidAuthorizationException();
         }
 
-        $this->contextService->setTenantId($user->tenantId);
+        $this->contextService->setTenant($user->tenantId, $user->tenant->name);
         $this->contextService->setUserId($user->id);
     }
 
@@ -61,7 +61,7 @@ class UserService implements UserServiceInterface
             throw new InvalidAuthorizationException();
         }
 
-        $this->contextService->setTenantId($user->tenantId);
+        $this->contextService->setTenant($user->tenantId, $user->tenant->name);
         $this->contextService->setUserId($user->id);
     }
 
@@ -80,13 +80,13 @@ class UserService implements UserServiceInterface
             throw new InvalidAuthorizationException();
         }
 
-        $this->contextService->setTenantId($user->tenantId);
+        $this->contextService->setTenant($user->tenantId, $user->tenant->name);
         $this->contextService->setUserId($user->id);
     }
 
     public function clearAuthentication(): void
     {
-        $this->contextService->setTenantId(null);
+        $this->contextService->setTenant(null, null);
         $this->contextService->setUserId(null);
         $this->user = null;
     }
