@@ -64,6 +64,29 @@ readonly class RequestClient
     }
 
     /**
+     * @param mixed[] $data
+     * @param array<string, string> $headers
+     * @param array<string, string> $filenames
+     * @param array<string, string|bool|number> $options
+     */
+    public function files(
+        string $url,
+        array $filenames,
+        array $data = [],
+        array $headers = [],
+        array $options = [],
+    ): RequestResponse {
+
+        return $this->filesRequest(
+            $url,
+            $filenames,
+            data: $data,
+            headers: $headers,
+            options: $options,
+        );
+    }
+
+    /**
      * @param array<string, string|int|bool|float> $data
      * @param array<string, string> $headers
      * @param array<string, string|bool|number> $options
@@ -179,6 +202,123 @@ readonly class RequestClient
         $headers = array_merge([
             'Content-Type' => $contentType,
             'Content-Length' => filesize($filename),
+            'User-Agent' => 'Nektria/1.0',
+            'X-Origin' => $this->contextService->project(),
+        ], $headers);
+
+        $options['verify_peer'] = false;
+        $options['verify_host'] = false;
+        $options['headers'] = $headers;
+
+        try {
+            $params = '';
+            foreach ($data as $key => $value) {
+                if ($value === true) {
+                    $value = 'true';
+                } elseif ($value === false) {
+                    $value = 'false';
+                }
+                if ($params !== '') {
+                    $params .= '&';
+                }
+                $params .= "{$key}={$value}";
+            }
+            if ($params !== '') {
+                $url .= "?{$params}";
+            }
+
+            $options['body'] = $body;
+
+            $start = microtime(true);
+            $response = $this->client->request(
+                'POST',
+                $url,
+                $options,
+            );
+
+            $content = $response->getContent(false);
+            $status = $response->getStatusCode();
+            $respHeaders = $response->getHeaders(false);
+
+            $response = new RequestResponse(
+                'POST',
+                $url,
+                $status,
+                $content,
+                $headers,
+                $respHeaders,
+            );
+
+            $end = (microtime(true) - $start) * 1000;
+        } catch (Throwable $e) {
+            throw NektriaException::new($e);
+        }
+
+        if ($status >= 500) {
+            $errorContent = $content;
+
+            try {
+                $errorContent = JsonUtil::decode($content);
+            } catch (Throwable) {
+            }
+
+            $this->logService->error([
+                'method' => 'POST',
+                'request' => $data,
+                'response' => $errorContent,
+                'status' => $status,
+                'url' => $url,
+            ], "POST {$url} failed with status {$status}");
+
+            throw new RequestException($response);
+        }
+
+        if ($status >= 400) {
+            $errorContent = $content;
+
+            try {
+                $errorContent = JsonUtil::decode($content);
+            } catch (Throwable) {
+            }
+
+            $this->logService->warning([
+                'method' => 'POST',
+                'request' => $data,
+                'response' => $errorContent,
+                'status' => $status,
+                'url' => $url,
+            ], "POST {$url} failed with status {$status}");
+
+            throw new RequestException($response);
+        }
+
+        return $response;
+    }
+
+    /**
+     * @param mixed[] $data
+     * @param array<string, string> $headers
+     * @param array<string, string> $filenames
+     * @param array<string, string|bool|number> $options
+     */
+    private function filesRequest(
+        string $url,
+        array $filenames,
+        array $data = [],
+        array $headers = [],
+        array $options = [],
+    ): RequestResponse {
+        $body = [];
+        foreach ($filenames as $key => $filename) {
+            $resource = fopen($filename, 'rb');
+            if ($resource === false) {
+                throw new NektriaException("Cannot open file {$filename}.");
+            }
+
+            $body[$key] = $resource;
+        }
+
+        $headers = array_merge([
             'User-Agent' => 'Nektria/1.0',
             'X-Origin' => $this->contextService->project(),
         ], $headers);
