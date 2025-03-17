@@ -33,7 +33,7 @@ class SharedTenantCache extends SharedRedisCache
             name: $data['name'],
             metadata: new TenantMetadata($data['metadata']),
             aiAssistantId: $data['aiAssistantId'] ?? null,
-            timezone: $data['timezone'],
+            timezone: $data['timezone'] ?? 'Europe/Madrid',
         );
     }
 
