@@ -70,12 +70,20 @@ class ContextService
         return $this->context;
     }
 
-    public function debugMode(): bool
+    public function debugMode(?string $project = null, bool $ignoreLocalEnvironment = false): bool
     {
+        $project ??= $this->project;
+
+        if ($ignoreLocalEnvironment) {
+            return
+                $this->traceId === '00000000-0000-4000-8000-000000000000'
+                || $this->sharedVariableCache->hasKey("debug_bbf6c8f_{$project}");
+        }
+
         return
             $this->isLocalEnvironament()
             || $this->traceId === '00000000-0000-4000-8000-000000000000'
-            || $this->sharedVariableCache->hasKey("debug_bbf6c8f_{$this->project}");
+            || $this->sharedVariableCache->hasKey("debug_bbf6c8f_{$project}");
     }
 
     /**
@@ -86,7 +94,10 @@ class ContextService
     {
         $data = [];
         foreach ($projects as $project) {
-            $data[$project] = $this->isLocalEnvironament() || $this->debugMode();
+            $data[$project] = $this->debugMode(
+                project: $project,
+                ignoreLocalEnvironment: true
+            );
         }
 
         return $data;
