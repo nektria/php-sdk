@@ -16,7 +16,7 @@ use Nektria\Infrastructure\SharedRedisCache;
  *     id: string,
  *     name: string,
  *     metadata: TenantMetadataArray,
- *     timezone: string
+ *     timezone: string|null
  * }>
  */
 class SharedTenantCache extends SharedRedisCache
