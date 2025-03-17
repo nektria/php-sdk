@@ -32,6 +32,7 @@ class TestUserService extends UserService
             name: 'Test',
             metadata: new TenantMetadata([]),
             aiAssistantId: null,
+            timezone: 'Europe/Madrid',
         );
 
         $this->users['ak1000'] = new User(
@@ -91,6 +92,7 @@ class TestUserService extends UserService
             name: 'Test2',
             metadata: new TenantMetadata([]),
             aiAssistantId: null,
+            timezone: 'Europe/Madrid',
         );
 
         $this->users['ak3000'] = new User(

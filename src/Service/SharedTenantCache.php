@@ -15,7 +15,8 @@ use Nektria\Infrastructure\SharedRedisCache;
  *     aiAssistantId: string|null,
  *     id: string,
  *     name: string,
- *     metadata: TenantMetadataArray
+ *     metadata: TenantMetadataArray,
+ *     timezone: string
  * }>
  */
 class SharedTenantCache extends SharedRedisCache
@@ -32,6 +33,7 @@ class SharedTenantCache extends SharedRedisCache
             name: $data['name'],
             metadata: new TenantMetadata($data['metadata']),
             aiAssistantId: $data['aiAssistantId'] ?? null,
+            timezone: $data['timezone'],
         );
     }
 
@@ -44,6 +46,7 @@ class SharedTenantCache extends SharedRedisCache
                 'id' => $tenant->id,
                 'name' => $tenant->name,
                 'metadata' => $tenant->metadata->data(),
+                'timezone' => $tenant->timezone,
             ],
             1209600,
         );
