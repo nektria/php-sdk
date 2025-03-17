@@ -51,8 +51,9 @@ class LogService
                 'message' => $message,
                 'payload' => $payload,
                 'project' => $this->contextService->project(),
-                'tenantId' => $this->contextService->tenantId() ?? 'none',
                 'tenant' => $this->contextService->tenantName() ?? 'none',
+                'tenantId' => $this->contextService->tenantId() ?? 'none',
+                'userId' => $this->contextService->userId() ?? 'none',
             ]);
 
             return;
@@ -108,8 +109,9 @@ class LogService
                     'app' => $this->contextService->project(),
                     'context' => $this->contextService->context(),
                     'env' => $this->contextService->env(),
-                    'tenantId' => $this->contextService->tenantId(),
                     'tenant' => $this->contextService->tenantName() ?? 'none',
+                    'tenantId' => $this->contextService->tenantId() ?? 'none',
+                    'userId' => $this->contextService->userId() ?? 'none',
                 ],
                 'logging.googleapis.com/trace_sampled' => false,
             ];
@@ -176,8 +178,9 @@ class LogService
                     'app' => $log['project'],
                     'context' => $log['context'],
                     'env' => $this->contextService->env(),
-                    'tenantId' => $log['tenantId'],
                     'tenant' => $this->contextService->tenantName() ?? 'none',
+                    'tenantId' => $log['tenantId'] ?? 'none',
+                    'userId' => $log['userId'] ?? 'none',
                 ],
                 'logging.googleapis.com/trace' => $this->contextService->traceId(),
                 'logging.googleapis.com/trace_sampled' => false,
@@ -217,8 +220,9 @@ class LogService
                 'app' => $this->contextService->project(),
                 'context' => $this->contextService->context(),
                 'env' => $this->contextService->env(),
-                'tenantId' => $this->contextService->tenantId(),
                 'tenant' => $this->contextService->tenantName() ?? 'none',
+                'tenantId' => $this->contextService->tenantId(),
+                'userId' => $this->contextService->userId() ?? 'none',
             ],
             'logging.googleapis.com/trace' => $this->contextService->traceId(),
             'logging.googleapis.com/trace_sampled' => false,

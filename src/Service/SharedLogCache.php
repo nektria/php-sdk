@@ -14,7 +14,9 @@ use function array_slice;
  *     message: string,
  *     project: string,
  *     context: string,
- *     tenantId: string
+ *     tenantId: string | null,
+ *     tenant: string | null,
+ *     userId: string | null,
  * }
  *
  * @extends SharedRedisCache<CachedLog[]>
