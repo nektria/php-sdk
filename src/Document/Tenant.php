@@ -26,6 +26,7 @@ readonly class Tenant extends Document
                 'id' => $this->id,
                 'name' => $this->name,
                 'metadata' => $this->metadata->toArray($context),
+                'timezone' => $this->timezone,
             ];
         }
 
@@ -34,6 +35,7 @@ readonly class Tenant extends Document
                 'id' => $this->id,
                 'name' => $this->name,
                 'metadata' => $this->metadata->toArray($context),
+                'timezone' => $this->timezone,
             ];
         }
 
@@ -41,6 +43,7 @@ readonly class Tenant extends Document
             'id' => $this->id,
             'name' => $this->name,
             'availableTags' => $this->metadata->availableTags(),
+            'timezone' => $this->timezone,
         ];
     }
 }
