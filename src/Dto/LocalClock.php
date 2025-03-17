@@ -14,6 +14,7 @@ use Throwable;
 
 /**
  * @phpstan-type CtTimeFormat 'seconds'|'minutes'|'hours'|'days'|'weeks'|'months'|'years'
+ * @phpstan-type CtWeekDay 'Mon'|'Tue'|'Wed'|'Thu'|'Fri'|'Sat'|'Sun'
  */
 class LocalClock
 {
@@ -325,6 +326,28 @@ class LocalClock
         }
     }
 
+    /**
+     * @param CtWeekDay $weekDay
+     */
+    public function setWeekDayString(string $weekDay): self
+    {
+        $days = [
+            'Mon' => 'monday',
+            'Tue' => 'tuesday',
+            'Wed' => 'wednesday',
+            'Thu' => 'thursday',
+            'Fri' => 'friday',
+            'Sat' => 'saturday',
+            'Sun' => 'sunday',
+        ];
+
+        try {
+            return self::fromPhpDateTime($this->dateTime->modify("{$days[$weekDay]} this week"));
+        } catch (Throwable $e) {
+            throw NektriaException::new($e);
+        }
+    }
+
     public function setYearAndWeek(int $year, int $week): self
     {
         return new self($this->dateTime->setISODate($year, $week));
@@ -421,6 +444,17 @@ class LocalClock
     public function weekDay(): string
     {
         return $this->dateTime->format('w');
+    }
+
+    /**
+     * @return CtWeekDay
+     */
+    public function weekDayString(): string
+    {
+        /** @var CtWeekDay $weekDay */
+        $weekDay = $this->dateTime->format('D');
+
+        return $weekDay;
     }
 
     public function year(): string
