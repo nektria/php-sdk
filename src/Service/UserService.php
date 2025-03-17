@@ -6,6 +6,7 @@ namespace Nektria\Service;
 
 use Nektria\Document\Tenant;
 use Nektria\Document\User;
+use Nektria\Dto\LocalClock;
 use Nektria\Exception\InvalidAuthorizationException;
 use Nektria\Exception\ResourceNotFoundException;
 use Nektria\Infrastructure\UserServiceInterface;
@@ -44,6 +45,7 @@ class UserService implements UserServiceInterface
 
         $this->contextService->setTenant($user->tenantId, $user->tenant->name);
         $this->contextService->setUserId($user->id);
+        LocalClock::defaultTimezone($user->tenant->timezone);
     }
 
     public function authenticateSystem(string $tenantId): void
@@ -63,6 +65,7 @@ class UserService implements UserServiceInterface
 
         $this->contextService->setTenant($user->tenantId, $user->tenant->name);
         $this->contextService->setUserId($user->id);
+        LocalClock::defaultTimezone($user->tenant->timezone);
     }
 
     public function authenticateUser(string $apiKey): void
@@ -82,12 +85,14 @@ class UserService implements UserServiceInterface
 
         $this->contextService->setTenant($user->tenantId, $user->tenant->name);
         $this->contextService->setUserId($user->id);
+        LocalClock::defaultTimezone($user->tenant->timezone);
     }
 
     public function clearAuthentication(): void
     {
         $this->contextService->setTenant(null, null);
         $this->contextService->setUserId(null);
+        LocalClock::defaultTimezone('UTC');
         $this->user = null;
     }
 

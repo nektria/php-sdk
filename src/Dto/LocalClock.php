@@ -17,6 +17,8 @@ use Throwable;
  */
 class LocalClock
 {
+    public static string $timezone = 'UTC';
+
     private DateTimeImmutable $dateTime;
 
     private function __construct(?DateTimeInterface $dateTime = null)
@@ -25,6 +27,11 @@ class LocalClock
             $dateTime = DateTimeImmutable::createFromMutable($dateTime);
         }
         $this->dateTime = $dateTime ?? new DateTimeImmutable();
+    }
+
+    public static function defaultTimezone(string $timezone): void
+    {
+        self::$timezone = $timezone;
     }
 
     public static function fromPhpDateTime(DateTimeInterface $dateTime): self
@@ -70,8 +77,12 @@ class LocalClock
         return $a->isBefore($b, $in) ? $a : $b;
     }
 
-    public static function now(string $timezone = 'UTC'): self
+    public static function now(?string $timezone = null): self
     {
+        if ($timezone === null) {
+            return Clock::now()->toLocal(self::$timezone);
+        }
+
         return Clock::now()->toLocal($timezone);
     }
 
