@@ -151,6 +151,23 @@ readonly class ProxyClient
         );
     }
 
+    public function uploadOrdersFileToPickingShift(string $pickingShiftId, string $filename): void
+    {
+        $proxyHost = $this->userService->retrieveUser()->tenant->metadata->proxyHost();
+
+        if ($proxyHost === null) {
+            return;
+        }
+
+        $this->requestClient->files(
+            "{$proxyHost}/api/admin/files/picking-shifts/{$pickingShiftId}/orders",
+            filenames: [
+                'ordersFile' => $filename
+            ],
+            headers: $this->getHeaders(),
+        );
+    }
+
     /**
      * @return array<string, string>
      */
