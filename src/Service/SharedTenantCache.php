@@ -46,7 +46,7 @@ class SharedTenantCache extends SharedRedisCache
                 'id' => $tenant->id,
                 'name' => $tenant->name,
                 'metadata' => $tenant->metadata->data(),
-                'timezone' => $tenant->timezone,
+                'timezone' => $tenant->timezone ?? 'Europe/Madrid',
             ],
             1209600,
         );
