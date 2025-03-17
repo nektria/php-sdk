@@ -14,7 +14,7 @@ readonly class Tenant extends Document
         public string $name,
         public TenantMetadata $metadata,
         public ?string $aiAssistantId,
-        public string $timezone,
+        public ?string $timezone,
     ) {
     }
 
