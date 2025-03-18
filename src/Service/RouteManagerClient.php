@@ -243,6 +243,10 @@ readonly class RouteManagerClient
 
     public function checkProxyPickingShiftAssignation(string $orderNumber): void
     {
+        if ($this->contextService->isTest()) {
+            return;
+        }
+
         try {
             $this->requestClient->patch(
                 "{$this->routeManagerHost}/api/admin/orders/{$orderNumber}/check-proxy-assignation",
@@ -257,6 +261,10 @@ readonly class RouteManagerClient
 
     public function deleteDriver(string $driverId): void
     {
+        if ($this->contextService->isTest()) {
+            return;
+        }
+
         $this->requestClient->delete(
             "{$this->routeManagerHost}/api/admin/drivers/{$driverId}",
             headers: $this->getHeaders(),
@@ -265,6 +273,10 @@ readonly class RouteManagerClient
 
     public function deleteOrder(string $orderNumber): void
     {
+        if ($this->contextService->isTest()) {
+            return;
+        }
+
         $this->requestClient->delete(
             "{$this->routeManagerHost}/api/admin/orders/{$orderNumber}",
             headers: $this->getHeaders(),
@@ -273,8 +285,24 @@ readonly class RouteManagerClient
 
     public function deletePickingShift(string $pickingShiftId): void
     {
+        if ($this->contextService->isTest()) {
+            return;
+        }
+
         $this->requestClient->delete(
             "{$this->routeManagerHost}/api/admin/picking-shifts/{$pickingShiftId}",
+            headers: $this->getHeaders(),
+        );
+    }
+
+    public function deleteTimeWindow(string $timeWindowId): void
+    {
+        if ($this->contextService->isTest()) {
+            return;
+        }
+
+        $this->requestClient->delete(
+            "{$this->routeManagerHost}/api/admin/time-windows/{$timeWindowId}",
             headers: $this->getHeaders(),
         );
     }
@@ -282,6 +310,10 @@ readonly class RouteManagerClient
     public function deleteTrafficChief(
         string $trafficChiefId,
     ): void {
+        if ($this->contextService->isTest()) {
+            return;
+        }
+
         $this->requestClient->delete(
             "{$this->routeManagerHost}/api/admin/traffic-chiefs/{$trafficChiefId}",
             headers: $this->getHeaders(),
@@ -294,6 +326,10 @@ readonly class RouteManagerClient
         float $longitude,
         Clock $at
     ): void {
+        if ($this->contextService->isTest()) {
+            return;
+        }
+
         $this->requestClient->patch(
             "{$this->routeManagerHost}/api/admin/orders/{$orderNumber}/save-driver-coordinates",
             data: [
@@ -321,6 +357,10 @@ readonly class RouteManagerClient
      */
     public function getDrivers(): array
     {
+        if ($this->contextService->isTest()) {
+            return [];
+        }
+
         return $this->requestClient->get(
             "{$this->routeManagerHost}/api/admin/drivers",
             headers: $this->getHeaders(),
@@ -332,6 +372,10 @@ readonly class RouteManagerClient
      */
     public function getDriversFromWarehouse(string $warehouseId): array
     {
+        if ($this->contextService->isTest()) {
+            return [];
+        }
+
         return $this->requestClient->get(
             "{$this->routeManagerHost}/api/admin/warehouses/{$warehouseId}/drivers",
             headers: $this->getHeaders(),
@@ -354,6 +398,10 @@ readonly class RouteManagerClient
      */
     public function getOrdersFromWarehouse(string $warehouseId, LocalClock $date): array
     {
+        if ($this->contextService->isTest()) {
+            return [];
+        }
+
         return $this->requestClient->get(
             "{$this->routeManagerHost}/api/admin/warehouses/{$warehouseId}/orders",
             data: [
@@ -379,6 +427,10 @@ readonly class RouteManagerClient
      */
     public function getPickingShiftOrders(string $pickingShiftId): array
     {
+        if ($this->contextService->isTest()) {
+            return [];
+        }
+
         return $this->requestClient->get(
             "{$this->routeManagerHost}/api/admin/picking-shifts/{$pickingShiftId}/orders",
             headers: $this->getHeaders(),
@@ -401,6 +453,10 @@ readonly class RouteManagerClient
      */
     public function getPickingShiftRoutes(string $pickingShiftId): array
     {
+        if ($this->contextService->isTest()) {
+            return [];
+        }
+
         return $this->requestClient->get(
             "{$this->routeManagerHost}/api/admin/picking-shifts/{$pickingShiftId}/routes",
             headers: $this->getHeaders(),
@@ -423,6 +479,10 @@ readonly class RouteManagerClient
      */
     public function getRoutesFromWarehouse(string $warehouseId, LocalClock $date): array
     {
+        if ($this->contextService->isTest()) {
+            return [];
+        }
+
         return $this->requestClient->get(
             "{$this->routeManagerHost}/api/admin/warehouses/{$warehouseId}/routes",
             data: [
@@ -459,6 +519,10 @@ readonly class RouteManagerClient
      */
     public function getWarehousePickingShifts(string $warehouseId, Clock $date): array
     {
+        if ($this->contextService->isTest()) {
+            return [];
+        }
+
         return $this->requestClient->get(
             "{$this->routeManagerHost}/api/admin/warehouses/{$warehouseId}/picking-shifts",
             data: [
@@ -473,6 +537,10 @@ readonly class RouteManagerClient
      */
     public function getWarehouses(): array
     {
+        if ($this->contextService->isTest()) {
+            return [];
+        }
+
         return $this->requestClient->get(
             "{$this->routeManagerHost}/api/admin/warehouses",
             headers: $this->getHeaders(),
@@ -484,6 +552,10 @@ readonly class RouteManagerClient
      */
     public function ping(): array
     {
+        if ($this->contextService->isTest()) {
+            return ['response' => 'pong'];
+        }
+
         return $this->requestClient->get("{$this->routeManagerHost}/ping")->json();
     }
 
@@ -498,6 +570,10 @@ readonly class RouteManagerClient
         ?array $warehouses = null,
         ?Metadata $metadata = null,
     ): void {
+        if ($this->contextService->isTest()) {
+            return;
+        }
+
         $this->requestClient->put(
             "{$this->routeManagerHost}/api/admin/drivers/{$driverId}",
             data: [
@@ -517,6 +593,10 @@ readonly class RouteManagerClient
         float $longitude,
         Clock $at
     ): void {
+        if ($this->contextService->isTest()) {
+            return;
+        }
+
         $this->requestClient->put(
             "{$this->routeManagerHost}/api/admin/drivers/{$driverId}/coordinates",
             data: [
@@ -567,6 +647,10 @@ readonly class RouteManagerClient
         ?string $note = null,
         ?Metadata $metadata = null,
     ): void {
+        if ($this->contextService->isTest()) {
+            return;
+        }
+
         $this->requestClient->put(
             "{$this->routeManagerHost}/api/admin/orders/{$orderNumber}",
             data: [
@@ -602,6 +686,10 @@ readonly class RouteManagerClient
      */
     public function saveOrderBoxes(string $orderNumber, array $boxes): void
     {
+        if ($this->contextService->isTest()) {
+            return;
+        }
+
         $this->requestClient->put(
             "{$this->routeManagerHost}/api/admin/orders/{$orderNumber}/boxes",
             data: [
@@ -613,6 +701,10 @@ readonly class RouteManagerClient
 
     public function saveOrderStatus(string $orderNumber, string $status, Clock $at): void
     {
+        if ($this->contextService->isTest()) {
+            return;
+        }
+
         $this->requestClient->put(
             "{$this->routeManagerHost}/api/admin/orders/{$orderNumber}/status",
             data: [
@@ -623,8 +715,46 @@ readonly class RouteManagerClient
         );
     }
 
+    /**
+     * @param string[]|null $tags
+     */
+    public function savePickingShift(
+        string $pickingShiftId,
+        ?string $warehouseId = null,
+        ?string $name = null,
+        ?LocalClock $date = null,
+        ?string $pickingShiftCode = null,
+        ?string $status = null,
+        ?Clock $closesAt = null,
+        ?array $tags = null,
+        ?int $trucksAmount = null,
+    ): void {
+        if ($this->contextService->isTest()) {
+            return;
+        }
+
+        $this->requestClient->put(
+            "{$this->routeManagerHost}/api/admin/picking-shifts/{$pickingShiftId}",
+            data: [
+                'name' => $name,
+                'pickingShiftCode' => $pickingShiftCode,
+                'status' => $status,
+                'date' => $date?->dateString(),
+                'closesAt' => $closesAt,
+                'warehouseId' => $warehouseId,
+                'tags' => $tags,
+                'trucksAmount' => $trucksAmount,
+            ],
+            headers: $this->getHeaders(),
+        );
+    }
+
     public function savePickingShiftStatus(string $pickingShiftId, string $status): void
     {
+        if ($this->contextService->isTest()) {
+            return;
+        }
+
         $this->requestClient->put(
             "{$this->routeManagerHost}/api/admin/picking-shifts/{$pickingShiftId}/status",
             data: [
@@ -647,6 +777,10 @@ readonly class RouteManagerClient
         ?string $platform = null,
         ?Metadata $metadata = null,
     ): void {
+        if ($this->contextService->isTest()) {
+            return;
+        }
+
         $this->requestClient->put(
             "{$this->routeManagerHost}/api/admin/routes/{$id}",
             data: [
@@ -662,6 +796,10 @@ readonly class RouteManagerClient
 
     public function saveRouteDriver(string $routeId, string $driverId): void
     {
+        if ($this->contextService->isTest()) {
+            return;
+        }
+
         $this->requestClient->put(
             "{$this->routeManagerHost}/api/admin/routes/{$routeId}/driver",
             data: [
@@ -673,10 +811,38 @@ readonly class RouteManagerClient
 
     public function saveRouteName(string $routeId, string $name): void
     {
+        if ($this->contextService->isTest()) {
+            return;
+        }
         $this->requestClient->put(
             "{$this->routeManagerHost}/api/admin/routes/{$routeId}/name",
             data: [
                 'name' => $name,
+            ],
+            headers: $this->getHeaders(),
+        );
+    }
+
+    /**
+     * @param string[]|null $areas
+     */
+    public function saveTimeWindow(
+        string $timeWindowId,
+        ?string $pickingShiftId = null,
+        ?LocalClock $startTime = null,
+        ?LocalClock $endTime = null,
+        ?array $areas = null,
+    ): void {
+        if ($this->contextService->isTest()) {
+            return;
+        }
+        $this->requestClient->put(
+            "{$this->routeManagerHost}/api/admin/time-windows/{$timeWindowId}",
+            data: [
+                'startTime' => $startTime?->dateTimeString(),
+                'endTime' => $endTime?->dateTimeString(),
+                'areas' => $areas,
+                'pickingShiftId' => $pickingShiftId,
             ],
             headers: $this->getHeaders(),
         );
@@ -690,6 +856,9 @@ readonly class RouteManagerClient
         array $warehouses,
         string $name,
     ): void {
+        if ($this->contextService->isTest()) {
+            return;
+        }
         $this->requestClient->put(
             "{$this->routeManagerHost}/api/admin/traffic-chiefs/{$trafficChiefId}",
             data: [
@@ -715,6 +884,10 @@ readonly class RouteManagerClient
         ?int $transportCostGoalTolerance = null,
         ?string $travelMode = null,
     ): void {
+        if ($this->contextService->isTest()) {
+            return;
+        }
+
         $this->requestClient->put(
             "{$this->routeManagerHost}/api/admin/warehouses/{$warehouseId}",
             data: [
