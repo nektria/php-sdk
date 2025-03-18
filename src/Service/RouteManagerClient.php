@@ -740,7 +740,7 @@ readonly class RouteManagerClient
                 'pickingShiftCode' => $pickingShiftCode,
                 'status' => $status,
                 'date' => $date?->dateString(),
-                'closesAt' => $closesAt,
+                'closesAt' => $localClosesAt?->dateTimeString(),
                 'warehouseId' => $warehouseId,
                 'tags' => $tags,
                 'trucksAmount' => $trucksAmount,
