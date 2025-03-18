@@ -700,6 +700,41 @@ readonly class RouteManagerClient
         );
     }
 
+    public function saveWarehouse(
+        string $warehouseId,
+        ?string $name,
+        ?string $warehouseCode,
+        ?Address $address,
+        ?string $timezone,
+        ?Metadata $metadata,
+        ?bool $reload,
+        ?bool $returnToWarehouse,
+        ?bool $sendToTenantAtPickingShiftClosesAt,
+        ?bool $smartCheckTransportCostEnabled,
+        ?float $transportCostGoal,
+        ?int $transportCostGoalTolerance,
+        ?string $travelMode,
+    ): void {
+        $this->requestClient->put(
+            "{$this->routeManagerHost}/api/admin/warehouses/{$warehouseId}",
+            data: [
+                'name' => $name,
+                'warehouseCode' => $warehouseCode,
+                'address' => $address?->toArray(),
+                'timezone' => $timezone,
+                'metadata' => $metadata?->data(),
+                'reload' => $reload,
+                'returnToWarehouse' => $returnToWarehouse,
+                'sendToTenantAtPickingShiftClosesAt' => $sendToTenantAtPickingShiftClosesAt,
+                'smartCheckTransportCostEnabled' => $smartCheckTransportCostEnabled,
+                'transportCostGoal' => $transportCostGoal,
+                'transportCostGoalTolerance' => $transportCostGoalTolerance,
+                'travelMode' => $travelMode,
+            ],
+            headers: $this->getHeaders(),
+        );
+    }
+
     /**
      * @return array<string, string>
      */
