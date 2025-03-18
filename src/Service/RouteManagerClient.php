@@ -725,7 +725,7 @@ readonly class RouteManagerClient
         ?LocalClock $date = null,
         ?string $pickingShiftCode = null,
         ?string $status = null,
-        ?Clock $closesAt = null,
+        ?LocalClock $localClosesAt = null,
         ?array $tags = null,
         ?int $trucksAmount = null,
     ): void {
