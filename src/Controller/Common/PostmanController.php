@@ -691,6 +691,7 @@ readonly class PostmanController extends Controller
                 'Length' => [],
                 'String' => 'string',
                 'StringArray' => ['string'],
+                'IntArray' => [1],
                 'Metadata' => [],
                 default => '?',
             };
