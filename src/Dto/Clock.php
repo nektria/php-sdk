@@ -406,8 +406,10 @@ class Clock
         };
     }
 
-    public function toLocal(string $timezone = 'UTC'): LocalClock
+    public function toLocal(?string $timezone = null): LocalClock
     {
+        $timezone ??= LocalClock::$timezone;
+
         try {
             $self = new self($this->dateTime->setTimezone(new DateTimeZone($timezone)));
 

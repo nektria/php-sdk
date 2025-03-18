@@ -80,11 +80,7 @@ class LocalClock
 
     public static function now(?string $timezone = null): self
     {
-        if ($timezone === null) {
-            return Clock::now()->toLocal(self::$timezone);
-        }
-
-        return Clock::now()->toLocal($timezone);
+        return Clock::now()->toLocal($timezone ?? self::$timezone);
     }
 
     /**
@@ -424,8 +420,10 @@ class LocalClock
         };
     }
 
-    public function toUTC(string $timezone): Clock
+    public function toUTC(?string $timezone = null): Clock
     {
+        $timezone ??= self::$timezone;
+
         try {
             $self = new self((new DateTimeImmutable($this->dateTimeString(), new DateTimeZone($timezone)))
                 ->setTimezone(new DateTimeZone('UTC')));

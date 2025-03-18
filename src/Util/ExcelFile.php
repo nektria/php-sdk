@@ -44,16 +44,16 @@ readonly class ExcelFile
         return $this->getCell($column . $row);
     }
 
-    public function getLocalClock(string $cell): LocalClock
+    public function getLocalClock(string $cell, ?string $timezone = null): LocalClock
     {
         $unixTimestamp = (((int) $this->getCell($cell)) - 25569) * 86400;
 
-        return LocalClock::now()->setTimestamp($unixTimestamp);
+        return LocalClock::now($timezone)->setTimestamp($unixTimestamp);
     }
 
-    public function getLocalClock2(string $column, string | int $row): LocalClock
+    public function getLocalClock2(string $column, string | int $row, ?string $timezone = null): LocalClock
     {
-        return $this->getLocalClock($column . $row);
+        return $this->getLocalClock($column . $row, $timezone);
     }
 
     public function save(): void

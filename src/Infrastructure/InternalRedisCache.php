@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Nektria\Infrastructure;
 
 use Nektria\Dto\Clock;
-use Nektria\Dto\LocalClock;
 use RuntimeException;
 use Throwable;
 
@@ -147,14 +146,12 @@ abstract class InternalRedisCache extends RedisCache
     /**
      * @param T $item
      */
-    public function setItem(string $key, $item, Clock | LocalClock | int $ttl = 300): void
+    public function setItem(string $key, $item, Clock | int $ttl = 300): void
     {
         if ($ttl instanceof Clock) {
             $ttl = $ttl->diff(Clock::now());
         }
-        if ($ttl instanceof LocalClock) {
-            $ttl = $ttl->diff(LocalClock::now());
-        }
+
         $ttl = max(1, $ttl);
 
         try {

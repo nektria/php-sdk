@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Nektria\Infrastructure;
 
 use Nektria\Dto\Clock;
-use Nektria\Dto\LocalClock;
 use Nektria\Util\Validate;
 use Throwable;
 
@@ -72,15 +71,12 @@ abstract class SharedRedisCache extends RedisCache
     /**
      * @param T $item
      */
-    protected function setItem(string $key, $item, Clock | LocalClock | int $ttl = 300): void
+    protected function setItem(string $key, $item, Clock | int $ttl = 300): void
     {
         Validate::notEmpty($key);
 
         if ($ttl instanceof Clock) {
             $ttl = $ttl->diff(Clock::now());
-        }
-        if ($ttl instanceof LocalClock) {
-            $ttl = $ttl->diff(LocalClock::now());
         }
 
         try {
