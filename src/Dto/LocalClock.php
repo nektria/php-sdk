@@ -178,11 +178,11 @@ class LocalClock
         $diff = $this->dateTime->diff($from->dateTime);
 
         $absDiff = match ($in) {
-            'seconds' => $diff->s + ($diff->i * 60) + ($diff->h * 3600) + ((int)$diff->days * 86400),
-            'minutes' => $diff->i + ($diff->h * 60) + ((int)$diff->days * 1440),
-            'hours' => $diff->h + ((int)$diff->days * 24),
-            'days' => (int)$diff->days,
-            'weeks' => (int)((int)$diff->days / 7),
+            'seconds' => $diff->s + ($diff->i * 60) + ($diff->h * 3600) + ((int) $diff->days * 86400),
+            'minutes' => $diff->i + ($diff->h * 60) + ((int) $diff->days * 1440),
+            'hours' => $diff->h + ((int) $diff->days * 24),
+            'days' => (int) $diff->days,
+            'weeks' => (int) ((int) $diff->days / 7),
             'months' => $diff->m + ($diff->y * 12),
             default => $diff->y
         };
@@ -251,7 +251,7 @@ class LocalClock
     /**
      * @param CtTimeFormat $in
      */
-    public function isSimilar(LocalClock $clock, int $offset, string $in = 'seconds'): bool
+    public function isSimilar(self $clock, int $offset, string $in = 'seconds'): bool
     {
         $diff = abs($this->diff($clock, $in));
 
@@ -378,7 +378,7 @@ class LocalClock
 
         foreach ($chunks as $iValue) {
             [$seconds, $name] = $iValue;
-            $count = (int)($since / $seconds);
+            $count = (int) ($since / $seconds);
             if ($count !== 0) {
                 break;
             }
@@ -422,10 +422,10 @@ class LocalClock
 
         return match ($in) {
             'seconds' => $ts,
-            'minutes' => (int)($ts / 60),
-            'hours' => (int)($ts / 3600),
-            'days' => (int)($ts / 86400),
-            'weeks' => (int)($ts / 604800),
+            'minutes' => (int) ($ts / 60),
+            'hours' => (int) ($ts / 3600),
+            'days' => (int) ($ts / 86400),
+            'weeks' => (int) ($ts / 604800),
             default => throw new DomainException("Invalid time format: {$in}"),
         };
     }
@@ -438,7 +438,7 @@ class LocalClock
             $self = new self((new DateTimeImmutable($this->dateTimeString(), new DateTimeZone($timezone)))
                 ->setTimezone(new DateTimeZone('UTC')));
 
-            return Clock::fromString((string)$self);
+            return Clock::fromString((string) $self);
         } catch (Throwable $e) {
             throw NektriaException::new($e);
         }
