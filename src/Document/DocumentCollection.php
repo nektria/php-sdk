@@ -97,6 +97,11 @@ readonly class DocumentCollection extends Document implements IteratorAggregate,
         }
     }
 
+    public function isEmpty(): bool
+    {
+        return $this->count() === 0;
+    }
+
     /**
      * @return T|null
      */
