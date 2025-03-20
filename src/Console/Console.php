@@ -8,7 +8,7 @@ use Nektria\Document\Document;
 use Nektria\Document\ThrowableDocument;
 use Nektria\Exception\NektriaException;
 use Nektria\Infrastructure\BusInterface;
-use Nektria\Infrastructure\UserServiceInterface;
+use Nektria\Infrastructure\SecurityServiceInterface;
 use Nektria\Message\Command as CommandMessage;
 use Nektria\Message\Query;
 use Nektria\Service\AlertService;
@@ -331,10 +331,10 @@ abstract class Console extends BaseCommand
 
     abstract protected function play(): void;
 
-    protected function userService(): UserServiceInterface
+    protected function userService(): SecurityServiceInterface
     {
-        /** @var UserServiceInterface $userService */
-        $userService = $this->container()->get(UserServiceInterface::class);
+        /** @var SecurityServiceInterface $userService */
+        $userService = $this->container()->get(SecurityServiceInterface::class);
 
         return $userService;
     }

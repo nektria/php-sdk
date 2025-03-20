@@ -7,7 +7,7 @@ namespace Nektria\Message;
 use Nektria\Document\Tenant;
 use Nektria\Document\User;
 use Nektria\Exception\InsufficientCredentialsException;
-use Nektria\Infrastructure\UserServiceInterface;
+use Nektria\Infrastructure\SecurityServiceInterface;
 use Nektria\Service\RoleManager;
 use Nektria\Util\ContainerBox;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -84,10 +84,10 @@ readonly abstract class MessageHandler
         return $this->userService()->retrieveUser();
     }
 
-    protected function userService(): UserServiceInterface
+    protected function userService(): SecurityServiceInterface
     {
-        /** @var UserServiceInterface $service */
-        $service = self::CONTAINER_BOX->get()->get(UserServiceInterface::class);
+        /** @var SecurityServiceInterface $service */
+        $service = self::CONTAINER_BOX->get()->get(SecurityServiceInterface::class);
 
         return $service;
     }

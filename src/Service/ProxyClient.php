@@ -4,15 +4,15 @@ declare(strict_types=1);
 
 namespace Nektria\Service;
 
-use Nektria\Infrastructure\UserServiceInterface;
+use Nektria\Infrastructure\SecurityServiceInterface;
 
 readonly class ProxyClient
 {
     public function __construct(
-        protected ContextService $contextService,
-        protected SharedUserV2Cache $sharedUserCache,
-        private RequestClient $requestClient,
-        private UserServiceInterface $userService,
+        protected ContextService         $contextService,
+        protected SharedUserV2Cache      $sharedUserCache,
+        private RequestClient            $requestClient,
+        private SecurityServiceInterface $userService,
     ) {
     }
 

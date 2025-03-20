@@ -7,7 +7,7 @@ namespace Nektria\Service;
 use Nektria\Document\ThrowableDocument;
 use Nektria\Dto\Clock;
 use Nektria\Exception\NektriaRuntimeException;
-use Nektria\Infrastructure\UserServiceInterface;
+use Nektria\Infrastructure\SecurityServiceInterface;
 use Nektria\Util\JsonUtil;
 use Throwable;
 
@@ -78,11 +78,11 @@ class AlertService
     private array $tokens;
 
     public function __construct(
-        private readonly string $alertsToken,
-        private readonly ContextService $contextService,
-        private readonly RequestClient $requestClient,
-        private readonly SharedDiscordCache $sharedDiscordCache,
-        private readonly UserServiceInterface $userService,
+        private readonly string                   $alertsToken,
+        private readonly ContextService           $contextService,
+        private readonly RequestClient            $requestClient,
+        private readonly SharedDiscordCache       $sharedDiscordCache,
+        private readonly SecurityServiceInterface $userService,
     ) {
         $this->tokens = explode(',', $this->alertsToken);
     }

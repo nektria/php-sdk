@@ -11,10 +11,10 @@ use Nektria\Exception\InvalidAuthorizationException;
 use Nektria\Service\ContextService;
 use Nektria\Service\RoleManager;
 use Nektria\Service\SharedUserV2Cache;
-use Nektria\Service\UserService;
+use Nektria\Service\SecurityService;
 use Nektria\Service\YieldManagerClient;
 
-class TestUserService extends UserService
+class TestUserService extends SecurityService
 {
     /** @var array<string, User> */
     private array $users = [];

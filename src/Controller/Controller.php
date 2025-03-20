@@ -12,7 +12,7 @@ use Nektria\Document\User;
 use Nektria\Exception\MissingRequestFileException;
 use Nektria\Exception\MissingRequestParamException;
 use Nektria\Infrastructure\BusInterface;
-use Nektria\Infrastructure\UserServiceInterface;
+use Nektria\Infrastructure\SecurityServiceInterface;
 use Nektria\Message\Command;
 use Nektria\Message\Query;
 use Nektria\Service\ContextService;
@@ -32,10 +32,10 @@ readonly class Controller
     protected ArrayDataFetcher $requestData;
 
     public function __construct(
-        protected UserServiceInterface $userService,
-        protected ContextService $context,
-        protected BusInterface $bus,
-        RequestStack $requestStack,
+        protected SecurityServiceInterface $userService,
+        protected ContextService           $context,
+        protected BusInterface             $bus,
+        RequestStack                       $requestStack,
     ) {
         $this->request = $requestStack->getCurrentRequest() ?? new Request();
         $body = [];

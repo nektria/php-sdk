@@ -13,7 +13,7 @@ use Nektria\Document\User;
 use Nektria\Dto\Clock;
 use Nektria\Exception\InsufficientCredentialsException;
 use Nektria\Exception\InvalidAuthorizationException;
-use Nektria\Infrastructure\UserServiceInterface;
+use Nektria\Infrastructure\SecurityServiceInterface;
 use Nektria\Service\AlertService;
 use Nektria\Service\Bus;
 use Nektria\Service\ContextService;
@@ -54,14 +54,14 @@ abstract class RequestListener implements EventSubscriberInterface
     private ?Response $originalResponse;
 
     public function __construct(
-        private readonly Bus $bus,
-        private readonly ContextService $contextService,
-        private readonly LogService $logService,
-        private readonly AlertService $alertService,
-        private readonly VariableCache $variableCache,
-        private readonly UserServiceInterface $userService,
+        private readonly Bus                            $bus,
+        private readonly ContextService                 $contextService,
+        private readonly LogService                     $logService,
+        private readonly AlertService                   $alertService,
+        private readonly VariableCache                  $variableCache,
+        private readonly SecurityServiceInterface       $userService,
         private readonly SharedTemporalConsumptionCache $temporalConsumptionCache,
-        ContainerInterface $container
+        ContainerInterface                              $container
     ) {
         /** @var string[] $cors */
         $cors = $container->getParameter('allowed_cors');

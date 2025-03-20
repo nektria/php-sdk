@@ -7,13 +7,14 @@ namespace Nektria\Service;
 use Nektria\Document\Tenant;
 use Nektria\Document\User;
 use Nektria\Dto\LocalClock;
+use Nektria\Dto\UserContainer;
 use Nektria\Exception\InvalidAuthorizationException;
 use Nektria\Exception\ResourceNotFoundException;
-use Nektria\Infrastructure\UserServiceInterface;
+use Nektria\Infrastructure\SecurityServiceInterface;
 
-class UserService implements UserServiceInterface
+class SecurityService implements SecurityServiceInterface
 {
-    protected ?User $user;
+    protected readonly UserContainer $userContainer;
 
     public function __construct(
         protected readonly ContextService $contextService,
@@ -21,7 +22,7 @@ class UserService implements UserServiceInterface
         protected readonly RoleManager $roleManager,
         private readonly YieldManagerClient $yieldManagerClient,
     ) {
-        $this->user = null;
+        $this->userContainer = new UserContainer();
     }
 
     public function authenticateApi(string $apiKey): void
@@ -37,7 +38,7 @@ class UserService implements UserServiceInterface
             $user = $this->sharedUserCache->read($apiKey);
         }
 
-        $this->user = $user;
+        $this->userContainer->setUser($user);
 
         if ($user === null) {
             throw new InvalidAuthorizationException();
@@ -57,7 +58,7 @@ class UserService implements UserServiceInterface
             $user = $this->sharedUserCache->read("ADMIN_{$tenantId}");
         }
 
-        $this->user = $user;
+        $this->userContainer->setUser($user);
 
         if ($user === null || $user->apiKey === '') {
             throw new InvalidAuthorizationException();
@@ -77,7 +78,7 @@ class UserService implements UserServiceInterface
         }
 
         $user = $this->sharedUserCache->read($apiKey);
-        $this->user = $user;
+        $this->userContainer->setUser($user);
 
         if ($user === null) {
             throw new InvalidAuthorizationException();
@@ -93,7 +94,7 @@ class UserService implements UserServiceInterface
         $this->contextService->setTenant(null, null);
         $this->contextService->setUserId(null);
         LocalClock::defaultTimezone('UTC');
-        $this->user = null;
+        $this->userContainer->setUser(null);
     }
 
     public function retrieve(string $id): User
@@ -118,16 +119,17 @@ class UserService implements UserServiceInterface
 
     public function retrieveUser(): User
     {
-        if ($this->user === null) {
+        $user = $this->user();
+        if ($user === null) {
             throw new InvalidAuthorizationException();
         }
 
-        return $this->user;
+        return $user;
     }
 
     public function user(): ?User
     {
-        return $this->user;
+        return $this->userContainer->user();
     }
 
     /**
@@ -135,10 +137,10 @@ class UserService implements UserServiceInterface
      */
     public function validateRole(array $roles): void
     {
-        if ($this->user === null) {
+        if ($this->user() === null) {
             $this->roleManager->checkAtLeast(RoleManager::ROLE_ANY, $roles);
         } else {
-            $this->roleManager->checkAtLeast($this->user->role, $roles);
+            $this->roleManager->checkAtLeast($this->user()->role, $roles);
         }
     }
 }

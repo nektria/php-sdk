@@ -6,7 +6,7 @@ namespace Nektria\Infrastructure;
 
 use Nektria\Document\User;
 
-interface UserServiceInterface
+interface SecurityServiceInterface
 {
     public function authenticateApi(string $apiKey): void;
 

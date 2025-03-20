@@ -11,7 +11,7 @@ use Nektria\Document\ThrowableDocument;
 use Nektria\Dto\Clock;
 use Nektria\Exception\ResourceNotFoundException;
 use Nektria\Infrastructure\BusInterface;
-use Nektria\Infrastructure\UserServiceInterface;
+use Nektria\Infrastructure\SecurityServiceInterface;
 use Nektria\Message\Command;
 use Nektria\Message\Event;
 use Nektria\Message\Query;
@@ -54,13 +54,13 @@ abstract class MessageListener implements EventSubscriberInterface
     private string $messageStartedAt;
 
     public function __construct(
-        private readonly AlertService $alertService,
-        private readonly ContextService $contextService,
-        private readonly LogService $logService,
-        private readonly UserServiceInterface $userService,
-        private readonly VariableCache $variableCache,
-        private readonly BusInterface $bus,
-        private readonly SharedVariableCache $sharedVariableCache,
+        private readonly AlertService             $alertService,
+        private readonly ContextService           $contextService,
+        private readonly LogService               $logService,
+        private readonly SecurityServiceInterface $userService,
+        private readonly VariableCache            $variableCache,
+        private readonly BusInterface             $bus,
+        private readonly SharedVariableCache      $sharedVariableCache,
     ) {
         $this->executionTime = microtime(true);
         $this->messageCompletedAt = Clock::now()->iso8601String();
