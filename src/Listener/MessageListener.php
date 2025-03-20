@@ -55,12 +55,12 @@ abstract class MessageListener implements EventSubscriberInterface
 
     public function __construct(
         private readonly AlertService $alertService,
+        private readonly BusInterface $bus,
         private readonly ContextService $contextService,
         private readonly LogService $logService,
-        private readonly SecurityServiceInterface $userService,
-        private readonly VariableCache $variableCache,
-        private readonly BusInterface $bus,
+        private readonly SecurityServiceInterface $securityService,
         private readonly SharedVariableCache $sharedVariableCache,
+        private readonly VariableCache $variableCache,
     ) {
         $this->executionTime = microtime(true);
         $this->messageCompletedAt = Clock::now()->iso8601String();
@@ -172,7 +172,7 @@ abstract class MessageListener implements EventSubscriberInterface
                     ],
                 ]);
 
-                $tenantName = $this->userService->user()?->tenant->name ?? 'none';
+                $tenantName = $this->securityService->user()?->tenant->name ?? 'none';
 
                 $key = "{$tenantName}-messenger-{$classHash}";
                 $key2 = "{$tenantName}-messenger-{$classHash}_count";
@@ -191,7 +191,7 @@ abstract class MessageListener implements EventSubscriberInterface
 
                         if ($sendAlert) {
                             $this->alertService->sendThrowable(
-                                $this->userService->user()?->tenant->name ?? 'none',
+                                $this->securityService->user()?->tenant->name ?? 'none',
                                 'RABBIT',
                                 "/{$messageClass}/{$message->ref()}",
                                 $data,
@@ -208,7 +208,7 @@ abstract class MessageListener implements EventSubscriberInterface
                 }
             }
 
-            $this->userService->clearAuthentication();
+            $this->securityService->clearAuthentication();
 
             $this->cleanMemory();
 
@@ -288,7 +288,7 @@ abstract class MessageListener implements EventSubscriberInterface
                 ], $resume);
             }
 
-            $this->userService->clearAuthentication();
+            $this->securityService->clearAuthentication();
         }
 
         $this->cleanMemory();
@@ -312,7 +312,7 @@ abstract class MessageListener implements EventSubscriberInterface
                 $this->contextService->setContext($contextStamp->context);
                 $this->contextService->setTraceId($contextStamp->traceId);
                 if ($contextStamp->tenantId !== null) {
-                    $this->userService->authenticateSystem($contextStamp->tenantId);
+                    $this->securityService->authenticateSystem($contextStamp->tenantId);
                 }
                 $this->contextService->setUserId($contextStamp->userId);
             }
@@ -321,7 +321,7 @@ abstract class MessageListener implements EventSubscriberInterface
             $this->executionTime = microtime(true);
         } catch (Throwable $e) {
             $this->alertService->sendThrowable(
-                $this->userService->user()?->tenant->name ?? 'none',
+                $this->securityService->user()?->tenant->name ?? 'none',
                 'RABBIT',
                 '',
                 [],

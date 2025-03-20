@@ -17,10 +17,10 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 readonly abstract class ConsoleListener implements EventSubscriberInterface
 {
     public function __construct(
-        private ContextService $contextService,
-        private VariableCache $variableCache,
         private AlertService $alertService,
+        private ContextService $contextService,
         private LogService $logService,
+        private VariableCache $variableCache,
     ) {
     }
 

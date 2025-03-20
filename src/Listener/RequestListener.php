@@ -54,13 +54,13 @@ abstract class RequestListener implements EventSubscriberInterface
     private ?Response $originalResponse;
 
     public function __construct(
-        private readonly Bus $bus,
-        private readonly ContextService $contextService,
-        private readonly LogService $logService,
-        private readonly AlertService $alertService,
-        private readonly VariableCache $variableCache,
-        private readonly SecurityServiceInterface $userService,
-        private readonly SharedTemporalConsumptionCache $temporalConsumptionCache,
+        protected readonly AlertService $alertService,
+        protected readonly Bus $bus,
+        protected readonly ContextService $contextService,
+        protected readonly LogService $logService,
+        protected readonly SecurityServiceInterface $securityService,
+        protected readonly SharedTemporalConsumptionCache $temporalConsumptionCache,
+        protected readonly VariableCache $variableCache,
         ContainerInterface $container
     ) {
         /** @var string[] $cors */
@@ -132,10 +132,10 @@ abstract class RequestListener implements EventSubscriberInterface
 
             if ($apiKey !== null) {
                 try {
-                    $this->userService->authenticateUser($apiKey);
+                    $this->securityService->authenticateUser($apiKey);
 
-                    if (!$this->validateUser($this->userService->retrieveUser())) {
-                        $this->userService->clearAuthentication();
+                    if (!$this->validateUser($this->securityService->retrieveUser())) {
+                        $this->securityService->clearAuthentication();
 
                         throw new InvalidAuthorizationException();
                     }
@@ -150,12 +150,12 @@ abstract class RequestListener implements EventSubscriberInterface
 
         if (str_starts_with($route, 'app_admin') || str_starts_with($route, 'nektria_admin')) {
             $this->contextService->setContext(ContextService::ADMIN);
-            $this->userService->authenticateUser($apiKey);
+            $this->securityService->authenticateUser($apiKey);
 
             try {
-                $this->userService->validateRole([RoleManager::ROLE_ADMIN]);
+                $this->securityService->validateRole([RoleManager::ROLE_ADMIN]);
             } catch (InsufficientCredentialsException) {
-                $this->userService->clearAuthentication();
+                $this->securityService->clearAuthentication();
             }
         } elseif (
             str_starts_with($route, 'app_apilegacy_')
@@ -163,20 +163,20 @@ abstract class RequestListener implements EventSubscriberInterface
             || str_starts_with($route, 'nektria_api_')
         ) {
             $this->contextService->setContext(ContextService::PUBLIC);
-            $this->userService->authenticateUser($apiKey);
+            $this->securityService->authenticateUser($apiKey);
         } elseif (str_starts_with($route, 'app_api2_') || str_starts_with($route, 'nektria_api2_')) {
             $this->contextService->setContext(ContextService::PUBLIC_V2);
-            $this->userService->authenticateUser($apiKey);
+            $this->securityService->authenticateUser($apiKey);
         } elseif (str_starts_with($route, 'app_web_') || str_starts_with($route, 'nektria_web_')) {
             $this->contextService->setContext(ContextService::INTERNAL);
-            $this->userService->authenticateUser($apiKey);
-            if ($this->userService->user() !== null) {
-                $this->contextService->setUserId($this->userService->user()->id);
+            $this->securityService->authenticateUser($apiKey);
+            if ($this->securityService->user() !== null) {
+                $this->contextService->setUserId($this->securityService->user()->id);
             }
         }
 
-        if (!$this->validateUser($this->userService->retrieveUser())) {
-            $this->userService->clearAuthentication();
+        if (!$this->validateUser($this->securityService->retrieveUser())) {
+            $this->securityService->clearAuthentication();
 
             throw new InvalidAuthorizationException();
         }
@@ -462,7 +462,7 @@ abstract class RequestListener implements EventSubscriberInterface
                 $key2 = "{$route}_count";
                 if ($this->contextService->env() === ContextService::DEV || $this->variableCache->refreshKey($key)) {
                     $times = $this->variableCache->readInt($key2, 1);
-                    $tenantName = $this->userService->user()?->tenant->name ?? 'none';
+                    $tenantName = $this->securityService->user()?->tenant->name ?? 'none';
                     $method = $event->getRequest()->getMethod();
                     $path = $event->getRequest()->getPathInfo();
                     $this->alertService->sendThrowable(

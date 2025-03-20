@@ -329,6 +329,11 @@ abstract class Console extends BaseCommand
         return 0;
     }
 
+    protected function impersonate(string $tenantId): void
+    {
+        $this->userService()->authenticateSystem($tenantId);
+    }
+
     abstract protected function play(): void;
 
     protected function userService(): SecurityServiceInterface
