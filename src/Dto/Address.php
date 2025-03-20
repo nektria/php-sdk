@@ -25,13 +25,24 @@ readonly class Address
         // Validate::notEmpty($this->city);
         // Validate::minLength($this->countryCode, 2);
         // Validate::maxLength($this->countryCode, 2);
-        // Validate::latitude($this->latitude);
-        // Validate::longitude($this->longitude);
+        Validate::latitude($this->latitude);
+        Validate::longitude($this->longitude);
     }
 
     public function hasCoordinates(): bool
     {
         return $this->latitude !== 0.0 && $this->longitude !== 0.0;
+    }
+
+    public function normalize(): string
+    {
+        $addressLine1 = StringUtil::capitalize($this->addressLine1);
+        $addressLine2 = StringUtil::capitalize($this->addressLine2);
+        $postalCode = $this->postalCode;
+        $city = StringUtil::capitalize($this->city);
+        $countryCode = strtoupper($this->countryCode);
+
+        return StringUtil::trim("{$addressLine1}, {$addressLine2}, ({$postalCode}) {$city} {$countryCode}");
     }
 
     public function shortSlug(): string
