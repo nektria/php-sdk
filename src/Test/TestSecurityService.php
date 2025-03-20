@@ -6,6 +6,7 @@ namespace Nektria\Test;
 
 use Nektria\Document\Tenant;
 use Nektria\Document\User;
+use Nektria\Dto\LocalClock;
 use Nektria\Dto\TenantMetadata;
 use Nektria\Exception\InvalidAuthorizationException;
 use Nektria\Service\ContextService;
@@ -189,5 +190,13 @@ class TestSecurityService extends SecurityService
 
         $this->contextService->setTenant($this->currentUser()->tenantId, $this->currentUser()->tenant->name);
         $this->contextService->setUserId($this->currentUser()->id);
+    }
+
+    public function clearAuthentication(): void
+    {
+        $this->contextService->setTenant(null, null);
+        $this->contextService->setUserId(null);
+        $this->userContainer->setUser(null);
+        LocalClock::defaultTimezone('Europe/Madrid');
     }
 }
