@@ -315,7 +315,7 @@ abstract class Console extends BaseCommand
 
             if (!$isSilent) {
                 $this->alertService()->sendThrowable(
-                    $this->userService()->user()?->tenant->name ?? 'none',
+                    $this->userService()->currentUser()?->tenant->name ?? 'none',
                     'COMMAND',
                     $this->getName() ?? '',
                     [

@@ -172,7 +172,7 @@ abstract class MessageListener implements EventSubscriberInterface
                     ],
                 ]);
 
-                $tenantName = $this->securityService->user()?->tenant->name ?? 'none';
+                $tenantName = $this->securityService->currentUser()?->tenant->name ?? 'none';
 
                 $key = "{$tenantName}-messenger-{$classHash}";
                 $key2 = "{$tenantName}-messenger-{$classHash}_count";
@@ -191,7 +191,7 @@ abstract class MessageListener implements EventSubscriberInterface
 
                         if ($sendAlert) {
                             $this->alertService->sendThrowable(
-                                $this->securityService->user()?->tenant->name ?? 'none',
+                                $this->securityService->currentUser()?->tenant->name ?? 'none',
                                 'RABBIT',
                                 "/{$messageClass}/{$message->ref()}",
                                 $data,
@@ -321,7 +321,7 @@ abstract class MessageListener implements EventSubscriberInterface
             $this->executionTime = microtime(true);
         } catch (Throwable $e) {
             $this->alertService->sendThrowable(
-                $this->securityService->user()?->tenant->name ?? 'none',
+                $this->securityService->currentUser()?->tenant->name ?? 'none',
                 'RABBIT',
                 '',
                 [],

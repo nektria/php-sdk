@@ -48,7 +48,7 @@ readonly abstract class MessageHandler
 
     protected function hasAccessToWarehouse(string $warehouseId): bool
     {
-        $user = $this->userService()->retrieveUser();
+        $user = $this->userService()->retrieveCurrentUser();
 
         if ($user->role === RoleManager::ROLE_DRIVER && count($user->warehouses) === 0) {
             return false;
@@ -71,17 +71,17 @@ readonly abstract class MessageHandler
 
     protected function tenant(): Tenant
     {
-        return $this->userService()->retrieveUser()->tenant;
+        return $this->userService()->retrieveCurrentUser()->tenant;
     }
 
     protected function tenantId(): string
     {
-        return $this->userService()->retrieveUser()->tenantId;
+        return $this->userService()->retrieveCurrentUser()->tenantId;
     }
 
     protected function user(): User
     {
-        return $this->userService()->retrieveUser();
+        return $this->userService()->retrieveCurrentUser();
     }
 
     protected function userService(): SecurityServiceInterface

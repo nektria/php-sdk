@@ -134,7 +134,7 @@ abstract class RequestListener implements EventSubscriberInterface
                 try {
                     $this->securityService->authenticateUser($apiKey);
 
-                    if (!$this->validateUser($this->securityService->retrieveUser())) {
+                    if (!$this->validateUser($this->securityService->retrieveCurrentUser())) {
                         $this->securityService->clearAuthentication();
 
                         throw new InvalidAuthorizationException();
@@ -170,12 +170,12 @@ abstract class RequestListener implements EventSubscriberInterface
         } elseif (str_starts_with($route, 'app_web_') || str_starts_with($route, 'nektria_web_')) {
             $this->contextService->setContext(ContextService::INTERNAL);
             $this->securityService->authenticateUser($apiKey);
-            if ($this->securityService->user() !== null) {
-                $this->contextService->setUserId($this->securityService->user()->id);
+            if ($this->securityService->currentUser() !== null) {
+                $this->contextService->setUserId($this->securityService->currentUser()->id);
             }
         }
 
-        if (!$this->validateUser($this->securityService->retrieveUser())) {
+        if (!$this->validateUser($this->securityService->retrieveCurrentUser())) {
             $this->securityService->clearAuthentication();
 
             throw new InvalidAuthorizationException();
@@ -462,7 +462,7 @@ abstract class RequestListener implements EventSubscriberInterface
                 $key2 = "{$route}_count";
                 if ($this->contextService->env() === ContextService::DEV || $this->variableCache->refreshKey($key)) {
                     $times = $this->variableCache->readInt($key2, 1);
-                    $tenantName = $this->securityService->user()?->tenant->name ?? 'none';
+                    $tenantName = $this->securityService->currentUser()?->tenant->name ?? 'none';
                     $method = $event->getRequest()->getMethod();
                     $path = $event->getRequest()->getPathInfo();
                     $this->alertService->sendThrowable(

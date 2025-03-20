@@ -172,7 +172,7 @@ class AlertService
         }
 
         $eol = self::EMPTY_LINE;
-        $tenantName = $this->userService->user()?->tenant->name ?? 'none';
+        $tenantName = $this->userService->currentUser()?->tenant->name ?? 'none';
         $message['content'] ??= '';
         $message['content'] =
             $eol .

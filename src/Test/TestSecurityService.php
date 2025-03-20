@@ -154,12 +154,12 @@ class TestSecurityService extends SecurityService
 
         $this->userContainer->setUser($this->users["ak{$apiKey}"] ?? null);
 
-        if ($this->user() === null) {
+        if ($this->currentUser() === null) {
             throw new InvalidAuthorizationException();
         }
 
-        $this->contextService->setTenant($this->user()->tenantId, $this->user()->tenant->name);
-        $this->contextService->setUserId($this->user()->id);
+        $this->contextService->setTenant($this->currentUser()->tenantId, $this->currentUser()->tenant->name);
+        $this->contextService->setUserId($this->currentUser()->id);
     }
 
     public function authenticateSystem(string $tenantId): void
@@ -183,11 +183,11 @@ class TestSecurityService extends SecurityService
 
         $this->userContainer->setUser($this->users["ak{$apiKey}"] ?? null);
 
-        if ($this->user() === null) {
+        if ($this->currentUser() === null) {
             throw new InvalidAuthorizationException();
         }
 
-        $this->contextService->setTenant($this->user()->tenantId, $this->user()->tenant->name);
-        $this->contextService->setUserId($this->user()->id);
+        $this->contextService->setTenant($this->currentUser()->tenantId, $this->currentUser()->tenant->name);
+        $this->contextService->setUserId($this->currentUser()->id);
     }
 }

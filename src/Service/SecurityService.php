@@ -9,7 +9,6 @@ use Nektria\Document\User;
 use Nektria\Dto\LocalClock;
 use Nektria\Dto\UserContainer;
 use Nektria\Exception\InvalidAuthorizationException;
-use Nektria\Exception\ResourceNotFoundException;
 use Nektria\Infrastructure\SecurityServiceInterface;
 
 class SecurityService implements SecurityServiceInterface
@@ -97,29 +96,24 @@ class SecurityService implements SecurityServiceInterface
         $this->userContainer->setUser(null);
     }
 
-    public function retrieve(string $id): User
+    public function currentTenant(): ?Tenant
     {
-        $user = $this->sharedUserCache->read($id);
-
-        if ($user === null && $this->contextService->project() !== 'yieldmanager') {
-            $user = $this->yieldManagerClient->getUser($id);
-        }
-
-        if ($user === null) {
-            throw new ResourceNotFoundException('User', $id);
-        }
-
-        return $user;
+        return $this->userContainer->user()?->tenant;
     }
 
-    public function retrieveTenant(): Tenant
+    public function currentUser(): ?User
     {
-        return $this->retrieveUser()->tenant;
+        return $this->userContainer->user();
     }
 
-    public function retrieveUser(): User
+    public function retrieveCurrentTenant(): Tenant
     {
-        $user = $this->user();
+        return $this->retrieveCurrentUser()->tenant;
+    }
+
+    public function retrieveCurrentUser(): User
+    {
+        $user = $this->currentUser();
         if ($user === null) {
             throw new InvalidAuthorizationException();
         }
@@ -127,20 +121,15 @@ class SecurityService implements SecurityServiceInterface
         return $user;
     }
 
-    public function user(): ?User
-    {
-        return $this->userContainer->user();
-    }
-
     /**
      * @param string[] $roles
      */
     public function validateRole(array $roles): void
     {
-        if ($this->user() === null) {
+        if ($this->currentUser() === null) {
             $this->roleManager->checkAtLeast(RoleManager::ROLE_ANY, $roles);
         } else {
-            $this->roleManager->checkAtLeast($this->user()->role, $roles);
+            $this->roleManager->checkAtLeast($this->currentUser()->role, $roles);
         }
     }
 }

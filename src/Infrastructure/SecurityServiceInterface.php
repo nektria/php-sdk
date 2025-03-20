@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Nektria\Infrastructure;
 
+use Nektria\Document\Tenant;
 use Nektria\Document\User;
 
 interface SecurityServiceInterface
@@ -16,11 +17,13 @@ interface SecurityServiceInterface
 
     public function clearAuthentication(): void;
 
-    public function retrieve(string $id): User;
+    public function currentTenant(): ?Tenant;
 
-    public function retrieveUser(): User;
+    public function currentUser(): ?User;
 
-    public function user(): ?User;
+    public function retrieveCurrentTenant(): Tenant;
+
+    public function retrieveCurrentUser(): User;
 
     /**
      * @param string[] $roles

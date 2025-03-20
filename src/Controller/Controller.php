@@ -159,7 +159,7 @@ readonly class Controller
 
     protected function retrieveTenant(): Tenant
     {
-        return $this->userService->retrieveUser()->tenant;
+        return $this->userService->retrieveCurrentUser()->tenant;
     }
 
     protected function retrieveTenantId(): string
@@ -169,6 +169,6 @@ readonly class Controller
 
     protected function retrieveUser(): User
     {
-        return $this->userService->retrieveUser();
+        return $this->userService->retrieveCurrentUser();
     }
 }

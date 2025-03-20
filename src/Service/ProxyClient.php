@@ -18,7 +18,7 @@ readonly class ProxyClient
 
     public function assignPlatforms(string $pickingShiftId): void
     {
-        $proxyHost = $this->userService->retrieveUser()->tenant->metadata->proxyHost();
+        $proxyHost = $this->userService->retrieveCurrentUser()->tenant->metadata->proxyHost();
 
         if ($proxyHost === null) {
             return;
@@ -33,7 +33,7 @@ readonly class ProxyClient
 
     public function executeTask(string $task): void
     {
-        $proxyHost = $this->userService->retrieveUser()->tenant->metadata->proxyHost();
+        $proxyHost = $this->userService->retrieveCurrentUser()->tenant->metadata->proxyHost();
 
         if ($proxyHost === null) {
             return;
@@ -48,7 +48,7 @@ readonly class ProxyClient
 
     public function getBillingFile(): string
     {
-        $proxyHost = $this->userService->retrieveUser()->tenant->metadata->proxyHost();
+        $proxyHost = $this->userService->retrieveCurrentUser()->tenant->metadata->proxyHost();
 
         if ($proxyHost === null) {
             return '';
@@ -63,7 +63,7 @@ readonly class ProxyClient
 
     public function importOrdersFromFile(): void
     {
-        $proxyHost = $this->userService->retrieveUser()->tenant->metadata->proxyHost();
+        $proxyHost = $this->userService->retrieveCurrentUser()->tenant->metadata->proxyHost();
 
         if ($proxyHost === null) {
             return;
@@ -78,7 +78,7 @@ readonly class ProxyClient
 
     public function sendOrderIsUpdated(string $orderNumber): void
     {
-        $proxyHost = $this->userService->retrieveUser()->tenant->metadata->proxyHost();
+        $proxyHost = $this->userService->retrieveCurrentUser()->tenant->metadata->proxyHost();
 
         if ($proxyHost === null) {
             return;
@@ -93,7 +93,7 @@ readonly class ProxyClient
 
     public function sendOrderStatusIsDelivered(string $orderNumber): void
     {
-        $proxyHost = $this->userService->retrieveUser()->tenant->metadata->proxyHost();
+        $proxyHost = $this->userService->retrieveCurrentUser()->tenant->metadata->proxyHost();
 
         if ($proxyHost === null) {
             return;
@@ -108,7 +108,7 @@ readonly class ProxyClient
 
     public function sendPickingShiftRoutes(string $pickingShiftId): void
     {
-        $proxyHost = $this->userService->retrieveUser()->tenant->metadata->proxyHost();
+        $proxyHost = $this->userService->retrieveCurrentUser()->tenant->metadata->proxyHost();
 
         if ($proxyHost === null) {
             return;
@@ -123,7 +123,7 @@ readonly class ProxyClient
 
     public function sendRouteIsUpdated(string $routeId): void
     {
-        $proxyHost = $this->userService->retrieveUser()->tenant->metadata->proxyHost();
+        $proxyHost = $this->userService->retrieveCurrentUser()->tenant->metadata->proxyHost();
 
         if ($proxyHost === null) {
             return;
@@ -138,7 +138,7 @@ readonly class ProxyClient
 
     public function sendSuspiciousOrderIsCreated(string $orderNumber): void
     {
-        $proxyHost = $this->userService->retrieveUser()->tenant->metadata->proxyHost();
+        $proxyHost = $this->userService->retrieveCurrentUser()->tenant->metadata->proxyHost();
 
         if ($proxyHost === null) {
             return;
@@ -153,7 +153,7 @@ readonly class ProxyClient
 
     public function uploadOrdersFileToPickingShift(string $pickingShiftId, string $filename): void
     {
-        $proxyHost = $this->userService->retrieveUser()->tenant->metadata->proxyHost();
+        $proxyHost = $this->userService->retrieveCurrentUser()->tenant->metadata->proxyHost();
 
         if ($proxyHost === null) {
             return;
