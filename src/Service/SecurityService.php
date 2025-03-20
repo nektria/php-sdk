@@ -20,7 +20,7 @@ class SecurityService implements SecurityServiceInterface
         protected readonly ContextService $contextService,
         protected readonly SharedUserV2Cache $sharedUserCache,
         protected readonly RoleManager $roleManager,
-        private readonly YieldManagerClient $yieldManagerClient,
+        protected readonly YieldManagerClient $yieldManagerClient,
     ) {
         $this->userContainer = new UserContainer();
     }
