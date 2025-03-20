@@ -36,12 +36,12 @@ class AddressType extends JsonType
         return new Address(
             addressLine1: $json['addressLine1'],
             addressLine2: $json['addressLine2'],
-            elevator: $json['elevator'],
+            elevator: $json['elevator'] ?? true,
             postalCode: $json['postalCode'],
             city: $json['city'],
             countryCode: $json['countryCode'],
-            latitude: $json['latitude'],
-            longitude: $json['longitude'],
+            latitude: $json['latitude'] ?? 0.0,
+            longitude: $json['longitude'] ?? 0.0,
         );
     }
 
