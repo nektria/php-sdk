@@ -10,11 +10,11 @@ use Nektria\Dto\TenantMetadata;
 use Nektria\Exception\InvalidAuthorizationException;
 use Nektria\Service\ContextService;
 use Nektria\Service\RoleManager;
-use Nektria\Service\SharedUserV2Cache;
 use Nektria\Service\SecurityService;
+use Nektria\Service\SharedUserV2Cache;
 use Nektria\Service\YieldManagerClient;
 
-class TestUserService extends SecurityService
+class TestSecurityService extends SecurityService
 {
     /** @var array<string, User> */
     private array $users = [];
@@ -152,41 +152,42 @@ class TestUserService extends SecurityService
     {
         $this->clearAuthentication();
 
-        $this->user = $this->users["ak{$apiKey}"] ?? null;
+        $this->userContainer->setUser($this->users["ak{$apiKey}"] ?? null);
 
-        if ($this->user === null) {
+        if ($this->user() === null) {
             throw new InvalidAuthorizationException();
         }
 
-        $this->contextService->setTenant($this->user->tenantId, $this->user->tenant->name);
-        $this->contextService->setUserId($this->user->id);
+        $this->contextService->setTenant($this->user()->tenantId, $this->user()->tenant->name);
+        $this->contextService->setUserId($this->user()->id);
     }
 
     public function authenticateSystem(string $tenantId): void
     {
         $this->clearAuthentication();
 
-        $this->user = $this->users['ak2000'] ?? null;
+        $user = $this->users['ak2000'] ?? null;
+        $this->userContainer->setUser($this->users['ak2000'] ?? null);
 
-        if ($this->user === null) {
+        if ($user === null) {
             throw new InvalidAuthorizationException();
         }
 
-        $this->contextService->setTenant($this->user->tenantId, $this->user->tenant->name);
-        $this->contextService->setUserId($this->user->id);
+        $this->contextService->setTenant($user->tenantId, $user->tenant->name);
+        $this->contextService->setUserId($user->id);
     }
 
     public function authenticateUser(string $apiKey): void
     {
         $this->clearAuthentication();
 
-        $this->user = $this->users["ak{$apiKey}"] ?? null;
+        $this->userContainer->setUser($this->users["ak{$apiKey}"] ?? null);
 
-        if ($this->user === null) {
+        if ($this->user() === null) {
             throw new InvalidAuthorizationException();
         }
 
-        $this->contextService->setTenant($this->user->tenantId, $this->user->tenant->name);
-        $this->contextService->setUserId($this->user->id);
+        $this->contextService->setTenant($this->user()->tenantId, $this->user()->tenant->name);
+        $this->contextService->setUserId($this->user()->id);
     }
 }

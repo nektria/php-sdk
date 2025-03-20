@@ -9,9 +9,9 @@ use Nektria\Infrastructure\SecurityServiceInterface;
 readonly class ProxyClient
 {
     public function __construct(
-        protected ContextService         $contextService,
-        protected SharedUserV2Cache      $sharedUserCache,
-        private RequestClient            $requestClient,
+        protected ContextService $contextService,
+        protected SharedUserV2Cache $sharedUserCache,
+        private RequestClient $requestClient,
         private SecurityServiceInterface $userService,
     ) {
     }

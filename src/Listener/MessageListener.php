@@ -54,13 +54,13 @@ abstract class MessageListener implements EventSubscriberInterface
     private string $messageStartedAt;
 
     public function __construct(
-        private readonly AlertService             $alertService,
-        private readonly ContextService           $contextService,
-        private readonly LogService               $logService,
+        private readonly AlertService $alertService,
+        private readonly ContextService $contextService,
+        private readonly LogService $logService,
         private readonly SecurityServiceInterface $userService,
-        private readonly VariableCache            $variableCache,
-        private readonly BusInterface             $bus,
-        private readonly SharedVariableCache      $sharedVariableCache,
+        private readonly VariableCache $variableCache,
+        private readonly BusInterface $bus,
+        private readonly SharedVariableCache $sharedVariableCache,
     ) {
         $this->executionTime = microtime(true);
         $this->messageCompletedAt = Clock::now()->iso8601String();

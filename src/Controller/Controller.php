@@ -33,9 +33,9 @@ readonly class Controller
 
     public function __construct(
         protected SecurityServiceInterface $userService,
-        protected ContextService           $context,
-        protected BusInterface             $bus,
-        RequestStack                       $requestStack,
+        protected ContextService $context,
+        protected BusInterface $bus,
+        RequestStack $requestStack,
     ) {
         $this->request = $requestStack->getCurrentRequest() ?? new Request();
         $body = [];

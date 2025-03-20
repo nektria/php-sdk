@@ -54,14 +54,14 @@ abstract class RequestListener implements EventSubscriberInterface
     private ?Response $originalResponse;
 
     public function __construct(
-        private readonly Bus                            $bus,
-        private readonly ContextService                 $contextService,
-        private readonly LogService                     $logService,
-        private readonly AlertService                   $alertService,
-        private readonly VariableCache                  $variableCache,
-        private readonly SecurityServiceInterface       $userService,
+        private readonly Bus $bus,
+        private readonly ContextService $contextService,
+        private readonly LogService $logService,
+        private readonly AlertService $alertService,
+        private readonly VariableCache $variableCache,
+        private readonly SecurityServiceInterface $userService,
         private readonly SharedTemporalConsumptionCache $temporalConsumptionCache,
-        ContainerInterface                              $container
+        ContainerInterface $container
     ) {
         /** @var string[] $cors */
         $cors = $container->getParameter('allowed_cors');

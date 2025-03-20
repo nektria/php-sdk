@@ -20,7 +20,7 @@ services:
     calls:
       - inject: [ '@service_container' ]
 
-  Nektria\Infrastructure\UserServiceInterface: '@Nektria\Service\UserService'
+  Nektria\Infrastructure\SecurityServiceInterface: '@Nektria\Service\SecurityService'
   Nektria\Service\AlertService: ~
   Nektria\Service\Bus: ~
   Nektria\Service\ContextService: ~
@@ -34,7 +34,7 @@ services:
   Nektria\Service\SharedUserV2Cache: ~
   Nektria\Service\SharedVariableCache: ~
   Nektria\Service\SocketService: ~
-  Nektria\Service\UserService: ~
+  Nektria\Service\SecurityService: ~
   Nektria\Service\YieldManagerClient: ~
   Nektria\Test\TestRunnerListener: ~
 

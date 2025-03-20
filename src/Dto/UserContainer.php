@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Nektria\Dto;
 
 use Nektria\Document\User;
@@ -13,18 +15,12 @@ class UserContainer
         $this->user = null;
     }
 
-    /**
-     * @param User|null $user
-     */
     public function setUser(?User $user): void
     {
         $this->user = $user;
-        LocalClock::defaultTimezone($user?->tenant->timezone);
+        LocalClock::defaultTimezone($user?->tenant->timezone ?? 'UTC');
     }
 
-    /**
-     * @return User|null
-     */
     public function user(): ?User
     {
         return $this->user;

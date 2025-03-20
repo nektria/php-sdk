@@ -43,8 +43,8 @@ class Bus implements BusInterface
     private array $delayedEvents;
 
     public function __construct(
-        private readonly MessageBusInterface      $bus,
-        private readonly ContextService           $contextService,
+        private readonly MessageBusInterface $bus,
+        private readonly ContextService $contextService,
         private readonly SecurityServiceInterface $userService,
     ) {
         $this->delayedEvents = [];

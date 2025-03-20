@@ -78,10 +78,10 @@ class AlertService
     private array $tokens;
 
     public function __construct(
-        private readonly string                   $alertsToken,
-        private readonly ContextService           $contextService,
-        private readonly RequestClient            $requestClient,
-        private readonly SharedDiscordCache       $sharedDiscordCache,
+        private readonly string $alertsToken,
+        private readonly ContextService $contextService,
+        private readonly RequestClient $requestClient,
+        private readonly SharedDiscordCache $sharedDiscordCache,
         private readonly SecurityServiceInterface $userService,
     ) {
         $this->tokens = explode(',', $this->alertsToken);
