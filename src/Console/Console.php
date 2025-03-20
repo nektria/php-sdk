@@ -313,15 +313,17 @@ abstract class Console extends BaseCommand
         } catch (Throwable $e) {
             $isSilent = $e instanceof NektriaException && $e->silent();
 
-            $this->alertService()->sendThrowable(
-                $this->userService()->user()?->tenant->name ?? 'none',
-                'COMMAND',
-                $this->getName() ?? '',
-                [
-                    'args' => $_SERVER['argv'],
-                ],
-                new ThrowableDocument($e),
-            );
+            if (!$isSilent) {
+                $this->alertService()->sendThrowable(
+                    $this->userService()->user()?->tenant->name ?? 'none',
+                    'COMMAND',
+                    $this->getName() ?? '',
+                    [
+                        'args' => $_SERVER['argv'],
+                    ],
+                    new ThrowableDocument($e),
+                );
+            }
 
             throw $e;
         }
