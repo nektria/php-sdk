@@ -131,6 +131,7 @@ abstract class MessageListener implements EventSubscriberInterface
                 $class = $message::class;
                 $classHash = str_replace('\\', '_', $class);
                 $messageClass = StringUtil::className($message);
+                $silent = false;
 
                 if ($exception instanceof HandlerFailedException && $exception->getPrevious() !== null) {
                     $exception = $exception->getPrevious();
@@ -138,6 +139,7 @@ abstract class MessageListener implements EventSubscriberInterface
 
                 if (!($exception instanceof ThrowableDocument)) {
                     $exception = new ThrowableDocument($exception);
+                    $silent = $exception->throwable->silent();
                 }
 
                 $originalException = $exception->throwable;
@@ -189,7 +191,7 @@ abstract class MessageListener implements EventSubscriberInterface
                             $sendAlert = false;
                         }
 
-                        if ($sendAlert) {
+                        if ($sendAlert && !$silent) {
                             $this->alertService->sendThrowable(
                                 $this->securityService->currentUser()?->tenant->name ?? 'none',
                                 'RABBIT',
