@@ -139,7 +139,7 @@ abstract class MessageListener implements EventSubscriberInterface
 
                 if (!($exception instanceof ThrowableDocument)) {
                     $exception = new ThrowableDocument($exception);
-                    $silent = $exception->throwable->silent();
+                    $silent = $exception->silent();
                 }
 
                 $originalException = $exception->throwable;

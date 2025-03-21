@@ -12,6 +12,7 @@ use Nektria\Exception\InvalidRequestParamException;
 use Nektria\Exception\MissingFieldRequiredToCreateClassException;
 use Nektria\Exception\MissingRequestParamException;
 use Nektria\Exception\NektriaException;
+use Nektria\Exception\NektriaRuntimeException;
 use Nektria\Exception\RequestException;
 use Nektria\Exception\ResourceNotFoundException;
 use Nektria\Service\ContextService;
@@ -58,6 +59,15 @@ readonly class ThrowableDocument extends Document
         }
 
         $this->throwable = $exception;
+    }
+
+    public function silent(): bool
+    {
+        if ($this->throwable instanceof NektriaRuntimeException) {
+            return $this->throwable->silent();
+        }
+
+        return false;
     }
 
     public function toArray(ContextService $context): array
