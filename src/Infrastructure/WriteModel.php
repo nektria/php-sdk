@@ -139,11 +139,9 @@ abstract class WriteModel
     /**
      * @param T $domain
      */
-    protected function deleteEntity(EntityInterface $domain, bool $secure = true): void
+    protected function deleteEntity(EntityInterface $domain): void
     {
-        if ($secure) {
-            $this->checkFromService();
-        }
+        $this->checkFromService();
 
         try {
             $this->manager->remove($domain);
