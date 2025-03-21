@@ -200,12 +200,9 @@ abstract class WriteModel
     /**
      * @param T $domain
      */
-    protected function saveEntity(EntityInterface $domain, bool $secure = true): void
+    protected function saveEntity(EntityInterface $domain): void
     {
-        if ($secure) {
-            $this->checkFromService();
-        }
-
+        $this->checkFromService();
         $persistenceType = $this->getPersistenceType($domain);
         if ($persistenceType === PersistenceType::None) {
             return;
