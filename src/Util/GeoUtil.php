@@ -6,6 +6,8 @@ namespace Nektria\Util;
 
 use Nektria\Document\WarehouseSharedInfo;
 
+use function count;
+
 readonly class GeoUtil
 {
     /**
