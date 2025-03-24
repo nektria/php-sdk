@@ -16,7 +16,7 @@ while getopts 'g' flag; do
 done
 
 if [ "$USE_GOOGLE" = '1' ]; then
-  composer validate
+  composer.phar validate
 else
-  docker exec -i __PROJECT__ composer validate
+  docker exec -i __PROJECT__ composer.phar validate
 fi

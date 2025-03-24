@@ -17,7 +17,7 @@ while getopts 'p' flag; do
 done
 
 if [ "$PIPELINE" = '1' ]; then
-  composer validate
+  composer.phar validate
 else
-  docker exec -i "$DOCKER_IMAGE" composer validate
+  docker exec -i "$DOCKER_IMAGE" composer.phar validate
 fi

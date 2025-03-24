@@ -3,4 +3,4 @@ trap "exit 1" ERR
 
 DOCKER_IMAGE='php-sdk'
 
-docker exec -i "$DOCKER_IMAGE" composer update
+docker exec -i "$DOCKER_IMAGE" composer.phar update

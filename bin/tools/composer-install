@@ -1,4 +1,4 @@
 #!/bin/bash
 trap "exit 1" ERR
 
-docker exec -i __PROJECT__ composer install
+docker exec -i __PROJECT__ composer.phar install
