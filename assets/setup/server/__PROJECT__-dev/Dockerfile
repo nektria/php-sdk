@@ -1,4 +1,4 @@
-FROM eu.gcr.io/nektria/php:8.3
+FROM eu.gcr.io/nektria/php:8.4
 USER root
 WORKDIR /app
 RUN unset APP_ENV
@@ -12,7 +12,7 @@ RUN composer.phar global require friendsofphp/php-cs-fixer:dev-master
 RUN composer.phar global require squizlabs/php_codesniffer
 RUN composer.phar global require phpunit/phpunit
 
-ADD server/__PROJECT__-dev/php.ini /etc/php83/conf.d/nektria_custom.ini
+ADD server/__PROJECT__-dev/php.ini /etc/php84/conf.d/nektria_custom.ini
 COPY . /app
 
 RUN composer.phar install

@@ -1,14 +1,14 @@
-FROM eu.gcr.io/nektria/php:8.3
+FROM eu.gcr.io/nektria/php:8.4
 USER root
 WORKDIR /app
 RUN unset APP_ENV
 
-#RUN apk del php83
+#RUN apk del php84
 #RUN apk del php
 #RUN rm /usr/bin/php
-#RUN rm /usr/bin/php83
+#RUN rm /usr/bin/php84
 #RUN cp /usr/bin/php84 /usr/bin/php
-#RUN cp /usr/bin/php84 /usr/bin/php83
+#RUN cp /usr/bin/php84 /usr/bin/php84
 
 ENV PATH ~/.composer/vendor/bin:$PATH
 

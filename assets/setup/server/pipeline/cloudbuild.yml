@@ -2,7 +2,7 @@ steps:
 
   - id: Load PHP image
     name: gcr.io/cloud-builders/docker
-    args: [ "pull", "-q", "eu.gcr.io/nektria/php:8.3" ]
+    args: [ "pull", "-q", "eu.gcr.io/nektria/php:8.4" ]
 
   - id: Load test services
     name: 'docker/compose'
@@ -18,7 +18,7 @@ steps:
         docker-compose -f server/pipeline/cloudbuild-services.yml up -d 
 
   - id: validating code
-    name: eu.gcr.io/nektria/php:8.3
+    name: eu.gcr.io/nektria/php:8.4
     entrypoint: sh
     args:
       - '-c'

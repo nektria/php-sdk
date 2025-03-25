@@ -1,4 +1,4 @@
-FROM eu.gcr.io/nektria/php:8.3
+FROM eu.gcr.io/nektria/php:8.4
 
 ENV APP_ENV=prod
 
