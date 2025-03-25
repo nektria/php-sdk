@@ -15,6 +15,7 @@ use Nektria\Exception\NektriaException;
 use Nektria\Exception\NektriaRuntimeException;
 use Nektria\Exception\RequestException;
 use Nektria\Exception\ResourceNotFoundException;
+use Nektria\Exception\TerminateException;
 use Nektria\Service\ContextService;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\HttpException;
@@ -54,6 +55,8 @@ readonly class ThrowableDocument extends Document
             $this->status = $exception->getStatusCode();
         } elseif ($exception instanceof RequestException) {
             $this->status = $exception->response()->status;
+        } elseif ($exception instanceof TerminateException) {
+            $this->status = Response::HTTP_CONFLICT;
         } else {
             $this->status = Response::HTTP_INTERNAL_SERVER_ERROR;
         }
