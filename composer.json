@@ -1,7 +1,7 @@
 {
     "name": "nektria/php-sdk",
     "type": "library",
-    "description": "Nektria PHP SDK - 1.0.632",
+    "description": "Nektria PHP SDK - 1.0.633",
     "minimum-stability": "stable",
     "license": "proprietary",
     "autoload": {
@@ -83,5 +83,5 @@
             "cache:clear": "symfony-cmd"
         }
     },
-    "version": "1.0.632"
+    "version": "1.0.633"
 }
