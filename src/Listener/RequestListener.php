@@ -86,6 +86,7 @@ abstract class RequestListener implements EventSubscriberInterface
 
     public function onKernelController(ControllerEvent $event): void
     {
+        $this->onRequestReceived($event->getRequest());
         $request = $event->getRequest();
         $method = $request->getMethod();
         $route = $request->attributes->get('_route') ?? '';
@@ -490,6 +491,10 @@ abstract class RequestListener implements EventSubscriberInterface
     protected function ignoreLogs(): array
     {
         return [];
+    }
+
+    protected function onRequestReceived(Request $request): void
+    {
     }
 
     protected function validateUser(User $user): bool
