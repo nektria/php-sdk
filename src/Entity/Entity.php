@@ -13,16 +13,16 @@ abstract class Entity implements EntityInterface
 {
     #[IgnoreProperty]
     #[ORM\Column(type: 'clock')]
-    protected Clock $createdAt;
+    public protected(set) Clock $createdAt;
 
     #[IgnoreProperty]
     #[ORM\Id]
     #[ORM\Column(type: 'guid')]
-    protected string $id;
+    public protected(set) string $id;
 
     #[IgnoreProperty]
     #[ORM\Column(type: 'clock')]
-    protected Clock $updatedAt;
+    public protected(set) Clock $updatedAt;
 
     public function __construct(?string $id = null)
     {
@@ -31,11 +31,13 @@ abstract class Entity implements EntityInterface
         $this->updatedAt = $this->createdAt;
     }
 
+    #[\Deprecated]
     public function createdAt(): Clock
     {
         return $this->createdAt;
     }
 
+    #[\Deprecated]
     public function id(): string
     {
         return $this->id;
@@ -46,6 +48,7 @@ abstract class Entity implements EntityInterface
         $this->updatedAt = Clock::now();
     }
 
+    #[\Deprecated]
     public function updatedAt(): Clock
     {
         return $this->updatedAt;
