@@ -355,7 +355,6 @@ abstract class RequestListener implements EventSubscriberInterface
             $this->temporalConsumptionCache->increase($this->contextService->tenantId(), $route);
         }
 
-
         $routeParams = $event->getRequest()->attributes->get('_route_params');
         if ($logLevel !== self::LOG_LEVEL_NONE) {
             if ($status < 400) {
