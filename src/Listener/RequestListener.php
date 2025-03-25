@@ -412,10 +412,6 @@ abstract class RequestListener implements EventSubscriberInterface
                     ], $resume);
                 }
             } elseif ($status < 500) {
-                if ($responseContent['message'] === 'Fail') {
-                    return;
-                }
-
                 $this->logService->warning([
                     'code' => $route,
                     'context' => 'request',
