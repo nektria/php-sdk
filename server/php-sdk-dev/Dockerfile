@@ -12,6 +12,11 @@ RUN unset APP_ENV
 
 ENV PATH ~/.composer/vendor/bin:$PATH
 
+RUN apk add php-yaml
+
+RUN rm -i -f /usr/bin/php
+RUN ln -sf /usr/bin/php84 /usr/bin/php
+
 RUN composer.phar global require phpstan/phpstan phpstan/phpstan-mockery phpstan/phpstan-phpunit phpstan/phpstan-strict-rules phpstan/phpstan-symfony phpstan/phpstan-doctrine shipmonk/phpstan-rules spaze/phpstan-disallowed-calls ergebnis/phpstan-rules
 RUN composer.phar global require friendsofphp/php-cs-fixer:dev-master
 RUN composer.phar global require squizlabs/php_codesniffer
