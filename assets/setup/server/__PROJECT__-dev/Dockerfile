@@ -21,4 +21,5 @@ COPY . /app
 RUN composer.phar install
 RUN bin/console debug:setup:assets -q
 
+ENV PHP_CS_FIXER_IGNORE_ENV=1
 CMD sh server/__PROJECT__-dev/web.sh

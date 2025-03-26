@@ -30,4 +30,6 @@ COPY public /app/public
 
 RUN composer.phar install
 
+ENV PHP_CS_FIXER_IGNORE_ENV=1
+
 CMD sh server/php-sdk-dev/web.sh
