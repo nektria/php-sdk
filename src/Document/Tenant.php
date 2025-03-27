@@ -15,6 +15,7 @@ readonly class Tenant extends Document
         public TenantMetadata $metadata,
         public ?string $aiAssistantId,
         public string $timezone,
+        public string $alias,
     ) {
     }
 
@@ -27,6 +28,7 @@ readonly class Tenant extends Document
                 'name' => $this->name,
                 'metadata' => $this->metadata->toArray($context),
                 'timezone' => $this->timezone,
+                'alias' => $this->alias,
             ];
         }
 
@@ -36,6 +38,7 @@ readonly class Tenant extends Document
                 'name' => $this->name,
                 'metadata' => $this->metadata->toArray($context),
                 'timezone' => $this->timezone,
+                'alias' => $this->alias,
             ];
         }
 

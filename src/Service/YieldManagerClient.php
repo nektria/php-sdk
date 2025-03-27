@@ -411,6 +411,7 @@ readonly class YieldManagerClient
                 metadata: new TenantMetadata($data['tenant']['metadata']),
                 aiAssistantId: $data['tenant']['aiAssistantId'],
                 timezone: $data['tenant']['timezone'],
+                alias: $data['tenant']['alias'],
             ),
             dniNie: $data['dniNie'],
             aiThreadId: $data['aiThreadId'],

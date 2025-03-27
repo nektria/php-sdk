@@ -34,6 +34,7 @@ class TestSecurityService extends SecurityService
             metadata: new TenantMetadata([]),
             aiAssistantId: null,
             timezone: 'Europe/Madrid',
+            alias: 'test'
         );
 
         $this->users['ak1000'] = new User(
@@ -94,6 +95,7 @@ class TestSecurityService extends SecurityService
             metadata: new TenantMetadata([]),
             aiAssistantId: null,
             timezone: 'Europe/Madrid',
+            alias: 'test2'
         );
 
         $this->users['ak3000'] = new User(
