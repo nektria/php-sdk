@@ -246,7 +246,6 @@ abstract class MessageListener implements EventSubscriberInterface
             $this->decreaseCounter($message);
         }
 
-
         $exchangeName = '?';
         $exchangeStamp = $event->getEnvelope()->last(AmqpReceivedStamp::class);
         if ($exchangeStamp !== null) {
