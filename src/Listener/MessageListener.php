@@ -7,6 +7,7 @@ namespace Nektria\Listener;
 use Doctrine\DBAL\ConnectionException;
 use Doctrine\DBAL\Exception\DriverException;
 use Nektria\Document\Document;
+use Nektria\Document\Tenant;
 use Nektria\Document\ThrowableDocument;
 use Nektria\Dto\Clock;
 use Nektria\Exception\ResourceNotFoundException;
@@ -44,6 +45,12 @@ use function in_array;
 
 abstract class MessageListener implements EventSubscriberInterface
 {
+    public const string LOG_LEVEL_DEBUG = 'DEBUG';
+
+    public const string LOG_LEVEL_INFO = 'INFO';
+
+    public const string LOG_LEVEL_NONE = 'NONE';
+
     private float $executionTime;
 
     /** @var Query<Document>|Command|Event|null */
@@ -239,7 +246,25 @@ abstract class MessageListener implements EventSubscriberInterface
             $this->decreaseCounter($message);
         }
 
-        if ($message instanceof Command || $message instanceof Event) {
+        $logLevel = $this->assignLogLevel($message::class, $this->securityService->currentUser()?->tenant);
+        $exchangeName = '?';
+        $exchangeStamp = $event->getEnvelope()->last(AmqpReceivedStamp::class);
+        if ($exchangeStamp !== null) {
+            $exchangeName = $exchangeStamp->getAmqpEnvelope()->getExchangeName() ?? '?';
+        }
+
+        if ($logLevel === null) {
+            if (str_ends_with($exchangeName, '.system')) {
+                $logLevel = self::LOG_LEVEL_DEBUG;
+            } else {
+                $logLevel = self::LOG_LEVEL_INFO;
+            }
+        }
+
+        if (
+            $logLevel !== self::LOG_LEVEL_NONE
+            && ($message instanceof Command || $message instanceof Event)
+        ) {
             $encoders = [new JsonEncoder()];
             $normalizers = [new PropertyNormalizer(), new DateTimeNormalizer(), new ObjectNormalizer()];
             $serializer = new Serializer($normalizers, $encoders);
@@ -248,13 +273,7 @@ abstract class MessageListener implements EventSubscriberInterface
             $resume = "/{$messageClass}/{$message->ref()}";
             $time = max(0.001, round(microtime(true) - $this->executionTime, 3)) . 's';
 
-            $exchangeName = '?';
-            $exchangeStamp = $event->getEnvelope()->last(AmqpReceivedStamp::class);
-            if ($exchangeStamp !== null) {
-                $exchangeName = $exchangeStamp->getAmqpEnvelope()->getExchangeName() ?? '?';
-            }
-
-            if (str_ends_with($exchangeName, '.system')) {
+            if ($logLevel === self::LOG_LEVEL_DEBUG) {
                 $this->logService->debug([
                     'context' => 'messenger',
                     'role' => $this->contextService->context(),
@@ -289,9 +308,8 @@ abstract class MessageListener implements EventSubscriberInterface
                     ],
                 ], $resume);
             }
-
-            $this->securityService->clearAuthentication();
         }
+        $this->securityService->clearAuthentication();
 
         $this->cleanMemory();
 
@@ -346,7 +364,14 @@ abstract class MessageListener implements EventSubscriberInterface
         gc_collect_cycles();
     }
 
-    abstract protected function cleanMemory(): void;
+    protected function assignLogLevel(string $code, ?Tenant $tenant): ?string
+    {
+        return null;
+    }
+
+    protected function cleanMemory(): void
+    {
+    }
 
     /**
      * @param Event|Query<Document>|Command $message

@@ -8,6 +8,7 @@ use DomainException;
 use Nektria\Document\DocumentCollection;
 use Nektria\Document\DocumentResponse;
 use Nektria\Document\FileDocument;
+use Nektria\Document\Tenant;
 use Nektria\Document\ThrowableDocument;
 use Nektria\Document\User;
 use Nektria\Dto\Clock;
@@ -279,7 +280,7 @@ abstract class RequestListener implements EventSubscriberInterface
         ) {
             $logLevel = self::LOG_LEVEL_NONE;
         } else {
-            $logLevel = $this->assignLogLevel($route);
+            $logLevel = $this->assignLogLevel($route, $this->securityService->currentUser()?->tenant);
         }
 
         $responseContentRaw = ($this->originalResponse ?? $event->getResponse())->getContent();
@@ -483,7 +484,10 @@ abstract class RequestListener implements EventSubscriberInterface
         }
     }
 
-    abstract protected function assignLogLevel(string $route): ?string;
+    protected function assignLogLevel(string $code, ?Tenant $tenant): ?string
+    {
+        return null;
+    }
 
     /**
      * @return string[]
