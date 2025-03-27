@@ -246,12 +246,17 @@ abstract class MessageListener implements EventSubscriberInterface
             $this->decreaseCounter($message);
         }
 
-        $logLevel = $this->assignLogLevel($message::class, $this->securityService->currentUser()?->tenant);
+
         $exchangeName = '?';
         $exchangeStamp = $event->getEnvelope()->last(AmqpReceivedStamp::class);
         if ($exchangeStamp !== null) {
             $exchangeName = $exchangeStamp->getAmqpEnvelope()->getExchangeName() ?? '?';
         }
+
+        $logLevel = $this->assignLogLevel(
+            $this->normalizeClass($message::class),
+            $this->securityService->currentUser()?->tenant
+        );
 
         if ($logLevel === null) {
             if (str_ends_with($exchangeName, '.system')) {
