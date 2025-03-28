@@ -6,10 +6,5 @@ namespace Nektria\Message;
 
 interface Command
 {
-    /**
-     * @return array<string, string>
-     */
-    public function params(): array;
-
     public function ref(): string;
 }

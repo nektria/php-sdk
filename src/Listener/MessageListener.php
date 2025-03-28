@@ -164,24 +164,29 @@ abstract class MessageListener implements EventSubscriberInterface
                 if ($exchangeStamp !== null) {
                     $exchangeName = $exchangeStamp->getAmqpEnvelope()->getExchangeName();
                 }
+                $messageParams = $this->processRegistry->getMetadata()->data();
 
                 $this->logService->temporalLogs();
-                $this->logService->exception($originalException, [
-                    'context' => 'messenger',
-                    'role' => $this->contextService->context(),
-                    'code' => $this->normalizeClass($class),
-                    'body' => $data,
-                    'messageReceivedAt' => $this->messageStartedAt,
-                    'messageCompletedAt' => $this->messageCompletedAt,
-                    'queue' => $exchangeName,
-                    'maxRetries' => $maxRetries,
-                    'httpRequest' => [
-                        'requestUrl' => "/{$messageClass}/{$message->ref()}",
-                        'requestMethod' => 'QUEUE',
-                        'status' => 500,
-                        'latency' => max(0.001, round(microtime(true) - $this->executionTime, 3)) . 's',
-                    ],
-                ]);
+                $this->logService->exception(
+                    exception: $originalException,
+                    labels: $messageParams,
+                    extra: [
+                        'context' => 'messenger',
+                        'role' => $this->contextService->context(),
+                        'code' => $this->normalizeClass($class),
+                        'body' => $data,
+                        'messageReceivedAt' => $this->messageStartedAt,
+                        'messageCompletedAt' => $this->messageCompletedAt,
+                        'queue' => $exchangeName,
+                        'maxRetries' => $maxRetries,
+                        'httpRequest' => [
+                            'requestUrl' => "/{$messageClass}/{$message->ref()}",
+                            'requestMethod' => 'QUEUE',
+                            'status' => 500,
+                            'latency' => max(0.001, round(microtime(true) - $this->executionTime, 3)) . 's',
+                        ],
+                    ]
+                );
 
                 $tenantName = $this->securityService->currentUser()?->tenant->name ?? 'none';
 
@@ -221,7 +226,6 @@ abstract class MessageListener implements EventSubscriberInterface
 
             $this->securityService->clearAuthentication();
             $this->processRegistry->clear();
-
             $this->cleanMemory();
 
             gc_collect_cycles();
@@ -280,15 +284,10 @@ abstract class MessageListener implements EventSubscriberInterface
             $resume = "/{$messageClass}/{$message->ref()}";
             $time = max(0.001, round(microtime(true) - $this->executionTime, 3)) . 's';
 
-            $messageParams = $message->params();
+            $messageParams = $this->processRegistry->getMetadata()->data();
             $messageParams['context'] = 'messenger';
             $messageParams['path'] = $this->normalizeClass($message::class);
             $messageParams['queue'] = $exchangeName;
-
-            $messageParams = [
-                ...$this->processRegistry->getMetadata()->data(),
-                ...$messageParams,
-            ];
 
             if ($logLevel === self::LOG_LEVEL_DEBUG) {
                 $this->logService->debug([
@@ -328,6 +327,17 @@ abstract class MessageListener implements EventSubscriberInterface
 
     public function onWorkerMessageReceived(WorkerMessageReceivedEvent $event): void
     {
+        $message = $event->getEnvelope()->getMessage();
+        $exchangeName = '?';
+        $exchangeStamp = $event->getEnvelope()->last(AmqpReceivedStamp::class);
+        if ($exchangeStamp !== null) {
+            $exchangeName = $exchangeStamp->getAmqpEnvelope()->getExchangeName() ?? '?';
+        }
+
+        $this->processRegistry->getMetadata()->updateField('context', 'messenger');
+        $this->processRegistry->getMetadata()->updateField('path', $this->normalizeClass($message::class));
+        $this->processRegistry->getMetadata()->updateField('queue', $exchangeName);
+
         $message = $event->getEnvelope()->getMessage();
         if ($message instanceof Command || $message instanceof Event || $message instanceof Query) {
             $this->message = $message;

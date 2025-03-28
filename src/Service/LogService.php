@@ -91,8 +91,9 @@ readonly class LogService extends AbstractService
 
     /**
      * @param mixed[] $extra
+     * @param array<string, string> $labels
      */
-    public function exception(Throwable $exception, array $extra = [], bool $asWarning = false): void
+    public function exception(Throwable $exception, array $labels, array $extra = [], bool $asWarning = false): void
     {
         if ($this->data['channel'] === false) {
             return;
@@ -117,11 +118,14 @@ readonly class LogService extends AbstractService
                 'logName' => 'projects/nektria/logs/error',
                 'severity' => $asWarning ? self::WARNING : self::EMERGENCY,
                 'logging.googleapis.com/labels' => [
-                    'app' => $this->contextService->project(),
-                    'env' => $this->contextService->env(),
-                    'tenant' => $user->tenant->alias ?? 'none',
-                    'tenantId' => $user->tenant->id ?? 'none',
-                    'authId' => $user->id ?? 'none',
+                    ...$labels,
+                    ...[
+                        'app' => $this->contextService->project(),
+                        'env' => $this->contextService->env(),
+                        'tenant' => $user->tenant->alias ?? 'none',
+                        'tenantId' => $user->tenant->id ?? 'none',
+                        'authId' => $user->id ?? 'none',
+                    ]
                 ],
                 'logging.googleapis.com/trace_sampled' => false,
             ];

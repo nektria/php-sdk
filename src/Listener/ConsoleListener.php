@@ -46,7 +46,7 @@ readonly abstract class ConsoleListener implements EventSubscriberInterface
         $path = '/Console/' . str_replace('\\', '/', $command::class);
 
         $this->logService->temporalLogs();
-        $this->logService->exception($event->getError());
+        $this->logService->exception($event->getError(), []);
 
         if ($this->contextService->env() === ContextService::DEV || $this->variableCache->refreshKey($path)) {
             $tenantName = 'none';
