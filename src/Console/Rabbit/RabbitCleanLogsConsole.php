@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Nektria\Console\Rabbit;
 
 use Nektria\Console\Console;
-use Nektria\Service\SharedVariableCache;
+use Nektria\Infrastructure\SharedVariableCache;
 use Nektria\Util\JsonUtil;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 

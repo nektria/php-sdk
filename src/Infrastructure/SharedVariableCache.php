@@ -2,9 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Nektria\Service;
-
-use Nektria\Infrastructure\SharedRedisCache;
+namespace Nektria\Infrastructure;
 
 /**
  * @extends SharedRedisCache<string|bool|int|float>

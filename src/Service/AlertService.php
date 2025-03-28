@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace Nektria\Service;
 
 use Nektria\Document\ThrowableDocument;
-use Nektria\Dto\Clock;
+use Nektria\Dto\LocalClock;
 use Nektria\Exception\NektriaRuntimeException;
-use Nektria\Infrastructure\SecurityServiceInterface;
+use Nektria\Infrastructure\SharedDiscordCache;
 use Nektria\Util\JsonUtil;
 use Throwable;
 
@@ -58,7 +58,7 @@ use function in_array;
  *      }>
  *  }
  */
-class AlertService
+readonly class AlertService extends AbstractService
 {
     public const string CHANNEL_BUGS = 'bugs';
 
@@ -78,12 +78,10 @@ class AlertService
     private array $tokens;
 
     public function __construct(
-        private readonly string $alertsToken,
-        private readonly ContextService $contextService,
-        private readonly RequestClient $requestClient,
-        private readonly SharedDiscordCache $sharedDiscordCache,
-        private readonly SecurityServiceInterface $userService,
+        private SharedDiscordCache $sharedDiscordCache,
+        private string $alertsToken,
     ) {
+        parent::__construct();
         $this->tokens = explode(',', $this->alertsToken);
     }
 
@@ -133,7 +131,7 @@ class AlertService
      */
     public function channelsList(): array
     {
-        return array_keys($this->channels()[$this->contextService->env()]);
+        return array_keys($this->channels()[$this->contextService()->env()]);
     }
 
     public function cleanMessagesFromCache(string $channel): void
@@ -146,7 +144,7 @@ class AlertService
      */
     public function debugMessage(array $message, ?int $flags = null): void
     {
-        if (!$this->contextService->debugMode()) {
+        if (!$this->contextService()->debugMode()) {
             return;
         }
 
@@ -166,17 +164,17 @@ class AlertService
      */
     public function sendMessage(string $channel, array $message, ?int $flags = null): void
     {
-        $hour = (int) Clock::now()->setTimezone('Europe/Madrid')->hour();
+        $hour = (int) LocalClock::now('Europe/Madrid')->hour();
         if ($hour < 8 || $hour > 23) {
             $flags |= self::FLAG_SUPPRESS_NOTIFICATIONS;
         }
 
         $eol = self::EMPTY_LINE;
-        $tenantName = $this->userService->currentUser()?->tenant->name ?? 'none';
+        $tenantName = $this->securityService()->currentUser()?->tenant->name ?? 'none';
         $message['content'] ??= '';
         $message['content'] =
             $eol .
-            "**{$this->contextService->project()}**{$eol}" .
+            "**{$this->contextService()->project()}**{$eol}" .
             "**{$tenantName}**{$eol}" .
             $eol .
             $message['content'];
@@ -194,7 +192,7 @@ class AlertService
                     "```json\n" .
                     JsonUtil::encode(JsonUtil::decode($e->getMessage()), true) .
                     "\n```" .
-                    "Trace: {$this->contextService->traceId()}\n" .
+                    "Trace: {$this->contextService()->traceId()}\n" .
                     "‎\n‎";
 
                 if (str_contains($content, 'You are being rate limited.')) {
@@ -222,18 +220,18 @@ class AlertService
         int $times = 1,
         ?int $flags = null
     ): void {
-        if ($this->contextService->env() === 'test') {
+        if ($this->contextService()->env() === 'test') {
             return;
         }
 
         if (
             ($document->throwable instanceof NektriaRuntimeException)
-            && $document->throwable->silent() && !$this->contextService->debugMode()
+            && $document->throwable->silent() && !$this->contextService()->debugMode()
         ) {
             return;
         }
 
-        $hour = (int) Clock::now()->setTimezone('Europe/Madrid')->hour();
+        $hour = (int) LocalClock::now('Europe/Madrid')->hour();
         if ($hour < 8 || $hour > 23) {
             $flags |= self::FLAG_SUPPRESS_NOTIFICATIONS;
         }
@@ -244,7 +242,7 @@ class AlertService
         $manyTimes = $times === 1 ? '' : " (x{$times})";
         $content =
             $eol .
-            "**{$this->contextService->project()}**{$eol}" .
+            "**{$this->contextService()->project()}**{$eol}" .
             "**{$tenantName}**{$eol}" .
             $eol .
             "**{$method}** _{$path}_ {$manyTimes}\n" .
@@ -254,7 +252,7 @@ class AlertService
             "```json\n" .
             $documentString .
             "\n```" .
-            "Trace: {$this->contextService->traceId()}\n" .
+            "Trace: {$this->contextService()->traceId()}\n" .
             self::EMPTY_LINE;
 
         $content = str_replace(['\/', '/app/'], ['/', ''], $content);
@@ -267,11 +265,11 @@ class AlertService
         } catch (Throwable) {
             $content = self::EMPTY_LINE .
                 $eol .
-                "**{$this->contextService->project()}**{$eol}" .
+                "**{$this->contextService()->project()}**{$eol}" .
                 "**{$tenantName}**{$eol}" .
                 $eol .
                 "**{$method}** _{$path}_ {$manyTimes}\n" .
-                "Trace: {$this->contextService->traceId()}\n" .
+                "Trace: {$this->contextService()->traceId()}\n" .
                 self::EMPTY_LINE;
 
             $this->makeRequest(self::CHANNEL_BUGS, [
@@ -337,14 +335,14 @@ class AlertService
      */
     private function makeRequest(string $channel, array $message): void
     {
-        if ($this->contextService->env() === 'test') {
+        if ($this->contextService()->env() === 'test') {
             return;
         }
 
         $token = $this->tokens[array_rand($this->tokens)];
         $channelId = $this->parseChannel($channel);
         $this->sharedDiscordCache->addMessage($channel, $message);
-        $this->requestClient->post(
+        $this->requestClient()->post(
             "https://discord.com/api/channels/{$channelId}/messages",
             $message,
             [
@@ -372,6 +370,6 @@ class AlertService
 
         $configuration = $this->channels();
 
-        return $configuration[$this->contextService->env()][$channelId];
+        return $configuration[$this->contextService()->env()][$channelId];
     }
 }

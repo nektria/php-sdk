@@ -6,10 +6,10 @@ namespace Nektria\Listener;
 
 use Nektria\Console\Console;
 use Nektria\Document\ThrowableDocument;
+use Nektria\Infrastructure\VariableCache;
 use Nektria\Service\AlertService;
 use Nektria\Service\ContextService;
 use Nektria\Service\LogService;
-use Nektria\Service\VariableCache;
 use Symfony\Component\Console\ConsoleEvents;
 use Symfony\Component\Console\Event\ConsoleErrorEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;

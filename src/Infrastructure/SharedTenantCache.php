@@ -2,11 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Nektria\Service;
+namespace Nektria\Infrastructure;
 
 use Nektria\Document\Tenant;
 use Nektria\Dto\TenantMetadata;
-use Nektria\Infrastructure\SharedRedisCache;
 
 /**
  * @phpstan-type TenantMetadataArray mixed

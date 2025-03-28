@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Nektria\Service;
+namespace Nektria\Infrastructure;
 
-use Nektria\Infrastructure\SharedRedisCache;
+use Nektria\Service\AlertService;
 
 use function count;
 

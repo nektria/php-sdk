@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace Nektria\Service;
 
 use Nektria\Document\Document;
+use Nektria\Dto\ArrayContainer;
 use Nektria\Exception\NektriaException;
 use Nektria\Infrastructure\BusInterface;
-use Nektria\Infrastructure\SecurityServiceInterface;
 use Nektria\Message\Command;
 use Nektria\Message\Event;
 use Nektria\Message\Query;
@@ -26,10 +26,10 @@ use Throwable;
 use function count;
 use function in_array;
 
-class Bus implements BusInterface
+readonly class Bus extends AbstractService implements BusInterface
 {
     /**
-     * @var array<int, array{
+     * @var ArrayContainer<array{
      *     event: Event,
      *     transport: string|null,
      *     delayMs: int|null,
@@ -40,14 +40,14 @@ class Bus implements BusInterface
      *     }|null
      * }>
      */
-    private array $delayedEvents;
+    private ArrayContainer $delayedEvents;
 
     public function __construct(
-        private readonly MessageBusInterface $bus,
-        private readonly ContextService $contextService,
-        private readonly SecurityServiceInterface $userService,
+        private MessageBusInterface $bus,
     ) {
-        $this->delayedEvents = [];
+        parent::__construct();
+
+        $this->delayedEvents = new ArrayContainer();
     }
 
     /**
@@ -63,13 +63,13 @@ class Bus implements BusInterface
         ?int $delayMs = null,
         ?array $retryOptions = null
     ): void {
-        if ($this->contextService->delayRabbit()) {
-            $this->delayedEvents[] = [
+        if ($this->contextService()->delayRabbit()) {
+            $this->delayedEvents->push([
                 'event' => $event,
                 'transport' => $transport,
                 'delayMs' => $delayMs,
                 'retryOptions' => $retryOptions,
-            ];
+            ]);
         } else {
             $this->dispatchEvent($event, $transport, $delayMs, $retryOptions);
         }
@@ -93,23 +93,23 @@ class Bus implements BusInterface
 
         $stamps = [
             new ContextStamp(
-                traceId: $this->contextService->traceId(),
-                context: $this->contextService->context(),
-                tenantId: $this->contextService->tenantId(),
-                userId: $this->contextService->userId(),
+                traceId: $this->contextService()->traceId(),
+                context: $this->contextService()->context(),
+                tenantId: $this->contextService()->tenantId(),
+                userId: $this->contextService()->userId(),
             ),
         ];
 
-        if ($transport !== null && !$this->contextService->forceSync()) {
+        if ($transport !== null && !$this->contextService()->forceSync()) {
             $stamps[] = new TransportNamesStamp([$transport]);
         }
 
-        if ($this->contextService->forceSync()) {
+        if ($this->contextService()->forceSync()) {
             $stamps[] = new TransportNamesStamp(['sync']);
         }
 
         if ($retryOptions !== null) {
-            if ($this->contextService->env() === ContextService::DEV) {
+            if ($this->contextService()->env() === ContextService::DEV) {
                 $stamps[] = new RetryStamp(
                     max(1, $retryOptions['currentTry'] ?? 1),
                     min(10, $retryOptions['maxTries']),
@@ -142,7 +142,7 @@ class Bus implements BusInterface
 
     final public function dispatchDelayedEvents(): void
     {
-        foreach ($this->delayedEvents as $event) {
+        foreach ($this->delayedEvents->list() as $event) {
             try {
                 $this->dispatchEvent(
                     $event['event'],
@@ -153,7 +153,7 @@ class Bus implements BusInterface
             } catch (Throwable) {
             }
         }
-        $this->delayedEvents = [];
+        $this->delayedEvents->empty();
     }
 
     /**
@@ -171,23 +171,23 @@ class Bus implements BusInterface
     ): void {
         $stamps = [
             new ContextStamp(
-                traceId: $this->contextService->traceId(),
-                context: $this->contextService->context(),
-                tenantId: $this->contextService->tenantId(),
-                userId: $this->contextService->userId(),
+                traceId: $this->contextService()->traceId(),
+                context: $this->contextService()->context(),
+                tenantId: $this->contextService()->tenantId(),
+                userId: $this->contextService()->userId(),
             ),
         ];
 
-        if ($transport !== null && !$this->contextService->forceSync()) {
+        if ($transport !== null && !$this->contextService()->forceSync()) {
             $stamps[] = new TransportNamesStamp([$transport]);
         }
 
-        if ($this->contextService->forceSync()) {
+        if ($this->contextService()->forceSync()) {
             $stamps[] = new TransportNamesStamp(['sync']);
         }
 
         if ($retryOptions !== null) {
-            if ($this->contextService->env() === ContextService::DEV) {
+            if ($this->contextService()->env() === ContextService::DEV) {
                 $stamps[] = new RetryStamp(
                     max(1, $retryOptions['currentTry'] ?? 1),
                     min(10, $retryOptions['maxTries']),
@@ -231,10 +231,10 @@ class Bus implements BusInterface
 
             $result = $this->bus->dispatch($query, [
                 new ContextStamp(
-                    traceId: $this->contextService->traceId(),
-                    context: $this->contextService->context(),
-                    tenantId: $this->contextService->tenantId(),
-                    userId: $this->contextService->userId(),
+                    traceId: $this->contextService()->traceId(),
+                    context: $this->contextService()->context(),
+                    tenantId: $this->contextService()->tenantId(),
+                    userId: $this->contextService()->userId(),
                 ),
             ])->last(HandledStamp::class);
 
@@ -280,7 +280,7 @@ class Bus implements BusInterface
                 return;
             }
 
-            $this->userService->validateRole($instance->roles);
+            $this->securityService()->validateRole($instance->roles);
         } catch (Throwable $e) {
             throw NektriaException::new($e);
         }

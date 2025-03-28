@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace Nektria\Service;
 
+use Nektria\Infrastructure\SharedInvalidCoordinatesCache;
+use Nektria\Infrastructure\SharedUserV2Cache;
+
 use function count;
 
 /**
@@ -64,15 +67,14 @@ use function count;
  *      coordinates: CompassCoordinate[],
  * }
  */
-readonly class CompassClient
+readonly class CompassClient extends AbstractService
 {
     public function __construct(
-        protected ContextService $contextService,
         protected SharedUserV2Cache $sharedUserCache,
-        private RequestClient $requestClient,
         private SharedInvalidCoordinatesCache $sharedInvalidCoordinatesCache,
         private string $compassHost
     ) {
+        parent::__construct();
     }
 
     /**
@@ -95,7 +97,7 @@ readonly class CompassClient
         if (
             $address['addressLine1'] === ''
             || $address['postalCode'] === '08999'
-            || $this->contextService->isTest()
+            || $this->contextService()->isTest()
         ) {
             return [
                 'latitude' => $address['latitude'],
@@ -103,7 +105,7 @@ readonly class CompassClient
             ];
         }
 
-        $coordinates = $this->requestClient->patch(
+        $coordinates = $this->requestClient()->patch(
             "{$this->compassHost}/api/admin/addresses/fix-address",
             data: $address,
             headers: $this->getHeaders(),
@@ -125,7 +127,7 @@ readonly class CompassClient
         if (
             $address['addressLine1'] === ''
             || $address['postalCode'] === '08999'
-            || $this->contextService->isTest()
+            || $this->contextService()->isTest()
         ) {
             return [
                 'latitude' => $address['latitude'],
@@ -133,7 +135,7 @@ readonly class CompassClient
             ];
         }
 
-        return $this->requestClient->get(
+        return $this->requestClient()->get(
             "{$this->compassHost}/api/admin/addresses/coordinates",
             data: $address,
             headers: $this->getHeaders(),
@@ -163,7 +165,7 @@ readonly class CompassClient
         }
 
         /** @var CompassLegacyDistance[] $data */
-        $data = $this->requestClient->get(
+        $data = $this->requestClient()->get(
             "{$this->compassHost}/api/admin/distances",
             data: [
                 'wayPoints' => implode('|', $list),
@@ -196,7 +198,7 @@ readonly class CompassClient
      */
     public function getDistances(string $travelMode, array $waypoints): array
     {
-        return $this->requestClient->patch(
+        return $this->requestClient()->patch(
             "{$this->compassHost}/api/admin/distances",
             data: [
                 'waypoints' => $waypoints,
@@ -213,7 +215,7 @@ readonly class CompassClient
      */
     public function getGeoPolygons(array $center, string $travelMode, array $distances, string $type): array
     {
-        return $this->requestClient->get(
+        return $this->requestClient()->get(
             "{$this->compassHost}/api/admin/geo-polygons",
             data: [
                 'center' => "{$center['latitude']},{$center['longitude']}",
@@ -237,7 +239,7 @@ readonly class CompassClient
             $list[] = "{$coordinate['latitude']},{$coordinate['longitude']}";
         }
 
-        return $this->requestClient->get(
+        return $this->requestClient()->get(
             "{$this->compassHost}/api/admin/distances",
             data: [
                 'wayPoints' => implode('|', $list),
@@ -252,7 +254,7 @@ readonly class CompassClient
      */
     public function ping(): array
     {
-        return $this->requestClient->get("{$this->compassHost}/ping")->json();
+        return $this->requestClient()->get("{$this->compassHost}/ping")->json();
     }
 
     /**
@@ -263,12 +265,12 @@ readonly class CompassClient
         if (
             $address['addressLine1'] === ''
             || $address['postalCode'] === '08999'
-            || $this->contextService->isTest()
+            || $this->contextService()->isTest()
         ) {
             return;
         }
 
-        $this->requestClient->put(
+        $this->requestClient()->put(
             "{$this->compassHost}/api/admin/addresses",
             data: $address,
             headers: $this->getHeaders(),
@@ -280,7 +282,7 @@ readonly class CompassClient
      */
     private function getHeaders(): array
     {
-        $tenantId = $this->contextService->tenantId() ?? 'none';
+        $tenantId = $this->contextService()->tenantId() ?? 'none';
         $apiKey = $this->sharedUserCache->read("ADMIN_{$tenantId}")->apiKey ?? 'none';
 
         return [
@@ -288,8 +290,8 @@ readonly class CompassClient
             'Content-type' => 'application/json',
             'X-Api-Id' => $apiKey,
             'X-Nektria-App' => 'compass',
-            'X-Trace' => $this->contextService->traceId(),
-            'X-Origin' => $this->contextService->project(),
+            'X-Trace' => $this->contextService()->traceId(),
+            'X-Origin' => $this->contextService()->project(),
         ];
     }
 }

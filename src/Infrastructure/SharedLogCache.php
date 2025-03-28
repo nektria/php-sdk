@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Nektria\Service;
+namespace Nektria\Infrastructure;
 
-use Nektria\Infrastructure\SharedRedisCache;
+use Nektria\Service\ContextService;
 
 use function array_slice;
 
@@ -13,10 +13,10 @@ use function array_slice;
  *     payload: mixed[],
  *     message: string,
  *     project: string,
- *     context: string,
  *     tenantId: string | null,
  *     tenant: string | null,
  *     userId: string | null,
+ *     labels: string[] | null,
  * }
  *
  * @extends SharedRedisCache<CachedLog[]>

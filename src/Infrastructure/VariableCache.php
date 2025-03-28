@@ -2,10 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Nektria\Service;
+namespace Nektria\Infrastructure;
 
 use Nektria\Dto\Clock;
-use Nektria\Infrastructure\InternalRedisCache;
 
 /**
  * @extends InternalRedisCache<string|bool|int|float>

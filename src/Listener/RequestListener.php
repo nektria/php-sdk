@@ -15,13 +15,13 @@ use Nektria\Dto\Clock;
 use Nektria\Exception\InsufficientCredentialsException;
 use Nektria\Exception\InvalidAuthorizationException;
 use Nektria\Infrastructure\SecurityServiceInterface;
+use Nektria\Infrastructure\SharedTemporalConsumptionCache;
+use Nektria\Infrastructure\VariableCache;
 use Nektria\Service\AlertService;
 use Nektria\Service\Bus;
 use Nektria\Service\ContextService;
 use Nektria\Service\LogService;
 use Nektria\Service\RoleManager;
-use Nektria\Service\SharedTemporalConsumptionCache;
-use Nektria\Service\VariableCache;
 use Nektria\Util\JsonUtil;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
@@ -357,9 +357,10 @@ abstract class RequestListener implements EventSubscriberInterface
         }
 
         $routeParams = $event->getRequest()->attributes->get('_route_params');
+        $routeParams['path'] = $route;
+        $routeParams['context'] = 'request';
         if ($logLevel !== self::LOG_LEVEL_NONE) {
             if ($status < 400) {
-                $isDebug = true;
                 if ($event->getRequest()->getMethod() !== Request::METHOD_GET) {
                     $isDebug = false;
                 } else {
@@ -375,28 +376,22 @@ abstract class RequestListener implements EventSubscriberInterface
                     $this->logService->debug(
                         [
                             'headers' => $headers,
-                            'context' => 'request',
-                            'role' => $this->contextService->context(),
-                            'code' => $route,
-                            'ref' => $this->contextService->userId() ?? 'anonymous',
-                            'request' => $requestContent,
-                            'requestParams' => $routeParams,
-                            'size' => $length,
-                            'response' => $responseContent,
                             'httpRequest' => [
                                 'requestMethod' => $event->getRequest()->getMethod(),
                                 'requestUrl' => $path,
                                 'status' => ($this->originalResponse ?? $event->getResponse())->getStatusCode(),
                                 'latency' => round($this->executionTime, 3) . 's',
                             ],
+                            'request' => $requestContent,
+                            'response' => $responseContent,
+                            'size' => $length,
                         ],
+                        $routeParams,
                         $resume,
                         in_array($route, $this->ignoreLogs(), true)
                     );
                 } else {
                     $this->logService->info([
-                        'code' => $route,
-                        'context' => 'request',
                         'headers' => $headers,
                         'httpRequest' => [
                             'requestMethod' => $event->getRequest()->getMethod(),
@@ -405,17 +400,12 @@ abstract class RequestListener implements EventSubscriberInterface
                             'latency' => round($this->executionTime, 3) . 's',
                         ],
                         'request' => $requestContent,
-                        'requestParams' => $routeParams,
                         'response' => $responseContent,
-                        'role' => $this->contextService->context(),
                         'size' => $length,
-                        'userId' => $this->contextService->userId() ?? 'anon',
-                    ], $resume);
+                    ], $routeParams, $resume);
                 }
             } elseif ($status < 500) {
                 $this->logService->warning([
-                    'code' => $route,
-                    'context' => 'request',
                     'headers' => $headers,
                     'httpRequest' => [
                         'requestMethod' => $event->getRequest()->getMethod(),
@@ -424,17 +414,12 @@ abstract class RequestListener implements EventSubscriberInterface
                         'latency' => round($this->executionTime, 3) . 's',
                     ],
                     'request' => $requestContent,
-                    'requestParams' => $routeParams,
                     'response' => $responseContent,
-                    'role' => $this->contextService->context(),
                     'size' => $length,
-                    'userId' => $this->contextService->userId() ?? 'anon',
-                ], $resume);
+                ], $routeParams, $resume);
             } else {
                 $this->logService->temporalLogs();
                 $this->logService->error([
-                    'code' => $route,
-                    'context' => 'request',
                     'headers' => $headers,
                     'httpRequest' => [
                         'requestMethod' => $event->getRequest()->getMethod(),
@@ -443,12 +428,9 @@ abstract class RequestListener implements EventSubscriberInterface
                         'latency' => round($this->executionTime, 3) . 's',
                     ],
                     'request' => $requestContent,
-                    'requestParams' => $routeParams,
                     'response' => $responseContent,
-                    'role' => $this->contextService->context(),
                     'size' => $length,
-                    'userId' => $this->contextService->userId() ?? 'anon',
-                ], $resume);
+                ], $routeParams, $resume);
             }
         }
 

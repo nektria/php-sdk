@@ -13,14 +13,14 @@ use Nektria\Dto\Clock;
 use Nektria\Exception\ResourceNotFoundException;
 use Nektria\Infrastructure\BusInterface;
 use Nektria\Infrastructure\SecurityServiceInterface;
+use Nektria\Infrastructure\SharedVariableCache;
+use Nektria\Infrastructure\VariableCache;
 use Nektria\Message\Command;
 use Nektria\Message\Event;
 use Nektria\Message\Query;
 use Nektria\Service\AlertService;
 use Nektria\Service\ContextService;
 use Nektria\Service\LogService;
-use Nektria\Service\SharedVariableCache;
-use Nektria\Service\VariableCache;
 use Nektria\Util\JsonUtil;
 use Nektria\Util\MessageStamp\ContextStamp;
 use Nektria\Util\MessageStamp\RetryStamp;
@@ -277,40 +277,37 @@ abstract class MessageListener implements EventSubscriberInterface
             $resume = "/{$messageClass}/{$message->ref()}";
             $time = max(0.001, round(microtime(true) - $this->executionTime, 3)) . 's';
 
+            $messageParams = $message->params();
+            $messageParams['context'] = 'messenger';
+            $messageParams['path'] = $this->normalizeClass($message::class);
+            $messageParams['queue'] = $exchangeName;
+
             if ($logLevel === self::LOG_LEVEL_DEBUG) {
                 $this->logService->debug([
-                    'context' => 'messenger',
-                    'role' => $this->contextService->context(),
-                    'code' => $this->normalizeClass($message::class),
                     'body' => $data,
                     'executionTime' => $time,
-                    'messageReceivedAt' => $this->messageStartedAt,
-                    'messageCompletedAt' => $this->messageCompletedAt,
-                    'queue' => $exchangeName,
                     'httpRequest' => [
                         'requestUrl' => $resume,
                         'requestMethod' => 'QUEUE',
                         'status' => 200,
                         'latency' => $time,
                     ],
-                ], $resume);
+                    'messageReceivedAt' => $this->messageStartedAt,
+                    'messageCompletedAt' => $this->messageCompletedAt,
+                ], $messageParams, $resume);
             } else {
                 $this->logService->info([
-                    'context' => 'messenger',
-                    'role' => $this->contextService->context(),
-                    'code' => $this->normalizeClass($message::class),
                     'body' => $data,
                     'executionTime' => $time,
-                    'messageReceivedAt' => $this->messageStartedAt,
-                    'messageCompletedAt' => $this->messageCompletedAt,
-                    'queue' => $exchangeName,
                     'httpRequest' => [
                         'requestUrl' => $resume,
                         'requestMethod' => 'QUEUE',
                         'status' => 200,
                         'latency' => $time,
                     ],
-                ], $resume);
+                    'messageReceivedAt' => $this->messageStartedAt,
+                    'messageCompletedAt' => $this->messageCompletedAt,
+                ], $messageParams, $resume);
             }
         }
         $this->securityService->clearAuthentication();

@@ -8,7 +8,7 @@ use Nektria\Exception\NektriaException;
 use Nektria\Util\File\ImageManipulator;
 use Nektria\Util\File\JpegImageManipulator;
 
-class ImageManipulatorManager
+readonly class ImageManipulatorManager extends AbstractService
 {
     public function getManipulator(string $filename): ImageManipulator
     {

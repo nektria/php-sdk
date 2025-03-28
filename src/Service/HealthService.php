@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Nektria\Service;
 
 use Nektria\Infrastructure\ArrayDocumentReadModel;
+use Nektria\Infrastructure\VariableCache;
 use Nektria\Util\StringUtil;
 use RuntimeException;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -49,6 +50,10 @@ class HealthService
             'results' => $data,
             'errors' => $this->errors,
         ];
+    }
+
+    public function setContainer(ContainerInterface $container): void
+    {
     }
 
     protected function addError(string $key, string $message): void
@@ -193,13 +198,13 @@ class HealthService
     private function checkRouteManager(): array
     {
         $key = 'routemanager';
-        if (!$this->container->has(RouteManagerClient::class)) {
+        if (!$this->container->has(RoutemanagerClient::class)) {
             return [];
         }
 
         try {
-            /** @var RouteManagerClient $srvc */
-            $srvc = $this->container->get(RouteManagerClient::class);
+            /** @var RoutemanagerClient $srvc */
+            $srvc = $this->container->get(RoutemanagerClient::class);
             $srvc->ping();
 
             return [$key => true];
@@ -216,13 +221,13 @@ class HealthService
     private function checkYieldManager(): array
     {
         $key = 'yieldmanager';
-        if (!$this->container->has(YieldManagerClient::class)) {
+        if (!$this->container->has(YieldmanagerClient::class)) {
             return [];
         }
 
         try {
-            /** @var YieldManagerClient $srvc */
-            $srvc = $this->container->get(YieldManagerClient::class);
+            /** @var YieldmanagerClient $srvc */
+            $srvc = $this->container->get(YieldmanagerClient::class);
             $srvc->ping();
 
             return [$key => true];

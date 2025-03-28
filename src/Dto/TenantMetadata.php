@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Nektria\Dto;
 
-use Nektria\Service\SharedTenantCache;
+use Nektria\Infrastructure\SharedTenantCache;
 
 /**
  * @phpstan-import-type TenantMetadataArray from SharedTenantCache

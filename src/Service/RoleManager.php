@@ -8,7 +8,7 @@ use Nektria\Exception\InsufficientCredentialsException;
 
 use function in_array;
 
-class RoleManager
+readonly class RoleManager extends AbstractService
 {
     private const array HIERARCHY = [
         self::ROLE_SYSTEM => [

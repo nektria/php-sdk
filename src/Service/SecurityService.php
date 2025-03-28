@@ -10,17 +10,16 @@ use Nektria\Dto\LocalClock;
 use Nektria\Dto\UserContainer;
 use Nektria\Exception\InvalidAuthorizationException;
 use Nektria\Infrastructure\SecurityServiceInterface;
+use Nektria\Infrastructure\SharedUserV2Cache;
 
-class SecurityService implements SecurityServiceInterface
+readonly class SecurityService extends AbstractService implements SecurityServiceInterface
 {
-    protected readonly UserContainer $userContainer;
+    protected UserContainer $userContainer;
 
     public function __construct(
-        protected readonly ContextService $contextService,
-        protected readonly SharedUserV2Cache $sharedUserCache,
-        protected readonly RoleManager $roleManager,
-        protected readonly YieldManagerClient $yieldManagerClient,
+        protected SharedUserV2Cache $sharedUserCache,
     ) {
+        parent::__construct();
         $this->userContainer = new UserContainer();
     }
 
@@ -43,8 +42,8 @@ class SecurityService implements SecurityServiceInterface
             throw new InvalidAuthorizationException();
         }
 
-        $this->contextService->setTenant($user->tenantId, $user->tenant->name);
-        $this->contextService->setUserId($user->id);
+        $this->contextService()->setTenant($user->tenantId, $user->tenant->name);
+        $this->contextService()->setUserId($user->id);
         LocalClock::defaultTimezone($user->tenant->timezone);
     }
 
@@ -63,8 +62,8 @@ class SecurityService implements SecurityServiceInterface
             throw new InvalidAuthorizationException();
         }
 
-        $this->contextService->setTenant($user->tenantId, $user->tenant->name);
-        $this->contextService->setUserId($user->id);
+        $this->contextService()->setTenant($user->tenantId, $user->tenant->name);
+        $this->contextService()->setUserId($user->id);
         LocalClock::defaultTimezone($user->tenant->timezone);
     }
 
@@ -83,15 +82,15 @@ class SecurityService implements SecurityServiceInterface
             throw new InvalidAuthorizationException();
         }
 
-        $this->contextService->setTenant($user->tenantId, $user->tenant->name);
-        $this->contextService->setUserId($user->id);
+        $this->contextService()->setTenant($user->tenantId, $user->tenant->name);
+        $this->contextService()->setUserId($user->id);
         LocalClock::defaultTimezone($user->tenant->timezone);
     }
 
     public function clearAuthentication(): void
     {
-        $this->contextService->setTenant(null, null);
-        $this->contextService->setUserId(null);
+        $this->contextService()->setTenant(null, null);
+        $this->contextService()->setUserId(null);
         LocalClock::defaultTimezone('UTC');
         $this->userContainer->setUser(null);
     }
@@ -127,9 +126,9 @@ class SecurityService implements SecurityServiceInterface
     public function validateRole(array $roles): void
     {
         if ($this->currentUser() === null) {
-            $this->roleManager->checkAtLeast(RoleManager::ROLE_ANY, $roles);
+            $this->roleManager()->checkAtLeast(RoleManager::ROLE_ANY, $roles);
         } else {
-            $this->roleManager->checkAtLeast($this->currentUser()->role, $roles);
+            $this->roleManager()->checkAtLeast($this->currentUser()->role, $roles);
         }
     }
 }

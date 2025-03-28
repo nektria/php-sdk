@@ -9,9 +9,10 @@ use Nektria\Document\FileDocument;
 use Nektria\Dto\RequestResponse;
 use Nektria\Exception\NektriaException;
 use Nektria\Exception\RequestException;
+use Nektria\Infrastructure\VariableCache;
 use Nektria\Util\JsonUtil;
 
-readonly class GoogleClient
+readonly class GoogleClient extends AbstractService
 {
     public const string TOKEN_HASH = 'sdk_google_token';
 
@@ -21,12 +22,11 @@ readonly class GoogleClient
      * @param string[] $googleScopes
      */
     public function __construct(
-        private RequestClient $requestClient,
         private VariableCache $variableCache,
-        private ContextService $contextService,
         private string $googleCredentialsFile,
         private array $googleScopes,
     ) {
+        parent::__construct();
     }
 
     public function storageDeleteFile(
@@ -35,9 +35,9 @@ readonly class GoogleClient
         ?string $project = null
     ): void {
         try {
-            $project ??= $this->contextService->project();
+            $project ??= $this->contextService()->project();
             $folder = urlencode("{$project}/{$folder}/");
-            $bucket = "nektria-{$this->contextService->env()}";
+            $bucket = "nektria-{$this->contextService()->env()}";
 
             $this->delete(
                 "https://storage.googleapis.com/storage/v1/b/{$bucket}/o/{$folder}{$filename}",
@@ -55,9 +55,9 @@ readonly class GoogleClient
         ?string $project = null
     ): void {
         try {
-            $project ??= $this->contextService->project();
+            $project ??= $this->contextService()->project();
             $folder = urlencode("{$project}/{$folder}/");
-            $bucket = "nektria-{$this->contextService->env()}";
+            $bucket = "nektria-{$this->contextService()->env()}";
 
             $this->delete(
                 "https://storage.googleapis.com/storage/v1/b/{$bucket}/folders/{$folder}",
@@ -76,9 +76,9 @@ readonly class GoogleClient
         ?string $project = null
     ): FileDocument {
         try {
-            $project ??= $this->contextService->project();
+            $project ??= $this->contextService()->project();
             $folder = urlencode("{$project}/{$folder}/");
-            $bucket = "nektria-{$this->contextService->env()}";
+            $bucket = "nektria-{$this->contextService()->env()}";
 
             $data = $this->get(
                 "https://storage.googleapis.com/storage/v1/b/{$bucket}/o/{$folder}{$filename}",
@@ -106,9 +106,9 @@ readonly class GoogleClient
         ?string $project = null
     ): void {
         try {
-            $project ??= $this->contextService->project();
+            $project ??= $this->contextService()->project();
             $folder = urlencode("{$project}/{$folder}/");
-            $bucket = "nektria-{$this->contextService->env()}";
+            $bucket = "nektria-{$this->contextService()->env()}";
 
             $this->file(
                 "https://storage.googleapis.com/upload/storage/v1/b/{$bucket}/o",
@@ -137,7 +137,7 @@ readonly class GoogleClient
         $headers['Authorization'] = "Bearer {$token}";
 
         try {
-            return $this->requestClient->delete(
+            return $this->requestClient()->delete(
                 $url,
                 headers: $headers,
             );
@@ -169,7 +169,7 @@ readonly class GoogleClient
         $headers['Authorization'] = "Bearer {$token}";
 
         try {
-            return $this->requestClient->file(
+            return $this->requestClient()->file(
                 $url,
                 filename: $filename,
                 data: $data,
@@ -204,7 +204,7 @@ readonly class GoogleClient
         $headers['Authorization'] = "Bearer {$token}";
 
         try {
-            return $this->requestClient->get(
+            return $this->requestClient()->get(
                 $url,
                 data: $data,
                 headers: $headers,
@@ -240,7 +240,7 @@ readonly class GoogleClient
         }
 
         try {
-            return $this->requestClient->post(
+            return $this->requestClient()->post(
                 $url,
                 data: $data,
                 headers: $headers,

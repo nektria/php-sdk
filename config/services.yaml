@@ -6,13 +6,19 @@ services:
     autowire: true
     autoconfigure: true
     bind:
+      array $googleScopes: []
       string $alertsToken: 'none'
+      string $compassHost: 'none'
       string $env: '%kernel.environment%'
+      string $googleCredentialsFile: 'none'
+      string $mercureHost: 'none'
+      string $metricsHost: 'none'
+      string $mercureToken: 'none'
       string $project: 'sdk'
       string $redisDsn: 'none'
-      string $yieldManagerHost: 'none'
-      string $mercureToken: 'none'
-      string $mercureHost: 'none'
+      string $redisPrefix: 'phpsdk'
+      string $yieldmanagerHost: 'none'
+      string $routemanagerHost: 'none'
 
   Nektria\Console\:
     resource: '../src/Console'
@@ -21,21 +27,14 @@ services:
       - inject: [ '@service_container' ]
 
   Nektria\Infrastructure\SecurityServiceInterface: '@Nektria\Service\SecurityService'
-  Nektria\Service\AlertService: ~
-  Nektria\Service\Bus: ~
-  Nektria\Service\ContextService: ~
-  Nektria\Service\HealthService: ~
-  Nektria\Service\LogService: ~
-  Nektria\Service\RequestClient: ~
-  Nektria\Service\RoleManager: ~
-  Nektria\Service\SharedDiscordCache: ~
-  Nektria\Service\SharedLogCache: ~
-  Nektria\Service\SharedTenantCache: ~
-  Nektria\Service\SharedUserV2Cache: ~
-  Nektria\Service\SharedVariableCache: ~
-  Nektria\Service\SocketService: ~
-  Nektria\Service\SecurityService: ~
-  Nektria\Service\YieldManagerClient: ~
   Nektria\Test\TestRunnerListener: ~
+
+  Nektria\Infrastructure\:
+    resource: '../src/Infrastructure'
+
+  Nektria\Service\:
+    resource: '../src/Service'
+    calls:
+      - setContainer: [ '@service_container' ]
 
   Symfony\Component\DependencyInjection\ContainerInterface: '@service_container'

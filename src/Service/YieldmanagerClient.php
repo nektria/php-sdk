@@ -9,6 +9,7 @@ use Nektria\Document\User;
 use Nektria\Dto\LocalClock;
 use Nektria\Dto\TenantMetadata;
 use Nektria\Exception\RequestException;
+use Nektria\Infrastructure\SharedUserV2Cache;
 
 /**
  * @phpstan-type YMTimeWindow array{
@@ -246,22 +247,21 @@ use Nektria\Exception\RequestException;
  *     response: string
  * }
  */
-readonly class YieldManagerClient
+readonly class YieldmanagerClient extends AbstractService
 {
     public function __construct(
-        protected ContextService $contextService,
         protected SharedUserV2Cache $sharedUserCache,
-        protected RequestClient $requestClient,
-        protected string $yieldManagerHost
+        protected string $yieldmanagerHost
     ) {
+        parent::__construct();
     }
 
     public function deleteAreaFromExpressShifts(
         LocalClock $date,
         string $area
     ): void {
-        $this->requestClient->patch(
-            "{$this->yieldManagerHost}/api/admin/areas/delete-areas-to-express-shifts",
+        $this->requestClient()->patch(
+            "{$this->yieldmanagerHost}/api/admin/areas/delete-areas-to-express-shifts",
             data: [
                 'area' => $area,
                 'date' => $date->dateString(),
@@ -274,8 +274,8 @@ readonly class YieldManagerClient
         LocalClock $date,
         string $area
     ): void {
-        $this->requestClient->patch(
-            "{$this->yieldManagerHost}/api/admin/areas/delete-areas-to-shifts",
+        $this->requestClient()->patch(
+            "{$this->yieldmanagerHost}/api/admin/areas/delete-areas-to-shifts",
             data: [
                 'area' => $area,
                 'date' => $date->dateString(),
@@ -286,8 +286,8 @@ readonly class YieldManagerClient
 
     public function deleteOrder(string $orderNumber): void
     {
-        $this->requestClient->delete(
-            "{$this->yieldManagerHost}/api/admin/orders/{$orderNumber}",
+        $this->requestClient()->delete(
+            "{$this->yieldmanagerHost}/api/admin/orders/{$orderNumber}",
             headers: $this->getHeaders(),
         );
     }
@@ -297,8 +297,8 @@ readonly class YieldManagerClient
      */
     public function getExpressOrdersFromWarehouseAndDate(string $warehouseId, LocalClock $date): array
     {
-        return $this->requestClient->get(
-            "{$this->yieldManagerHost}/api/admin/warehouses/{$warehouseId}/express-orders",
+        return $this->requestClient()->get(
+            "{$this->yieldmanagerHost}/api/admin/warehouses/{$warehouseId}/express-orders",
             data: [
                 'date' => $date->dateString(),
             ],
@@ -311,8 +311,8 @@ readonly class YieldManagerClient
      */
     public function getOrder(string $orderNumber): array
     {
-        return $this->requestClient->get(
-            "{$this->yieldManagerHost}/api/admin/orders/{$orderNumber}",
+        return $this->requestClient()->get(
+            "{$this->yieldmanagerHost}/api/admin/orders/{$orderNumber}",
             headers: $this->getHeaders(),
         )->json();
     }
@@ -322,8 +322,8 @@ readonly class YieldManagerClient
      */
     public function getOrdersFromWarehouseAndDate(string $warehouseId, LocalClock $date): array
     {
-        return $this->requestClient->get(
-            "{$this->yieldManagerHost}/api/admin/warehouses/{$warehouseId}/orders",
+        return $this->requestClient()->get(
+            "{$this->yieldmanagerHost}/api/admin/warehouses/{$warehouseId}/orders",
             data: [
                 'date' => $date->dateString(),
             ],
@@ -336,8 +336,8 @@ readonly class YieldManagerClient
      */
     public function getShift(string $shiftId): array
     {
-        return $this->requestClient->get(
-            "{$this->yieldManagerHost}/api/admin/shifts/{$shiftId}",
+        return $this->requestClient()->get(
+            "{$this->yieldmanagerHost}/api/admin/shifts/{$shiftId}",
             headers: $this->getHeaders(),
         )->json();
     }
@@ -347,8 +347,8 @@ readonly class YieldManagerClient
      */
     public function getShiftFromOrder(string $orderNumber): array
     {
-        return $this->requestClient->get(
-            "{$this->yieldManagerHost}/api/admin/orders/{$orderNumber}/shift",
+        return $this->requestClient()->get(
+            "{$this->yieldmanagerHost}/api/admin/orders/{$orderNumber}/shift",
             headers: $this->getHeaders(),
         )->json();
     }
@@ -358,8 +358,8 @@ readonly class YieldManagerClient
      */
     public function getShiftsFromDateAndArea(LocalClock $date, string $area): array
     {
-        return $this->requestClient->get(
-            "{$this->yieldManagerHost}/api/admin/shifts-by-date-and-area",
+        return $this->requestClient()->get(
+            "{$this->yieldmanagerHost}/api/admin/shifts-by-date-and-area",
             data: [
                 'date' => $date->dateString(),
                 'area' => $area,
@@ -373,8 +373,8 @@ readonly class YieldManagerClient
      */
     public function getShiftsFromWarehouseAndDate(string $warehouseId, LocalClock $date): array
     {
-        return $this->requestClient->get(
-            "{$this->yieldManagerHost}/api/admin/warehouses/{$warehouseId}/shifts",
+        return $this->requestClient()->get(
+            "{$this->yieldmanagerHost}/api/admin/warehouses/{$warehouseId}/shifts",
             data: [
                 'date' => $date->dateString(),
             ],
@@ -384,13 +384,13 @@ readonly class YieldManagerClient
 
     public function getUser(string $userId): ?User
     {
-        if ($this->contextService->isTest()) {
+        if ($this->contextService()->isTest()) {
             return null;
         }
 
         try {
-            $data = $this->requestClient->get(
-                "{$this->yieldManagerHost}/api/admin/users/{$userId}",
+            $data = $this->requestClient()->get(
+                "{$this->yieldmanagerHost}/api/admin/users/{$userId}",
                 headers: $this->getHeaders(),
             )->json();
         } catch (RequestException) {
@@ -423,8 +423,8 @@ readonly class YieldManagerClient
      */
     public function getWarehouse(string $warehouseId): array
     {
-        return $this->requestClient->get(
-            "{$this->yieldManagerHost}/api/admin/warehouses/{$warehouseId}",
+        return $this->requestClient()->get(
+            "{$this->yieldmanagerHost}/api/admin/warehouses/{$warehouseId}",
             headers: $this->getHeaders(),
         )->json();
     }
@@ -434,8 +434,8 @@ readonly class YieldManagerClient
      */
     public function getWarehouseResume(string $warehouseId, LocalClock $date): array
     {
-        return $this->requestClient->get(
-            "{$this->yieldManagerHost}/api/admin/warehouses/{$warehouseId}/resume",
+        return $this->requestClient()->get(
+            "{$this->yieldmanagerHost}/api/admin/warehouses/{$warehouseId}/resume",
             data: [
                 'date' => $date->dateString(),
             ],
@@ -448,8 +448,8 @@ readonly class YieldManagerClient
      */
     public function getWarehouseRules(string $warehouseId, LocalClock $date): array
     {
-        return $this->requestClient->get(
-            "{$this->yieldManagerHost}/api/bo/warehouses/{$warehouseId}/rules",
+        return $this->requestClient()->get(
+            "{$this->yieldmanagerHost}/api/bo/warehouses/{$warehouseId}/rules",
             data: [
                 'startDate' => $date->dateString(),
                 'endDate' => $date->dateString(),
@@ -463,8 +463,8 @@ readonly class YieldManagerClient
      */
     public function getWarehouses(): array
     {
-        return $this->requestClient->get(
-            "{$this->yieldManagerHost}/api/admin/warehouses",
+        return $this->requestClient()->get(
+            "{$this->yieldmanagerHost}/api/admin/warehouses",
             headers: $this->getHeaders(),
         )->json();
     }
@@ -474,7 +474,7 @@ readonly class YieldManagerClient
      */
     public function ping(): array
     {
-        return $this->requestClient->get("{$this->yieldManagerHost}/ping")->json();
+        return $this->requestClient()->get("{$this->yieldmanagerHost}/ping")->json();
     }
 
     public function saveExpressOrder(
@@ -491,8 +491,8 @@ readonly class YieldManagerClient
         ?float $latitude = null,
         ?float $longitude = null
     ): void {
-        $this->requestClient->put(
-            "{$this->yieldManagerHost}/api/admin/express-orders/{$orderNumber}",
+        $this->requestClient()->put(
+            "{$this->yieldmanagerHost}/api/admin/express-orders/{$orderNumber}",
             data: [
                 'address' => [
                     'addressLine1' => $addressLine1,
@@ -514,8 +514,8 @@ readonly class YieldManagerClient
 
     public function saveExpressOrderStatus(string $orderNumber, string $status): void
     {
-        $this->requestClient->put(
-            "{$this->yieldManagerHost}/api/admin/express-orders/{$orderNumber}/status",
+        $this->requestClient()->put(
+            "{$this->yieldmanagerHost}/api/admin/express-orders/{$orderNumber}/status",
             data: [
                 'status' => $status,
             ],
@@ -541,8 +541,8 @@ readonly class YieldManagerClient
         ?float $longitude = null,
         ?bool $returnal = null,
     ): void {
-        $this->requestClient->put(
-            "{$this->yieldManagerHost}/api/admin/orders/{$orderNumber}",
+        $this->requestClient()->put(
+            "{$this->yieldmanagerHost}/api/admin/orders/{$orderNumber}",
             data: [
                 'address' => [
                     'addressLine1' => $addressLine1,
@@ -583,8 +583,8 @@ readonly class YieldManagerClient
         ?array $warehouses = null,
         bool $forceSync = false,
     ): void {
-        $this->requestClient->put(
-            "{$this->yieldManagerHost}/api/admin/users",
+        $this->requestClient()->put(
+            "{$this->yieldmanagerHost}/api/admin/users",
             data: [
                 'name' => $name,
                 'email' => $email,
@@ -601,8 +601,8 @@ readonly class YieldManagerClient
         LocalClock $date,
         bool $dayOff
     ): void {
-        $this->requestClient->put(
-            "{$this->yieldManagerHost}/api/admin/warehouses/{$warehouseId}/{$date->dateString()}/day-off",
+        $this->requestClient()->put(
+            "{$this->yieldmanagerHost}/api/admin/warehouses/{$warehouseId}/{$date->dateString()}/day-off",
             data: [
                 'dayOff' => $dayOff,
             ],
@@ -615,8 +615,8 @@ readonly class YieldManagerClient
         LocalClock $date,
         int $maxOrders
     ): void {
-        $this->requestClient->put(
-            "{$this->yieldManagerHost}/api/admin/warehouses/{$warehouseId}/{$date->dateString()}/max-orders",
+        $this->requestClient()->put(
+            "{$this->yieldmanagerHost}/api/admin/warehouses/{$warehouseId}/{$date->dateString()}/max-orders",
             data: [
                 'maxOrders' => $maxOrders,
             ],
@@ -629,8 +629,8 @@ readonly class YieldManagerClient
         LocalClock $date,
         int $maxProductLines
     ): void {
-        $this->requestClient->put(
-            "{$this->yieldManagerHost}/api/admin/warehouses/{$warehouseId}/{$date->dateString()}/max-product-lines",
+        $this->requestClient()->put(
+            "{$this->yieldmanagerHost}/api/admin/warehouses/{$warehouseId}/{$date->dateString()}/max-product-lines",
             data: [
                 'maxProductLines' => $maxProductLines,
             ],
@@ -643,8 +643,8 @@ readonly class YieldManagerClient
         LocalClock $date,
         int $maxWeight
     ): void {
-        $this->requestClient->put(
-            "{$this->yieldManagerHost}/api/admin/warehouses/{$warehouseId}/{$date->dateString()}/max-weight",
+        $this->requestClient()->put(
+            "{$this->yieldmanagerHost}/api/admin/warehouses/{$warehouseId}/{$date->dateString()}/max-weight",
             data: [
                 'maxWeight' => $maxWeight,
             ],
@@ -657,7 +657,7 @@ readonly class YieldManagerClient
      */
     protected function getHeaders(bool $forceSync = false): array
     {
-        $tenantId = $this->contextService->tenantId() ?? 'none';
+        $tenantId = $this->contextService()->tenantId() ?? 'none';
         $apiKey = $this->sharedUserCache->read("ADMIN_{$tenantId}")->apiKey ?? 'none';
 
         if ($forceSync) {
@@ -666,8 +666,8 @@ readonly class YieldManagerClient
                 'Content-type' => 'application/json',
                 'X-Api-Id' => $apiKey,
                 'X-Nektria-App' => 'yieldmanager',
-                'X-Trace' => $this->contextService->traceId(),
-                'X-Origin' => $this->contextService->project(),
+                'X-Trace' => $this->contextService()->traceId(),
+                'X-Origin' => $this->contextService()->project(),
                 'X-Sync' => '1',
             ];
         }
@@ -677,8 +677,8 @@ readonly class YieldManagerClient
             'Content-type' => 'application/json',
             'X-Api-Id' => $apiKey,
             'X-Nektria-App' => 'yieldmanager',
-            'X-Trace' => $this->contextService->traceId(),
-            'X-Origin' => $this->contextService->project(),
+            'X-Trace' => $this->contextService()->traceId(),
+            'X-Origin' => $this->contextService()->project(),
         ];
     }
 }

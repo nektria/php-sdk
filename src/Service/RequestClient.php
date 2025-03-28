@@ -11,13 +11,12 @@ use Nektria\Util\JsonUtil;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 use Throwable;
 
-readonly class RequestClient
+readonly class RequestClient extends AbstractService
 {
     public function __construct(
         private HttpClientInterface $client,
-        private LogService $logService,
-        private ContextService $contextService,
     ) {
+        parent::__construct();
     }
 
     /**
@@ -203,7 +202,7 @@ readonly class RequestClient
             'Content-Type' => $contentType,
             'Content-Length' => filesize($filename),
             'User-Agent' => 'Nektria/1.0',
-            'X-Origin' => $this->contextService->project(),
+            'X-Origin' => $this->contextService()->project(),
         ], $headers);
 
         $options['verify_peer'] = false;
@@ -262,13 +261,13 @@ readonly class RequestClient
             } catch (Throwable) {
             }
 
-            $this->logService->error([
+            $this->logService()->error([
                 'method' => 'POST',
                 'request' => $data,
                 'response' => $errorContent,
                 'status' => $status,
                 'url' => $url,
-            ], "POST {$url} failed with status {$status}");
+            ], [], "POST {$url} failed with status {$status}");
 
             throw new RequestException($response);
         }
@@ -281,13 +280,13 @@ readonly class RequestClient
             } catch (Throwable) {
             }
 
-            $this->logService->warning([
+            $this->logService()->warning([
                 'method' => 'POST',
                 'request' => $data,
                 'response' => $errorContent,
                 'status' => $status,
                 'url' => $url,
-            ], "POST {$url} failed with status {$status}");
+            ], [], "POST {$url} failed with status {$status}");
 
             throw new RequestException($response);
         }
@@ -320,7 +319,7 @@ readonly class RequestClient
 
         $headers = array_merge([
             'User-Agent' => 'Nektria/1.0',
-            'X-Origin' => $this->contextService->project(),
+            'X-Origin' => $this->contextService()->project(),
         ], $headers);
 
         $options['verify_peer'] = false;
@@ -379,13 +378,13 @@ readonly class RequestClient
             } catch (Throwable) {
             }
 
-            $this->logService->error([
+            $this->logService()->error([
                 'method' => 'POST',
                 'request' => $data,
                 'response' => $errorContent,
                 'status' => $status,
                 'url' => $url,
-            ], "POST {$url} failed with status {$status}");
+            ], [], "POST {$url} failed with status {$status}");
 
             throw new RequestException($response);
         }
@@ -398,13 +397,13 @@ readonly class RequestClient
             } catch (Throwable) {
             }
 
-            $this->logService->warning([
+            $this->logService()->warning([
                 'method' => 'POST',
                 'request' => $data,
                 'response' => $errorContent,
                 'status' => $status,
                 'url' => $url,
-            ], "POST {$url} failed with status {$status}");
+            ], [], "POST {$url} failed with status {$status}");
 
             throw new RequestException($response);
         }
@@ -430,7 +429,7 @@ readonly class RequestClient
         $headers = array_merge([
             'Content-Type' => 'application/json',
             'User-Agent' => 'Nektria/1.0',
-            'X-Origin' => $this->contextService->project(),
+            'X-Origin' => $this->contextService()->project(),
         ], $headers);
 
         $options['verify_peer'] = false;
@@ -490,7 +489,7 @@ readonly class RequestClient
         if ($enableDebugFallback ?? str_starts_with($url, 'https')) {
             $contentType = $response->responseHeaders['content-type'] ?? [''];
             if (str_contains((string) $contentType[0], 'application/json')) {
-                $this->logService->debug([
+                $this->logService()->debug([
                     'method' => $response->method,
                     'request' => $data,
                     'requestHeaders' => $headers,
@@ -499,7 +498,7 @@ readonly class RequestClient
                     'status' => $response->status,
                     'url' => $url,
                     'duration' => $end
-                ], "{$status} {$method} {$url}");
+                ], [], "{$status} {$method} {$url}");
             }
         }
 
@@ -511,13 +510,13 @@ readonly class RequestClient
             } catch (Throwable) {
             }
 
-            $this->logService->error([
+            $this->logService()->error([
                 'method' => $method,
                 'request' => $data,
                 'response' => $errorContent,
                 'status' => $status,
                 'url' => $url,
-            ], "{$method} {$url} failed with status {$status}");
+            ], [], "{$method} {$url} failed with status {$status}");
 
             throw new RequestException($response);
         }
@@ -530,13 +529,13 @@ readonly class RequestClient
             } catch (Throwable) {
             }
 
-            $this->logService->warning([
+            $this->logService()->warning([
                 'method' => $method,
                 'request' => $data,
                 'response' => $errorContent,
                 'status' => $status,
                 'url' => $url,
-            ], "{$method} {$url} failed with status {$status}");
+            ], [], "{$method} {$url} failed with status {$status}");
 
             throw new RequestException($response);
         }

@@ -4,8 +4,10 @@ declare(strict_types=1);
 
 namespace Nektria\Service;
 
+use Nektria\Infrastructure\SharedVariableCache;
 use Nektria\Util\StringUtil;
 use Nektria\Util\ValidateOpt;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 class ContextService
 {
@@ -185,6 +187,10 @@ class ContextService
     public function project(): string
     {
         return $this->project;
+    }
+
+    public function setContainer(ContainerInterface $container): void
+    {
     }
 
     public function setContext(string $context): void

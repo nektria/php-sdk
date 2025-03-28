@@ -2,10 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Nektria\Service;
+namespace Nektria\Infrastructure;
 
 use Nektria\Document\User;
-use Nektria\Infrastructure\SharedRedisCache;
 
 /**
  * @extends SharedRedisCache<array{

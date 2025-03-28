@@ -2,11 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Nektria\Service;
+namespace Nektria\Infrastructure;
 
 use Nektria\Document\WarehouseSharedInfo;
 use Nektria\Exception\ResourceNotFoundException;
-use Nektria\Infrastructure\SharedRedisCache;
 
 /**
  * @extends SharedRedisCache<WarehouseSharedInfo>

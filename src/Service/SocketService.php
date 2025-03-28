@@ -11,14 +11,14 @@ use Symfony\Component\Mercure\HubInterface;
 use Symfony\Component\Mercure\Update;
 use Throwable;
 
-readonly class SocketService
+readonly class SocketService extends AbstractService
 {
     public function __construct(
         private HubInterface $hub,
-        private ContextService $contextService,
         private ?string $mercureHost,
         private ?string $mercureToken,
     ) {
+        parent::__construct();
     }
 
     public function publishToTenant(string $type, Document $data): void
@@ -27,11 +27,11 @@ readonly class SocketService
             return;
         }
 
-        $tmpContext = clone $this->contextService;
+        $tmpContext = clone $this->contextService();
         $tmpContext->setContext(ContextService::INTERNAL);
 
         try {
-            $this->hub->publish(new Update("/{$this->contextService->tenantId()}", JsonUtil::encode([
+            $this->hub->publish(new Update("/{$this->contextService()->tenantId()}", JsonUtil::encode([
                 'type' => $type,
                 'payload' => $data->toArray($tmpContext),
             ]), true));
@@ -46,15 +46,15 @@ readonly class SocketService
             return;
         }
 
-        if ($this->contextService->userId() === null) {
+        if ($this->contextService()->userId() === null) {
             return;
         }
 
-        $tmpContext = clone $this->contextService;
+        $tmpContext = clone $this->contextService();
         $tmpContext->setContext(ContextService::INTERNAL);
 
         try {
-            $userId = $this->contextService->userId();
+            $userId = $this->contextService()->userId();
             $this->hub->publish(new Update("/{$userId}", JsonUtil::encode([
                 'type' => $type,
                 'payload' => $data->toArray($tmpContext),

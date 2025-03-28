@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Nektria\Service;
 
 use Nektria\Document\ThrowableDocument;
+use Nektria\Infrastructure\SharedLogCache;
 use Nektria\Util\JsonUtil;
 use Symfony\Component\Messenger\Exception\RecoverableMessageHandlingException;
 use Symfony\Component\Messenger\Exception\RejectRedeliveredMessageException;
@@ -14,7 +15,7 @@ use function in_array;
 
 use const PHP_EOL;
 
-class LogService
+readonly class LogService extends AbstractService
 {
     public const string DEBUG = 'DEBUG';
 
@@ -26,57 +27,66 @@ class LogService
 
     public const string WARNING = 'WARNING';
 
-    /** @var resource|false */
-    private $channel;
+    /** @var mixed[] */
+    private array $data;
 
     public function __construct(
-        private readonly ContextService $contextService,
-        private readonly SharedLogCache $sharedLogCache,
+        private ContextService $contextService,
+        private SharedLogCache $sharedLogCache,
     ) {
-        $this->channel = fopen('php://stderr', 'wb');
+        parent::__construct();
 
         if ($this->contextService->isLocalEnvironament()) {
-            $this->channel = false;
+            $this->data['channel'] = false;
+        } else {
+            $this->data['channel'] = fopen('php://stderr', 'wb');
         }
     }
 
     /**
      * @param mixed[] $payload
+     * @param array<string, string> $labels
      */
-    public function debug(array $payload, string $message, bool $ignoreRedis = false): void
-    {
-        if (!$ignoreRedis && ($this->channel === false || !$this->contextService->debugMode())) {
+    public function debug(
+        array $payload,
+        array $labels,
+        string $message,
+        bool $ignoreRedis = false
+    ): void {
+        $user = $this->securityService()->currentUser();
+        if (!$ignoreRedis && ($this->data['channel'] === false || !$this->contextService->debugMode())) {
             $this->sharedLogCache->addLog([
-                'context' => $this->contextService->context(),
+                'labels' => $labels,
                 'message' => $message,
                 'payload' => $payload,
                 'project' => $this->contextService->project(),
-                'tenant' => $this->contextService->tenantName() ?? 'none',
-                'tenantId' => $this->contextService->tenantId() ?? 'none',
-                'userId' => $this->contextService->userId() ?? 'none',
+                'tenant' => $user->tenant->alias ?? 'none',
+                'tenantId' => $user->tenant->id ?? 'none',
+                'userId' => $user->id ?? 'none',
             ]);
 
             return;
         }
 
-        if ($this->channel === false) {
+        if ($this->data['channel'] === false) {
             return;
         }
 
-        $data = $this->build($payload, $message, self::DEBUG);
-        fwrite($this->channel, JsonUtil::encode($data) . PHP_EOL);
+        $data = $this->build($payload, $labels, $message, self::DEBUG);
+        fwrite($this->data['channel'], JsonUtil::encode($data) . PHP_EOL);
     }
 
     /**
      * @param mixed[] $payload
+     * @param array<string, string> $labels
      */
-    public function error(array $payload, string $message): void
+    public function error(array $payload, array $labels, string $message): void
     {
-        if ($this->channel === false) {
+        if ($this->data['channel'] === false) {
             return;
         }
-        $data = $this->build($payload, $message, self::ERROR);
-        fwrite($this->channel, JsonUtil::encode($data) . PHP_EOL);
+        $data = $this->build($payload, $labels, $message, self::ERROR);
+        fwrite($this->data['channel'], JsonUtil::encode($data) . PHP_EOL);
     }
 
     /**
@@ -84,7 +94,7 @@ class LogService
      */
     public function exception(Throwable $exception, array $extra = [], bool $asWarning = false): void
     {
-        if ($this->channel === false) {
+        if ($this->data['channel'] === false) {
             return;
         }
 
@@ -99,6 +109,7 @@ class LogService
 
         $tmp = new ThrowableDocument($exception);
         $clearTrace = $tmp->trace();
+        $user = $this->securityService()->currentUser();
 
         try {
             $data = [
@@ -107,11 +118,10 @@ class LogService
                 'severity' => $asWarning ? self::WARNING : self::EMERGENCY,
                 'logging.googleapis.com/labels' => [
                     'app' => $this->contextService->project(),
-                    'context' => $this->contextService->context(),
                     'env' => $this->contextService->env(),
-                    'tenant' => $this->contextService->tenantName() ?? 'none',
-                    'tenantId' => $this->contextService->tenantId() ?? 'none',
-                    'userId' => $this->contextService->userId() ?? 'none',
+                    'tenant' => $user->tenant->alias ?? 'none',
+                    'tenantId' => $user->tenant->id ?? 'none',
+                    'userId' => $user->id ?? 'none',
                 ],
                 'logging.googleapis.com/trace_sampled' => false,
             ];
@@ -127,43 +137,46 @@ class LogService
             ];
 
             $data = array_merge($payload, $data);
-            fwrite($this->channel, JsonUtil::encode($data) . PHP_EOL);
+            fwrite($this->data['channel'], JsonUtil::encode($data) . PHP_EOL);
         } catch (Throwable) {
         }
     }
 
     /**
      * @param mixed[] $payload
+     * @param array<string, string> $labels
      */
-    public function info(array $payload, string $message): void
+    public function info(array $payload, array $labels, string $message): void
     {
-        if ($this->channel === false) {
+        if ($this->data['channel'] === false) {
             return;
         }
-        $data = $this->build($payload, $message, self::INFO);
-        fwrite($this->channel, JsonUtil::encode($data) . PHP_EOL);
+        $data = $this->build($payload, $labels, $message, self::INFO);
+        fwrite($this->data['channel'], JsonUtil::encode($data) . PHP_EOL);
     }
 
     /**
      * @param mixed[] $payload
+     * @param array<string, string> $labels
      */
     public function send(
         string $level,
         array $payload,
+        array $labels,
         string $message,
     ): void {
         match ($level) {
-            self::INFO => $this->info($payload, $message),
-            self::WARNING => $this->warning($payload, $message),
-            self::DEBUG => $this->debug($payload, $message),
-            self::ERROR => $this->error($payload, $message),
+            self::INFO => $this->info($payload, $labels, $message),
+            self::WARNING => $this->warning($payload, $labels, $message),
+            self::DEBUG => $this->debug($payload, $labels, $message),
+            self::ERROR => $this->error($payload, $labels, $message),
             default => false,
         };
     }
 
     public function temporalLogs(): void
     {
-        if ($this->channel === false) {
+        if ($this->data['channel'] === false) {
             return;
         }
 
@@ -174,56 +187,59 @@ class LogService
                 'message' => $log['message'],
                 'logName' => "projects/nektria/logs/{$log['project']}",
                 'severity' => self::DEBUG,
-                'logging.googleapis.com/labels' => [
+                'logging.googleapis.com/labels' => [...($log['labels'] ?? []), ...[
                     'app' => $log['project'],
-                    'context' => $log['context'],
                     'env' => $this->contextService->env(),
-                    'tenant' => $this->contextService->tenantName() ?? 'none',
+                    'tenant' => $log['tenant'] ?? 'none',
                     'tenantId' => $log['tenantId'] ?? 'none',
                     'userId' => $log['userId'] ?? 'none',
-                ],
+                ]],
                 'logging.googleapis.com/trace' => $this->contextService->traceId(),
                 'logging.googleapis.com/trace_sampled' => false,
             ];
 
             $data = array_merge($log['payload'], $data);
-            fwrite($this->channel, JsonUtil::encode($data) . PHP_EOL);
+            fwrite($this->data['channel'], JsonUtil::encode($data) . PHP_EOL);
         }
     }
 
     /**
      * @param mixed[] $payload
+     * @param array<string, string> $labels
      */
-    public function warning(array $payload, string $message): void
+    public function warning(array $payload, array $labels, string $message): void
     {
-        if ($this->channel === false) {
+        if ($this->data['channel'] === false) {
             return;
         }
-        $data = $this->build($payload, $message, self::WARNING);
-        fwrite($this->channel, JsonUtil::encode($data) . PHP_EOL);
+        $data = $this->build($payload, $labels, $message, self::WARNING);
+        fwrite($this->data['channel'], JsonUtil::encode($data) . PHP_EOL);
     }
 
     /**
      * @param mixed[] $payload
+     * @param array<string, string> $labels
      * @return mixed[]
      */
     private function build(
         array $payload,
+        array $labels,
         string $message,
         string $level
     ): array {
+        $user = $this->securityService()->currentUser();
+
         $data = [
             'message' => $message,
             'logName' => "projects/nektria/logs/{$this->contextService->project()}",
             'severity' => $level,
-            'logging.googleapis.com/labels' => [
+            'logging.googleapis.com/labels' => [...$labels, ...[
                 'app' => $this->contextService->project(),
-                'context' => $this->contextService->context(),
                 'env' => $this->contextService->env(),
-                'tenant' => $this->contextService->tenantName() ?? 'none',
-                'tenantId' => $this->contextService->tenantId(),
-                'userId' => $this->contextService->userId() ?? 'none',
-            ],
+                'tenant' => $user->tenant->alias ?? 'none',
+                'tenantId' => $user->tenant->id ?? 'none',
+                'userId' => $user->id ?? 'none',
+            ]],
             'logging.googleapis.com/trace' => $this->contextService->traceId(),
             'logging.googleapis.com/trace_sampled' => false,
         ];
