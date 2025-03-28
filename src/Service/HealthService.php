@@ -19,8 +19,8 @@ class HealthService
     private array $errors;
 
     public function __construct(
-        private readonly ContainerInterface $container,
-        private readonly RequestClient $requestClient,
+        protected readonly ContainerInterface $container,
+        protected readonly RequestClient $requestClient,
     ) {
         $this->errors = [];
     }
