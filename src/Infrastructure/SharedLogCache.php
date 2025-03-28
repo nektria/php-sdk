@@ -15,7 +15,7 @@ use function array_slice;
  *     project: string,
  *     tenantId: string | null,
  *     tenant: string | null,
- *     userId: string | null,
+ *     authId: string | null,
  *     labels: string[] | null,
  * }
  *

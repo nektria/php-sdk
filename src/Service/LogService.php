@@ -62,7 +62,7 @@ readonly class LogService extends AbstractService
                 'project' => $this->contextService->project(),
                 'tenant' => $user->tenant->alias ?? 'none',
                 'tenantId' => $user->tenant->id ?? 'none',
-                'userId' => $user->id ?? 'none',
+                'authId' => $user->id ?? 'none',
             ]);
 
             return;
@@ -192,7 +192,7 @@ readonly class LogService extends AbstractService
                     'env' => $this->contextService->env(),
                     'tenant' => $log['tenant'] ?? 'none',
                     'tenantId' => $log['tenantId'] ?? 'none',
-                    'authId' => $log['userId'] ?? 'none',
+                    'authId' => $log['authId'] ?? 'none',
                 ]],
                 'logging.googleapis.com/trace' => $this->contextService->traceId(),
                 'logging.googleapis.com/trace_sampled' => false,
