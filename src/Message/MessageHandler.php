@@ -37,8 +37,6 @@ readonly abstract class MessageHandler
 
     protected function checkAccessToWarehouse(string $warehouseId): void
     {
-        $this->registry()->addValue('warehouse', $warehouseId);
-
         if (!$this->hasAccessToWarehouse($warehouseId)) {
             throw new InsufficientCredentialsException();
         }
