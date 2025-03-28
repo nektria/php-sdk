@@ -37,9 +37,9 @@ readonly class LogService extends AbstractService
         parent::__construct();
 
         if ($this->contextService->isLocalEnvironament()) {
-            $this->data['channel'] = false;
+            $this->data = ['channel' => false];
         } else {
-            $this->data['channel'] = fopen('php://stderr', 'wb');
+            $this->data = ['channel' => fopen('php://stderr', 'wb')];
         }
     }
 
