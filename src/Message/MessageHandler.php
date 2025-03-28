@@ -8,6 +8,7 @@ use Nektria\Document\Tenant;
 use Nektria\Document\User;
 use Nektria\Exception\InsufficientCredentialsException;
 use Nektria\Infrastructure\SecurityServiceInterface;
+use Nektria\Service\ProcessRegistry;
 use Nektria\Service\RoleManager;
 use Nektria\Util\ContainerBox;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -67,6 +68,14 @@ readonly abstract class MessageHandler
         }
 
         return true;
+    }
+
+    protected function registry(): ProcessRegistry
+    {
+        /** @var ProcessRegistry $service */
+        $service = self::CONTAINER_BOX->get()->get(ProcessRegistry::class);
+
+        return $service;
     }
 
     protected function tenant(): Tenant
