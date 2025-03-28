@@ -21,6 +21,7 @@ use Nektria\Message\Query;
 use Nektria\Service\AlertService;
 use Nektria\Service\ContextService;
 use Nektria\Service\LogService;
+use Nektria\Service\ProcessRegistry;
 use Nektria\Util\JsonUtil;
 use Nektria\Util\MessageStamp\ContextStamp;
 use Nektria\Util\MessageStamp\RetryStamp;
@@ -65,6 +66,7 @@ abstract class MessageListener implements EventSubscriberInterface
         private readonly BusInterface $bus,
         private readonly ContextService $contextService,
         private readonly LogService $logService,
+        private readonly ProcessRegistry $processRegistry,
         private readonly SecurityServiceInterface $securityService,
         private readonly SharedVariableCache $sharedVariableCache,
         private readonly VariableCache $variableCache,
@@ -218,6 +220,7 @@ abstract class MessageListener implements EventSubscriberInterface
             }
 
             $this->securityService->clearAuthentication();
+            $this->processRegistry->clear();
 
             $this->cleanMemory();
 
@@ -282,6 +285,11 @@ abstract class MessageListener implements EventSubscriberInterface
             $messageParams['path'] = $this->normalizeClass($message::class);
             $messageParams['queue'] = $exchangeName;
 
+            $messageParams = [
+                ...$this->processRegistry->getMetadata()->data(),
+                ...$messageParams,
+            ];
+
             if ($logLevel === self::LOG_LEVEL_DEBUG) {
                 $this->logService->debug([
                     'body' => $data,
@@ -311,6 +319,7 @@ abstract class MessageListener implements EventSubscriberInterface
             }
         }
         $this->securityService->clearAuthentication();
+        $this->processRegistry->clear();
 
         $this->cleanMemory();
 

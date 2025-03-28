@@ -21,6 +21,7 @@ use Nektria\Service\AlertService;
 use Nektria\Service\Bus;
 use Nektria\Service\ContextService;
 use Nektria\Service\LogService;
+use Nektria\Service\ProcessRegistry;
 use Nektria\Service\RoleManager;
 use Nektria\Util\JsonUtil;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -62,6 +63,7 @@ abstract class RequestListener implements EventSubscriberInterface
         protected readonly SecurityServiceInterface $securityService,
         protected readonly SharedTemporalConsumptionCache $temporalConsumptionCache,
         protected readonly VariableCache $variableCache,
+        protected readonly ProcessRegistry $processRegistry,
         ContainerInterface $container
     ) {
         /** @var string[] $cors */
@@ -359,6 +361,12 @@ abstract class RequestListener implements EventSubscriberInterface
         $routeParams = $event->getRequest()->attributes->get('_route_params');
         $routeParams['path'] = $route;
         $routeParams['context'] = 'request';
+
+        $routeParams = [
+            ...$this->processRegistry->getMetadata()->data(),
+            ...$routeParams,
+        ];
+
         if ($logLevel !== self::LOG_LEVEL_NONE) {
             if ($status < 400) {
                 if ($event->getRequest()->getMethod() !== Request::METHOD_GET) {
