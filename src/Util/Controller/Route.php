@@ -9,7 +9,7 @@ use Attribute;
 #[Attribute]
 class Route extends \Symfony\Component\Routing\Attribute\Route
 {
-    public function __construct(string $path, ?string $method = null)
+    public function __construct(string $path = '', ?string $method = null)
     {
         $parts = explode('/', $path);
         $requirements = [];
