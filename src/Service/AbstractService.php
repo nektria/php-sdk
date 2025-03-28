@@ -22,6 +22,11 @@ readonly abstract class AbstractService
         $this->serviceContainer->setContainer($container);
     }
 
+    protected function container(): ContainerInterface
+    {
+        return $this->serviceContainer->container();
+    }
+
     protected function contextService(): ContextService
     {
         /** @var ContextService $service */
