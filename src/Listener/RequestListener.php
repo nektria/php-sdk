@@ -361,11 +361,8 @@ abstract class RequestListener implements EventSubscriberInterface
         $routeParams = $event->getRequest()->attributes->get('_route_params');
         $routeParams['path'] = $route;
         $routeParams['context'] = 'request';
-
-        $routeParams = [
-            ...$this->processRegistry->getMetadata()->data(),
-            ...$routeParams,
-        ];
+        $this->processRegistry->addValue('path', $route);
+        $this->processRegistry->addValue('context', 'request');
 
         if ($logLevel !== self::LOG_LEVEL_NONE) {
             if ($status < 400) {
@@ -395,7 +392,6 @@ abstract class RequestListener implements EventSubscriberInterface
                             'size' => $length,
                         ],
                         $routeParams,
-                        $resume,
                         in_array($route, $this->ignoreLogs(), true)
                     );
                 } else {
@@ -410,7 +406,7 @@ abstract class RequestListener implements EventSubscriberInterface
                         'request' => $requestContent,
                         'response' => $responseContent,
                         'size' => $length,
-                    ], $routeParams, $resume);
+                    ], $resume);
                 }
             } elseif ($status < 500) {
                 $this->logService->warning([
@@ -424,7 +420,7 @@ abstract class RequestListener implements EventSubscriberInterface
                     'request' => $requestContent,
                     'response' => $responseContent,
                     'size' => $length,
-                ], $routeParams, $resume);
+                ], $resume);
             } else {
                 $this->logService->temporalLogs();
                 $this->logService->error([
@@ -438,7 +434,7 @@ abstract class RequestListener implements EventSubscriberInterface
                     'request' => $requestContent,
                     'response' => $responseContent,
                     'size' => $length,
-                ], $routeParams, $resume);
+                ], $resume);
             }
         }
 

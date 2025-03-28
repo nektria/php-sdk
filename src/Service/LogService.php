@@ -45,18 +45,16 @@ readonly class LogService extends AbstractService
 
     /**
      * @param mixed[] $payload
-     * @param array<string, string> $labels
      */
     public function debug(
         array $payload,
-        array $labels,
         string $message,
         bool $ignoreRedis = false
     ): void {
         $user = $this->securityService()->currentUser();
         if (!$ignoreRedis && ($this->data['channel'] === false || !$this->contextService->debugMode())) {
             $this->sharedLogCache->addLog([
-                'labels' => $labels,
+                'labels' => $this->registry()->getMetadata()->data(),
                 'message' => $message,
                 'payload' => $payload,
                 'project' => $this->contextService->project(),
@@ -72,28 +70,26 @@ readonly class LogService extends AbstractService
             return;
         }
 
-        $data = $this->build($payload, $labels, $message, self::DEBUG);
+        $data = $this->build($payload, $message, self::DEBUG);
         fwrite($this->data['channel'], JsonUtil::encode($data) . PHP_EOL);
     }
 
     /**
      * @param mixed[] $payload
-     * @param array<string, string> $labels
      */
-    public function error(array $payload, array $labels, string $message): void
+    public function error(array $payload, string $message): void
     {
         if ($this->data['channel'] === false) {
             return;
         }
-        $data = $this->build($payload, $labels, $message, self::ERROR);
+        $data = $this->build($payload, $message, self::ERROR);
         fwrite($this->data['channel'], JsonUtil::encode($data) . PHP_EOL);
     }
 
     /**
      * @param mixed[] $extra
-     * @param array<string, string> $labels
      */
-    public function exception(Throwable $exception, array $labels, array $extra = [], bool $asWarning = false): void
+    public function exception(Throwable $exception, array $extra = [], bool $asWarning = false): void
     {
         if ($this->data['channel'] === false) {
             return;
@@ -118,7 +114,7 @@ readonly class LogService extends AbstractService
                 'logName' => 'projects/nektria/logs/error',
                 'severity' => $asWarning ? self::WARNING : self::EMERGENCY,
                 'logging.googleapis.com/labels' => [
-                    ...$labels,
+                    ...$this->registry()->getMetadata()->data(),
                     ...[
                         'app' => $this->contextService->project(),
                         'env' => $this->contextService->env(),
@@ -148,32 +144,29 @@ readonly class LogService extends AbstractService
 
     /**
      * @param mixed[] $payload
-     * @param array<string, string> $labels
      */
-    public function info(array $payload, array $labels, string $message): void
+    public function info(array $payload, string $message): void
     {
         if ($this->data['channel'] === false) {
             return;
         }
-        $data = $this->build($payload, $labels, $message, self::INFO);
+        $data = $this->build($payload, $message, self::INFO);
         fwrite($this->data['channel'], JsonUtil::encode($data) . PHP_EOL);
     }
 
     /**
      * @param mixed[] $payload
-     * @param array<string, string> $labels
      */
     public function send(
         string $level,
         array $payload,
-        array $labels,
         string $message,
     ): void {
         match ($level) {
-            self::INFO => $this->info($payload, $labels, $message),
-            self::WARNING => $this->warning($payload, $labels, $message),
-            self::DEBUG => $this->debug($payload, $labels, $message),
-            self::ERROR => $this->error($payload, $labels, $message),
+            self::INFO => $this->info($payload, $message),
+            self::WARNING => $this->warning($payload, $message),
+            self::DEBUG => $this->debug($payload, $message),
+            self::ERROR => $this->error($payload, $message),
             default => false,
         };
     }
@@ -209,25 +202,22 @@ readonly class LogService extends AbstractService
 
     /**
      * @param mixed[] $payload
-     * @param array<string, string> $labels
      */
-    public function warning(array $payload, array $labels, string $message): void
+    public function warning(array $payload, string $message): void
     {
         if ($this->data['channel'] === false) {
             return;
         }
-        $data = $this->build($payload, $labels, $message, self::WARNING);
+        $data = $this->build($payload, $message, self::WARNING);
         fwrite($this->data['channel'], JsonUtil::encode($data) . PHP_EOL);
     }
 
     /**
      * @param mixed[] $payload
-     * @param array<string, string> $labels
      * @return mixed[]
      */
     private function build(
         array $payload,
-        array $labels,
         string $message,
         string $level
     ): array {
@@ -237,7 +227,7 @@ readonly class LogService extends AbstractService
             'message' => $message,
             'logName' => "projects/nektria/logs/{$this->contextService->project()}",
             'severity' => $level,
-            'logging.googleapis.com/labels' => [...$labels, ...[
+            'logging.googleapis.com/labels' => [...$this->registry()->getMetadata()->data(), ...[
                 'app' => $this->contextService->project(),
                 'env' => $this->contextService->env(),
                 'tenant' => $user->tenant->alias ?? 'none',

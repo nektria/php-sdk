@@ -248,7 +248,7 @@ readonly class RequestClient extends AbstractService
                 $respHeaders,
             );
 
-            $end = (microtime(true) - $start) * 1000;
+            (microtime(true) - $start) * 1000;
         } catch (Throwable $e) {
             throw NektriaException::new($e);
         }
@@ -267,7 +267,7 @@ readonly class RequestClient extends AbstractService
                 'response' => $errorContent,
                 'status' => $status,
                 'url' => $url,
-            ], [], "POST {$url} failed with status {$status}");
+            ], "POST {$url} failed with status {$status}");
 
             throw new RequestException($response);
         }
@@ -286,7 +286,7 @@ readonly class RequestClient extends AbstractService
                 'response' => $errorContent,
                 'status' => $status,
                 'url' => $url,
-            ], [], "POST {$url} failed with status {$status}");
+            ], "POST {$url} failed with status {$status}");
 
             throw new RequestException($response);
         }
@@ -345,7 +345,6 @@ readonly class RequestClient extends AbstractService
 
             $options['body'] = $body;
 
-            $start = microtime(true);
             $response = $this->client->request(
                 'POST',
                 $url,
@@ -364,8 +363,6 @@ readonly class RequestClient extends AbstractService
                 $headers,
                 $respHeaders,
             );
-
-            $end = (microtime(true) - $start) * 1000;
         } catch (Throwable $e) {
             throw NektriaException::new($e);
         }
@@ -384,7 +381,7 @@ readonly class RequestClient extends AbstractService
                 'response' => $errorContent,
                 'status' => $status,
                 'url' => $url,
-            ], [], "POST {$url} failed with status {$status}");
+            ], "POST {$url} failed with status {$status}");
 
             throw new RequestException($response);
         }
@@ -403,7 +400,7 @@ readonly class RequestClient extends AbstractService
                 'response' => $errorContent,
                 'status' => $status,
                 'url' => $url,
-            ], [], "POST {$url} failed with status {$status}");
+            ], "POST {$url} failed with status {$status}");
 
             throw new RequestException($response);
         }
@@ -498,7 +495,7 @@ readonly class RequestClient extends AbstractService
                     'status' => $response->status,
                     'url' => $url,
                     'duration' => $end
-                ], [], "{$status} {$method} {$url}");
+                ], "{$status} {$method} {$url}");
             }
         }
 
@@ -516,7 +513,7 @@ readonly class RequestClient extends AbstractService
                 'response' => $errorContent,
                 'status' => $status,
                 'url' => $url,
-            ], [], "{$method} {$url} failed with status {$status}");
+            ], "{$method} {$url} failed with status {$status}");
 
             throw new RequestException($response);
         }
@@ -535,7 +532,7 @@ readonly class RequestClient extends AbstractService
                 'response' => $errorContent,
                 'status' => $status,
                 'url' => $url,
-            ], [], "{$method} {$url} failed with status {$status}");
+            ], "{$method} {$url} failed with status {$status}");
 
             throw new RequestException($response);
         }

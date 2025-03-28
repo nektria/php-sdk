@@ -164,12 +164,10 @@ abstract class MessageListener implements EventSubscriberInterface
                 if ($exchangeStamp !== null) {
                     $exchangeName = $exchangeStamp->getAmqpEnvelope()->getExchangeName();
                 }
-                $messageParams = $this->processRegistry->getMetadata()->data();
 
                 $this->logService->temporalLogs();
                 $this->logService->exception(
                     exception: $originalException,
-                    labels: $messageParams,
                     extra: [
                         'context' => 'messenger',
                         'role' => $this->contextService->context(),
@@ -284,10 +282,9 @@ abstract class MessageListener implements EventSubscriberInterface
             $resume = "/{$messageClass}/{$message->ref()}";
             $time = max(0.001, round(microtime(true) - $this->executionTime, 3)) . 's';
 
-            $messageParams = $this->processRegistry->getMetadata()->data();
-            $messageParams['context'] = 'messenger';
-            $messageParams['path'] = $this->normalizeClass($message::class);
-            $messageParams['queue'] = $exchangeName;
+            $this->processRegistry->addValue('context', 'messenger');
+            $this->processRegistry->addValue('path', $this->normalizeClass($message::class));
+            $this->processRegistry->addValue('queue', $exchangeName);
 
             if ($logLevel === self::LOG_LEVEL_DEBUG) {
                 $this->logService->debug([
@@ -301,7 +298,7 @@ abstract class MessageListener implements EventSubscriberInterface
                     ],
                     'messageReceivedAt' => $this->messageStartedAt,
                     'messageCompletedAt' => $this->messageCompletedAt,
-                ], $messageParams, $resume);
+                ], $resume);
             } else {
                 $this->logService->info([
                     'body' => $data,
@@ -314,7 +311,7 @@ abstract class MessageListener implements EventSubscriberInterface
                     ],
                     'messageReceivedAt' => $this->messageStartedAt,
                     'messageCompletedAt' => $this->messageCompletedAt,
-                ], $messageParams, $resume);
+                ], $resume);
             }
         }
         $this->securityService->clearAuthentication();
