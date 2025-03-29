@@ -210,7 +210,7 @@ abstract class MessageListener implements EventSubscriberInterface
                         if ($sendAlert && !$silent) {
                             $this->alertService->sendThrowable(
                                 $this->securityService->currentUser()?->tenant->name ?? 'none',
-                                'RABBIT ' . $originalException::class . ' ' . $exception->getCode(),
+                                'RABBIT ' . $originalException::class . ' ' . $exception::class,
                                 "/{$messageClass}/{$message->ref()}",
                                 $data,
                                 $exception,
