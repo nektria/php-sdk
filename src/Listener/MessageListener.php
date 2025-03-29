@@ -6,6 +6,7 @@ namespace Nektria\Listener;
 
 use Doctrine\DBAL\ConnectionException;
 use Doctrine\DBAL\Exception\DriverException;
+use DomainException;
 use Nektria\Document\Document;
 use Nektria\Document\Tenant;
 use Nektria\Document\ThrowableDocument;
@@ -199,7 +200,10 @@ abstract class MessageListener implements EventSubscriberInterface
 
                     if (!in_array($originalException->getMessage(), $ignoreMessages, true)) {
                         $sendAlert = true;
-                        if ($originalException instanceof ResourceNotFoundException) {
+                        if (
+                            $originalException instanceof ResourceNotFoundException
+                            || $originalException instanceof DomainException
+                        ) {
                             $sendAlert = false;
                         }
 
