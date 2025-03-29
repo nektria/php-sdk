@@ -9,6 +9,7 @@ use Nektria\Exception\NektriaException;
 
 use const JSON_PRETTY_PRINT;
 use const JSON_THROW_ON_ERROR;
+use const JSON_UNESCAPED_UNICODE;
 
 class JsonUtil
 {
@@ -26,7 +27,7 @@ class JsonUtil
         $prettyFlag = $pretty ? JSON_PRETTY_PRINT : 0;
 
         try {
-            return json_encode($data, JSON_THROW_ON_ERROR | $prettyFlag);
+            return json_encode($data, JSON_UNESCAPED_UNICODE | JSON_THROW_ON_ERROR | $prettyFlag);
         } catch (JsonException $e) {
             throw NektriaException::new($e);
         }
