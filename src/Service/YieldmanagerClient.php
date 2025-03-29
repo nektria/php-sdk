@@ -6,6 +6,7 @@ namespace Nektria\Service;
 
 use Nektria\Document\Tenant;
 use Nektria\Document\User;
+use Nektria\Dto\Address;
 use Nektria\Dto\LocalClock;
 use Nektria\Dto\TenantMetadata;
 use Nektria\Exception\RequestException;
@@ -525,50 +526,29 @@ readonly class YieldmanagerClient extends AbstractService
 
     public function saveOrder(
         string $orderNumber,
+        ?Address $address = null,
         ?string $area = null,
         ?string $shopperCode = null,
         ?int $weight = null,
         ?int $productLines = null,
         ?LocalClock $startTime = null,
         ?LocalClock $endTime = null,
-        ?string $addressLine1 = null,
-        ?string $addressLine2 = null,
-        ?string $postalCode = null,
-        ?string $city = null,
-        ?string $countryCode = null,
-        ?bool $elevator = null,
-        ?float $latitude = null,
-        ?float $longitude = null,
         ?bool $returnal = null,
         ?bool $createdByTenant = false,
     ): void {
         $this->requestClient()->put(
             "{$this->yieldmanagerHost}/api/admin/orders/{$orderNumber}",
             data: [
-                'address' => [
-                    'addressLine1' => $addressLine1,
-                    'addressLine2' => $addressLine2,
-                    'city' => $city,
-                    'postalCode' => $postalCode,
-                    'countryCode' => $countryCode,
-                    'latitude' => $latitude,
-                    'longitude' => $longitude,
-                    'elevator' => $elevator,
-                ],
+                'address' => $address?->toArray(),
                 'area' => $area,
-                'capacities' => [
-                    'productLines' => $productLines,
-                ],
-                'returnal' => $returnal,
-                'weight' => $weight,
-                'shopperCode' => $shopperCode,
                 'createdByTenant' => $createdByTenant,
+                'productLines' => $productLines,
+                'returnal' => $returnal,
+                'shopperCode' => $shopperCode,
                 'timeRange' => $startTime !== null && $endTime !== null
-                    ? [
-                        'startTime' => $startTime->dateTimeString(),
-                        'endTime' => $endTime->dateTimeString(),
-                    ]
+                    ? ['startTime' => $startTime->dateTimeString(), 'endTime' => $endTime->dateTimeString()]
                     : null,
+                'weight' => $weight,
             ],
             headers: $this->getHeaders(),
         );

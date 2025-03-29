@@ -645,6 +645,7 @@ readonly class RoutemanagerClient extends AbstractService
         ?array $products = null,
         ?array $boxes = null,
         ?string $note = null,
+        ?bool $createdByTenant = false,
         ?Metadata $metadata = null,
     ): void {
         if ($this->contextService()->isTest()) {
@@ -658,7 +659,10 @@ readonly class RoutemanagerClient extends AbstractService
                 'area' => $area,
                 'boxes' => $boxes,
                 'cost' => $cost,
+                'createdByTenant' => $createdByTenant,
                 'endTime' => $endTime?->dateTimeString(),
+                'metadata' => $metadata?->data(),
+                'note' => $note,
                 'orderNumber' => $orderNumber,
                 'paid' => $paid,
                 'pickingShiftId' => $pickingShiftId,
@@ -671,8 +675,6 @@ readonly class RoutemanagerClient extends AbstractService
                 'tags' => $tags,
                 'warehouseId' => $warehouseId,
                 'weight' => $weight,
-                'note' => $note,
-                'metadata' => $metadata?->data(),
             ],
             headers: $this->getHeaders(),
         );
