@@ -540,6 +540,7 @@ readonly class YieldmanagerClient extends AbstractService
         ?float $latitude = null,
         ?float $longitude = null,
         ?bool $returnal = null,
+        ?bool $createdByTenant = false,
     ): void {
         $this->requestClient()->put(
             "{$this->yieldmanagerHost}/api/admin/orders/{$orderNumber}",
@@ -561,6 +562,7 @@ readonly class YieldmanagerClient extends AbstractService
                 'returnal' => $returnal,
                 'weight' => $weight,
                 'shopperCode' => $shopperCode,
+                'createdByTenant' => $createdByTenant,
                 'timeRange' => $startTime !== null && $endTime !== null
                     ? [
                         'startTime' => $startTime->dateTimeString(),
