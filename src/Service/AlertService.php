@@ -60,12 +60,10 @@ use function in_array;
  */
 readonly class AlertService extends AbstractService
 {
+    public const string CHANNEL_ALARMS = 'operations';
     public const string CHANNEL_BUGS = 'bugs';
-
     public const string CHANNEL_CONFIGURATIONS = 'configurations';
-
     public const string CHANNEL_OPERATIONS = 'operations';
-
     public const string CHANNEL_PICKING_SHIFTS = 'pickingshifts';
 
     public const string CHANNEL_UPDATES = 'updates';
@@ -98,6 +96,7 @@ readonly class AlertService extends AbstractService
                 'pickingshifts' => '1221387354246221874',
                 'configurations' => '1223608760287760545',
                 'debug' => '1235335765550956654',
+                'alarms' => '1355500573260251226',
             ],
             'qa' => [
                 'operations' => '1221387486320787518',
@@ -106,6 +105,7 @@ readonly class AlertService extends AbstractService
                 'pickingshifts' => '1221387520726663208',
                 'configurations' => '1223608835256750293',
                 'debug' => '1235335567089209404',
+                'alarms' => '355500424651735100',
             ],
             'staging' => [
                 'operations' => '1221387600485417000',
@@ -114,6 +114,7 @@ readonly class AlertService extends AbstractService
                 'pickingshifts' => '1221387636548309183',
                 'configurations' => '1223609089490292796',
                 'debug' => '1235335500974264350',
+                'alarms' => '1355500367097368576',
             ],
             'prod' => [
                 'operations' => '1221221066450669678',
@@ -122,6 +123,7 @@ readonly class AlertService extends AbstractService
                 'pickingshifts' => '1221221171161468959',
                 'configurations' => '1223571661421412352',
                 'debug' => '1235335372506923068',
+                'alarms' => '1355500222046015539',
             ],
         ];
     }
