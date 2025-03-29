@@ -61,9 +61,13 @@ use function in_array;
 readonly class AlertService extends AbstractService
 {
     public const string CHANNEL_ALARMS = 'operations';
+
     public const string CHANNEL_BUGS = 'bugs';
+
     public const string CHANNEL_CONFIGURATIONS = 'configurations';
+
     public const string CHANNEL_OPERATIONS = 'operations';
+
     public const string CHANNEL_PICKING_SHIFTS = 'pickingshifts';
 
     public const string CHANNEL_UPDATES = 'updates';
