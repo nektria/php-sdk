@@ -480,31 +480,19 @@ readonly class YieldmanagerClient extends AbstractService
 
     public function saveExpressOrder(
         string $orderNumber,
+        ?Address $address = null,
         ?string $shopperCode = null,
         ?int $weight = null,
         ?int $productLines = null,
-        ?string $addressLine1 = null,
-        ?string $addressLine2 = null,
-        ?string $postalCode = null,
-        ?string $city = null,
-        ?string $countryCode = null,
-        ?bool $elevator = null,
-        ?float $latitude = null,
-        ?float $longitude = null
+        ?string $area = null,
+        ?bool $createdByTenant = false,
     ): void {
         $this->requestClient()->put(
             "{$this->yieldmanagerHost}/api/admin/express-orders/{$orderNumber}",
             data: [
-                'address' => [
-                    'addressLine1' => $addressLine1,
-                    'addressLine2' => $addressLine2,
-                    'city' => $city,
-                    'postalCode' => $postalCode,
-                    'countryCode' => $countryCode,
-                    'latitude' => $latitude,
-                    'longitude' => $longitude,
-                    'elevator' => $elevator,
-                ],
+                'address' => $address?->toArray(),
+                'area' => $area,
+                'createdByTenant' => $createdByTenant,
                 'productLines' => $productLines,
                 'shopperCode' => $shopperCode,
                 'weight' => $weight,
