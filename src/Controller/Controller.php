@@ -16,6 +16,7 @@ use Nektria\Infrastructure\SecurityServiceInterface;
 use Nektria\Message\Command;
 use Nektria\Message\Query;
 use Nektria\Service\ContextService;
+use Nektria\Service\ProcessRegistry;
 use Nektria\Util\ArrayDataFetcher;
 use Nektria\Util\File\FileReader;
 use Nektria\Util\FileUtil;
@@ -33,6 +34,7 @@ readonly class Controller
 
     public function __construct(
         protected SecurityServiceInterface $userService,
+        protected ProcessRegistry $processRegistry,
         protected ContextService $context,
         protected BusInterface $bus,
         RequestStack $requestStack,
