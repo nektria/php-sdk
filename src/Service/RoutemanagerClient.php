@@ -142,7 +142,7 @@ use Throwable;
  *     id: string,
  *     name: string,
  *     pickingShiftId: string,
- *     providerId: string,
+ *     providerId: string|null,
  *     stagingArea: string|null,
  *     steps: RMStep[],
  *     time: int,
