@@ -359,8 +359,15 @@ abstract class RequestListener implements EventSubscriberInterface
         }
 
         $routeParams = $event->getRequest()->attributes->get('_route_params');
-        $routeParams['path'] = $route;
-        $routeParams['context'] = 'request';
+
+        foreach ($routeParams as $key => $value) {
+            if (str_ends_with($key, 'Id')) {
+                $key = substr($key, 0, -2);
+            }
+
+            $this->processRegistry->addValue($key, $value);
+        }
+
         $this->processRegistry->addValue('path', $route);
         $this->processRegistry->addValue('context', 'request');
 
