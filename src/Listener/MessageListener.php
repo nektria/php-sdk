@@ -453,7 +453,6 @@ abstract class MessageListener implements EventSubscriberInterface
 
         //$this->sharedVariableCache->beginTransaction();
         $times = min(100_000, $this->sharedVariableCache->readInt("bus_messages_{$key}") + 1);
-        dump(["bus_messages_{$key}", $times]);
         $this->sharedVariableCache->saveInt("bus_messages_{$key}", $times, ttl: 300);
         //$this->sharedVariableCache->closeTransaction();
     }
