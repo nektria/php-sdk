@@ -242,7 +242,7 @@ readonly class RequestClient extends AbstractService
             $cookies = [];
 
             foreach ($response->getInfo()['response_headers'] as $header) {
-                $headerParts = explode(':', $header);
+                $headerParts = explode(': ', $header);
 
                 if ($headerParts[0] === 'Set-Cookie') {
                     $parts = explode(';', $headerParts[1]);
