@@ -8,6 +8,7 @@ use Nektria\Dto\RequestResponse;
 use Nektria\Exception\NektriaException;
 use Nektria\Exception\RequestException;
 use Nektria\Util\JsonUtil;
+use Nektria\Util\StringUtil;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 use Throwable;
 
@@ -242,12 +243,12 @@ readonly class RequestClient extends AbstractService
             $cookies = [];
 
             foreach ($response->getInfo()['response_headers'] as $header) {
-                $headerParts = explode(': ', $header);
+                $headerParts = explode(':', $header);
 
                 if ($headerParts[0] === 'Set-Cookie') {
                     $parts = explode(';', $headerParts[1]);
                     $cookie = explode('=', $parts[0]);
-                    $cookies[$cookie[0]] = $cookie[1];
+                    $cookies[StringUtil::trim($cookie[0])] = $cookie[1];
                 }
             }
 
