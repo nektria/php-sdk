@@ -407,11 +407,11 @@ abstract class MessageListener implements EventSubscriberInterface
             $data[] = $key;
         }
         sort($data);
-        $this->sharedVariableCache->saveString('bus_messages', JsonUtil::encode($data), 300);
+        $this->sharedVariableCache->saveString('bus_messages', JsonUtil::encode($data), 60);
 
         // $this->sharedVariableCache->beginTransaction();
         $times = max($this->sharedVariableCache->readInt("bus_messages_{$key}") - 1, 0);
-        $this->sharedVariableCache->saveInt("bus_messages_{$key}", $times, ttl: 300);
+        $this->sharedVariableCache->saveInt("bus_messages_{$key}", $times, ttl: 60);
         // $this->sharedVariableCache->closeTransaction();
     }
 
@@ -428,11 +428,11 @@ abstract class MessageListener implements EventSubscriberInterface
             $data[] = $key;
         }
         sort($data);
-        $this->sharedVariableCache->saveString('bus_messages_pending', JsonUtil::encode($data), 300);
+        $this->sharedVariableCache->saveString('bus_messages_pending', JsonUtil::encode($data), 60);
 
         // $this->sharedVariableCache->beginTransaction();
         $times = max($this->sharedVariableCache->readInt("bus_messages_pending_{$key}") - 1, 0);
-        $this->sharedVariableCache->saveInt("bus_messages_pending_{$key}", $times, ttl: 300);
+        $this->sharedVariableCache->saveInt("bus_messages_pending_{$key}", $times, ttl: 60);
         // $this->sharedVariableCache->closeTransaction();
     }
 
@@ -449,11 +449,11 @@ abstract class MessageListener implements EventSubscriberInterface
             $data[] = $key;
         }
         sort($data);
-        $this->sharedVariableCache->saveString('bus_messages', JsonUtil::encode($data), 300);
+        $this->sharedVariableCache->saveString('bus_messages', JsonUtil::encode($data), 60);
 
         // $this->sharedVariableCache->beginTransaction();
         $times = min(100_000, $this->sharedVariableCache->readInt("bus_messages_{$key}") + 1);
-        $this->sharedVariableCache->saveInt("bus_messages_{$key}", $times, ttl: 300);
+        $this->sharedVariableCache->saveInt("bus_messages_{$key}", $times, ttl: 60);
         // $this->sharedVariableCache->closeTransaction();
     }
 
@@ -470,11 +470,11 @@ abstract class MessageListener implements EventSubscriberInterface
             $data[] = $key;
         }
         sort($data);
-        $this->sharedVariableCache->saveString('bus_messages_pending', JsonUtil::encode($data), 300);
+        $this->sharedVariableCache->saveString('bus_messages_pending', JsonUtil::encode($data), 60);
 
         // $this->sharedVariableCache->beginTransaction();
         $times = min(1_000_000, $this->sharedVariableCache->readInt("bus_messages_pending_{$key}") + 1);
-        $this->sharedVariableCache->saveInt("bus_messages_pending_{$key}", $times, ttl: 300);
+        $this->sharedVariableCache->saveInt("bus_messages_pending_{$key}", $times, ttl: 60);
         // $this->sharedVariableCache->closeTransaction();
     }
 
