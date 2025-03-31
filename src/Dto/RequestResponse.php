@@ -12,6 +12,7 @@ readonly class RequestResponse
     /**
      * @param array<string, string|int|bool> $requestHeaders
      * @param array<string, (string|int|bool)[]> $responseHeaders
+     * @param array<string, string> $cookies
      */
     public function __construct(
         public string $method,
@@ -20,6 +21,7 @@ readonly class RequestResponse
         public string $body,
         public array $requestHeaders,
         public array $responseHeaders,
+        public array $cookies,
     ) {
     }
 

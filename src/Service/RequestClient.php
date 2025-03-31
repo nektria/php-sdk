@@ -239,6 +239,18 @@ readonly class RequestClient extends AbstractService
             $status = $response->getStatusCode();
             $respHeaders = $response->getHeaders(false);
 
+            $cookies = [];
+
+            foreach ($response->getInfo()['response_headers'] as $header) {
+                $headerParts = explode(':', $header);
+
+                if ($headerParts[0] === 'Set-Cookie') {
+                    $parts = explode(';', $headerParts[1]);
+                    $cookie = explode('=', $parts[0]);
+                    $cookies[$cookie[0]] = $cookie[1];
+                }
+            }
+
             $response = new RequestResponse(
                 'POST',
                 $url,
@@ -246,6 +258,7 @@ readonly class RequestClient extends AbstractService
                 $content,
                 $headers,
                 $respHeaders,
+                $cookies
             );
 
             (microtime(true) - $start) * 1000;
@@ -351,6 +364,18 @@ readonly class RequestClient extends AbstractService
                 $options,
             );
 
+            $cookies = [];
+
+            foreach ($response->getInfo()['response_headers'] as $header) {
+                $headerParts = explode(':', $header);
+
+                if ($headerParts[0] === 'Set-Cookie') {
+                    $parts = explode(';', $headerParts[1]);
+                    $cookie = explode('=', $parts[0]);
+                    $cookies[$cookie[0]] = $cookie[1];
+                }
+            }
+
             $content = $response->getContent(false);
             $status = $response->getStatusCode();
             $respHeaders = $response->getHeaders(false);
@@ -362,6 +387,7 @@ readonly class RequestClient extends AbstractService
                 $content,
                 $headers,
                 $respHeaders,
+                $cookies
             );
         } catch (Throwable $e) {
             throw NektriaException::new($e);
@@ -469,6 +495,18 @@ readonly class RequestClient extends AbstractService
             $status = $response->getStatusCode();
             $respHeaders = $response->getHeaders(false);
 
+            $cookies = [];
+
+            foreach ($response->getInfo()['response_headers'] as $header) {
+                $headerParts = explode(':', $header);
+
+                if ($headerParts[0] === 'Set-Cookie') {
+                    $parts = explode(';', $headerParts[1]);
+                    $cookie = explode('=', $parts[0]);
+                    $cookies[$cookie[0]] = $cookie[1];
+                }
+            }
+
             $response = new RequestResponse(
                 $method,
                 $url,
@@ -476,6 +514,7 @@ readonly class RequestClient extends AbstractService
                 $content,
                 $headers,
                 $respHeaders,
+                $cookies,
             );
 
             $end = (microtime(true) - $start) * 1000;
