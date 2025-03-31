@@ -43,9 +43,9 @@ class RabbitStatusConsole extends Console
         foreach ($content as $queue) {
             $name = str_pad($queue['name'], 35);
             $vhost = $queue['vhost'];
-            $ready = str_pad((string) $queue['messages_ready'], 6);
-            $unacked = str_pad((string) $queue['messages_unacknowledged'], 6);
-            $speed = $queue['messages_unacknowledged_details']['rate'];
+            $ready = str_pad((string) ($queue['messages_ready'] ?? 0), 6);
+            $unacked = str_pad((string) ($queue['messages_unacknowledged'] ?? 0), 6);
+            $speed = $queue['messages_unacknowledged_details']['rate'] ?? 0;
 
             $this->output()->writeln("{$vhost} {$name}: R:{$ready} U:{$unacked} S:{$speed}");
         }
