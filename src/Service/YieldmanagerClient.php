@@ -485,14 +485,12 @@ readonly class YieldmanagerClient extends AbstractService
         ?int $weight = null,
         ?int $productLines = null,
         ?string $area = null,
-        ?bool $createdByTenant = false,
     ): void {
         $this->requestClient()->put(
             "{$this->yieldmanagerHost}/api/admin/express-orders/{$orderNumber}",
             data: [
                 'address' => $address?->toArray(),
                 'area' => $area,
-                'createdByTenant' => $createdByTenant,
                 'productLines' => $productLines,
                 'shopperCode' => $shopperCode,
                 'weight' => $weight,
