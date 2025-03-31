@@ -373,7 +373,7 @@ readonly class RequestClient extends AbstractService
                 if ($headerParts[0] === 'Set-Cookie') {
                     $parts = explode(';', $headerParts[1]);
                     $cookie = explode('=', $parts[0]);
-                    $cookies[$cookie[0]] = $cookie[1];
+                    $cookies[StringUtil::trim($cookie[0])] = StringUtil::trim($cookie[1]);
                 }
             }
 
@@ -504,7 +504,7 @@ readonly class RequestClient extends AbstractService
                 if ($headerParts[0] === 'Set-Cookie') {
                     $parts = explode(';', $headerParts[1]);
                     $cookie = explode('=', $parts[0]);
-                    $cookies[$cookie[0]] = $cookie[1];
+                    $cookies[StringUtil::trim($cookie[0])] = StringUtil::trim($cookie[1]);
                 }
             }
 
