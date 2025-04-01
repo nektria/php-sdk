@@ -361,14 +361,7 @@ readonly class AlertService extends AbstractService
 
     private function parseChannel(string $channelId): string
     {
-        $defaultChannels = [
-            'bugs',
-            'operations',
-            'updates',
-            'pickingshifts',
-            'configurations',
-            'debug',
-        ];
+        $defaultChannels = array_keys($this->channels()[$this->contextService()->env()]);
 
         if (!in_array($channelId, $defaultChannels, true)) {
             return $channelId;
