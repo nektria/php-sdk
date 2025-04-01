@@ -6,11 +6,11 @@ services:
     autowire: true
     autoconfigure: true
     bind:
-      array $googleScopes: []
+      array $googleScopes: ["https://www.googleapis.com/auth/generative-language.retriever"]
       string $alertsToken: 'none'
       string $compassHost: 'none'
       string $env: '%kernel.environment%'
-      string $googleCredentialsFile: 'none'
+      string $googleCredentialsFile: '%env(default:none:GOOGLE_CLOUD_CREDENTIALS_PATH)%'
       string $mercureHost: 'none'
       string $metricsHost: 'none'
       string $mercureToken: 'none'

@@ -29,6 +29,76 @@ readonly class GoogleClient extends AbstractService
         parent::__construct();
     }
 
+    public function ask(): string
+    {
+        $respo = $this->post(
+            'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent',
+            data: [
+                'contents' => [
+                    [
+                        'parts' => [
+                            [
+                                'text' => 'Dame la direccion del almacen de getafe.',
+                            ]
+                        ],
+                    ]
+                ],
+            ],
+            headers: [
+                'Content-Type' => 'application/json',
+            ]
+        );
+
+        file_put_contents('tmp/test1.json', JsonUtil::encode($respo->json(), pretty: true));
+
+        return $respo->json()['candidates'][0]['content']['parts'][0]['text'];
+    }
+
+    public function ask2(): string
+    {
+        $respo = $this->post(
+            'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent',
+            data: [
+                'contents' => [
+                    [
+                        'parts' => [
+                            [
+                                'text' => 'Dame la direccion del almacen de getafe.',
+                            ]
+                        ],
+                    ]
+                ],
+                'tools' => [
+                    [
+                        'functionDeclarations' => [
+                            [
+                                'name' => 'getAddress',
+                                'description' => 'Get address from a location',
+                                'parameters' => [
+                                    'type' => 'object',
+                                    'properties' => [
+                                        'location' => [
+                                            'type' => 'string',
+                                            'description' => 'Location to get the address from',
+                                        ],
+                                    ],
+                                    'required' => ['location'],
+                                ],
+                            ]
+                        ],
+                    ]
+                ],
+            ],
+            headers: [
+                'Content-Type' => 'application/json',
+            ]
+        );
+
+        file_put_contents('tmp/test1.json', JsonUtil::encode($respo->json(), pretty: true));
+
+        return $respo->json()['candidates'][0]['content']['parts'][0]['text'];
+    }
+
     public function storageDeleteFile(
         string $folder,
         string $filename,
@@ -233,6 +303,7 @@ readonly class GoogleClient extends AbstractService
         array $headers = [],
         bool $retry = true,
         bool $authRequest = false,
+        bool $sendBodyAsObject = false,
     ): RequestResponse {
         if (!$authRequest) {
             $token = $this->token();
@@ -244,7 +315,7 @@ readonly class GoogleClient extends AbstractService
                 $url,
                 data: $data,
                 headers: $headers,
-                sendBodyAsObject: true
+                sendBodyAsObject: $sendBodyAsObject
             );
         } catch (RequestException $e) {
             if ($retry && $e->response()->status === 401) {
@@ -294,6 +365,7 @@ readonly class GoogleClient extends AbstractService
                     'Content-Type' => 'application/x-www-form-urlencoded',
                 ],
                 authRequest: true,
+                sendBodyAsObject: true,
             );
         } catch (RequestException $e) {
             throw new NektriaException($e->response()->json()['error_description']);

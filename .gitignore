@@ -1,31 +1,18 @@
-###> global ###
+*.DS_Store
+*.iws
 .fleet
 .idea/tasks.xml
 .idea/workspace.xml
-*.DS_Store
-/.tmp
+.php-cs-fixer.cache
+.php_cs.cache
+.phpactor.json
+.phpunit.result.cache
+/phpunit.xml
 /tmp
-/api/custom
-NK_VERSION
-###< global ###
-
-###> symfony/framework-bundle ###
-/.env.local
-/.env.local.php
-/.env.*.local
+!/tmp/.gitkeep
 /var/
 /vendor/
-###< symfony/framework-bundle ###
-
-###> Php CS Fixer ###
-.php_cs.cache
-.php-cs-fixer.cache
-###< Php CS Fixer ###
-
-###> phpunit/phpunit ###
-/phpunit.xml
+scratch.php
+server/php-sdk-dev/.php-cs-fixer.cache
 server/php-sdk-dev/.phpunit.result.cache
-.phpunit.result.cache
-###< phpunit/phpunit ###
-
-.phpactor.json
+server/php-sdk-dev/google_credentials.json
