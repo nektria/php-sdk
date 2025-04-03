@@ -102,6 +102,7 @@ readonly class ProxyClient extends AbstractService
 
     public function sendOrderStatusUpdated(string $orderNumber, string $status): void
     {
+        $status = strtolower($status);
         if (!$this->pathIsAllowed("/api/admin/orders/{orderNumber}/status/{$status}")) {
             return;
         }
