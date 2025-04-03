@@ -6,6 +6,8 @@ namespace Nektria\Service;
 
 use Nektria\Infrastructure\SharedUserV2Cache;
 
+use function in_array;
+
 readonly class ProxyClient extends AbstractService
 {
     public function __construct(
@@ -25,7 +27,6 @@ readonly class ProxyClient extends AbstractService
         $this->requestClient()->patch(
             "{$proxyHost}/api/admin/picking-shifts/{$pickingShiftId}/assign-platforms",
             headers: $this->getHeaders(),
-            enableDebugFallback: true,
         );
     }
 
@@ -40,7 +41,6 @@ readonly class ProxyClient extends AbstractService
         $this->requestClient()->get(
             "{$proxyHost}/api/admin/tasks/{$task}",
             headers: $this->getHeaders(),
-            enableDebugFallback: true,
         );
     }
 
@@ -55,7 +55,6 @@ readonly class ProxyClient extends AbstractService
         return $this->requestClient()->get(
             "{$proxyHost}/api/admin/files/billing",
             headers: $this->getHeaders(),
-            enableDebugFallback: true,
         )->body;
     }
 
@@ -70,7 +69,6 @@ readonly class ProxyClient extends AbstractService
         $this->requestClient()->post(
             "{$proxyHost}/api/admin/orders/import",
             headers: $this->getHeaders(),
-            enableDebugFallback: true,
         );
     }
 
@@ -85,7 +83,6 @@ readonly class ProxyClient extends AbstractService
         $this->requestClient()->patch(
             "{$proxyHost}/api/admin/orders/{$orderNumber}/updated",
             headers: $this->getHeaders(),
-            enableDebugFallback: true,
         );
     }
 
@@ -100,7 +97,6 @@ readonly class ProxyClient extends AbstractService
         $this->requestClient()->patch(
             "{$proxyHost}/api/admin/orders/{$orderNumber}/delivered",
             headers: $this->getHeaders(),
-            enableDebugFallback: true,
         );
     }
 
@@ -115,7 +111,6 @@ readonly class ProxyClient extends AbstractService
         $this->requestClient()->patch(
             "{$proxyHost}/api/admin/picking-shifts/{$pickingShiftId}/send-routes",
             headers: $this->getHeaders(),
-            enableDebugFallback: true,
         );
     }
 
@@ -130,7 +125,20 @@ readonly class ProxyClient extends AbstractService
         $this->requestClient()->patch(
             "{$proxyHost}/api/admin/routes/{$routeId}/updated",
             headers: $this->getHeaders(),
-            enableDebugFallback: true,
+        );
+    }
+
+    public function sendStatusUpdated(string $orderNumber, string $status): void
+    {
+        if (!$this->pathIsAllowed("/api/admin/orders/{orderNumber}/{$status}")) {
+            return;
+        }
+
+        $proxyHost = $this->securityService()->retrieveCurrentUser()->tenant->metadata->proxyHost() ?? '';
+
+        $this->requestClient()->patch(
+            "{$proxyHost}/api/admin/orders/{$orderNumber}/{$status}",
+            headers: $this->getHeaders(),
         );
     }
 
@@ -145,7 +153,6 @@ readonly class ProxyClient extends AbstractService
         $this->requestClient()->patch(
             "{$proxyHost}/api/admin/orders/{$orderNumber}/suspicious-order-created",
             headers: $this->getHeaders(),
-            enableDebugFallback: true,
         );
     }
 
@@ -182,5 +189,13 @@ readonly class ProxyClient extends AbstractService
             'X-Trace' => $this->contextService()->traceId(),
             'X-Origin' => $this->contextService()->project(),
         ];
+    }
+
+    private function pathIsAllowed(string $path): bool
+    {
+        $tenant = $this->securityService()->retrieveCurrentTenant();
+        $validPaths = $tenant->metadata->getField('proxyPaths') ?? [];
+
+        return in_array($path, $validPaths, true);
     }
 }
