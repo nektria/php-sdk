@@ -100,6 +100,20 @@ readonly class ProxyClient extends AbstractService
         );
     }
 
+    public function sendOrderStatusUpdated(string $orderNumber, string $status): void
+    {
+        if (!$this->pathIsAllowed("/api/admin/orders/{orderNumber}/status/{$status}")) {
+            return;
+        }
+
+        $proxyHost = $this->securityService()->retrieveCurrentUser()->tenant->metadata->proxyHost() ?? '';
+
+        $this->requestClient()->put(
+            "{$proxyHost}/api/admin/orders/{$orderNumber}/status/{$status}",
+            headers: $this->getHeaders(),
+        );
+    }
+
     public function sendPickingShiftRoutes(string $pickingShiftId): void
     {
         $proxyHost = $this->securityService()->retrieveCurrentUser()->tenant->metadata->proxyHost();
@@ -124,20 +138,6 @@ readonly class ProxyClient extends AbstractService
 
         $this->requestClient()->patch(
             "{$proxyHost}/api/admin/routes/{$routeId}/updated",
-            headers: $this->getHeaders(),
-        );
-    }
-
-    public function sendStatusUpdated(string $orderNumber, string $status): void
-    {
-        if (!$this->pathIsAllowed("/api/admin/orders/{orderNumber}/{$status}")) {
-            return;
-        }
-
-        $proxyHost = $this->securityService()->retrieveCurrentUser()->tenant->metadata->proxyHost() ?? '';
-
-        $this->requestClient()->patch(
-            "{$proxyHost}/api/admin/orders/{$orderNumber}/{$status}",
             headers: $this->getHeaders(),
         );
     }
