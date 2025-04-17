@@ -159,12 +159,8 @@ readonly class TestSecurityService extends SecurityService
     {
         $this->clearAuthentication();
 
-        $user = $this->users['ak2000'] ?? null;
-        $this->userContainer->setUser($this->users['ak2000'] ?? null);
-
-        if ($user === null) {
-            throw new InvalidAuthorizationException();
-        }
+        $user = $this->users['ak2000'];
+        $this->userContainer->setUser($this->users['ak2000']);
 
         $this->contextService()->setTenant($user->tenantId, $user->tenant->name);
         $this->contextService()->setUserId($user->id);
