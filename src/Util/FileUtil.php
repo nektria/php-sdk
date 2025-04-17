@@ -16,7 +16,7 @@ class FileUtil
     public static function createCsv(array $data, ?string $filename = null): string
     {
         $filename ??= StringUtil::uuid4();
-        $path = "/tmp/{$filename}.csv";
+        $path = $filename;
         touch($path);
         $temp = fopen($path, 'wb');
 

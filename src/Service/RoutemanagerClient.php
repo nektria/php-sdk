@@ -48,6 +48,7 @@ use Throwable;
  *      }[],
  *      cost: float,
  *      createdAt: string,
+ *      deliveryPictures: string[],
  *      deliveryComment: string,
  *      finishedAt: string|null,
  *      id: string,

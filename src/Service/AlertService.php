@@ -109,7 +109,7 @@ readonly class AlertService extends AbstractService
                 'pickingshifts' => '1221387520726663208',
                 'configurations' => '1223608835256750293',
                 'debug' => '1235335567089209404',
-                'alarms' => '355500424651735100',
+                'alarms' => '1355500424651735100',
             ],
             'staging' => [
                 'operations' => '1221387600485417000',
