@@ -93,7 +93,7 @@ class StaticAnalysisConsole extends Console
         $messages = [];
 
         // Path cannot end with '/'
-        if (str_ends_with($endpoint['path'], '/')) {
+        if ($endpoint['path'] !== '/' && str_ends_with($endpoint['path'], '/')) {
             $messages[] = 'Path cannot end with "/"';
         }
 
