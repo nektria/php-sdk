@@ -140,7 +140,7 @@ readonly class Controller
     /**
      * @param array<string, mixed> $parameters
      */
-    protected function render(string $view, array $parameters): string
+    protected function render(string $view, array $parameters): HtmlResponse
     {
         if (!$this->container->has('twig')) {
             throw new LogicException(sprintf(
@@ -160,7 +160,7 @@ readonly class Controller
             }
         }*/
 
-        return $fields[0]->render($view, $parameters) ?? '';
+        return new HtmlResponse($fields[0]->render($view, $parameters) ?? '');
     }
 
     protected function response(Document $document, int $status = 200): DocumentResponse
