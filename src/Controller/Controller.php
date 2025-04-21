@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Nektria\Controller;
 
-use LogicException;
 use Nektria\Document\ArrayDocument;
 use Nektria\Document\Document;
 use Nektria\Document\DocumentResponse;
@@ -27,8 +26,6 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Response;
 use Throwable;
-
-use function sprintf;
 
 readonly class Controller
 {
@@ -135,32 +132,6 @@ readonly class Controller
     protected function queryResponse(Query $query): DocumentResponse
     {
         return $this->documentResponse($this->bus->dispatchQuery($query));
-    }
-
-    /**
-     * @param array<string, mixed> $parameters
-     */
-    protected function render(string $view, array $parameters): HtmlResponse
-    {
-        if (!$this->container->has('twig')) {
-            throw new LogicException(sprintf(
-                'You cannot use the "%s" method if the Twig Bundle is not available.
-                Try running "composer require symfony/twig-bundle".',
-                __FUNCTION__
-            ));
-        }
-
-        $twig = $this->container->get('twig');
-        /** @var mixed[] $fields */
-        $fields = [$twig];
-
-        /*foreach ($parameters as $k => $v) {
-            if ($v instanceof \Symfony\Component\Form\FormInterface) {
-                $parameters[$k] = $v->createView();
-            }
-        }*/
-
-        return new HtmlResponse($fields[0]->render($view, $parameters) ?? '');
     }
 
     protected function response(Document $document, int $status = 200): DocumentResponse
