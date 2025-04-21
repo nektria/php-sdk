@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Nektria\Controller;
 
+use LogicException;
 use Nektria\Document\ArrayDocument;
 use Nektria\Document\Document;
 use Nektria\Document\DocumentResponse;
@@ -20,11 +21,14 @@ use Nektria\Service\ProcessRegistry;
 use Nektria\Util\ArrayDataFetcher;
 use Nektria\Util\File\FileReader;
 use Nektria\Util\FileUtil;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Response;
 use Throwable;
+
+use function sprintf;
 
 readonly class Controller
 {
@@ -37,6 +41,7 @@ readonly class Controller
         protected ProcessRegistry $processRegistry,
         protected ContextService $context,
         protected BusInterface $bus,
+        protected ContainerInterface $container,
         RequestStack $requestStack,
     ) {
         $this->request = $requestStack->getCurrentRequest() ?? new Request();
@@ -130,6 +135,32 @@ readonly class Controller
     protected function queryResponse(Query $query): DocumentResponse
     {
         return $this->documentResponse($this->bus->dispatchQuery($query));
+    }
+
+    /**
+     * @param array<string, mixed> $parameters
+     */
+    protected function render(string $view, array $parameters): string
+    {
+        if (!$this->container->has('twig')) {
+            throw new LogicException(sprintf(
+                'You cannot use the "%s" method if the Twig Bundle is not available.
+                Try running "composer require symfony/twig-bundle".',
+                __FUNCTION__
+            ));
+        }
+
+        $twig = $this->container->get('twig');
+        /** @var mixed[] $fields */
+        $fields = [$twig];
+
+        /*foreach ($parameters as $k => $v) {
+            if ($v instanceof \Symfony\Component\Form\FormInterface) {
+                $parameters[$k] = $v->createView();
+            }
+        }*/
+
+        return $fields[0]->render($view, $parameters) ?? '';
     }
 
     protected function response(Document $document, int $status = 200): DocumentResponse
