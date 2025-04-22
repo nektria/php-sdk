@@ -7,12 +7,14 @@ namespace App\Service;
 use App\Entity\__ENTITY__;
 use App\Infrastructure\WriteModel\__ENTITY__WriteModel;
 use Nektria\Exception\ResourceNotFoundException;
+use Nektria\Service\AbstractService;
 
-readonly class __ENTITY__Service
+readonly class __ENTITY__Service extends AbstractService
 {
     public function __construct(
         private __ENTITY__WriteModel $__ENTITY_CC__WriteModel,
     ) {
+        parent::__construct();
     }
 
     public function delete(__ENTITY__ $__ENTITY_CC__): void
