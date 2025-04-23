@@ -20,6 +20,7 @@ use Nektria\Service\ProcessRegistry;
 use Nektria\Util\ArrayDataFetcher;
 use Nektria\Util\File\FileReader;
 use Nektria\Util\FileUtil;
+use Nektria\Util\JsonUtil;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
@@ -45,7 +46,19 @@ readonly class Controller
         $body = [];
 
         try {
-            $body = $this->request->toArray();
+            $data = [];
+            $content = $this->request->getContent();
+            if ($this->request->headers->get('content-type') === 'application/x-www-form-urlencoded') {
+                $data = [];
+                parse_str($content, $data);
+            } elseif ($content === '') {
+                $this->request->request->replace();
+            } elseif ($content[0] === '[') {
+                $data = JsonUtil::decode($content);
+            } else {
+                $data = JsonUtil::decode($content);
+            }
+            $body = $data;
         } catch (Throwable) {
         }
         $this->requestData = new ArrayDataFetcher(array_merge($this->request->query->all(), $body));
