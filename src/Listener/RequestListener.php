@@ -306,7 +306,11 @@ abstract class RequestListener implements EventSubscriberInterface
             $requestContentRaw = '[]';
         }
 
-        $requestContent = JsonUtil::decode($requestContentRaw);
+        try {
+            $requestContent = JsonUtil::decode($requestContentRaw);
+        } catch (Throwable) {
+            return;
+        }
 
         if ($document === null) {
             try {
