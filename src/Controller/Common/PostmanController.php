@@ -57,6 +57,7 @@ readonly class PostmanController extends Controller
             'routemanager' => '{{host_rm}}',
             'compass' => '{{host_compass}}',
             'metrics' => '{{host_metrics}}',
+            'seguros' => '{{host_seguros}}',
             'proxy-sertradis', 'proxy-fontvella', 'proxy-carrefour', 'proxy-dia' => '{{host_proxy}}',
             default => '',
         };
@@ -310,6 +311,7 @@ readonly class PostmanController extends Controller
             'proxy-carrefour' => 'http://localhost:8101',
             'proxy-fontvella' => 'http://localhost:8102',
             'proxy-dia' => 'http://localhost:8103',
+            'proxy-sertradis' => 'http://localhost:8104',
             default => '',
         };
 
