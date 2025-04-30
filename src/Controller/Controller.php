@@ -48,10 +48,7 @@ readonly class Controller
         try {
             $data = [];
             $content = $this->request->getContent();
-            if ($this->request->headers->get('content-type') === 'application/x-www-form-urlencoded') {
-                $data = [];
-                parse_str($content, $data);
-            } elseif ($content === '') {
+            if ($content === '') {
                 $this->request->request->replace();
             } elseif ($content[0] === '[') {
                 $data = JsonUtil::decode($content);
