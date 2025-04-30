@@ -265,8 +265,7 @@ class TestCase extends WebTestCase
 
     protected function boot(): void
     {
-        /** @var TestRunnerListener $runnerListener */
-        $runnerListener = self::getContainer()->get(TestRunnerListener::class);
+        $runnerListener = $this->loadService(TestRunnerListener::class);
 
         $methods = get_class_methods($this);
         sort($methods);
@@ -312,6 +311,20 @@ class TestCase extends WebTestCase
                 $this->$method();
             }
         }
+    }
+
+    /**
+     * @template T of object
+     * @param class-string<T> $name
+     * @return T
+     */
+    protected function loadService(string $name): object
+    {
+        /** @var T|null $service */
+        $service = self::$kernel?->getContainer()->get($name);
+        self::assertNotNull($service);
+
+        return $service;
     }
 
     protected function setUp(): void
