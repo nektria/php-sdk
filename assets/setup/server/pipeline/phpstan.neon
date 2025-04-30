@@ -20,6 +20,10 @@ parameters:
     excludePaths:
         - /builder/home/.composer/vendor
 
+    ignoreErrors:
+        -
+            identifier: new.internalClass
+
     symfony:
         containerXmlPath: '%currentWorkingDirectory%/var/cache/dev/App_KernelDevDebugContainer.xml'
 
