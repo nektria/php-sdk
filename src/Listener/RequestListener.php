@@ -107,10 +107,7 @@ abstract class RequestListener implements EventSubscriberInterface
             $content = $request->getContent();
 
             try {
-                if ($request->headers->get('content-type') === 'application/x-www-form-urlencoded') {
-                    $data = [];
-                    parse_str($content, $data);
-                } elseif ($content === '') {
+                if ($content === '') {
                     $request->request->replace();
                 } elseif ($content[0] === '[') {
                     $data = JsonUtil::decode($content);
