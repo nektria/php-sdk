@@ -8,6 +8,9 @@ class MissingRequestFileException extends NektriaRuntimeException
 {
     public function __construct(string $field)
     {
-        parent::__construct("Missing file '{$field}'.");
+        parent::__construct(
+            errorCode: 'E_400',
+            message: "Missing file '{$field}'."
+        );
     }
 }

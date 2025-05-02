@@ -8,6 +8,9 @@ class MissingFieldRequiredToCreateClassException extends NektriaRuntimeException
 {
     public function __construct(string $resource, string $field)
     {
-        parent::__construct("Field '{$field}' is mandatory when creating a '{$resource}'.");
+        parent::__construct(
+            errorCode: 'E_400',
+            message: "Field '{$field}' is mandatory when creating a '{$resource}'."
+        );
     }
 }

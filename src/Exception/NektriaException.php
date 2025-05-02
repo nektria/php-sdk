@@ -14,7 +14,7 @@ class NektriaException extends NektriaRuntimeException
             return $e;
         }
 
-        return new self($e->getMessage(), $e->getCode(), $e);
+        return new self('E_500', $e->getMessage(), $e);
     }
 
     public static function parse(Throwable $e): Throwable

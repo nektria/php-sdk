@@ -8,6 +8,9 @@ class InsufficientCredentialsException extends NektriaRuntimeException
 {
     public function __construct()
     {
-        parent::__construct('Insufficient credentials.');
+        parent::__construct(
+            errorCode: 'E_403',
+            message: 'Insufficient credentials.'
+        );
     }
 }

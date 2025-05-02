@@ -8,6 +8,9 @@ class InvalidAuthorizationException extends NektriaRuntimeException
 {
     public function __construct()
     {
-        parent::__construct('Invalid credentials.');
+        parent::__construct(
+            errorCode: 'E_401',
+            message: 'Invalid credentials.'
+        );
     }
 }

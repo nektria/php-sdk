@@ -8,6 +8,9 @@ class InvalidRequestParamException extends NektriaRuntimeException
 {
     public function __construct(string $field, string $mustBeType)
     {
-        parent::__construct("Invalid field '{$field}', {$mustBeType} is required.");
+        parent::__construct(
+            errorCode: 'E_400',
+            message: "Invalid field '{$field}', {$mustBeType} is required."
+        );
     }
 }

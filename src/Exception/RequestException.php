@@ -13,8 +13,8 @@ class RequestException extends NektriaRuntimeException
         bool $silent = false
     ) {
         parent::__construct(
-            "Request Failed: {$this->response->status} {$this->response->method} {$this->response->url}",
-            $response->status,
+            errorCode: "RE_{$this->response->status}",
+            message: "Request Failed: {$this->response->status} {$this->response->method} {$this->response->url}",
             silent: $silent
         );
     }

@@ -8,6 +8,9 @@ class MissingRequestParamException extends NektriaRuntimeException
 {
     public function __construct(string $field)
     {
-        parent::__construct("Missing field '{$field}'.");
+        parent::__construct(
+            errorCode: 'E_400',
+            message: "Missing field '{$field}'."
+        );
     }
 }

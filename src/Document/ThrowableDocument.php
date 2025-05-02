@@ -4,14 +4,15 @@ declare(strict_types=1);
 
 namespace Nektria\Document;
 
-use DomainException;
 use InvalidArgumentException;
+use Nektria\Exception\DomainException;
 use Nektria\Exception\InsufficientCredentialsException;
 use Nektria\Exception\InvalidAuthorizationException;
 use Nektria\Exception\InvalidRequestParamException;
 use Nektria\Exception\MissingFieldRequiredToCreateClassException;
 use Nektria\Exception\MissingRequestParamException;
 use Nektria\Exception\NektriaException;
+use Nektria\Exception\NektriaRuntimeException;
 use Nektria\Exception\RequestException;
 use Nektria\Exception\ResourceNotFoundException;
 use Nektria\Exception\TerminateException;
@@ -28,6 +29,8 @@ readonly class ThrowableDocument extends Document
 
     public Throwable $throwable;
 
+    private string $errorCode;
+
     public function __construct(
         Throwable $throwable
     ) {
@@ -40,6 +43,8 @@ readonly class ThrowableDocument extends Document
         }
 
         if ($exception instanceof DomainException) {
+            $this->status = Response::HTTP_CONFLICT;
+        } elseif ($exception instanceof \DomainException) {
             $this->status = Response::HTTP_CONFLICT;
         } elseif ($exception instanceof InvalidArgumentException) {
             $this->status = Response::HTTP_BAD_REQUEST;
@@ -65,6 +70,10 @@ readonly class ThrowableDocument extends Document
             $this->status = Response::HTTP_INTERNAL_SERVER_ERROR;
         }
 
+        $this->errorCode = $exception instanceof NektriaRuntimeException
+            ? $exception->errorCode
+            : "E_{$this->status}";
+
         $this->throwable = $exception;
     }
 
@@ -85,6 +94,7 @@ readonly class ThrowableDocument extends Document
         }
 
         $data = [
+            'errorCode' => $this->errorCode,
             'message' => $message,
         ];
 
