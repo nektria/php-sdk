@@ -4,29 +4,29 @@ declare(strict_types=1);
 
 namespace Nektria\Service;
 
-use Nektria\Dto\ServiceContainer;
 use Nektria\Infrastructure\BusInterface;
 use Nektria\Infrastructure\SecurityServiceInterface;
+use Nektria\Util\ContainerBox;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 readonly abstract class AbstractService
 {
-    protected ServiceContainer $serviceContainer;
+    protected ContainerBox $serviceContainer;
 
     public function __construct()
     {
-        $this->serviceContainer = new ServiceContainer();
+        $this->serviceContainer = new ContainerBox();
     }
 
     public function setContainer(ContainerInterface $container): void
     {
-        $this->serviceContainer->setContainer($container);
+        $this->serviceContainer->set($container);
     }
 
     protected function alertService(): AlertService
     {
         /** @var AlertService $service */
-        $service = $this->serviceContainer->container()->get(AlertService::class);
+        $service = $this->serviceContainer->get(AlertService::class);
 
         return $service;
     }
@@ -34,7 +34,7 @@ readonly abstract class AbstractService
     protected function bus(): BusInterface
     {
         /** @var BusInterface $service */
-        $service = $this->serviceContainer->container()->get(BusInterface::class);
+        $service = $this->serviceContainer->get(BusInterface::class);
 
         return $service;
     }
@@ -42,20 +42,15 @@ readonly abstract class AbstractService
     protected function compassClient(): CompassClient
     {
         /** @var CompassClient $service */
-        $service = $this->serviceContainer->container()->get(CompassClient::class);
+        $service = $this->serviceContainer->get(CompassClient::class);
 
         return $service;
-    }
-
-    protected function container(): ContainerInterface
-    {
-        return $this->serviceContainer->container();
     }
 
     protected function contextService(): ContextService
     {
         /** @var ContextService $service */
-        $service = $this->serviceContainer->container()->get(ContextService::class);
+        $service = $this->serviceContainer->get(ContextService::class);
 
         return $service;
     }
@@ -63,7 +58,7 @@ readonly abstract class AbstractService
     protected function googleClient(): GoogleClient
     {
         /** @var GoogleClient $service */
-        $service = $this->serviceContainer->container()->get(GoogleClient::class);
+        $service = $this->serviceContainer->get(GoogleClient::class);
 
         return $service;
     }
@@ -71,7 +66,7 @@ readonly abstract class AbstractService
     protected function logService(): LogService
     {
         /** @var LogService $service */
-        $service = $this->serviceContainer->container()->get(LogService::class);
+        $service = $this->serviceContainer->get(LogService::class);
 
         return $service;
     }
@@ -79,7 +74,7 @@ readonly abstract class AbstractService
     protected function registry(): ProcessRegistry
     {
         /** @var ProcessRegistry $service */
-        $service = $this->serviceContainer->container()->get(ProcessRegistry::class);
+        $service = $this->serviceContainer->get(ProcessRegistry::class);
 
         return $service;
     }
@@ -87,7 +82,7 @@ readonly abstract class AbstractService
     protected function requestClient(): RequestClient
     {
         /** @var RequestClient $service */
-        $service = $this->serviceContainer->container()->get(RequestClient::class);
+        $service = $this->serviceContainer->get(RequestClient::class);
 
         return $service;
     }
@@ -95,7 +90,7 @@ readonly abstract class AbstractService
     protected function roleManager(): RoleManager
     {
         /** @var RoleManager $service */
-        $service = $this->serviceContainer->container()->get(RoleManager::class);
+        $service = $this->serviceContainer->get(RoleManager::class);
 
         return $service;
     }
@@ -103,7 +98,7 @@ readonly abstract class AbstractService
     protected function routemanagerClient(): RoutemanagerClient
     {
         /** @var RoutemanagerClient $service */
-        $service = $this->serviceContainer->container()->get(RoutemanagerClient::class);
+        $service = $this->serviceContainer->get(RoutemanagerClient::class);
 
         return $service;
     }
@@ -111,7 +106,7 @@ readonly abstract class AbstractService
     protected function securityService(): SecurityServiceInterface
     {
         /** @var SecurityServiceInterface $service */
-        $service = $this->serviceContainer->container()->get(SecurityServiceInterface::class);
+        $service = $this->serviceContainer->get(SecurityServiceInterface::class);
 
         return $service;
     }
@@ -119,7 +114,7 @@ readonly abstract class AbstractService
     protected function socketService(): SocketService
     {
         /** @var SocketService $service */
-        $service = $this->serviceContainer->container()->get(SocketService::class);
+        $service = $this->serviceContainer->get(SocketService::class);
 
         return $service;
     }
@@ -127,7 +122,7 @@ readonly abstract class AbstractService
     protected function yieldmanagerClient(): YieldmanagerClient
     {
         /** @var YieldmanagerClient $service */
-        $service = $this->serviceContainer->container()->get(YieldmanagerClient::class);
+        $service = $this->serviceContainer->get(YieldmanagerClient::class);
 
         return $service;
     }

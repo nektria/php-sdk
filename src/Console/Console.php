@@ -183,7 +183,7 @@ abstract class Console extends BaseCommand
     protected function container(): ContainerInterface
     {
         if ($this->container === null) {
-            throw new NektriaException('container not injected.');
+            throw new NektriaException('E_500', 'container not injected.');
         }
 
         return $this->container;

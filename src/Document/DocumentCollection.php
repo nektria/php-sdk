@@ -144,12 +144,12 @@ readonly class DocumentCollection extends Document implements IteratorAggregate,
 
     public function offsetSet(mixed $offset, mixed $value): void
     {
-        throw new NektriaException('DocumentCollection is read-only');
+        throw new NektriaException('E_500', 'DocumentCollection is read-only');
     }
 
     public function offsetUnset(mixed $offset): void
     {
-        throw new NektriaException('DocumentCollection is read-only');
+        throw new NektriaException('E_500', 'DocumentCollection is read-only');
     }
 
     /**

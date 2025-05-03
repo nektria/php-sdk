@@ -11,13 +11,21 @@ class ContainerBox
 {
     private ?ContainerInterface $container = null;
 
-    public function get(): ContainerInterface
+    /**
+     * @template T of object
+     * @param class-string<T> $class
+     * @return T
+     */
+    public function get(string $class): object
     {
         if ($this->container === null) {
-            throw new NektriaException('Container not initialized');
+            throw new NektriaException('E_500', 'Container not set.');
         }
 
-        return $this->container;
+        /** @var T $service */
+        $service = $this->container->get($class);
+
+        return $service;
     }
 
     public function set(?ContainerInterface $container): void

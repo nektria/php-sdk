@@ -15,7 +15,7 @@ abstract class NektriaRuntimeException extends RuntimeException
 
     public function __construct(
         string $errorCode,
-        string $message = '',
+        string $message,
         ?Throwable $previous = null,
         bool $silent = false
     ) {

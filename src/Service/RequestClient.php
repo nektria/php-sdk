@@ -194,7 +194,7 @@ readonly class RequestClient extends AbstractService
     ): RequestResponse {
         $body = fopen($filename, 'rb');
         if ($body === false) {
-            throw new NektriaException("Cannot open file {$filename}.");
+            throw new NektriaException('E_500', "Cannot open file {$filename}.");
         }
 
         $contentType = mime_content_type($filename);
@@ -325,7 +325,7 @@ readonly class RequestClient extends AbstractService
         foreach ($filenames as $key => $filename) {
             $resource = fopen($filename, 'rb');
             if ($resource === false) {
-                throw new NektriaException("Cannot open file {$filename}.");
+                throw new NektriaException('E_500', "Cannot open file {$filename}.");
             }
 
             $body[$key] = $resource;

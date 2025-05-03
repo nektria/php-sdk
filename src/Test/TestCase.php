@@ -257,7 +257,7 @@ class TestCase extends WebTestCase
         }
 
         if ($key === '') {
-            throw new NektriaException('Test function starting with "test" has not been found.');
+            throw new NektriaException('E_500', 'Test function starting with "test" has not been found.');
         }
 
         return str_replace(['::', '\\'], ['__', '_'], $key);

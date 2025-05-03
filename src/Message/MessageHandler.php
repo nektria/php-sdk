@@ -72,10 +72,7 @@ readonly abstract class MessageHandler
 
     protected function registry(): ProcessRegistry
     {
-        /** @var ProcessRegistry $service */
-        $service = self::CONTAINER_BOX->get()->get(ProcessRegistry::class);
-
-        return $service;
+        return self::CONTAINER_BOX->get(ProcessRegistry::class);
     }
 
     protected function tenant(): Tenant
@@ -95,17 +92,11 @@ readonly abstract class MessageHandler
 
     protected function userService(): SecurityServiceInterface
     {
-        /** @var SecurityServiceInterface $service */
-        $service = self::CONTAINER_BOX->get()->get(SecurityServiceInterface::class);
-
-        return $service;
+        return self::CONTAINER_BOX->get(SecurityServiceInterface::class);
     }
 
     private function roleManager(): RoleManager
     {
-        /** @var RoleManager $service */
-        $service = self::CONTAINER_BOX->get()->get(RoleManager::class);
-
-        return $service;
+        return self::CONTAINER_BOX->get(RoleManager::class);
     }
 }
