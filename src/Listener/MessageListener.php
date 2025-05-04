@@ -157,7 +157,7 @@ abstract class MessageListener implements EventSubscriberInterface
                     $originalException instanceof DriverException
                     || $originalException instanceof ConnectionException
                 ) {
-                    touch('/tmp/entity_manager_is_closed');
+                    exit(1);
                 }
 
                 $exchangeName = '?';
