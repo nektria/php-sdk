@@ -76,7 +76,6 @@ readonly class User extends Document
             'email' => $this->email,
             'id' => $this->id,
             'role' => $this->role,
-            'tenant' => $this->tenant->toArray($context),
             'warehouses' => $this->warehouses,
         ];
     }
