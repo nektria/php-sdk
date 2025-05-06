@@ -72,7 +72,6 @@ readonly class User extends Document
         }
 
         return [
-            'dniNie' => $this->dniNie,
             'email' => $this->email,
             'id' => $this->id,
             'role' => $this->role,
