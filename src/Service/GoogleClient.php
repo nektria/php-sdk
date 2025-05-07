@@ -116,7 +116,7 @@ readonly class GoogleClient extends AbstractService
                 ]
             );
         } catch (RequestException $e) {
-            throw new NektriaException('E_500', $e->response()->json()['_response']);
+            throw new NektriaException('E_500', $e->response()->json()['_response'] ?? $e->response()->body);
         }
     }
 
