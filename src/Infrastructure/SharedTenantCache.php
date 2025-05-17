@@ -17,6 +17,7 @@ use Nektria\Dto\TenantMetadata;
  *     metadata: TenantMetadataArray,
  *     timezone: string|null,
  *     alias: string|null,
+ *     countryCode: string|null,
  * }>
  */
 class SharedTenantCache extends SharedRedisCache
@@ -35,6 +36,7 @@ class SharedTenantCache extends SharedRedisCache
             aiAssistantId: $data['aiAssistantId'] ?? null,
             timezone: $data['timezone'] ?? 'Europe/Madrid',
             alias: $data['alias'] ?? '',
+            countryCode: $data['countryCode'] ?? 'ES',
         );
     }
 
@@ -49,6 +51,7 @@ class SharedTenantCache extends SharedRedisCache
                 'metadata' => $tenant->metadata->data(),
                 'timezone' => $tenant->timezone ?? 'Europe/Madrid',
                 'alias' => $tenant->alias ?? '',
+                'countryCode' => $tenant->countryCode ?? 'ES',
             ],
             1209600,
         );

@@ -29,7 +29,8 @@ readonly class TestSecurityService extends SecurityService
             metadata: new TenantMetadata([]),
             aiAssistantId: null,
             timezone: 'Europe/Madrid',
-            alias: 'test'
+            alias: 'test',
+            countryCode: 'ES'
         );
 
         $tenant2 = new Tenant(
@@ -38,7 +39,8 @@ readonly class TestSecurityService extends SecurityService
             metadata: new TenantMetadata([]),
             aiAssistantId: null,
             timezone: 'Europe/Madrid',
-            alias: 'test2'
+            alias: 'test2',
+            countryCode: 'ES'
         );
 
         $this->users = [

@@ -413,6 +413,7 @@ readonly class YieldmanagerClient extends AbstractService
                 aiAssistantId: $data['tenant']['aiAssistantId'],
                 timezone: $data['tenant']['timezone'],
                 alias: $data['tenant']['alias'],
+                countryCode: $data['tenant']['countryCode'] ?? 'ES',
             ),
             dniNie: $data['dniNie'],
             aiThreadId: $data['aiThreadId'],
