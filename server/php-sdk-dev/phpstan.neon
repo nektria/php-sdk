@@ -23,6 +23,9 @@ parameters:
     ignoreErrors:
         -
             identifier: new.internalClass
+        -
+            identifier: method.internalClass
+
 
     symfony:
         #containerXmlPath: '%currentWorkingDirectory%/var/cache/dev/Nektria_KernelDevDebugContainer.xml'
