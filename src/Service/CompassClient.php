@@ -70,11 +70,10 @@ use function count;
 readonly class CompassClient extends AbstractService
 {
     public function __construct(
-        protected SharedUserV2Cache           $sharedUserCache,
+        protected SharedUserV2Cache $sharedUserCache,
         private SharedInvalidCoordinatesCache $sharedInvalidCoordinatesCache,
-        private string                        $compassHost
-    )
-    {
+        private string $compassHost
+    ) {
         parent::__construct();
     }
 
