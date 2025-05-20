@@ -70,10 +70,11 @@ use function count;
 readonly class CompassClient extends AbstractService
 {
     public function __construct(
-        protected SharedUserV2Cache $sharedUserCache,
+        protected SharedUserV2Cache           $sharedUserCache,
         private SharedInvalidCoordinatesCache $sharedInvalidCoordinatesCache,
-        private string $compassHost
-    ) {
+        private string                        $compassHost
+    )
+    {
         parent::__construct();
     }
 
@@ -283,7 +284,10 @@ readonly class CompassClient extends AbstractService
     private function getHeaders(): array
     {
         $tenantId = $this->contextService()->tenantId() ?? 'none';
-        $apiKey = $this->sharedUserCache->read("ADMIN_{$tenantId}")->apiKey ?? 'none';
+        $apiKey =
+            $this->sharedUserCache->read("SYSTEM_{$tenantId}")->apiKey ??
+            $this->sharedUserCache->read("ADMIN_{$tenantId}")->apiKey ??
+            'none';
 
         return [
             'Accept' => 'application/json',

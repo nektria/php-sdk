@@ -185,7 +185,10 @@ readonly class ProxyClient extends AbstractService
     private function getHeaders(): array
     {
         $tenantId = $this->contextService()->tenantId() ?? 'none';
-        $apiKey = $this->sharedUserCache->read("ADMIN_{$tenantId}")->apiKey ?? 'none';
+        $apiKey =
+            $this->sharedUserCache->read("SYSTEM_{$tenantId}")->apiKey ??
+            $this->sharedUserCache->read("ADMIN_{$tenantId}")->apiKey ??
+            'none';
 
         return [
             'Accept' => 'application/json',
