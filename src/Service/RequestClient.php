@@ -352,6 +352,7 @@ readonly class RequestClient extends AbstractService
                     $params .= '&';
                 }
                 $params .= "{$key}={$value}";
+                $body[$key] = $value;
             }
             if ($params !== '') {
                 $url .= "?{$params}";
