@@ -192,7 +192,7 @@ readonly class PostmanController extends Controller
             );
         }
 
-        if ($contextService->isLocalEnvironament()) {
+        if ($contextService->isLocalEnvironament() || $contextService->isQA()) {
             $data = [];
 
             try {
@@ -200,7 +200,7 @@ readonly class PostmanController extends Controller
                 $command->run();
 
                 $data = JsonUtil::decode($command->getOutput())['commands'];
-            } catch (Throwable $e) {
+            } catch (Throwable) {
                 $command = new Process(array_merge(['../bin/console', 'list', '--raw']));
                 $command->run();
 
