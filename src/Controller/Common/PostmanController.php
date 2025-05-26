@@ -153,14 +153,6 @@ readonly class PostmanController extends Controller
             }
 
             if (
-                $contextService->isQA()
-                && !str_starts_with($key, 'app_web_')
-                && !str_starts_with($key, 'app_common_')
-            ) {
-                continue;
-            }
-
-            if (
                 !str_starts_with($item['defaults']['_controller'], 'App')
                 && !str_starts_with($item['defaults']['_controller'], 'Nektria')
             ) {
