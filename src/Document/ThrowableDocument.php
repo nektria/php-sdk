@@ -89,7 +89,10 @@ readonly class ThrowableDocument extends Document
             $message = $exception->getMessage();
         }
 
-        if ($this->status !== Response::HTTP_INTERNAL_SERVER_ERROR) {
+        if (
+            $this->status !== Response::HTTP_INTERNAL_SERVER_ERROR
+            || $context->traceId() === '00000000-0000-4000-8000-000000000000'
+        ) {
             $message = $exception->getMessage();
         }
 
@@ -98,7 +101,7 @@ readonly class ThrowableDocument extends Document
             'message' => $message,
         ];
 
-        if ($context->isPlayEnvironment()) {
+        if ($context->isPlayEnvironment() || $context->traceId() === '00000000-0000-4000-8000-000000000000') {
             $data['file'] = str_replace('/app/', '', $exception->getFile());
             $data['line'] = $exception->getLine();
             $data['trace'] = $this->trace();
