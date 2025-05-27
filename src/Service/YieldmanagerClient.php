@@ -479,6 +479,14 @@ readonly class YieldmanagerClient extends AbstractService
         return $this->requestClient()->get("{$this->yieldmanagerHost}/ping")->json();
     }
 
+    public function resetPaco(User $user): void
+    {
+        $this->requestClient()->delete(
+            "{$this->yieldmanagerHost}/api/admin/paco/{$user->id}/reset",
+            headers: $this->getHeaders(),
+        );
+    }
+
     public function saveExpressOrder(
         string $orderNumber,
         ?Address $address = null,
