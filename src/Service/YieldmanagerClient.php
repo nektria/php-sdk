@@ -482,7 +482,10 @@ readonly class YieldmanagerClient extends AbstractService
     public function resetPaco(User $user): void
     {
         $this->requestClient()->patch(
-            "{$this->yieldmanagerHost}/api/admin/paco/{$user->id}/reset",
+            "{$this->yieldmanagerHost}/api/admin/paco/reset",
+            data: [
+                'userId' => $user->id
+            ],
             headers: $this->getHeaders(),
         );
     }
