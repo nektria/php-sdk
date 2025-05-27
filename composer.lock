@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "706f7026f2ce718446c4cd668f0e6d2c",
+    "content-hash": "3cf9e8d10af8bd1183d208e20208dc2b",
     "packages": [
         {
             "name": "composer/pcre",
@@ -6917,12 +6917,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/PHP-CS-Fixer/PHP-CS-Fixer.git",
-                "reference": "25cc674c0ec59a5e290fb6a07806e5a33954d54c"
+                "reference": "4c391eac94f023d6c5125ce579b4998565ae04a8"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/PHP-CS-Fixer/PHP-CS-Fixer/zipball/25cc674c0ec59a5e290fb6a07806e5a33954d54c",
-                "reference": "25cc674c0ec59a5e290fb6a07806e5a33954d54c",
+                "url": "https://api.github.com/repos/PHP-CS-Fixer/PHP-CS-Fixer/zipball/4c391eac94f023d6c5125ce579b4998565ae04a8",
+                "reference": "4c391eac94f023d6c5125ce579b4998565ae04a8",
                 "shasum": ""
             },
             "require": {
@@ -7015,7 +7015,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2025-05-26T14:40:09+00:00"
+            "time": "2025-05-27T11:01:38+00:00"
         },
         {
             "name": "masterminds/html5",
