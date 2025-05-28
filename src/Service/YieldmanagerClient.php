@@ -593,7 +593,7 @@ readonly class YieldmanagerClient extends AbstractService
     public function saveWarehouseDailyInfoMaxOrders(
         string $warehouseId,
         LocalClock $date,
-        int $maxOrders
+        ?int $maxOrders
     ): void {
         $this->requestClient()->put(
             "{$this->yieldmanagerHost}/api/admin/warehouses/{$warehouseId}/{$date->dateString()}/max-orders",
@@ -607,7 +607,7 @@ readonly class YieldmanagerClient extends AbstractService
     public function saveWarehouseDailyInfoMaxProductLines(
         string $warehouseId,
         LocalClock $date,
-        int $maxProductLines
+        ?int $maxProductLines
     ): void {
         $this->requestClient()->put(
             "{$this->yieldmanagerHost}/api/admin/warehouses/{$warehouseId}/{$date->dateString()}/max-product-lines",
@@ -621,7 +621,7 @@ readonly class YieldmanagerClient extends AbstractService
     public function saveWarehouseDailyInfoMaxWeight(
         string $warehouseId,
         LocalClock $date,
-        int $maxWeight
+        ?int $maxWeight
     ): void {
         $this->requestClient()->put(
             "{$this->yieldmanagerHost}/api/admin/warehouses/{$warehouseId}/{$date->dateString()}/max-weight",
