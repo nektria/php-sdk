@@ -482,6 +482,18 @@ readonly class YieldmanagerClient extends AbstractService
         );
     }
 
+    public function openClosesAllWarehouses(LocalClock $date, bool $open): void
+    {
+        $this->requestClient()->patch(
+            "{$this->yieldmanagerHost}/api/admin/warehouses/open-close-shifts",
+            data: [
+                'date' => $date->dateString(),
+                'open' => $open,
+            ],
+            headers: $this->getHeaders(),
+        );
+    }
+
     /**
      * @return YMPing
      */
