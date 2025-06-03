@@ -471,6 +471,17 @@ readonly class YieldmanagerClient extends AbstractService
         )->json();
     }
 
+    public function openClosesAllShifts(string $warehouseId, LocalClock $date, bool $open): void
+    {
+        $this->requestClient()->patch(
+            "{$this->yieldmanagerHost}/api/admin/warehouses/{$warehouseId}/{$date->dateString()}/open-close-shifts",
+            data: [
+                'open' => $open,
+            ],
+            headers: $this->getHeaders(),
+        );
+    }
+
     /**
      * @return YMPing
      */
@@ -485,6 +496,17 @@ readonly class YieldmanagerClient extends AbstractService
             "{$this->yieldmanagerHost}/api/admin/paco/reset",
             data: [
                 'userId' => $user->id
+            ],
+            headers: $this->getHeaders(),
+        );
+    }
+
+    public function saveAllShiftsPrice(string $warehouseId, LocalClock $date, float $price): void
+    {
+        $this->requestClient()->patch(
+            "{$this->yieldmanagerHost}/api/admin/warehouses/{$warehouseId}/{$date->dateString()}/set-prices",
+            data: [
+                'price' => $price,
             ],
             headers: $this->getHeaders(),
         );
