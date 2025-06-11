@@ -32,20 +32,29 @@ class HealthService
      *     results: array<string, bool>,
      * }
      */
-    public function check(): array
+    public function check(bool $full = false): array
     {
         $this->errors = [];
 
-        $data = array_merge(
-            $this->checkCompass(),
-            $this->checkDatabase(),
-            $this->checkMetrics(),
-            $this->checkRabbit(),
-            $this->checkRedis(),
-            $this->checkRouteManager(),
-            $this->checkYieldManager(),
-            $this->extraChecks(),
-        );
+        if ($full) {
+            $data = array_merge(
+                $this->checkCompass(),
+                $this->checkDatabase(),
+                $this->checkMetrics(),
+                $this->checkRabbit(),
+                $this->checkRedis(),
+                $this->checkRouteManager(),
+                $this->checkYieldManager(),
+                $this->extraChecks(),
+            );
+        } else {
+            $data = array_merge(
+                $this->checkDatabase(),
+                $this->checkRabbit(),
+                $this->checkRedis(),
+                $this->extraChecks(),
+            );
+        }
 
         return [
             'results' => $data,
@@ -233,8 +242,10 @@ class HealthService
      */
     private function checkYieldManager(): array
     {
-        if ($this->contextService->project() === 'yieldmanager') {
-            return [];
+        if ($this->container->hasParameter('com')) {
+            if ($this->contextService->project() === 'yieldmanager') {
+                return [];
+            }
         }
 
         $key = 'yieldmanager';
