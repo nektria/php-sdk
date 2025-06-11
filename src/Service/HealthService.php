@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Nektria\Service;
 
+use Doctrine\ORM\EntityManagerInterface;
 use Nektria\Infrastructure\ArrayDocumentReadModel;
 use Nektria\Infrastructure\VariableCache;
 use Nektria\Util\StringUtil;
@@ -113,6 +114,10 @@ class HealthService
     {
         $key = 'database';
         if (!$this->container->has(ArrayDocumentReadModel::class)) {
+            return [];
+        }
+
+        if (!$this->container->has(EntityManagerInterface::class)) {
             return [];
         }
 
