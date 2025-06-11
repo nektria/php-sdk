@@ -19,6 +19,7 @@ class HealthService
     private array $errors;
 
     public function __construct(
+        protected readonly ContextService $contextService,
         protected readonly ContainerInterface $container,
         protected readonly RequestClient $requestClient,
     ) {
@@ -74,6 +75,10 @@ class HealthService
      */
     private function checkCompass(): array
     {
+        if ($this->contextService->project() === 'compass') {
+            return [];
+        }
+
         $key = 'compass';
         if (!$this->container->has(CompassClient::class)) {
             return [];
@@ -120,6 +125,10 @@ class HealthService
      */
     private function checkMetrics(): array
     {
+        if ($this->contextService->project() === 'metrics') {
+            return [];
+        }
+
         $key = 'metrics';
         if (!$this->container->has(MetricsClient::class)) {
             return [];
@@ -197,6 +206,10 @@ class HealthService
      */
     private function checkRouteManager(): array
     {
+        if ($this->contextService->project() === 'routemanager') {
+            return [];
+        }
+
         $key = 'routemanager';
         if (!$this->container->has(RoutemanagerClient::class)) {
             return [];
@@ -220,6 +233,10 @@ class HealthService
      */
     private function checkYieldManager(): array
     {
+        if ($this->contextService->project() === 'yieldmanager') {
+            return [];
+        }
+
         $key = 'yieldmanager';
         if (!$this->container->has(YieldmanagerClient::class)) {
             return [];
