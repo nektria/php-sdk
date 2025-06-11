@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Nektria\Console;
 
-use Nektria\Service\AlertService;
 use Nektria\Service\HealthService;
 use Nektria\Util\JsonUtil;
 use RuntimeException;
@@ -42,6 +41,7 @@ class HealthConsole extends Console
 
         if (count($data['errors']) > 0) {
             $jsonData = JsonUtil::encode($data);
+
             throw new RuntimeException("Health failed. ({$jsonData})");
         }
     }
