@@ -20,11 +20,7 @@ parameters:
     excludePaths:
         - '%currentWorkingDirectory%/vendor'
 
-    ignoreErrors:
-        -
-            identifier: new.internalClass
-        -
-            identifier: method.internalClass
+
 
 
     symfony:
