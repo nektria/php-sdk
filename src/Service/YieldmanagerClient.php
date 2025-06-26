@@ -525,7 +525,7 @@ readonly class YieldmanagerClient extends AbstractService
         );
     }
 
-    public function saveAllWarehousesShiftsPrice(string $warehouseId, LocalClock $date, float $price): void
+    public function saveAllWarehousesShiftsPrice(LocalClock $date, float $price): void
     {
         $this->requestClient()->patch(
             "{$this->yieldmanagerHost}/api/admin/shifts/set-prices",
