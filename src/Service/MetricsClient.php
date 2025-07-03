@@ -36,7 +36,7 @@ readonly class MetricsClient extends AbstractService
 
         try {
             $this->requestClient()->get(
-                "{$this->metricsHost}/api/admin/dangerous-addresses/{$hash}",
+                "{$this->metricsHost}/api/admin/dangerous-addresses/slug/{$hash}",
                 headers: $this->getHeaders(),
             );
 
