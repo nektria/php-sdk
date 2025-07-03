@@ -28,7 +28,7 @@ readonly class MetricsClient extends AbstractService
         parent::__construct();
     }
 
-    public function checkFraudulentOrderFromHash(string $hash): ?bool
+    public function checkFraudulentOrderFromHash(string $hash): bool
     {
         if ($this->contextService()->isTest()) {
             return false;

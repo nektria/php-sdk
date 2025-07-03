@@ -148,20 +148,6 @@ readonly class ProxyClient extends AbstractService
         );
     }
 
-    public function sendSuspiciousOrderIsCreated(string $orderNumber): void
-    {
-        $proxyHost = $this->securityService()->retrieveCurrentUser()->tenant->metadata->proxyHost();
-
-        if ($proxyHost === null) {
-            return;
-        }
-
-        $this->requestClient()->patch(
-            "{$proxyHost}/api/admin/orders/{$orderNumber}/suspicious-order-created",
-            headers: $this->getHeaders(),
-        );
-    }
-
     public function uploadOrdersFileToPickingShift(string $pickingShiftId, string $filename): void
     {
         $proxyHost = $this->securityService()->retrieveCurrentUser()->tenant->metadata->proxyHost();
