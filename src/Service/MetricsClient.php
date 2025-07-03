@@ -6,6 +6,7 @@ namespace Nektria\Service;
 
 use Nektria\Dto\Clock;
 use Nektria\Dto\LocalClock;
+use Nektria\Exception\RequestException;
 use Nektria\Infrastructure\SharedUserV2Cache;
 
 /**
@@ -25,6 +26,28 @@ readonly class MetricsClient extends AbstractService
         private string $metricsHost
     ) {
         parent::__construct();
+    }
+
+    public function checkFraudulentOrderFromHash(string $hash): ?bool
+    {
+        if ($this->contextService()->isTest()) {
+            return false;
+        }
+
+        try {
+            $this->requestClient()->get(
+                "{$this->metricsHost}/api/admin/dangerous-addresses/{$hash}",
+                headers: $this->getHeaders(),
+            );
+
+            return true;
+        } catch (RequestException $e) {
+            if ($e->response()->status === 404) {
+                return false;
+            }
+
+            throw $e;
+        }
     }
 
     public function deliverOrder(string $orderNumber, LocalClock $at): void
