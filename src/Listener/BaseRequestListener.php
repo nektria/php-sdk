@@ -8,13 +8,9 @@ use DomainException;
 use Nektria\Document\DocumentCollection;
 use Nektria\Document\DocumentResponse;
 use Nektria\Document\FileDocument;
-use Nektria\Document\Tenant;
 use Nektria\Document\ThrowableDocument;
 use Nektria\Document\User;
 use Nektria\Dto\Clock;
-use Nektria\Exception\InsufficientCredentialsException;
-use Nektria\Exception\InvalidAuthorizationException;
-use Nektria\Infrastructure\SecurityServiceInterface;
 use Nektria\Infrastructure\SharedTemporalConsumptionCache;
 use Nektria\Infrastructure\VariableCache;
 use Nektria\Service\AlertService;
@@ -22,7 +18,6 @@ use Nektria\Service\Bus;
 use Nektria\Service\ContextService;
 use Nektria\Service\LogService;
 use Nektria\Service\ProcessRegistry;
-use Nektria\Service\RoleManager;
 use Nektria\Util\JsonUtil;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
@@ -56,16 +51,15 @@ abstract class BaseRequestListener implements EventSubscriberInterface
     private ?Response $originalResponse;
 
     public function __construct(
-        protected readonly AlertService                   $alertService,
-        protected readonly Bus                            $bus,
-        protected readonly ContextService                 $contextService,
-        protected readonly LogService                     $logService,
+        protected readonly AlertService $alertService,
+        protected readonly Bus $bus,
+        protected readonly ContextService $contextService,
+        protected readonly LogService $logService,
         protected readonly SharedTemporalConsumptionCache $temporalConsumptionCache,
-        protected readonly VariableCache                  $variableCache,
-        protected readonly ProcessRegistry                $processRegistry,
-        ContainerInterface                                $container
-    )
-    {
+        protected readonly VariableCache $variableCache,
+        protected readonly ProcessRegistry $processRegistry,
+        ContainerInterface $container
+    ) {
         /** @var string[] $cors */
         $cors = $container->getParameter('allowed_cors');
         $this->allowedCors = $cors;
@@ -427,7 +421,6 @@ abstract class BaseRequestListener implements EventSubscriberInterface
 
     protected function checkAccess(Request $request): void
     {
-
     }
 
     /**
@@ -463,7 +456,7 @@ abstract class BaseRequestListener implements EventSubscriberInterface
         return true;
     }
 
-    private function isCorsNeeded(RequestEvent|ResponseEvent $event): bool
+    private function isCorsNeeded(RequestEvent | ResponseEvent $event): bool
     {
         $origin = $event->getRequest()->server->get('HTTP_ORIGIN');
 
@@ -474,7 +467,7 @@ abstract class BaseRequestListener implements EventSubscriberInterface
         return in_array('*', $this->allowedCors, true) || in_array($origin, $this->allowedCors, true);
     }
 
-    private function setHeaders(RequestEvent|ResponseEvent $event): void
+    private function setHeaders(RequestEvent | ResponseEvent $event): void
     {
         $response = $event->getResponse();
 

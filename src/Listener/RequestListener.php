@@ -4,14 +4,6 @@ declare(strict_types=1);
 
 namespace Nektria\Listener;
 
-use DomainException;
-use Nektria\Document\DocumentCollection;
-use Nektria\Document\DocumentResponse;
-use Nektria\Document\FileDocument;
-use Nektria\Document\Tenant;
-use Nektria\Document\ThrowableDocument;
-use Nektria\Document\User;
-use Nektria\Dto\Clock;
 use Nektria\Exception\InsufficientCredentialsException;
 use Nektria\Exception\InvalidAuthorizationException;
 use Nektria\Infrastructure\SecurityServiceInterface;
@@ -23,38 +15,22 @@ use Nektria\Service\ContextService;
 use Nektria\Service\LogService;
 use Nektria\Service\ProcessRegistry;
 use Nektria\Service\RoleManager;
-use Nektria\Util\JsonUtil;
 use Symfony\Component\DependencyInjection\ContainerInterface;
-use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\ResponseHeaderBag;
-use Symfony\Component\HttpKernel\Event\ControllerEvent;
-use Symfony\Component\HttpKernel\Event\ExceptionEvent;
-use Symfony\Component\HttpKernel\Event\RequestEvent;
-use Symfony\Component\HttpKernel\Event\ResponseEvent;
-use Symfony\Component\HttpKernel\Event\TerminateEvent;
-use Symfony\Component\HttpKernel\KernelEvents;
-use Throwable;
-
-use function in_array;
 
 abstract class RequestListener extends BaseRequestListener
 {
-
     public function __construct(
         private readonly SecurityServiceInterface $securityService,
-        AlertService                              $alertService,
-        Bus                                       $bus,
-        ContextService                            $contextService,
-        LogService                                $logService,
-        SharedTemporalConsumptionCache            $temporalConsumptionCache,
-        VariableCache                             $variableCache,
-        ProcessRegistry                           $processRegistry,
-        ContainerInterface                        $container
-    )
-    {
+        AlertService $alertService,
+        Bus $bus,
+        ContextService $contextService,
+        LogService $logService,
+        SharedTemporalConsumptionCache $temporalConsumptionCache,
+        VariableCache $variableCache,
+        ProcessRegistry $processRegistry,
+        ContainerInterface $container
+    ) {
         parent::__construct(
             alertService: $alertService,
             bus: $bus,
