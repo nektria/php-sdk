@@ -6,7 +6,6 @@ namespace Nektria\Service;
 
 use Nektria\Infrastructure\SharedVariableCache;
 use Nektria\Util\StringUtil;
-use Nektria\Util\ValidateOpt;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 class ContextService
@@ -37,15 +36,14 @@ class ContextService
 
     private string $context;
 
+    /**
+     * @var array<string, string>
+     */
+    private array $extras;
+
     private bool $forceSync;
 
-    private ?string $tenantId;
-
-    private ?string $tenantName;
-
     private string $traceId;
-
-    private ?string $userId;
 
     public function __construct(
         private readonly SharedVariableCache $sharedVariableCache,
@@ -54,17 +52,24 @@ class ContextService
     ) {
         $this->context = self::COMMON;
         $this->traceId = StringUtil::uuid4();
-        $this->userId = null;
-        $this->tenantId = null;
-        $this->tenantName = null;
         $this->forceSync = false;
+        $this->extras = [];
     }
 
-    public static function dummy(): self
+    public static function internal(): self
     {
         self::$dummyCS ??= new self(new SharedVariableCache('', ''), self::INTERNAL, 'dummy');
 
         return self::$dummyCS;
+    }
+
+    public function addExtra(string $key, ?string $value): void
+    {
+        if ($value === null) {
+            unset($this->extras[$key]);
+        } else {
+            $this->extras[$key] = $value;
+        }
     }
 
     public function context(): string
@@ -83,7 +88,7 @@ class ContextService
         }
 
         return
-            $this->isLocalEnvironament()
+            $this->isLocalEnvironment()
             || $this->traceId === '00000000-0000-4000-8000-000000000000'
             || $this->sharedVariableCache->hasKey("debug_bbf6c8f_{$project}");
     }
@@ -105,25 +110,6 @@ class ContextService
         return $data;
     }
 
-    public function delayRabbit(): bool
-    {
-        return !$this->sharedVariableCache->hasKey("delay_rabbit_85b20ef3_{$this->project}");
-    }
-
-    /**
-     * @param string[] $projects
-     * @return array<string, bool>
-     */
-    public function delayRabbits(array $projects): array
-    {
-        $data = [];
-        foreach ($projects as $project) {
-            $data[$project] = $this->delayRabbit();
-        }
-
-        return $data;
-    }
-
     public function env(): string
     {
         return $this->env;
@@ -134,9 +120,9 @@ class ContextService
         return $this->forceSync;
     }
 
-    public function isAuthenticated(): bool
+    public function getExtra(string $key): ?string
     {
-        return $this->userId !== null;
+        return $this->extras[$key] ?? null;
     }
 
     public function isDev(): bool
@@ -144,7 +130,7 @@ class ContextService
         return $this->env === self::DEV;
     }
 
-    public function isLocalEnvironament(): bool
+    public function isLocalEnvironment(): bool
     {
         return $this->env === self::DEV;
     }
@@ -169,7 +155,7 @@ class ContextService
         return $this->env === self::QA;
     }
 
-    public function isRealEnvironament(): bool
+    public function isRealEnvironment(): bool
     {
         return $this->isStaging() || $this->isProd();
     }
@@ -233,41 +219,13 @@ class ContextService
         $this->forceSync = $forceSync;
     }
 
-    public function setTenant(?string $tenantId, ?string $tenantName): void
-    {
-        ValidateOpt::uuid4($tenantId);
-        $this->tenantId = $tenantId;
-        $this->tenantName = $tenantName;
-    }
-
     public function setTraceId(string $traceId): void
     {
         $this->traceId = $traceId;
     }
 
-    public function setUserId(?string $userId): void
-    {
-        ValidateOpt::uuid4($userId);
-        $this->userId = $userId;
-    }
-
-    public function tenantId(): ?string
-    {
-        return $this->tenantId;
-    }
-
-    public function tenantName(): ?string
-    {
-        return $this->tenantName;
-    }
-
     public function traceId(): string
     {
         return $this->traceId;
-    }
-
-    public function userId(): ?string
-    {
-        return $this->userId;
     }
 }

@@ -916,7 +916,7 @@ readonly class RoutemanagerClient extends AbstractService
      */
     protected function getHeaders(): array
     {
-        $tenantId = $this->contextService()->tenantId() ?? 'none';
+        $tenantId = $this->contextService()->getExtra('tenantId') ?? 'none';
         $apiKey =
             $this->sharedUserCache->read("SYSTEM_{$tenantId}")->apiKey ??
             $this->sharedUserCache->read("ADMIN_{$tenantId}")->apiKey ??

@@ -684,7 +684,7 @@ readonly class YieldmanagerClient extends AbstractService
      */
     protected function getHeaders(bool $forceSync = false): array
     {
-        $tenantId = $this->contextService()->tenantId() ?? 'none';
+        $tenantId = $this->contextService()->getExtra('tenantId') ?? 'none';
         $apiKey =
             $this->sharedUserCache->read("SYSTEM_{$tenantId}")->apiKey ??
             $this->sharedUserCache->read("ADMIN_{$tenantId}")->apiKey ??

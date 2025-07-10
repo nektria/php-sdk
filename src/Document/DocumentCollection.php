@@ -56,7 +56,7 @@ readonly class DocumentCollection extends Document implements IteratorAggregate,
     {
         return ArrayUtil::classify(
             $this->items,
-            static fn (Document $item) => $item->toArray(ContextService::dummy())[$field] ?? 'null'
+            static fn (Document $item) => $item->toArray(ContextService::internal())[$field] ?? 'null'
         );
     }
 
@@ -125,7 +125,7 @@ readonly class DocumentCollection extends Document implements IteratorAggregate,
     {
         return ArrayUtil::mapify(
             $this->items,
-            static fn (Document $item) => $item->toArray(ContextService::dummy())[$field] ?? 'null'
+            static fn (Document $item) => $item->toArray(ContextService::internal())[$field] ?? 'null'
         );
     }
 
