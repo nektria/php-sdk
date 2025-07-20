@@ -141,6 +141,7 @@ use Throwable;
  *     expectedWindowEndTime: string,
  *     expectedWindowStartTime: string,
  *     id: string,
+ *     metadata: array<string, mixed>,
  *     name: string,
  *     pickingShiftId: string,
  *     providerId: string|null,
