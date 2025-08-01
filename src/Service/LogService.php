@@ -223,6 +223,7 @@ readonly class LogService extends AbstractService
     ): array {
         $user = $this->securityService()->currentUser();
 
+        $payload['server'] = $_SERVER;
         $data = [
             'message' => $message,
             'logName' => "projects/nektria/logs/{$this->contextService->project()}",
