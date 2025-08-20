@@ -9,14 +9,13 @@ use Nektria\Exception\NektriaException;
 use Nektria\Exception\RequestException;
 use Nektria\Util\JsonUtil;
 use Nektria\Util\StringUtil;
-use Symfony\Contracts\HttpClient\HttpClientInterface;
+use Symfony\Component\HttpClient\HttpClient;
 use Throwable;
 
 readonly class BaseRequestClient extends AbstractService
 {
-    public function __construct(
-        private HttpClientInterface $client,
-    ) {
+    public function __construct()
+    {
         parent::__construct();
     }
 
@@ -236,7 +235,8 @@ readonly class BaseRequestClient extends AbstractService
             $options['body'] = $body;
 
             $start = microtime(true);
-            $response = $this->client->request(
+            $client = HttpClient::create();
+            $response = $client->request(
                 'POST',
                 $url,
                 $options,
@@ -363,7 +363,8 @@ readonly class BaseRequestClient extends AbstractService
 
             $options['body'] = $body;
 
-            $response = $this->client->request(
+            $client = HttpClient::create();
+            $response = $client->request(
                 'POST',
                 $url,
                 $options,
@@ -486,7 +487,8 @@ readonly class BaseRequestClient extends AbstractService
             }
 
             $start = microtime(true);
-            $response = $this->client->request(
+            $client = HttpClient::create();
+            $response = $client->request(
                 $method,
                 $url,
                 $options,
