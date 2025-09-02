@@ -14,11 +14,6 @@ use Throwable;
 
 readonly class BaseRequestClient extends AbstractService
 {
-    public function __construct()
-    {
-        parent::__construct();
-    }
-
     /**
      * @param array<string, string|int|bool|float> $data
      * @param array<string, string> $headers
