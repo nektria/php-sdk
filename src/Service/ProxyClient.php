@@ -72,7 +72,7 @@ readonly class ProxyClient extends AbstractService
         );
     }
 
-    public function sendOrderIsCreated(string $orderNumber): void
+    public function sendOrderIsCreatedInRouteManager(string $orderNumber): void
     {
         if ($this->contextService()->isTest()) {
             return;
