@@ -14,10 +14,6 @@ class OutputFormatterStyle implements OutputFormatterStyleInterface
 
     private string $foreground;
 
-    private bool $handlesHrefGracefully;
-
-    private string $href;
-
     /** @var string[] */
     private array $options;
 
@@ -26,20 +22,14 @@ class OutputFormatterStyle implements OutputFormatterStyleInterface
      */
     public function __construct(?string $foreground = null, ?string $background = null, array $options = [])
     {
-        $this->handlesHrefGracefully = false;
         $this->foreground = $foreground ?? '';
         $this->options = $options;
         $this->background = $background ?? '';
-        $this->href = '';
         $this->color = new Color($foreground ?? '', $background ?? '', $options);
     }
 
     public function apply(string $text): string
     {
-        if ($this->handlesHrefGracefully) {
-            $text = "\033]8;;$this->href\033\\$text\033]8;;\033\\";
-        }
-
         return $this->color->apply($text);
     }
 
@@ -53,11 +43,6 @@ class OutputFormatterStyle implements OutputFormatterStyleInterface
     {
         $this->foreground = $color ?? '';
         $this->color = new Color($this->foreground, $this->background, $this->options);
-    }
-
-    public function setHref(string $url): void
-    {
-        $this->href = $url;
     }
 
     public function setOption(string $option): void
