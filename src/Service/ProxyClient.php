@@ -72,6 +72,24 @@ readonly class ProxyClient extends AbstractService
         );
     }
 
+    public function sendOrderIsCreated(string $orderNumber): void
+    {
+        if ($this->contextService()->isTest()) {
+            return;
+        }
+
+        if (!$this->pathIsAllowed('on_rm_order_created')) {
+            return;
+        }
+
+        $proxyHost = $this->securityService()->retrieveCurrentUser()->tenant->metadata->proxyHost();
+
+        $this->requestClient()->patch(
+            "{$proxyHost}/api/admin/routemanager/orders/{$orderNumber}/created",
+            headers: $this->getHeaders(),
+        );
+    }
+
     public function sendOrderIsUpdated(string $orderNumber): void
     {
         $proxyHost = $this->securityService()->retrieveCurrentUser()->tenant->metadata->proxyHost();
