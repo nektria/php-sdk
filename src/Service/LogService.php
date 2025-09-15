@@ -36,7 +36,7 @@ readonly class LogService extends AbstractService
     ) {
         parent::__construct();
 
-        if ($this->contextService->isLocalEnvironament()) {
+        if ($this->contextService->isLocalEnvironment()) {
             $this->data = ['channel' => false];
         } else {
             $this->data = ['channel' => fopen('php://stderr', 'wb')];
@@ -205,11 +205,14 @@ readonly class LogService extends AbstractService
      */
     public function warning(array $payload, string $message): void
     {
-        if ($this->data['channel'] === false) {
-            return;
+        try {
+            if ($this->data['channel'] === false) {
+                return;
+            }
+            $data = $this->build($payload, $message, self::WARNING);
+            fwrite($this->data['channel'], JsonUtil::encode($data) . PHP_EOL);
+        } catch (Throwable) {
         }
-        $data = $this->build($payload, $message, self::WARNING);
-        fwrite($this->data['channel'], JsonUtil::encode($data) . PHP_EOL);
     }
 
     /**

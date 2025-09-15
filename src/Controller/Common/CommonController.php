@@ -43,15 +43,18 @@ readonly class CommonController extends Controller
     #[Route('/version', method: 'GET')]
     public function version(ContainerInterface $container, ContextService $contextService): JsonResponse
     {
-        if ($container->has(ArrayDocumentReadModel::class)) {
-            /** @var ArrayDocumentReadModel $readModel */
-            $readModel = $container->get(ArrayDocumentReadModel::class);
-            $versions = $readModel->readCustom('doctrine_migration_versions', 'version', 1);
-            $migration = $versions->first()->data ?? ['version' => 'DoctrineMigrations\\none'];
+        $migrationVersion = null;
 
-            $migrationVersion = explode('\\', $migration['version'])[1];
-        } else {
-            $migrationVersion = null;
+        try {
+            if ($container->has(ArrayDocumentReadModel::class)) {
+                /** @var ArrayDocumentReadModel $readModel */
+                $readModel = $container->get(ArrayDocumentReadModel::class);
+                $versions = $readModel->readCustom('doctrine_migration_versions', 'version', 1);
+                $migration = $versions->first()->data ?? ['version' => 'DoctrineMigrations\\none'];
+
+                $migrationVersion = explode('\\', $migration['version'])[1];
+            }
+        } catch (Throwable) {
         }
 
         try {

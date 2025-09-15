@@ -31,7 +31,7 @@ readonly class SocketService extends AbstractService
         $tmpContext->setContext(ContextService::INTERNAL);
 
         try {
-            $this->hub->publish(new Update("/{$this->contextService()->tenantId()}", JsonUtil::encode([
+            $this->hub->publish(new Update("/{$this->contextService()->getExtra('tenantId')}", JsonUtil::encode([
                 'type' => $type,
                 'payload' => $data->toArray($tmpContext),
             ]), true));
@@ -46,7 +46,8 @@ readonly class SocketService extends AbstractService
             return;
         }
 
-        if ($this->contextService()->userId() === null) {
+        $userId = $this->contextService()->getExtra('userId');
+        if ($userId === null) {
             return;
         }
 
@@ -54,7 +55,6 @@ readonly class SocketService extends AbstractService
         $tmpContext->setContext(ContextService::INTERNAL);
 
         try {
-            $userId = $this->contextService()->userId();
             $this->hub->publish(new Update("/{$userId}", JsonUtil::encode([
                 'type' => $type,
                 'payload' => $data->toArray($tmpContext),

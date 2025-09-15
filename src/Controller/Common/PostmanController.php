@@ -192,7 +192,7 @@ readonly class PostmanController extends Controller
             );
         }
 
-        if ($contextService->isLocalEnvironament() || $contextService->isQA()) {
+        if ($contextService->isLocalEnvironment() || $contextService->isQA()) {
             $data = [];
 
             try {

@@ -63,16 +63,7 @@ readonly class Bus extends AbstractService implements BusInterface
         ?int $delayMs = null,
         ?array $retryOptions = null
     ): void {
-        if ($this->contextService()->delayRabbit()) {
-            $this->delayedEvents->push([
-                'event' => $event,
-                'transport' => $transport,
-                'delayMs' => $delayMs,
-                'retryOptions' => $retryOptions,
-            ]);
-        } else {
-            $this->dispatchEvent($event, $transport, $delayMs, $retryOptions);
-        }
+        $this->dispatchEvent($event, $transport, $delayMs, $retryOptions);
     }
 
     /**
@@ -95,8 +86,8 @@ readonly class Bus extends AbstractService implements BusInterface
             new ContextStamp(
                 traceId: $this->contextService()->traceId(),
                 context: $this->contextService()->context(),
-                tenantId: $this->contextService()->tenantId(),
-                userId: $this->contextService()->userId(),
+                tenantId: $this->contextService()->getExtra('tenantId'),
+                userId: $this->contextService()->getExtra('userId'),
             ),
         ];
 
@@ -173,8 +164,8 @@ readonly class Bus extends AbstractService implements BusInterface
             new ContextStamp(
                 traceId: $this->contextService()->traceId(),
                 context: $this->contextService()->context(),
-                tenantId: $this->contextService()->tenantId(),
-                userId: $this->contextService()->userId(),
+                tenantId: $this->contextService()->getExtra('tenantId'),
+                userId: $this->contextService()->getExtra('userId'),
             ),
         ];
 
@@ -233,8 +224,8 @@ readonly class Bus extends AbstractService implements BusInterface
                 new ContextStamp(
                     traceId: $this->contextService()->traceId(),
                     context: $this->contextService()->context(),
-                    tenantId: $this->contextService()->tenantId(),
-                    userId: $this->contextService()->userId(),
+                    tenantId: $this->contextService()->getExtra('tenantId'),
+                    userId: $this->contextService()->getExtra('userId'),
                 ),
             ])->last(HandledStamp::class);
 

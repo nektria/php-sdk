@@ -1,6 +1,6 @@
 {
     "name": "nektria/php-sdk",
-    "version": "1.0.729",
+    "version": "2.0.12",
     "type": "library",
     "description": "Nektria PHP SDK",
     "minimum-stability": "stable",
@@ -36,7 +36,7 @@
         "doctrine/doctrine-migrations-bundle": "^3.0",
         "doctrine/orm": "^3.0",
         "firebase/php-jwt": "^v6.0",
-        "phpoffice/phpspreadsheet": "^3.7",
+        "phpoffice/phpspreadsheet": "^5.0",
         "symfony/amqp-messenger": "^7.0",
         "symfony/dotenv": "^7.0",
         "symfony/http-client": "^7.0",

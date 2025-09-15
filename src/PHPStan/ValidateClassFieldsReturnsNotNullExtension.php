@@ -15,9 +15,12 @@ use PHPStan\Analyser\TypeSpecifier;
 use PHPStan\Analyser\TypeSpecifierAwareExtension;
 use PHPStan\Analyser\TypeSpecifierContext;
 use PHPStan\Reflection\MethodReflection;
+use PHPStan\Type\StaticMethodTypeSpecifyingExtension;
 use PHPStan\Type\TypeCombinator;
 
-class ValidateClassFieldsReturnsNotNullExtension implements TypeSpecifierAwareExtension
+class ValidateClassFieldsReturnsNotNullExtension implements
+    TypeSpecifierAwareExtension,
+    StaticMethodTypeSpecifyingExtension
 {
     private TypeSpecifier $typeSpecifier;
 

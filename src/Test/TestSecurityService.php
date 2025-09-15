@@ -153,8 +153,9 @@ readonly class TestSecurityService extends SecurityService
             throw new InvalidAuthorizationException();
         }
 
-        $this->contextService()->setTenant($this->currentUser()->tenantId, $this->currentUser()->tenant->name);
-        $this->contextService()->setUserId($this->currentUser()->id);
+        $this->contextService()->addExtra('tenantId', $this->currentUser()->tenantId);
+        $this->contextService()->addExtra('tenantName', $this->currentUser()->tenant->name);
+        $this->contextService()->addExtra('userId', $this->currentUser()->id);
     }
 
     public function authenticateSystem(string $tenantId): void
@@ -164,8 +165,9 @@ readonly class TestSecurityService extends SecurityService
         $user = $this->users['ak2000'];
         $this->userContainer->setUser($this->users['ak2000']);
 
-        $this->contextService()->setTenant($user->tenantId, $user->tenant->name);
-        $this->contextService()->setUserId($user->id);
+        $this->contextService()->addExtra('tenantId', $user->tenantId);
+        $this->contextService()->addExtra('tenantName', $user->tenant->name);
+        $this->contextService()->addExtra('userId', $user->id);
     }
 
     public function authenticateUser(string $apiKey): void
@@ -178,14 +180,17 @@ readonly class TestSecurityService extends SecurityService
             throw new InvalidAuthorizationException();
         }
 
-        $this->contextService()->setTenant($this->currentUser()->tenantId, $this->currentUser()->tenant->name);
-        $this->contextService()->setUserId($this->currentUser()->id);
+        $this->contextService()->addExtra('tenantId', $this->currentUser()->tenantId);
+        $this->contextService()->addExtra('tenantName', $this->currentUser()->tenant->name);
+        $this->contextService()->addExtra('userId', $this->currentUser()->id);
     }
 
     public function clearAuthentication(): void
     {
-        $this->contextService()->setTenant(null, null);
-        $this->contextService()->setUserId(null);
+        $this->contextService()->addExtra('tenantId', null);
+        $this->contextService()->addExtra('tenantName', null);
+        $this->contextService()->addExtra('userId', null);
+
         $this->userContainer->setUser(null);
         LocalClock::defaultTimezone('Europe/Madrid');
     }

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Nektria\Console;
 
 use Nektria\Service\HealthService;
+use Nektria\Util\JsonUtil;
 use RuntimeException;
 
 use function count;
@@ -12,7 +13,7 @@ use function count;
 class HealthConsole extends Console
 {
     public function __construct(
-        private readonly HealthService $healthService,
+        private readonly HealthService $healthService
     ) {
         parent::__construct('sdk:health');
     }
@@ -39,7 +40,9 @@ class HealthConsole extends Console
         }
 
         if (count($data['errors']) > 0) {
-            throw new RuntimeException('health failed');
+            $jsonData = JsonUtil::encode($data);
+
+            throw new RuntimeException("Health failed. ({$jsonData})");
         }
     }
 }

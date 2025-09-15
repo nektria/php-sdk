@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Nektria\Service;
 
+use Doctrine\ORM\EntityManagerInterface;
 use Nektria\Infrastructure\ArrayDocumentReadModel;
 use Nektria\Infrastructure\VariableCache;
 use Nektria\Util\StringUtil;
@@ -19,6 +20,7 @@ class HealthService
     private array $errors;
 
     public function __construct(
+        protected readonly ContextService $contextService,
         protected readonly ContainerInterface $container,
         protected readonly RequestClient $requestClient,
     ) {
@@ -31,20 +33,29 @@ class HealthService
      *     results: array<string, bool>,
      * }
      */
-    public function check(): array
+    public function check(bool $full = false): array
     {
         $this->errors = [];
 
-        $data = array_merge(
-            $this->checkCompass(),
-            $this->checkDatabase(),
-            $this->checkMetrics(),
-            $this->checkRabbit(),
-            $this->checkRedis(),
-            $this->checkRouteManager(),
-            $this->checkYieldManager(),
-            $this->extraChecks(),
-        );
+        if ($full) {
+            $data = array_merge(
+                $this->checkCompass(),
+                $this->checkDatabase(),
+                $this->checkMetrics(),
+                $this->checkRabbit(),
+                $this->checkRedis(),
+                $this->checkRouteManager(),
+                $this->checkYieldManager(),
+                $this->extraChecks(),
+            );
+        } else {
+            $data = array_merge(
+                $this->checkDatabase(),
+                $this->checkRabbit(),
+                $this->checkRedis(),
+                $this->extraChecks(),
+            );
+        }
 
         return [
             'results' => $data,
@@ -74,6 +85,10 @@ class HealthService
      */
     private function checkCompass(): array
     {
+        if ($this->contextService->project() === 'compass') {
+            return [];
+        }
+
         $key = 'compass';
         if (!$this->container->has(CompassClient::class)) {
             return [];
@@ -102,6 +117,10 @@ class HealthService
             return [];
         }
 
+        if (!$this->container->has(EntityManagerInterface::class)) {
+            return [];
+        }
+
         try {
             /** @var ArrayDocumentReadModel $srvc */
             $srvc = $this->container->get(ArrayDocumentReadModel::class);
@@ -120,6 +139,10 @@ class HealthService
      */
     private function checkMetrics(): array
     {
+        if ($this->contextService->project() === 'metrics') {
+            return [];
+        }
+
         $key = 'metrics';
         if (!$this->container->has(MetricsClient::class)) {
             return [];
@@ -197,6 +220,10 @@ class HealthService
      */
     private function checkRouteManager(): array
     {
+        if ($this->contextService->project() === 'routemanager') {
+            return [];
+        }
+
         $key = 'routemanager';
         if (!$this->container->has(RoutemanagerClient::class)) {
             return [];
@@ -220,6 +247,12 @@ class HealthService
      */
     private function checkYieldManager(): array
     {
+        if ($this->container->hasParameter('com')) {
+            if ($this->contextService->project() === 'yieldmanager') {
+                return [];
+            }
+        }
+
         $key = 'yieldmanager';
         if (!$this->container->has(YieldmanagerClient::class)) {
             return [];

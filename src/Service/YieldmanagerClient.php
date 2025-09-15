@@ -516,8 +516,21 @@ readonly class YieldmanagerClient extends AbstractService
     public function saveAllShiftsPrice(string $warehouseId, LocalClock $date, float $price): void
     {
         $this->requestClient()->patch(
-            "{$this->yieldmanagerHost}/api/admin/warehouses/{$warehouseId}/{$date->dateString()}/set-prices",
+            "{$this->yieldmanagerHost}/api/admin/warehouses/{$warehouseId}/set-prices",
             data: [
+                'date' => $date->dateString(),
+                'price' => $price,
+            ],
+            headers: $this->getHeaders(),
+        );
+    }
+
+    public function saveAllWarehousesShiftsPrice(LocalClock $date, float $price): void
+    {
+        $this->requestClient()->patch(
+            "{$this->yieldmanagerHost}/api/admin/shifts/set-prices",
+            data: [
+                'date' => $date->dateString(),
                 'price' => $price,
             ],
             headers: $this->getHeaders(),
@@ -671,7 +684,7 @@ readonly class YieldmanagerClient extends AbstractService
      */
     protected function getHeaders(bool $forceSync = false): array
     {
-        $tenantId = $this->contextService()->tenantId() ?? 'none';
+        $tenantId = $this->contextService()->getExtra('tenantId') ?? 'none';
         $apiKey =
             $this->sharedUserCache->read("SYSTEM_{$tenantId}")->apiKey ??
             $this->sharedUserCache->read("ADMIN_{$tenantId}")->apiKey ??

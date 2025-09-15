@@ -102,7 +102,6 @@
       <excludeFolder url="file://$MODULE_DIR$/vendor/react/promise" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/react/socket" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/react/stream" />
-      <excludeFolder url="file://$MODULE_DIR$/vendor/doctrine/cache" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/doctrine/common" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/doctrine/doctrine-bundle" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/doctrine/doctrine-migrations-bundle" />

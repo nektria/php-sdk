@@ -39,7 +39,7 @@ readonly class ToolsController extends Controller
     #[Route('/decrypt', method: 'PATCH')]
     public function decodeAllVariables(ContextService $contextService): JsonResponse
     {
-        if (!$contextService->isLocalEnvironament()) {
+        if (!$contextService->isLocalEnvironment()) {
             throw new InsufficientCredentialsException();
         }
 

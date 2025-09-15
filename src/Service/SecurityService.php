@@ -42,8 +42,9 @@ readonly class SecurityService extends AbstractService implements SecurityServic
             throw new InvalidAuthorizationException();
         }
 
-        $this->contextService()->setTenant($user->tenantId, $user->tenant->name);
-        $this->contextService()->setUserId($user->id);
+        $this->contextService()->addExtra('tenantId', $user->tenantId);
+        $this->contextService()->addExtra('tenantName', $user->tenant->name);
+        $this->contextService()->addExtra('userId', $user->id);
         LocalClock::defaultTimezone($user->tenant->timezone);
     }
 
@@ -62,8 +63,9 @@ readonly class SecurityService extends AbstractService implements SecurityServic
             throw new InvalidAuthorizationException();
         }
 
-        $this->contextService()->setTenant($user->tenantId, $user->tenant->name);
-        $this->contextService()->setUserId($user->id);
+        $this->contextService()->addExtra('tenantId', $user->tenantId);
+        $this->contextService()->addExtra('tenantName', $user->tenant->name);
+        $this->contextService()->addExtra('userId', $user->id);
         LocalClock::defaultTimezone($user->tenant->timezone);
     }
 
@@ -82,15 +84,18 @@ readonly class SecurityService extends AbstractService implements SecurityServic
             throw new InvalidAuthorizationException();
         }
 
-        $this->contextService()->setTenant($user->tenantId, $user->tenant->name);
-        $this->contextService()->setUserId($user->id);
+        $this->contextService()->addExtra('tenantId', $user->tenantId);
+        $this->contextService()->addExtra('tenantName', $user->tenant->name);
+        $this->contextService()->addExtra('userId', $user->id);
+
         LocalClock::defaultTimezone($user->tenant->timezone);
     }
 
     public function clearAuthentication(): void
     {
-        $this->contextService()->setTenant(null, null);
-        $this->contextService()->setUserId(null);
+        $this->contextService()->addExtra('tenantId', null);
+        $this->contextService()->addExtra('tenantName', null);
+        $this->contextService()->addExtra('userId', null);
         LocalClock::defaultTimezone('UTC');
         $this->userContainer->setUser(null);
     }
