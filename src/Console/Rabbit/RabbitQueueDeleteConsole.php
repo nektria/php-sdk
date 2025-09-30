@@ -43,7 +43,7 @@ class RabbitQueueDeleteConsole extends Console
         foreach ($content as $queue) {
             $name = $queue['name'];
 
-            if ($name === $targetQueue) {
+            if (str_contains($name, $targetQueue)) {
                 $vhost = urlencode($queue['vhost']);
                 $this->output()->writeln("Deleting queue '{$name}'...");
                 $this->requestClient->delete(
