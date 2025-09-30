@@ -9,6 +9,7 @@ use Nektria\Service\RequestClient;
 use RuntimeException;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
+use Throwable;
 use function is_string;
 
 class RabbitQueueDeleteConsole extends Console
@@ -44,17 +45,21 @@ class RabbitQueueDeleteConsole extends Console
             $name = $queue['name'];
 
             if (str_contains($name, $targetQueue)) {
-                $vhost = urlencode($queue['vhost']);
-                $this->output()->writeln("Deleting queue '{$name}'...");
-                $this->requestClient->delete(
-                    "{$host}/api/queues/{$vhost}/{$name}",
-                    data: [
-                        'vhost' => '/',
-                        'name' => $name,
-                        'mode' => 'delete',
-                    ],
-                );
-                $this->output()->writeln("Queue '{$name}' deleted.");
+                try {
+                    $vhost = urlencode($queue['vhost']);
+                    $this->output()->writeln("Deleting queue '{$name}'...");
+                    $this->requestClient->delete(
+                        "{$host}/api/queues/{$vhost}/{$name}",
+                        data: [
+                            'vhost' => '/',
+                            'name' => $name,
+                            'mode' => 'delete',
+                        ],
+                    );
+                    $this->output()->writeln("Queue '{$name}' deleted.");
+                } catch (Throwable) {
+                    //
+                }
             }
         }
     }
