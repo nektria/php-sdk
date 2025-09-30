@@ -55,8 +55,6 @@ class RabbitQueueDeleteConsole extends Console
                     ],
                 );
                 $this->output()->writeln("Queue '{$name}' deleted.");
-
-                break;
             }
         }
     }
