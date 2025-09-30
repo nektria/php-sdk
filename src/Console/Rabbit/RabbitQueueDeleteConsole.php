@@ -8,8 +8,8 @@ use Nektria\Console\Console;
 use Nektria\Service\RequestClient;
 use RuntimeException;
 use Symfony\Component\DependencyInjection\ContainerInterface;
-
 use Throwable;
+
 use function is_string;
 
 class RabbitQueueDeleteConsole extends Console
@@ -58,7 +58,6 @@ class RabbitQueueDeleteConsole extends Console
                     );
                     $this->output()->writeln("Queue '{$name}' deleted.");
                 } catch (Throwable) {
-                    //
                 }
             }
         }
