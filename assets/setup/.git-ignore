@@ -1,5 +1,6 @@
 *.DS_Store
 *.iws
+.env
 .fleet
 .idea/tasks.xml
 .idea/workspace.xml
@@ -9,10 +10,10 @@
 .phpunit.result.cache
 /phpunit.xml
 /tmp
-!/tmp/.gitkeep
 /var/
 /vendor/
 scratch.php
 server/__PROJECT__-dev/.php-cs-fixer.cache
 server/__PROJECT__-dev/.phpunit.result.cache
 server/__PROJECT__-dev/google_credentials.json
+!/tmp/.gitkeep
