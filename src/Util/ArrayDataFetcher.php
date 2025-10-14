@@ -18,6 +18,9 @@ use function is_bool;
 use function is_object;
 use function is_string;
 
+use const PHP_INT_MAX;
+use const PHP_INT_MIN;
+
 readonly class ArrayDataFetcher
 {
     /**
@@ -222,7 +225,7 @@ readonly class ArrayDataFetcher
             throw new InvalidRequestParamException($field, 'int');
         }
 
-        return max(-2147483648, min((int) $value, 2147483647));
+        return max(PHP_INT_MIN, min((int) $value, PHP_INT_MAX));
     }
 
     /**
