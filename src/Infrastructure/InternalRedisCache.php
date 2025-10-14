@@ -40,8 +40,8 @@ abstract class InternalRedisCache extends RedisCache
         try {
             $this->init()->eval("for _,k in ipairs(redis.call('keys','{$this->fqn}:*')) do redis.call('del',k) end");
 
-            if ($this->init()->getLastError() !== null) {
-                $lastError = $this->init()->getLastError();
+            $lastError = $this->init()->getLastError();
+            if ($lastError !== null) {
                 $this->init()->clearLastError();
 
                 throw new RuntimeException($lastError);
@@ -55,8 +55,8 @@ abstract class InternalRedisCache extends RedisCache
         try {
             $this->init()->flushDB();
 
-            if ($this->init()->getLastError() !== null) {
-                $lastError = $this->init()->getLastError();
+            $lastError = $this->init()->getLastError();
+            if ($lastError !== null) {
                 $this->init()->clearLastError();
 
                 throw new RuntimeException($lastError);
@@ -77,8 +77,8 @@ abstract class InternalRedisCache extends RedisCache
                 return null;
             }
 
-            if ($this->init()->getLastError() !== null) {
-                $lastError = $this->init()->getLastError();
+            $lastError = $this->init()->getLastError();
+            if ($lastError !== null) {
                 $this->init()->clearLastError();
 
                 throw new RuntimeException($lastError);
@@ -133,8 +133,8 @@ abstract class InternalRedisCache extends RedisCache
         try {
             $this->init()->del("{$this->fqn}:{$key}");
 
-            if ($this->init()->getLastError() !== null) {
-                $lastError = $this->init()->getLastError();
+            $lastError = $this->init()->getLastError();
+            if ($lastError !== null) {
                 $this->init()->clearLastError();
 
                 throw new RuntimeException($lastError);
@@ -157,8 +157,8 @@ abstract class InternalRedisCache extends RedisCache
         try {
             $this->init()->set("{$this->fqn}:{$key}", serialize($item), $ttl);
 
-            if ($this->init()->getLastError() !== null) {
-                $lastError = $this->init()->getLastError();
+            $lastError = $this->init()->getLastError();
+            if ($lastError !== null) {
                 $this->init()->clearLastError();
 
                 throw new RuntimeException($lastError);

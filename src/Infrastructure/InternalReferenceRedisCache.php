@@ -72,8 +72,8 @@ abstract class InternalReferenceRedisCache extends RedisCache
                 return null;
             }
 
-            if ($this->init()->getLastError() !== null) {
-                $lastError = $this->init()->getLastError();
+            $lastError = $this->init()->getLastError();
+            if ($lastError !== null) {
                 $this->init()->clearLastError();
 
                 throw new RuntimeException($lastError);
@@ -119,8 +119,8 @@ abstract class InternalReferenceRedisCache extends RedisCache
 
             $items = $this->init()->eval($luaScript, [$key], 1);
 
-            if ($this->init()->getLastError() !== null) {
-                $lastError = $this->init()->getLastError();
+            $lastError = $this->init()->getLastError();
+            if ($lastError !== null) {
                 $this->init()->clearLastError();
 
                 throw new RuntimeException($lastError);
@@ -181,8 +181,8 @@ abstract class InternalReferenceRedisCache extends RedisCache
                 return [];
             }
 
-            if ($this->init()->getLastError() !== null) {
-                $lastError = $this->init()->getLastError();
+            $lastError = $this->init()->getLastError();
+            if ($lastError !== null) {
                 $this->init()->clearLastError();
 
                 throw new RuntimeException($lastError);
@@ -251,8 +251,8 @@ abstract class InternalReferenceRedisCache extends RedisCache
                 return [];
             }
 
-            if ($this->init()->getLastError() !== null) {
-                $lastError = $this->init()->getLastError();
+            $lastError = $this->init()->getLastError();
+            if ($lastError !== null) {
                 $this->init()->clearLastError();
 
                 throw new RuntimeException($lastError);
