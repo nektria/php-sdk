@@ -170,6 +170,7 @@ use Throwable;
  * @phpstan-type RMStep array{
  *     distance: int,
  *     estimatedDelivery: string,
+ *     deliveredAt: string|null,
  *     deliveryTime: int,
  *     id: string,
  *     localEstimatedDelivery: string,
