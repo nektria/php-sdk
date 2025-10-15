@@ -36,6 +36,7 @@ use Throwable;
  *      metadata: array<string, mixed>,
  *      name: string,
  *      phoneNumber: string,
+ *      providerId: string,
  *      positionUpdatedAt: string,
  *      warehouses: string[],
  * }
