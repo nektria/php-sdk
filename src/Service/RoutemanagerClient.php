@@ -35,6 +35,7 @@ use Throwable;
  *      longitude: float,
  *      metadata: array<string, mixed>,
  *      name: string,
+ *      phoneNumber: string,
  *      positionUpdatedAt: string,
  *      warehouses: string[],
  * }
