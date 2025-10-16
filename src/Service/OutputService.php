@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Nektria\Service;
 
 use Nektria\Dto\Clock;
@@ -8,17 +10,18 @@ use RuntimeException;
 use Symfony\Component\Console\Cursor;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class OutputService
+class OutputService extends AbstractService
 {
-    private readonly LocalClock $createdAt;
     private Cursor|null $cursor;
-    private string $logFile;
+    private readonly string $logFile;
     private OutputInterface|null $output;
 
     public function __construct()
     {
-        $this->createdAt = Clock::now()->toLocal('Europe/Madrid');
-        $this->logFile = "tmp/{$this->createdAt->dateTimeString()}.log";
+        parent::__construct();
+        $createdAt = Clock::now()->toLocal('Europe/Madrid');
+        $this->logFile = "tmp/{$createdAt->dateTimeString()}.log";
+        $this->cursor = null;
     }
 
     public function assignOutput(OutputInterface $outputInterface): void
