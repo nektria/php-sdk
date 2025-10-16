@@ -5,23 +5,27 @@ declare(strict_types=1);
 namespace Nektria\Service;
 
 use Nektria\Dto\Clock;
-use Nektria\Dto\LocalClock;
-use RuntimeException;
 use Symfony\Component\Console\Cursor;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
-class OutputService extends AbstractService
+use const FILE_APPEND;
+use const PHP_EOL;
+
+class OutputService
 {
-    private Cursor|null $cursor;
+    private ?Cursor $cursor;
+
     private readonly string $logFile;
-    private OutputInterface|null $output;
+
+    private ?OutputInterface $output;
 
     public function __construct()
     {
-        parent::__construct();
         $createdAt = Clock::now()->toLocal('Europe/Madrid');
         $this->logFile = "tmp/{$createdAt->dateTimeString()}.log";
         $this->cursor = null;
+        $this->output = null;
     }
 
     public function assignOutput(OutputInterface $outputInterface): void
@@ -30,7 +34,11 @@ class OutputService extends AbstractService
         $this->cursor = new Cursor($this->output);
     }
 
-    public function write(string|int|float|bool $output): void
+    public function setContainer(ContainerInterface $container): void
+    {
+    }
+
+    public function write(string | int | float | bool $output): void
     {
         if ($output === true) {
             $output = 'true';
@@ -41,7 +49,8 @@ class OutputService extends AbstractService
         }
 
         $now = Clock::now()->toLocal('Europe/Madrid');
-        $cleanOutput = preg_replace('/<\/?\w+\d*>/', '', $output);
+        $cleanOutput = preg_replace('/<\/?\w+\d*>/', '', ['']);
+
         $formattedOutput = "[{$now->microDateTimeString()}] {$cleanOutput}";
         file_put_contents($this->logFile, $formattedOutput, FILE_APPEND);
 
@@ -50,7 +59,7 @@ class OutputService extends AbstractService
         }
     }
 
-    public function writeln(string|int|float|bool $output): void
+    public function writeln(string | int | float | bool $output): void
     {
         if ($output === true) {
             $output = 'true';
