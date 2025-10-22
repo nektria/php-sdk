@@ -12,6 +12,7 @@ use Nektria\Infrastructure\SecurityServiceInterface;
 use Nektria\Message\Command as CommandMessage;
 use Nektria\Message\Query;
 use Nektria\Service\AlertService;
+use Nektria\Service\OutputService;
 use Nektria\Util\Console\OutputFormatterStyle;
 use Nektria\Util\StringUtil;
 use RuntimeException;
@@ -36,85 +37,14 @@ abstract class Console extends BaseCommand
 
     private ?InputInterface $input;
 
-    private ?OutputInterface $output;
+    private OutputService $output;
 
     public function __construct(string $name)
     {
         parent::__construct($name);
         $this->container = null;
         $this->input = null;
-        $this->output = null;
-    }
-
-    /**
-     * @param string[]|null $validResponses
-     * @param string[] $autocomplete
-     * @param callable(string): bool|null $cb
-     */
-    public function ask(
-        string $question,
-        ?array $validResponses = null,
-        ?string $default = null,
-        array $autocomplete = [],
-        ?callable $cb = null
-    ): string {
-        $pre = '';
-        if (count($validResponses ?? []) > 0) {
-            $group = implode(',', $validResponses);
-            $pre = " [{$group}]";
-            if ($default !== '') {
-                $pre .= "({$default}) ";
-            }
-        } elseif ($default !== '' && $default !== null) {
-            $pre .= "({$default}) ";
-        } else {
-            $pre = ' ';
-        }
-
-        $repeatQuestion = true;
-        do {
-            if ($repeatQuestion && $question !== '') {
-                $this->output()->write($question . PHP_EOL . ' <white2>></white2>' . $pre);
-            } else {
-                $this->output()->write(' <white2>></white2>' . $pre);
-            }
-
-            /** @var QuestionHelper $helper */
-            $helper = $this->getHelper('question');
-            $realQuestion = new Question('', $default);
-            $realQuestion->setAutocompleterValues($autocomplete);
-            $realQuestion->setTrimmable(true);
-            $response = StringUtil::trim(
-                $helper->ask($this->input(), $this->output(), $realQuestion) ?? $default ?? '',
-            );
-
-            $valid = true;
-            $validCb = true;
-
-            if ($cb !== null) {
-                $validCb = $cb($response);
-            }
-            if ($validResponses !== null) {
-                $valid = in_array($response, $validResponses, true);
-            }
-
-            if ($default === null && $response === '') {
-                $valid = false;
-            }
-            $repeatQuestion = $response === '?';
-        } while (!($valid && $validCb));
-
-        return StringUtil::trim($response);
-    }
-
-    public function forceEnterToContinue(): void
-    {
-        $this->output()->write('<white2>[ENTER to continue]</white2>');
-        /** @var QuestionHelper $helper */
-        $helper = $this->getHelper('question');
-        $realQuestion = new Question('');
-        $realQuestion->setTrimmable(true);
-        $helper->ask($this->input(), $this->output(), $realQuestion);
+        $this->output = new OutputService();
     }
 
     public function inject(
@@ -134,7 +64,7 @@ abstract class Console extends BaseCommand
         return $this->input;
     }
 
-    public function output(): OutputInterface
+    public function output(): OutputService
     {
         if ($this->output === null) {
             throw new RuntimeException('play method has not been executed');
@@ -176,8 +106,7 @@ abstract class Console extends BaseCommand
 
     protected function clearPreviousLine(): void
     {
-        $this->cursor()->moveUp();
-        $this->cursor()->clearLine();
+        $this->output->
     }
 
     protected function container(): ContainerInterface
@@ -195,11 +124,6 @@ abstract class Console extends BaseCommand
         exec("echo '{$text}' | pbcopy &> /dev/null", result_code: $status);
 
         return $status === 0;
-    }
-
-    protected function cursor(): Cursor
-    {
-        return new Cursor($this->output());
     }
 
     /**
@@ -244,7 +168,7 @@ abstract class Console extends BaseCommand
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->input = $input;
-        $this->output = $output;
+        $this->output->assignOutput($output);
 
         $output->getFormatter()->setStyle('red', new OutputFormatterStyle('red', null, []));
         $output->getFormatter()->setStyle('red1', new OutputFormatterStyle('red', null, ['bold']));

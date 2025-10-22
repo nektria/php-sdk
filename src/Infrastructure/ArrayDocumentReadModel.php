@@ -22,20 +22,27 @@ class ArrayDocumentReadModel extends ReadModel
     }
 
     /**
+     * @param array<string, string|int|float|null|bool> $filters
      * @return DocumentCollection<ArrayDocument>
      */
-    public function readCustom(string $table, string $order, int $page): DocumentCollection
+    public function readCustom(string $table, string $order, int $page, int $limit, array $filters): DocumentCollection
     {
         $table = str_replace([';', ' '], '', $table);
         $order = str_replace([';', ' '], '', $order);
 
+        $query = '';
+        foreach (array_keys($filters) as $filter) {
+            $query .= " AND {$filter}=:{$filter}";
+        }
+
         return $this->getResults("
             SELECT *
             FROM {$table}
+            WHERE true {$query}
             ORDER BY {$order} DESC
             LIMIT 20 OFFSET :offset
-        ", [
-            'offset' => ($page - 1) * 20,
+        ", [...$filters, ...[
+            'offset' => ($page - 1) * $limit,
         ]);
     }
 

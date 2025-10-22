@@ -213,9 +213,11 @@ readonly class ToolsController extends Controller
     {
         return $this->documentResponse(
             $readModel->readCustom(
-                $this->requestData->retrieveString('table'),
-                $this->requestData->retrieveString('orderBy'),
-                $this->requestData->getInt('page') ?? 1,
+                table: $this->requestData->retrieveString('table'),
+                order: $this->requestData->retrieveString('orderBy'),
+                page: $this->requestData->getInt('page') ?? 1,
+                limit: $this->requestData->getInt('limit') ?? 50,
+                filters: $this->requestData->getArray('filters') ?? []
             ),
         );
     }
