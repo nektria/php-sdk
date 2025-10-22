@@ -34,6 +34,29 @@ class OutputService
         $this->cursor = new Cursor($this->output);
     }
 
+    public function clearLine(): void
+    {
+        if ($this->cursor === null) {
+            return;
+        }
+
+        $this->cursor->clearLine();
+    }
+
+    public function clearPreviousLine(bool $clearCurrentLine = true): void
+    {
+        if ($this->cursor === null) {
+            return;
+        }
+
+        if ($clearCurrentLine) {
+            $this->cursor->clearLine();
+        }
+
+        $this->cursor->moveUp();
+        $this->cursor->clearLine();
+    }
+
     public function setContainer(ContainerInterface $container): void
     {
     }
@@ -70,28 +93,5 @@ class OutputService
         }
 
         $this->write($output . PHP_EOL);
-    }
-
-    protected function clearLine(): void
-    {
-        if ($this->cursor === null) {
-            return;
-        }
-
-        $this->cursor->clearLine();
-    }
-
-    protected function clearPreviousLine(bool $clearCurrentLine = true): void
-    {
-        if ($this->cursor === null) {
-            return;
-        }
-
-        if ($clearCurrentLine) {
-            $this->cursor->clearLine();
-        }
-
-        $this->cursor->moveUp();
-        $this->cursor->clearLine();
     }
 }

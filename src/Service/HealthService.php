@@ -124,7 +124,13 @@ class HealthService
         try {
             /** @var ArrayDocumentReadModel $srvc */
             $srvc = $this->container->get(ArrayDocumentReadModel::class);
-            $srvc->readCustom('doctrine_migration_versions', 'version', 1);
+            $srvc->readCustom(
+                table: 'doctrine_migration_versions',
+                order: 'version',
+                page: 1,
+                limit: 100,
+                filters: [],
+            );
 
             return [$key => true];
         } catch (Throwable $e) {

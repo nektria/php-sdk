@@ -22,7 +22,7 @@ class ArrayDocumentReadModel extends ReadModel
     }
 
     /**
-     * @param array<string, string|int|float|null|bool> $filters
+     * @param array<string, string|int|float|bool|null> $filters
      * @return DocumentCollection<ArrayDocument>
      */
     public function readCustom(string $table, string $order, int $page, int $limit, array $filters): DocumentCollection

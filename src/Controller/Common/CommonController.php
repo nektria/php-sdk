@@ -49,7 +49,13 @@ readonly class CommonController extends Controller
             if ($container->has(ArrayDocumentReadModel::class)) {
                 /** @var ArrayDocumentReadModel $readModel */
                 $readModel = $container->get(ArrayDocumentReadModel::class);
-                $versions = $readModel->readCustom('doctrine_migration_versions', 'version', 1);
+                $versions = $readModel->readCustom(
+                    table: 'doctrine_migration_versions',
+                    order: 'version',
+                    page: 1,
+                    limit: 100,
+                    filters: [],
+                );
                 $migration = $versions->first()->data ?? ['version' => 'DoctrineMigrations\\none'];
 
                 $migrationVersion = explode('\\', $migration['version'])[1];

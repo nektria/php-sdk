@@ -14,22 +14,13 @@ use Nektria\Message\Query;
 use Nektria\Service\AlertService;
 use Nektria\Service\OutputService;
 use Nektria\Util\Console\OutputFormatterStyle;
-use Nektria\Util\StringUtil;
 use RuntimeException;
 use Symfony\Component\Console\Command\Command as BaseCommand;
-use Symfony\Component\Console\Cursor;
-use Symfony\Component\Console\Helper\QuestionHelper;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Question\Question;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Throwable;
-
-use function count;
-use function in_array;
-
-use const PHP_EOL;
 
 abstract class Console extends BaseCommand
 {
@@ -66,10 +57,6 @@ abstract class Console extends BaseCommand
 
     public function output(): OutputService
     {
-        if ($this->output === null) {
-            throw new RuntimeException('play method has not been executed');
-        }
-
         return $this->output;
     }
 
@@ -101,12 +88,12 @@ abstract class Console extends BaseCommand
 
     protected function clear(): void
     {
-        $this->output()->write("\033\143");
+        $this->output()->clearLine();
     }
 
     protected function clearPreviousLine(): void
     {
-        $this->output->
+        $this->output()->clearPreviousLine(true);
     }
 
     protected function container(): ContainerInterface
