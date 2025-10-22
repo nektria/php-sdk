@@ -41,9 +41,10 @@ class ArrayDocumentReadModel extends ReadModel
             FROM {$table}
             WHERE true {$query}
             ORDER BY {$order} DESC
-            LIMIT {$limit} OFFSET :offset
+            LIMIT :limit OFFSET :offset
         ", [...$filters, ...[
             'offset' => ($page - 1) * $limit,
+            'limit' => $limit,
         ]]);
     }
 
