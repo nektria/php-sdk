@@ -5,7 +5,7 @@ set -e
 git pull
 git add .
 git commit -am "auto commit"
-VERSION=$(bin/console debug:increase-version -c)
+VERSION=$(bin/console debug:increase-version)
 echo "---"
 echo $VERSION
 echo "---"

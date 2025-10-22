@@ -57,32 +57,49 @@ class OutputService
         $this->cursor->clearLine();
     }
 
+    public function error(string | int | float | bool $output): void
+    {
+        $this->writeln("<red1>{$this->fixMessage($output)}</red1>");
+    }
+
+    public function info(string | int | float | bool $output): void
+    {
+        $this->writeln("<white1>{$this->fixMessage($output)}</white1>");
+    }
+
+    public function log(string | int | float | bool $output): void
+    {
+        $this->writeln("<white>{$this->fixMessage($output)}</white>");
+    }
+
     public function setContainer(ContainerInterface $container): void
     {
     }
 
+    public function warning(string | int | float | bool $output): void
+    {
+        $this->writeln("<yellow>{$this->fixMessage($output)}</yellow>");
+    }
+
     public function write(string | int | float | bool $output): void
     {
-        if ($output === true) {
-            $output = 'true';
-        }
-
-        if ($output === false) {
-            $output = 'false';
-        }
+        $output = $this->fixMessage($output);
 
         $now = Clock::now()->toLocal('Europe/Madrid');
-        $cleanOutput = preg_replace('/<\/?\w+\d*>/', '', '');
+        $cleanOutput = preg_replace('/<\/?\w+\d*>/', '', $output);
 
         $formattedOutput = "[{$now->microDateTimeString()}] {$cleanOutput}";
         file_put_contents($this->logFile, $formattedOutput, FILE_APPEND);
 
-        if ($this->output !== null) {
-            file_put_contents($this->logFile, $output, FILE_APPEND);
-        }
+        $this->output?->write($output);
     }
 
     public function writeln(string | int | float | bool $output): void
+    {
+        $this->write($this->fixMessage($output) . PHP_EOL);
+    }
+
+    private function fixMessage(string | int | float | bool $output): string
     {
         if ($output === true) {
             $output = 'true';
@@ -92,6 +109,6 @@ class OutputService
             $output = 'false';
         }
 
-        $this->write($output . PHP_EOL);
+        return (string) $output;
     }
 }
