@@ -8,6 +8,7 @@ use Nektria\Dto\Clock;
 use Symfony\Component\Console\Cursor;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Throwable;
 
 use const FILE_APPEND;
 use const PHP_EOL;
@@ -89,7 +90,11 @@ class OutputService
         $cleanOutput = preg_replace('/<\/?\w+\d*>/', '', $output);
 
         $formattedOutput = "[{$now->microDateTimeString()}] {$cleanOutput}";
-        file_put_contents($this->logFile, $formattedOutput, FILE_APPEND);
+
+        try {
+            file_put_contents($this->logFile, $formattedOutput, FILE_APPEND);
+        } catch (Throwable) {
+        }
 
         $this->output?->write($output);
     }
