@@ -43,7 +43,7 @@ class ArrayDocumentReadModel extends ReadModel
             LIMIT 20 OFFSET :offset
         ", [...$filters, ...[
             'offset' => ($page - 1) * $limit,
-        ]);
+        ]]);
     }
 
     /**
