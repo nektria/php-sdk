@@ -1,7 +1,7 @@
 {
     "name": "nektria/php-sdk",
     "type": "library",
-    "description": "Nektria PHP SDK - 2.0.36",
+    "description": "Nektria PHP SDK - 2.0.37",
     "minimum-stability": "stable",
     "license": "proprietary",
     "autoload": {
