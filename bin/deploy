@@ -6,9 +6,6 @@ git pull
 git add .
 git commit -am "auto commit"
 VERSION=$(bin/console debug:increase-version)
-echo "---"
-echo $VERSION
-echo "---"
 bin/tools/composer-update
 bin/validate
 #bin/tools/composer-update
