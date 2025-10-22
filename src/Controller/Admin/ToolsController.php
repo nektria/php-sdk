@@ -18,7 +18,6 @@ use Nektria\Util\StringUtil;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Process\Process;
-
 use const STR_PAD_LEFT;
 
 #[Route('/api/admin/tools')]
@@ -208,7 +207,7 @@ readonly class ToolsController extends Controller
         return new Response((string) $result);
     }
 
-    #[Route('/database/read', method: 'GET')]
+    #[Route('/database/read', method: 'POST')]
     public function readFromDatabase(ArrayDocumentReadModel $readModel): DocumentResponse
     {
         return $this->documentResponse(
