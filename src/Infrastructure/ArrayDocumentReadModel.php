@@ -32,6 +32,7 @@ class ArrayDocumentReadModel extends ReadModel
 
         $query = '';
         foreach (array_keys($filters) as $filter) {
+            $filter = str_replace([';', ' ', "'", '"'], '', $filter);
             $query .= " AND {$filter}=:{$filter}";
         }
 
@@ -40,7 +41,7 @@ class ArrayDocumentReadModel extends ReadModel
             FROM {$table}
             WHERE true {$query}
             ORDER BY {$order} DESC
-            LIMIT 20 OFFSET :offset
+            LIMIT {$limit} OFFSET :offset
         ", [...$filters, ...[
             'offset' => ($page - 1) * $limit,
         ]]);
