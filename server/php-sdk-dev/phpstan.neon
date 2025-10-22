@@ -20,10 +20,6 @@ parameters:
     excludePaths:
         - '%currentWorkingDirectory%/vendor'
 
-
-    ignoreErrors:
-        - identifier: encapsedStringPart.nonString
-
     symfony:
         #containerXmlPath: '%currentWorkingDirectory%/var/cache/dev/Nektria_KernelDevDebugContainer.xml'
 
