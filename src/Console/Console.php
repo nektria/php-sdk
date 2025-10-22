@@ -7,6 +7,7 @@ namespace Nektria\Console;
 use Nektria\Document\Document;
 use Nektria\Document\ThrowableDocument;
 use Nektria\Exception\NektriaException;
+use Nektria\Exception\RequestException;
 use Nektria\Infrastructure\BusInterface;
 use Nektria\Infrastructure\SecurityServiceInterface;
 use Nektria\Message\Command as CommandMessage;
@@ -227,15 +228,19 @@ abstract class Console extends BaseCommand
             $isSilent = $e instanceof NektriaException && $e->silent();
 
             if (!$isSilent) {
-                $this->alertService()->sendThrowable(
-                    $this->userService()->currentUser()?->tenant->name ?? 'none',
-                    'COMMAND',
-                    $this->getName() ?? '',
-                    [
-                        'args' => $_SERVER['argv'],
-                    ],
-                    new ThrowableDocument($e),
-                );
+                try {
+                    $this->alertService()->sendThrowable(
+                        $this->userService()->currentUser()?->tenant->name ?? 'none',
+                        'COMMAND',
+                        $this->getName() ?? '',
+                        [
+                            'args' => $_SERVER['argv'],
+                        ],
+                        new ThrowableDocument($e),
+                    );
+                } catch (RequestException) {
+                    // empty
+                }
             }
 
             throw $e;

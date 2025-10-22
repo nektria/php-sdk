@@ -8,7 +8,6 @@ use Nektria\Dto\Clock;
 use Symfony\Component\Console\Cursor;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
-
 use const FILE_APPEND;
 use const PHP_EOL;
 
@@ -72,7 +71,7 @@ class OutputService
         }
 
         $now = Clock::now()->toLocal('Europe/Madrid');
-        $cleanOutput = preg_replace('/<\/?\w+\d*>/', '', ['']);
+        $cleanOutput = preg_replace('/<\/?\w+\d*>/', '', '');
 
         $formattedOutput = "[{$now->microDateTimeString()}] {$cleanOutput}";
         file_put_contents($this->logFile, $formattedOutput, FILE_APPEND);
