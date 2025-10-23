@@ -11,10 +11,10 @@ use Nektria\Document\FileDocument;
 use Nektria\Document\ThrowableDocument;
 use Nektria\Document\User;
 use Nektria\Dto\Clock;
+use Nektria\Infrastructure\BusInterface;
 use Nektria\Infrastructure\SharedTemporalConsumptionCache;
 use Nektria\Infrastructure\VariableCache;
 use Nektria\Service\AlertService;
-use Nektria\Service\Bus;
 use Nektria\Service\ContextService;
 use Nektria\Service\LogService;
 use Nektria\Service\ProcessRegistry;
@@ -51,14 +51,7 @@ abstract class BaseRequestListener implements EventSubscriberInterface
     private ?Response $originalResponse;
 
     public function __construct(
-        protected readonly AlertService $alertService,
-        protected readonly Bus $bus,
-        protected readonly ContextService $contextService,
-        protected readonly LogService $logService,
-        protected readonly SharedTemporalConsumptionCache $temporalConsumptionCache,
-        protected readonly VariableCache $variableCache,
-        protected readonly ProcessRegistry $processRegistry,
-        ContainerInterface $container
+        private readonly ContainerInterface $container
     ) {
         /** @var string[] $cors */
         $cors = $container->getParameter('allowed_cors');
@@ -88,7 +81,7 @@ abstract class BaseRequestListener implements EventSubscriberInterface
         $method = $request->getMethod();
 
         if ($request->headers->has('X-sync')) {
-            $this->contextService->setForceSync(true);
+            $this->contextService()->setForceSync(true);
         }
 
         if (
@@ -125,12 +118,12 @@ abstract class BaseRequestListener implements EventSubscriberInterface
 
     public function onKernelException(ExceptionEvent $event): void
     {
-        $this->bus->dispatchDelayedEvents();
+        $this->bus()->dispatchDelayedEvents();
         $document = new ThrowableDocument($event->getThrowable());
 
         $event->setResponse(new DocumentResponse(
             $document,
-            $this->contextService,
+            $this->contextService(),
             $document->status,
         ));
 
@@ -154,7 +147,7 @@ abstract class BaseRequestListener implements EventSubscriberInterface
 
         $tracer = $request->headers->get('X-Trace');
         if ($tracer !== null) {
-            $this->contextService->setTraceId($tracer);
+            $this->contextService()->setTraceId($tracer);
         }
     }
 
@@ -190,7 +183,7 @@ abstract class BaseRequestListener implements EventSubscriberInterface
 
     public function onKernelTerminate(TerminateEvent $event): void
     {
-        $this->bus->dispatchDelayedEvents();
+        $this->bus()->dispatchDelayedEvents();
         $route = $event->getRequest()->attributes->get('_route') ?? '';
 
         if ($route === '') {
@@ -208,7 +201,7 @@ abstract class BaseRequestListener implements EventSubscriberInterface
             }
         }
 
-        if ($this->contextService->isTest()) {
+        if ($this->contextService()->isTest()) {
             return;
         }
 
@@ -247,7 +240,7 @@ abstract class BaseRequestListener implements EventSubscriberInterface
         } elseif ($document instanceof ThrowableDocument) {
             $responseContent = $document->toDevArray();
         } else {
-            $responseContent = $document->toArray($this->contextService);
+            $responseContent = $document->toArray($this->contextService());
         }
 
         $queryBody = [];
@@ -290,9 +283,9 @@ abstract class BaseRequestListener implements EventSubscriberInterface
             $requestContent['dniNie'] = '********';
         }
 
-        $tenantId = $this->contextService->getExtra('tenantId');
+        $tenantId = $this->contextService()->getExtra('tenantId');
         if ($tenantId !== null) {
-            $this->temporalConsumptionCache->increase($tenantId, $route);
+            $this->sharedTemporalConsumptionCache()->increase($tenantId, $route);
         }
 
         $routeParams = $event->getRequest()->attributes->get('_route_params');
@@ -302,19 +295,19 @@ abstract class BaseRequestListener implements EventSubscriberInterface
                 $key = substr($key, 0, -2);
             }
 
-            $this->processRegistry->addValue($key, $value);
+            $this->processRegistry()->addValue($key, $value);
         }
 
-        $this->processRegistry->addValue('path', $route);
-        $this->processRegistry->addValue('context', 'request');
+        $this->processRegistry()->addValue('path', $route);
+        $this->processRegistry()->addValue('context', 'request');
 
         if ($logLevel !== self::LOG_LEVEL_NONE) {
             if ($status < 400) {
                 if ($event->getRequest()->getMethod() !== Request::METHOD_GET) {
                     $isDebug = false;
                 } else {
-                    $isDebug = $this->contextService->context() === ContextService::INTERNAL
-                        || $this->contextService->context() === ContextService::ADMIN;
+                    $isDebug = $this->contextService()->context() === ContextService::INTERNAL
+                        || $this->contextService()->context() === ContextService::ADMIN;
                 }
 
                 if ($logLevel !== null) {
@@ -322,7 +315,7 @@ abstract class BaseRequestListener implements EventSubscriberInterface
                 }
 
                 if ($isDebug) {
-                    $this->logService->debug(
+                    $this->logService()->debug(
                         [
                             'headers' => $headers,
                             'httpRequest' => [
@@ -341,7 +334,7 @@ abstract class BaseRequestListener implements EventSubscriberInterface
                         in_array($route, $this->ignoreLogs(), true)
                     );
                 } else {
-                    $this->logService->info([
+                    $this->logService()->info([
                         'headers' => $headers,
                         'httpRequest' => [
                             'requestMethod' => $event->getRequest()->getMethod(),
@@ -357,7 +350,7 @@ abstract class BaseRequestListener implements EventSubscriberInterface
                     ], $resume);
                 }
             } elseif ($status < 500) {
-                $this->logService->warning([
+                $this->logService()->warning([
                     'headers' => $headers,
                     'httpRequest' => [
                         'requestMethod' => $event->getRequest()->getMethod(),
@@ -370,8 +363,8 @@ abstract class BaseRequestListener implements EventSubscriberInterface
                     'size' => $length,
                 ], $resume);
             } else {
-                $this->logService->temporalLogs();
-                $this->logService->error([
+                $this->logService()->temporalLogs();
+                $this->logService()->error([
                     'headers' => $headers,
                     'httpRequest' => [
                         'requestMethod' => $event->getRequest()->getMethod(),
@@ -396,12 +389,12 @@ abstract class BaseRequestListener implements EventSubscriberInterface
             if ($document->status >= 500) {
                 $key = "{$route}_request_500";
                 $key2 = "{$route}_count";
-                if ($this->contextService->env() === ContextService::DEV || $this->variableCache->refreshKey($key)) {
-                    $times = $this->variableCache->readInt($key2, 1);
-                    $tenantName = $this->contextService->getExtra('tenantName') ?? 'none';
+                if ($this->contextService()->env() === ContextService::DEV || $this->variableCache()->refreshKey($key)) {
+                    $times = $this->variableCache()->readInt($key2, 1);
+                    $tenantName = $this->contextService()->getExtra('tenantName') ?? 'none';
                     $method = $event->getRequest()->getMethod();
                     $path = $event->getRequest()->getPathInfo();
-                    $this->alertService->sendThrowable(
+                    $this->alertService()->sendThrowable(
                         $tenantName,
                         $method,
                         $path,
@@ -409,13 +402,21 @@ abstract class BaseRequestListener implements EventSubscriberInterface
                         $document,
                         $times,
                     );
-                    $this->variableCache->saveInt($key2, 0);
+                    $this->variableCache()->saveInt($key2, 0);
                 } else {
-                    $times = $this->variableCache->readInt($key2);
-                    $this->variableCache->saveInt($key2, $times + 1);
+                    $times = $this->variableCache()->readInt($key2);
+                    $this->variableCache()->saveInt($key2, $times + 1);
                 }
             }
         }
+    }
+
+    protected function alertService(): AlertService
+    {
+        /** @var AlertService $service */
+        $service = $this->container->get(AlertService::class);
+
+        return $service;
     }
 
     protected function assignLogLevel(Request $request): ?string
@@ -423,8 +424,24 @@ abstract class BaseRequestListener implements EventSubscriberInterface
         return null;
     }
 
+    protected function bus(): BusInterface
+    {
+        /** @var BusInterface $service */
+        $service = $this->container->get(BusInterface::class);
+
+        return $service;
+    }
+
     protected function checkAccess(Request $request): void
     {
+    }
+
+    protected function contextService(): ContextService
+    {
+        /** @var ContextService $service */
+        $service = $this->container->get(ContextService::class);
+
+        return $service;
     }
 
     /**
@@ -451,13 +468,45 @@ abstract class BaseRequestListener implements EventSubscriberInterface
         return [];
     }
 
+    protected function logService(): LogService
+    {
+        /** @var LogService $service */
+        $service = $this->container->get(LogService::class);
+
+        return $service;
+    }
+
     protected function onRequestReceived(Request $request): void
     {
+    }
+
+    protected function processRegistry(): ProcessRegistry
+    {
+        /** @var ProcessRegistry $service */
+        $service = $this->container->get(ProcessRegistry::class);
+
+        return $service;
+    }
+
+    protected function sharedTemporalConsumptionCache(): SharedTemporalConsumptionCache
+    {
+        /** @var SharedTemporalConsumptionCache $service */
+        $service = $this->container->get(SharedTemporalConsumptionCache::class);
+
+        return $service;
     }
 
     protected function validateUser(User $user): bool
     {
         return true;
+    }
+
+    protected function variableCache(): VariableCache
+    {
+        /** @var VariableCache $service */
+        $service = $this->container->get(VariableCache::class);
+
+        return $service;
     }
 
     private function isCorsNeeded(RequestEvent | ResponseEvent $event): bool

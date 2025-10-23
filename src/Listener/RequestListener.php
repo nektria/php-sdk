@@ -7,13 +7,7 @@ namespace Nektria\Listener;
 use Nektria\Exception\InsufficientCredentialsException;
 use Nektria\Exception\InvalidAuthorizationException;
 use Nektria\Infrastructure\SecurityServiceInterface;
-use Nektria\Infrastructure\SharedTemporalConsumptionCache;
-use Nektria\Infrastructure\VariableCache;
-use Nektria\Service\AlertService;
-use Nektria\Service\Bus;
 use Nektria\Service\ContextService;
-use Nektria\Service\LogService;
-use Nektria\Service\ProcessRegistry;
 use Nektria\Service\RoleManager;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -22,23 +16,9 @@ abstract class RequestListener extends BaseRequestListener
 {
     public function __construct(
         protected readonly SecurityServiceInterface $securityService,
-        AlertService $alertService,
-        Bus $bus,
-        ContextService $contextService,
-        LogService $logService,
-        SharedTemporalConsumptionCache $temporalConsumptionCache,
-        VariableCache $variableCache,
-        ProcessRegistry $processRegistry,
-        ContainerInterface $container
+        ContainerInterface $container,
     ) {
         parent::__construct(
-            alertService: $alertService,
-            bus: $bus,
-            contextService: $contextService,
-            logService: $logService,
-            temporalConsumptionCache: $temporalConsumptionCache,
-            variableCache: $variableCache,
-            processRegistry: $processRegistry,
             container: $container
         );
     }
@@ -78,7 +58,7 @@ abstract class RequestListener extends BaseRequestListener
         }
 
         if (str_starts_with($route, 'app_admin') || str_starts_with($route, 'nektria_admin')) {
-            $this->contextService->setContext(ContextService::ADMIN);
+            $this->contextService()->setContext(ContextService::ADMIN);
             $this->securityService->authenticateUser($apiKey);
 
             try {
@@ -91,16 +71,16 @@ abstract class RequestListener extends BaseRequestListener
             || str_starts_with($route, 'app_api_')
             || str_starts_with($route, 'nektria_api_')
         ) {
-            $this->contextService->setContext(ContextService::PUBLIC);
+            $this->contextService()->setContext(ContextService::PUBLIC);
             $this->securityService->authenticateUser($apiKey);
         } elseif (str_starts_with($route, 'app_api2_') || str_starts_with($route, 'nektria_api2_')) {
-            $this->contextService->setContext(ContextService::PUBLIC_V2);
+            $this->contextService()->setContext(ContextService::PUBLIC_V2);
             $this->securityService->authenticateUser($apiKey);
         } elseif (str_starts_with($route, 'app_web_') || str_starts_with($route, 'nektria_web_')) {
-            $this->contextService->setContext(ContextService::INTERNAL);
+            $this->contextService()->setContext(ContextService::INTERNAL);
             $this->securityService->authenticateUser($apiKey);
             if ($this->securityService->currentUser() !== null) {
-                $this->contextService->addExtra('userId', $this->securityService->currentUser()->id);
+                $this->contextService()->addExtra('userId', $this->securityService->currentUser()->id);
             }
         }
 
