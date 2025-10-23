@@ -21,7 +21,7 @@ use Symfony\Component\HttpFoundation\Request;
 abstract class RequestListener extends BaseRequestListener
 {
     public function __construct(
-        private readonly SecurityServiceInterface $securityService,
+        protected readonly SecurityServiceInterface $securityService,
         AlertService $alertService,
         Bus $bus,
         ContextService $contextService,
