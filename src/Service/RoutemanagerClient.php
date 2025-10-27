@@ -569,6 +569,7 @@ readonly class RoutemanagerClient extends AbstractService
      */
     public function saveDriver(
         string $driverId,
+        string $providerId,
         ?string $name = null,
         ?string $identificationDocument = null,
         ?string $phoneNumber = null,
@@ -586,6 +587,7 @@ readonly class RoutemanagerClient extends AbstractService
                 'metadata' => $metadata?->data(),
                 'name' => $name,
                 'phoneNumber' => $phoneNumber,
+                'providerId' => $providerId,
                 'warehouses' => $warehouses,
             ],
             headers: $this->getHeaders(),
