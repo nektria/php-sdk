@@ -353,6 +353,7 @@ readonly class AlertService extends AbstractService
             $message,
             [
                 'Authorization' => "Bot {$token}",
+                'Content-Type' => 'application/json',
             ],
             enableDebugFallback: false,
         );
