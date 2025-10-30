@@ -569,7 +569,7 @@ readonly class RoutemanagerClient extends AbstractService
      */
     public function saveDriver(
         string $driverId,
-        string $providerId,
+        ?string $providerId,
         ?string $name = null,
         ?string $identificationDocument = null,
         ?string $phoneNumber = null,
