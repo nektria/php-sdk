@@ -9,7 +9,7 @@
 .phpactor.json
 .phpunit.result.cache
 /phpunit.xml
-/tmp
+/tmp/**/*
 /var/
 /vendor/
 scratch.php
