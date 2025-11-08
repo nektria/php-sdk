@@ -86,17 +86,18 @@ class OutputService
     {
         $output = $this->fixMessage($output);
 
-        $now = Clock::now()->toLocal('Europe/Madrid');
-        $cleanOutput = preg_replace('/<\/?\w+\d*>/', '', $output);
+        if ($this->output === null) {
+            $now = Clock::now()->toLocal('Europe/Madrid');
+            $cleanOutput = preg_replace('/<\/?\w+\d*>/', '', $output);
+            $formattedOutput = "[{$now->microDateTimeString()}] {$cleanOutput}";
 
-        $formattedOutput = "[{$now->microDateTimeString()}] {$cleanOutput}";
-
-        try {
-            file_put_contents($this->logFile, $formattedOutput, FILE_APPEND);
-        } catch (Throwable) {
+            try {
+                file_put_contents($this->logFile, $formattedOutput, FILE_APPEND);
+            } catch (Throwable) {
+            }
+        } else {
+            $this->output->write($output);
         }
-
-        $this->output?->write($output);
     }
 
     public function writeln(string | int | float | bool $output): void
