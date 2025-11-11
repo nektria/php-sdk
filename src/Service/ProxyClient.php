@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Nektria\Service;
 
+use Nektria\Exception\RequestException;
 use Nektria\Infrastructure\SharedUserV2Cache;
 
 use function in_array;
@@ -146,10 +147,14 @@ readonly class ProxyClient extends AbstractService
             return;
         }
 
-        $this->requestClient()->patch(
-            "{$proxyHost}/api/admin/picking-shifts/{$pickingShiftId}/send-routes",
-            headers: $this->getHeaders(),
-        );
+        try {
+            $this->requestClient()->patch(
+                "{$proxyHost}/api/admin/picking-shifts/{$pickingShiftId}/send-routes",
+                headers: $this->getHeaders(),
+            );
+        } catch (RequestException) {
+            // do nothing
+        }
     }
 
     public function sendRouteIsUpdated(string $routeId): void
