@@ -118,6 +118,11 @@ readonly class TenantMetadata extends Metadata
         return $this->getField('gridViewerOrdersPrefix') ?? '';
     }
 
+    public function hideCapacityAlarms(): bool
+    {
+        return $this->getField('hideCapacityAlarms') ?? false;
+    }
+
     public function hideFutureSlotsStatusForGridViewers(): bool
     {
         return $this->getField('hideFutureSlotsStatusForGridViewers') ?? false;
