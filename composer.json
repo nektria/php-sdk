@@ -37,7 +37,7 @@
         "firebase/php-jwt": "^v6.0",
         "phpoffice/phpspreadsheet": "^5.0",
         "symfony/amqp-messenger": "^7.0",
-        "symfony/dotenv": "^7.0", 0",
+        "symfony/dotenv": "^7.0",
         "symfony/http-client": "^7.0",
         "symfony/lock": "^7.0",
         "symfony/mercure-bundle": "^0.3",
