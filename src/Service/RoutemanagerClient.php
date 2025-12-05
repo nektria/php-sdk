@@ -230,7 +230,7 @@ use Throwable;
  * @phpstan-type RMWarehouseMetadata array{
  *     callbackUrl: ?string,
  *     estimatedDeliveryRefresh: ?int,
- *     expressOrdersNotificationEmails: string[],
+ *     expressOrdersNotificationEmails: string[]|null,
  *     isochroneContourSizes: int[],
  *     pshiftRoutesNotificationEmails: string[],
  *     routeRangeCosts: array{string: float[]},
