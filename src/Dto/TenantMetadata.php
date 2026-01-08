@@ -63,6 +63,11 @@ readonly class TenantMetadata extends Metadata
         return $this->getField('ecoMode') ?? self::ECHO_MODE_DEFAULT;
     }
 
+    public function enableVirtualTimeWindows(): bool
+    {
+        return $this->getField('enableVirtualTimeWindows') ?? false;
+    }
+
     public function expressGridDisabled(): bool
     {
         return $this->getField('expressGridDisabled') ?? false;
