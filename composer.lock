@@ -7084,12 +7084,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/PHP-CS-Fixer/PHP-CS-Fixer.git",
-                "reference": "077a2262751249867bae670d2b56025b51923af9"
+                "reference": "81d954f72680c40cdb10008eaf59b5d1c649cad6"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/PHP-CS-Fixer/PHP-CS-Fixer/zipball/077a2262751249867bae670d2b56025b51923af9",
-                "reference": "077a2262751249867bae670d2b56025b51923af9",
+                "url": "https://api.github.com/repos/PHP-CS-Fixer/PHP-CS-Fixer/zipball/81d954f72680c40cdb10008eaf59b5d1c649cad6",
+                "reference": "81d954f72680c40cdb10008eaf59b5d1c649cad6",
                 "shasum": ""
             },
             "require": {
@@ -7181,7 +7181,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2026-01-05T01:21:50+00:00"
+            "time": "2026-01-08T21:57:54+00:00"
         },
         {
             "name": "myclabs/deep-copy",
@@ -8742,12 +8742,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/Roave/SecurityAdvisories.git",
-                "reference": "7c24474eaae1056f2060bdf31b22acaf8fa9cf88"
+                "reference": "842120a67d0a2cc4f1b70f67683f4f541fec9711"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Roave/SecurityAdvisories/zipball/7c24474eaae1056f2060bdf31b22acaf8fa9cf88",
-                "reference": "7c24474eaae1056f2060bdf31b22acaf8fa9cf88",
+                "url": "https://api.github.com/repos/Roave/SecurityAdvisories/zipball/842120a67d0a2cc4f1b70f67683f4f541fec9711",
+                "reference": "842120a67d0a2cc4f1b70f67683f4f541fec9711",
                 "shasum": ""
             },
             "conflict": {
@@ -8932,7 +8932,7 @@
                 "drupal/commerce_alphabank_redirect": "<1.0.3",
                 "drupal/commerce_eurobank_redirect": "<2.1.1",
                 "drupal/config_split": "<1.10|>=2,<2.0.2",
-                "drupal/core": ">=6,<6.38|>=7,<7.102|>=8,<10.4.9|>=10.5,<10.5.6|>=11,<11.1.9|>=11.2,<11.2.8",
+                "drupal/core": ">=6,<6.38|>=7,<7.103|>=8,<10.4.9|>=10.5,<10.5.6|>=11,<11.1.9|>=11.2,<11.2.8",
                 "drupal/core-recommended": ">=7,<7.102|>=8,<10.2.11|>=10.3,<10.3.9|>=11,<11.0.8",
                 "drupal/currency": "<3.5",
                 "drupal/drupal": ">=5,<5.11|>=6,<6.38|>=7,<7.102|>=8,<10.2.11|>=10.3,<10.3.9|>=11,<11.0.8",
@@ -9741,7 +9741,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2026-01-08T21:06:02+00:00"
+            "time": "2026-01-08T22:06:12+00:00"
         },
         {
             "name": "sebastian/cli-parser",
