@@ -59,6 +59,7 @@ class ContextService
     public static function internal(): self
     {
         self::$dummyCS ??= new self(new SharedVariableCache('', ''), self::INTERNAL, 'dummy');
+        self::$dummyCS->setContext(self::INTERNAL);
 
         return self::$dummyCS;
     }
