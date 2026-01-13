@@ -31,7 +31,7 @@ abstract class WriteModel
         private readonly ManagerRegistry $managerRegistry
     ) {
         $manager = $this->managerRegistry->getManager();
-        if (!($manager instanceof EntityManager)) {
+        if (!$manager instanceof EntityManager) {
             throw new RuntimeException('Unable to restart the manager.');
         }
         $this->manager = $manager;
@@ -271,7 +271,7 @@ abstract class WriteModel
 
         $this->managerRegistry->resetManager();
         $manager = $this->managerRegistry->getManager();
-        if (!($manager instanceof EntityManager)) {
+        if (!$manager instanceof EntityManager) {
             throw new RuntimeException('Unable to restart the manager.');
         }
 
