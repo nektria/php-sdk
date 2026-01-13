@@ -91,8 +91,23 @@ readonly class SecurityService extends AbstractService implements SecurityServic
         LocalClock::defaultTimezone($user->tenant->timezone);
     }
 
-    public function clearAuthentication(): void
+    public function clearAuthentication(?string $apiKey = null): void
     {
+        if ($apiKey !== null) {
+            $data = $this->sharedUserCache->read("API_{$apiKey}");
+            if ($data === null) {
+                throw new InvalidAuthorizationException();
+            }
+
+            $currentUser = $this->retrieveCurrentUser();
+
+            if ($currentUser->id !== $data->id) {
+                throw new InvalidAuthorizationException();
+            }
+
+            $this->sharedUserCache->remove("API_{$apiKey}");
+        }
+
         $this->contextService()->addExtra('tenantId', null);
         $this->contextService()->addExtra('tenantName', null);
         $this->contextService()->addExtra('userId', null);

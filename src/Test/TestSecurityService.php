@@ -185,7 +185,7 @@ readonly class TestSecurityService extends SecurityService
         $this->contextService()->addExtra('userId', $this->currentUser()->id);
     }
 
-    public function clearAuthentication(): void
+    public function clearAuthentication(?string $apiKey = null): void
     {
         $this->contextService()->addExtra('tenantId', null);
         $this->contextService()->addExtra('tenantName', null);
