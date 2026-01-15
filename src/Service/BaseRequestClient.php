@@ -521,19 +521,22 @@ readonly class BaseRequestClient extends AbstractService
         }
 
         if ($enableDebugFallback ?? str_starts_with($url, 'https')) {
-            $contentType = $response->responseHeaders['content-type'] ?? [''];
-            if (str_contains((string) $contentType[0], 'application/json')) {
-                $this->logService()->debug([
-                    'method' => $response->method,
-                    'request' => $data,
-                    'requestHeaders' => $headers,
-                    'response' => $response->json(),
-                    'responseHeaders' => $respHeaders,
-                    'status' => $response->status,
-                    'url' => $url,
-                    'duration' => $end
-                ], "{$status} {$method} {$url}");
+            try {
+                $body = $response->json();
+            } catch (Throwable) {
+                $body = $response->body;
             }
+
+            $this->logService()->debug([
+                'method' => $response->method,
+                'request' => $data,
+                'requestHeaders' => $headers,
+                'response' => $body,
+                'responseHeaders' => $respHeaders,
+                'status' => $response->status,
+                'url' => $url,
+                'duration' => $end
+            ], "{$status} {$method} {$url}");
         }
 
         if ($status >= 500) {
