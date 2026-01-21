@@ -135,8 +135,6 @@ class LocalClock
         return $this->timestamp($in) <=> $to->timestamp($in);
     }
 
-    // still is UTC but the hour is the same as the timezone selected
-
     public function dateString(?string $timeZone = null): string
     {
         try {
@@ -150,6 +148,8 @@ class LocalClock
             throw NektriaException::new($e);
         }
     }
+
+    // still is UTC but the hour is the same as the timezone selected
 
     public function dateTimeString(?string $timeZone = null): string
     {
@@ -313,6 +313,15 @@ class LocalClock
     public function setTime(int $hour, int $minutes = 0): self
     {
         return new self($this->dateTime->setTime($hour, $minutes));
+    }
+
+    public function setTimeString(string $time): self
+    {
+        $parts = explode(':', $time);
+        $hours = (int) $parts[0];
+        $minutes = (int) ($parts[1] ?? '0');
+
+        return $this->setTime($hours, $minutes);
     }
 
     public function setTimestamp(int $timestamp): self
