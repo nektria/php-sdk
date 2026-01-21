@@ -71,8 +71,6 @@ class ValidateEach
         }
     }
 
-    // Strings
-
     /**
      * @param float[] $values
      */
@@ -82,6 +80,8 @@ class ValidateEach
             Validate::latitude($item);
         }
     }
+
+    // Strings
 
     /**
      * @param int[]|float[] $values
@@ -143,8 +143,6 @@ class ValidateEach
         }
     }
 
-    // coordinates
-
     /**
      * @param string[] $values
      */
@@ -154,6 +152,8 @@ class ValidateEach
             Validate::notEmpty($item);
         }
     }
+
+    // coordinates
 
     /**
      * @param int[]|float[] $values
@@ -182,6 +182,16 @@ class ValidateEach
     {
         foreach ($values as $item) {
             Validate::role($item);
+        }
+    }
+
+    /**
+     * @param string[] $values
+     */
+    public static function time(array $values): void
+    {
+        foreach ($values as $item) {
+            Validate::time($item);
         }
     }
 

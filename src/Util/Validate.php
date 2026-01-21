@@ -200,6 +200,13 @@ class Validate
         }
     }
 
+    public static function time(string $time): void
+    {
+        if (preg_match('/^([0-1]\d|2[0-3]):[0-5]\d(:[0-5]\d)?$/', $time) === false) {
+            throw new InvalidArgumentException("Invalid time '{$time}'.");
+        }
+    }
+
     public static function timeRange(Clock | LocalClock $start, Clock | LocalClock $end): void
     {
         if ($start::class !== $end::class) {

@@ -45,8 +45,6 @@ readonly class ValidateOpt
         }
     }
 
-    // Strings
-
     /**
      * @param string[] $validValues
      */
@@ -56,6 +54,8 @@ readonly class ValidateOpt
             Validate::inStringList($value, $validValues);
         }
     }
+
+    // Strings
 
     public static function latitude(?float $value): void
     {
@@ -102,14 +102,14 @@ readonly class ValidateOpt
         }
     }
 
-    // coordinates
-
     public static function naturalNumber(int | float | null $number): void
     {
         if ($number !== null) {
             Validate::naturalNumber($number);
         }
     }
+
+    // coordinates
 
     public static function notEmpty(?string $value): void
     {
@@ -136,6 +136,13 @@ readonly class ValidateOpt
     {
         if ($value !== null) {
             Validate::role($value);
+        }
+    }
+
+    public static function time(?string $time): void
+    {
+        if ($time !== null) {
+            Validate::time($time);
         }
     }
 
