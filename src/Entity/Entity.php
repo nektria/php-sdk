@@ -14,7 +14,7 @@ abstract class Entity implements EntityInterface
     #[IgnoreProperty]
     #[ORM\Id]
     #[ORM\Column(type: 'guid')]
-    public private(set) string $id;
+    public protected(set) string $id;
 
     #[IgnoreProperty]
     #[ORM\Column(type: 'clock')]
