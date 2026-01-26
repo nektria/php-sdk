@@ -12,13 +12,13 @@ use Nektria\Util\StringUtil;
 abstract class Entity implements EntityInterface
 {
     #[IgnoreProperty]
-    #[ORM\Column(type: 'clock')]
-    protected Clock $createdAt;
-
-    #[IgnoreProperty]
     #[ORM\Id]
     #[ORM\Column(type: 'guid')]
-    protected string $id;
+    public private(set) string $id;
+
+    #[IgnoreProperty]
+    #[ORM\Column(type: 'clock')]
+    protected Clock $createdAt;
 
     #[IgnoreProperty]
     #[ORM\Column(type: 'clock')]
