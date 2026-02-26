@@ -3,7 +3,7 @@ services:
 
   postgres:
     hostname: postgres
-    image: docker.io/postgres:15-alpine
+    image: docker.io/postgres:18-alpine
     environment:
       POSTGRES_PASSWORD: 1234
       POSTGRES_DB: test

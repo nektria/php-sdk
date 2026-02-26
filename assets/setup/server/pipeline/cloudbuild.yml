@@ -38,6 +38,8 @@ steps:
 
         bin/console debug:version "$1" --clean > NK_VERSION
 
+        bin/console d:s:u --dump-sql
+
         bin/validate -g
 
         bin/tools/phpunit -g
