@@ -10,7 +10,6 @@ use Nektria\Document\DocumentCollection;
 use Nektria\Exception\NektriaException;
 use Nektria\Util\StringUtil;
 use Throwable;
-
 use function count;
 use function is_array;
 
@@ -55,7 +54,7 @@ abstract class ReadModel
         try {
             $results = $this->getRawResults($sql, $params, $groupBy);
 
-            return $results[array_key_first($results)] ?? null;
+            return $results[array_key_first($results) ?? ''] ?? null;
         } catch (Throwable $e) {
             throw NektriaException::new($e);
         }
