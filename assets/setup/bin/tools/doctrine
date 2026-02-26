@@ -38,8 +38,10 @@ done
 if [ "$USE_GOOGLE" = '1' ]; then
   bin/console doctrine:migrations:migrate -n -e test
   bin/console debug:migrarions:fix -e test -c
+  bin/console d:s:u --dump-sql -e test
   bin/console doctrine:schema:validate -e test
 else
   bin/docker/console debug:migrarions:fix -c
+  bin/console d:s:u --dump-sql
   bin/docker/console doctrine:schema:validate
 fi
