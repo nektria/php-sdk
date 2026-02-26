@@ -18,7 +18,7 @@ class ArrayDocumentReadModel extends ReadModel
         $this->getRawResult('
            ALTER TABLE doctrine_migration_versions ALTER executed_at TYPE TIMESTAMP(0) WITHOUT TIME ZONE
         ');
-        $this->getRawResult('COMMENT ON COLUMN doctrine_migration_versions.executed_at IS \'(DC2Type:clock)\'');
+        // $this->getRawResult('COMMENT ON COLUMN doctrine_migration_versions.executed_at IS \'(DC2Type:clock)\'');
     }
 
     /**
