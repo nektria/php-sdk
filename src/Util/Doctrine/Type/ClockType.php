@@ -41,7 +41,7 @@ class ClockType extends Type
 
     public function getSQLDeclaration(array $column, AbstractPlatform $platform): string
     {
-        return 'TIMESTAMP WITHOUT TIME ZONE';
+        return 'TIMESTAMP WITHOUT(0) TIME ZONE';
     }
 
     public function requiresSQLCommentHint(AbstractPlatform $platform): bool
