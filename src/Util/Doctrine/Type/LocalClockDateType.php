@@ -47,9 +47,4 @@ class LocalClockDateType extends Type
     {
         return 'DATE';
     }
-
-    public function requiresSQLCommentHint(AbstractPlatform $platform): bool
-    {
-        return true;
-    }
 }

@@ -13,7 +13,7 @@ abstract class EventEntity implements EntityInterface
     protected string $tenantId;
 
     #[ORM\Id]
-    #[ORM\Column(type: 'micro_clock')]
+    #[ORM\Column(type: 'micro_clock', options: ['precision' => 6])]
     protected Clock $timestamp;
 
     public function __construct(string $tenantId)

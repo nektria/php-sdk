@@ -51,11 +51,6 @@ abstract class JsonType extends DoctrineJsonType
         return 'JSONB';
     }
 
-    public function requiresSQLCommentHint(AbstractPlatform $platform): bool
-    {
-        return true;
-    }
-
     /**
      * @param T $phpValue
      */

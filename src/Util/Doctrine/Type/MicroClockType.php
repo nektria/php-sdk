@@ -39,6 +39,8 @@ class MicroClockType extends Type
 
     public function getSQLDeclaration(array $column, AbstractPlatform $platform): string
     {
-        return 'TIMESTAMP(6) WITHOUT TIME ZONE';
+        $column['precision'] = 6;
+
+        return 'TIMESTAMP(0) WITHOUT TIME ZONE';
     }
 }

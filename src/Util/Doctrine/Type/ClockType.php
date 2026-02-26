@@ -43,9 +43,4 @@ class ClockType extends Type
     {
         return 'TIMESTAMP(0) WITHOUT TIME ZONE';
     }
-
-    public function requiresSQLCommentHint(AbstractPlatform $platform): bool
-    {
-        return true;
-    }
 }
