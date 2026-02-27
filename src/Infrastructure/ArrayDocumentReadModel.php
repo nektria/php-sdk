@@ -33,8 +33,8 @@ class ArrayDocumentReadModel extends ReadModel
     public function readAllQueuesMessages(): DocumentCollection
     {
         return $this->getResults(
-            <<<SQL
-                SELECT
+            <<<'SQL'
+                SELECT 
                     replace((regexp_match(body, 'O:\d+:\\"(App\\\\Message\\\\[A-Za-z\\\\]+)\\"'))[1],'\\', '\') 
                         AS class_name,
                     COUNT(*) as count,
