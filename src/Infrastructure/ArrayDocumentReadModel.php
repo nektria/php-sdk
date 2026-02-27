@@ -42,7 +42,7 @@ class ArrayDocumentReadModel extends ReadModel
                     SUM((delivered_at IS NOT NULL)::int) as in_process,
                     SUM((delivered_at IS NULL)::int) as pending
                 FROM messenger_messages
-                GROUP BY class_name, queue_name;
+                GROUP BY class_name, queue_name
                 ORDER BY class_name ASC;
             SQL
         );
