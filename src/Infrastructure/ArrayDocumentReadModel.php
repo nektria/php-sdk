@@ -13,6 +13,41 @@ use Nektria\Document\DocumentCollection;
  */
 class ArrayDocumentReadModel extends ReadModel
 {
+    public function deleteAQueue(string $queue): void
+    {
+        $this->getRawResult(
+            '
+                DELETE 
+                FROM messenger_messages 
+                WHERE queue_name ~ :queue
+            ',
+            [
+                'queue' => $queue
+            ]
+        );
+    }
+
+    /**
+     * @return DocumentCollection<ArrayDocument>
+     */
+    public function readAllQueuesMessages(): DocumentCollection
+    {
+        return $this->getResults(
+            <<<SQL
+                SELECT
+                    replace((regexp_match(body, 'O:\d+:\\"(App\\\\Message\\\\[A-Za-z\\\\]+)\\"'))[1],'\\', '\') 
+                        AS class_name,
+                    COUNT(*) as count,
+                    queue_name,
+                    SUM((delivered_at IS NOT NULL)::int) as in_process,
+                    SUM((delivered_at IS NULL)::int) as pending
+                FROM messenger_messages
+                GROUP BY class_name, queue_name;
+                ORDER BY class_name ASC;
+            SQL
+        );
+    }
+
     public function fixMigrations(): void
     {
         $this->getRawResult('

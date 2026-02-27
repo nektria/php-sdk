@@ -24,6 +24,29 @@ use const STR_PAD_LEFT;
 #[Route('/api/admin/tools')]
 readonly class ToolsController extends Controller
 {
+    #[Route('/queues/{$queue}', method: 'DELETE')]
+    public function deleteAQueue(ArrayDocumentReadModel $arrayDocumentReadModel, string $queue): DocumentResponse
+    {
+        $arrayDocumentReadModel->deleteAQueue($queue);
+
+        return $this->emptyResponse();
+    }
+
+    #[Route('/queues', method: 'GET')]
+    public function getAllQueuesMessages(ArrayDocumentReadModel $arrayDocumentReadModel): DocumentResponse
+    {
+        $list = $arrayDocumentReadModel->readAllQueuesMessages();
+
+        $queues = $list->classify('queue_name');
+        $data = [];
+
+        foreach ($queues as $name => $messages) {
+            $data[$name] = $messages->toArray($this->context);
+        }
+
+        return $this->documentResponse(new ArrayDocument($data));
+    }
+
     #[Route('/debug', method: 'PATCH')]
     public function configureDebug(ContextService $contextService): JsonResponse
     {
