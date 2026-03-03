@@ -166,6 +166,22 @@ abstract class MessageListener implements EventSubscriberInterface
                     $exchangeName = $exchangeStamp->getAmqpEnvelope()->getExchangeName();
                 }
 
+                if (isset($data['user']['email'])) {
+                    $data['user']['email'] = '******';
+                }
+
+                if (isset($data['user']['dniNie'])) {
+                    $data['user']['dniNie'] = '******';
+                }
+
+                if (isset($data['oldUuser']['email'])) {
+                    $data['user']['email'] = '******';
+                }
+
+                if (isset($data['oldUser']['dniNie'])) {
+                    $data['user']['dniNie'] = '******';
+                }
+
                 $this->logService->temporalLogs();
                 $this->logService->exception(
                     exception: $originalException,
