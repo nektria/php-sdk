@@ -87,6 +87,7 @@ readonly class LogService extends AbstractService
         if ($this->data['channel'] === false) {
             return;
         }
+
         try {
             $data = $this->build($payload, $message, self::ERROR);
             $body = JsonUtil::encode($data);
@@ -147,6 +148,7 @@ readonly class LogService extends AbstractService
             ];
 
             $data = array_merge($payload, $data);
+
             try {
                 $body = JsonUtil::encode($data);
                 fwrite($this->data['channel'], $body . PHP_EOL);
@@ -165,6 +167,7 @@ readonly class LogService extends AbstractService
         if ($this->data['channel'] === false) {
             return;
         }
+
         try {
             $data = $this->build($payload, $message, self::INFO);
             $body = JsonUtil::encode($data);
@@ -216,6 +219,7 @@ readonly class LogService extends AbstractService
             ];
 
             $data = array_merge($log['payload'], $data);
+
             try {
                 $body = JsonUtil::encode($data);
                 fwrite($this->data['channel'], $body . PHP_EOL);
