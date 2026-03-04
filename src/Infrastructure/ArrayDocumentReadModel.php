@@ -35,7 +35,7 @@ class ArrayDocumentReadModel extends ReadModel
         return $this->getResults(
             <<<'SQL'
                 SELECT 
-                    replace((regexp_match(body, 'O:\d+:\\"(App\\\\Message\\\\[A-Za-z\\\\]+)\\"'))[1],'\\', '\') 
+                    replace((regexp_match(body, 'O:\d+:\\"(App\\\\Message\\\\[A-Za-z0-9\\\\]+)\\"'))[1],'\\', '\') 
                         AS class_name,
                     COUNT(*) as count,
                     queue_name,
