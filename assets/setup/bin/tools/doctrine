@@ -47,3 +47,4 @@ else
   bin/console d:s:u --dump-sql
   bin/docker/console doctrine:schema:validate
 fi
+
