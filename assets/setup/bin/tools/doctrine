@@ -38,12 +38,10 @@ done
 if [ "$USE_GOOGLE" = '1' ]; then
   bin/console doctrine:migrations:migrate -n -e test
   bin/console debug:migrarions:fix -e test -c
-  bin/console messenger:consume --time-limit=1 -v -b messenger.bus.default --all -e test
   bin/console d:s:u --dump-sql -e test
   bin/console doctrine:schema:validate -e test
 else
   bin/docker/console debug:migrarions:fix -c
-  bin/console messenger:consume --time-limit=1 -v -b messenger.bus.default --all
   bin/console d:s:u --dump-sql
   bin/docker/console doctrine:schema:validate
 fi
