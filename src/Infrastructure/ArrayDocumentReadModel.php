@@ -105,7 +105,7 @@ class ArrayDocumentReadModel extends ReadModel
                     id,
                     queue_name,
                     :field AS field,
-                    (regexp_match(:body, ))[1] AS value
+                    (regexp_match(body, :body))[1] AS value
                 FROM messenger_messages 
                 WHERE queue_name ~ :queue
                 ORDER BY id ASC
