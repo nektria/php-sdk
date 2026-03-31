@@ -113,8 +113,8 @@ class ArrayDocumentReadModel extends ReadModel
             SQL,
             [
                 'body' => $field . '\\";\s*s:\d+:\\"([^\\"]+)\\"',
-                //'body' => $field . '";\s*s:\d+:"([^"]+)"',
-                //'body' => $field .   '\\";\s*s:\d+:\\"([^"]+)\\"',
+                // 'body' => $field . '";\s*s:\d+:"([^"]+)"',
+                // 'body' => $field .   '\\";\s*s:\d+:\\"([^"]+)\\"',
                 'queue' => $queue,
                 'field' => $field,
             ]
