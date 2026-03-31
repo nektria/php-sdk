@@ -48,12 +48,36 @@ class ArrayDocumentReadModel extends ReadModel
         );
     }
 
+    /**
+     * @return DocumentCollection<ArrayDocument>
+     */
+    public function readValuesFromQueueMessages(string $queue, string $field): DocumentCollection
+    {
+        return $this->getResults(
+            <<<'SQL'
+                SELECT
+                    id,
+                    queue_name,
+                    :field AS field,
+                    (regexp_match(body, ))[1] AS value
+                FROM messenger_messages 
+                WHERE queue_name ~ :queue
+                ORDER BY id ASC
+                LIMIT 100
+            SQL,
+            [
+                'body' => $field . '\\";\s*s:\d+:\\"([^"]+)\\"',
+                'queue' => $queue,
+                'field' => $field,
+            ]
+        );
+    }
+
     public function fixMigrations(): void
     {
         $this->getRawResult('
            ALTER TABLE doctrine_migration_versions ALTER executed_at TYPE TIMESTAMP(0) WITHOUT TIME ZONE
         ');
-        // $this->getRawResult('COMMENT ON COLUMN doctrine_migration_versions.executed_at IS \'(DC2Type:clock)\'');
     }
 
     /**

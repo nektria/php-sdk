@@ -7,14 +7,13 @@ namespace Nektria\Controller\Admin;
 use Nektria\Controller\Controller;
 use Nektria\Document\ArrayDocument;
 use Nektria\Document\DocumentResponse;
+use Nektria\Exception\DomainException;
 use Nektria\Exception\InsufficientCredentialsException;
 use Nektria\Infrastructure\ArrayDocumentReadModel;
 use Nektria\Service\ContextService;
-use Nektria\Service\RequestClient;
 use Nektria\Util\Controller\Route;
 use Nektria\Util\FileUtil;
 use Nektria\Util\JsonUtil;
-use Nektria\Util\StringUtil;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Process\Process;
@@ -45,6 +44,19 @@ readonly class ToolsController extends Controller
         }
 
         return $this->documentResponse(new ArrayDocument($data));
+    }
+
+    #[Route('/queues/{ref}', method: 'GET')]
+    public function getAllQueuesValueMessages(
+        string $ref,
+        ArrayDocumentReadModel $arrayDocumentReadModel
+    ): DocumentResponse {
+        $list = $arrayDocumentReadModel->readValuesFromQueueMessages(
+            queue: $ref,
+            field: $this->requestData->retrieveString('field'),
+        );
+
+        return $this->documentResponse($list);
     }
 
     #[Route('/debug', method: 'PATCH')]
@@ -83,25 +95,9 @@ readonly class ToolsController extends Controller
     }
 
     #[Route('/rabbit/delete', method: 'PATCH')]
-    public function deleteARabbitQueue(RequestClient $requestClient, string $rabbitDsn): DocumentResponse
+    public function deleteARabbitQueue(): DocumentResponse
     {
-        $queue = $this->requestData->retrieveString('queue');
-        $host = str_replace(['amqp', '5672'], ['http', '15672'], $rabbitDsn);
-
-        $content = $requestClient->get("{$host}/api/queues/%2F/{$queue}")->json();
-
-        $vhost = urlencode($content['vhost']);
-
-        $requestClient->delete(
-            "{$host}/api/queues/{$vhost}/{$queue}",
-            data: [
-                'vhost' => '/',
-                'name' => $queue,
-                'mode' => 'delete',
-            ],
-        );
-
-        return $this->emptyResponse();
+        throw new DomainException('E_500', 'Not implemented');
     }
 
     #[Route('/console', method: 'PATCH')]
@@ -122,15 +118,9 @@ readonly class ToolsController extends Controller
     }
 
     #[Route('/rabbit-delays/enable', method: 'PATCH')]
-    public function executeDisableRabbitDelays(ContextService $contextService): JsonResponse
+    public function executeDisableRabbitDelays(): JsonResponse
     {
-        $enable = $this->requestData->retrieveBool('enable');
-        $lifetime = $this->requestData->getInt('lifetime') ?? 3600;
-        $projects = $this->requestData->retrieveStringArray('projects');
-
-        $contextService->setDelaysRabbit($enable, $projects, $lifetime);
-
-        return $this->emptyResponse();
+        throw new DomainException('E_500', 'Not implemented');
     }
 
     #[Route('/database/migrations', method: 'GET')]
@@ -155,15 +145,9 @@ readonly class ToolsController extends Controller
     }
 
     #[Route('/rabbit-delays/enable', method: 'PATCH')]
-    public function executeEnableRabbitDelays(ContextService $contextService): JsonResponse
+    public function executeEnableRabbitDelays(): JsonResponse
     {
-        $enable = $this->requestData->retrieveBool('enable');
-        $lifetime = $this->requestData->getInt('lifetime') ?? 3600;
-        $projects = $this->requestData->retrieveStringArray('projects');
-
-        $contextService->setDebugMode($enable, $projects, $lifetime);
-
-        return $this->emptyResponse();
+        throw new DomainException('E_500', 'Not implemented');
     }
 
     #[Route('/debug/status', method: 'PATCH')]
@@ -175,29 +159,9 @@ readonly class ToolsController extends Controller
     }
 
     #[Route('/rabbit/status', method: 'GET')]
-    public function getRabbitStatus(RequestClient $requestClient, string $rabbitDsn): DocumentResponse
+    public function getRabbitStatus(): DocumentResponse
     {
-        $host = str_replace(['amqp', '5672'], ['http', '15672'], $rabbitDsn);
-
-        $content = $requestClient->get(
-            "{$host}/api/queues",
-        )->json();
-
-        $data = [];
-        foreach ($content as $queue) {
-            $name = StringUtil::trim($queue['name']);
-            $ready = (int) $queue['messages_ready'];
-            $unacked = (int) $queue['messages_unacknowledged'];
-            $speed = (float) $queue['messages_unacknowledged_details']['rate'];
-
-            $data[$name] = [
-                'ready' => $ready,
-                'unacknowledged' => $unacked,
-                'rate' => $speed,
-            ];
-        }
-
-        return $this->documentResponse(new ArrayDocument($data));
+        throw new DomainException('E_500', 'Not implemented');
     }
 
     #[Route('/crypt', method: 'GET')]
