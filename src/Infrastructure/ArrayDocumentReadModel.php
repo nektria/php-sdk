@@ -112,7 +112,9 @@ class ArrayDocumentReadModel extends ReadModel
                 LIMIT 100
             SQL,
             [
-                'body' => $field . '";\s*s:\d+:"([^"]+)"',
+                'body' => $field . '\\";\s*s:\d+:\\"([^\\"]+)\\"',
+                //'body' => $field . '";\s*s:\d+:"([^"]+)"',
+                //'body' => $field .   '\\";\s*s:\d+:\\"([^"]+)\\"',
                 'queue' => $queue,
                 'field' => $field,
             ]
