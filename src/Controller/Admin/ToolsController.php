@@ -17,7 +17,6 @@ use Nektria\Util\JsonUtil;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Process\Process;
-
 use const STR_PAD_LEFT;
 
 #[Route('/api/admin/tools')]
@@ -58,7 +57,7 @@ readonly class ToolsController extends Controller
         )));
     }
 
-    #[Route('/queues/{$queue}', method: 'DELETE')]
+    #[Route('/queues/{queue}', method: 'DELETE')]
     public function deleteAQueue(ArrayDocumentReadModel $arrayDocumentReadModel, string $queue): DocumentResponse
     {
         $arrayDocumentReadModel->deleteAQueue($queue);
@@ -137,7 +136,7 @@ readonly class ToolsController extends Controller
         return $this->documentResponse(new ArrayDocument($data));
     }
 
-    #[Route('/queues/{$ref}', method: 'GET')]
+    #[Route('/queues/{ref}', method: 'GET')]
     public function getAllQueuesValueMessages(
         string $ref,
         ArrayDocumentReadModel $arrayDocumentReadModel
