@@ -104,6 +104,8 @@ class ArrayDocumentReadModel extends ReadModel
                 SELECT
                     id,
                     queue_name,
+                    replace((regexp_match(body, 'O:\d+:\\"(App\\\\Message\\\\[A-Za-z0-9\\\\]+)\\"'))[1],'\\', '\') 
+                        AS class_name,
                     :field AS field,
                     (regexp_match(body, :body))[1] AS value
                 FROM messenger_messages 
