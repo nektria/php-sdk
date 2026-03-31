@@ -17,48 +17,11 @@ use Nektria\Util\JsonUtil;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Process\Process;
-
 use const STR_PAD_LEFT;
 
 #[Route('/api/admin/tools')]
 readonly class ToolsController extends Controller
 {
-    #[Route('/queues/{$queue}', method: 'DELETE')]
-    public function deleteAQueue(ArrayDocumentReadModel $arrayDocumentReadModel, string $queue): DocumentResponse
-    {
-        $arrayDocumentReadModel->deleteAQueue($queue);
-
-        return $this->emptyResponse();
-    }
-
-    #[Route('/queues', method: 'GET')]
-    public function getAllQueuesMessages(ArrayDocumentReadModel $arrayDocumentReadModel): DocumentResponse
-    {
-        $list = $arrayDocumentReadModel->readAllQueuesMessages();
-
-        $queues = $list->classify('queue_name');
-        $data = [];
-
-        foreach ($queues as $name => $messages) {
-            $data[$name] = $messages->toArray($this->context);
-        }
-
-        return $this->documentResponse(new ArrayDocument($data));
-    }
-
-    #[Route('/queues/{ref}', method: 'GET')]
-    public function getAllQueuesValueMessages(
-        string $ref,
-        ArrayDocumentReadModel $arrayDocumentReadModel
-    ): DocumentResponse {
-        $list = $arrayDocumentReadModel->readValuesFromQueueMessages(
-            queue: $ref,
-            field: $this->requestData->retrieveString('field'),
-        );
-
-        return $this->documentResponse($list);
-    }
-
     #[Route('/debug', method: 'PATCH')]
     public function configureDebug(ContextService $contextService): JsonResponse
     {
@@ -92,6 +55,14 @@ readonly class ToolsController extends Controller
                 true,
             ),
         )));
+    }
+
+    #[Route('/queues/{$queue}', method: 'DELETE')]
+    public function deleteAQueue(ArrayDocumentReadModel $arrayDocumentReadModel, string $queue): DocumentResponse
+    {
+        $arrayDocumentReadModel->deleteAQueue($queue);
+
+        return $this->emptyResponse();
     }
 
     #[Route('/rabbit/delete', method: 'PATCH')]
@@ -148,6 +119,34 @@ readonly class ToolsController extends Controller
     public function executeEnableRabbitDelays(): JsonResponse
     {
         throw new DomainException('E_500', 'Not implemented');
+    }
+
+    #[Route('/queues', method: 'GET')]
+    public function getAllQueuesMessages(ArrayDocumentReadModel $arrayDocumentReadModel): DocumentResponse
+    {
+        $list = $arrayDocumentReadModel->readAllQueuesMessages();
+
+        $queues = $list->classify('queue_name');
+        $data = [];
+
+        foreach ($queues as $name => $messages) {
+            $data[$name] = $messages->toArray($this->context);
+        }
+
+        return $this->documentResponse(new ArrayDocument($data));
+    }
+
+    #[Route('/queues/{$ref}', method: 'GET')]
+    public function getAllQueuesValueMessages(
+        string $ref,
+        ArrayDocumentReadModel $arrayDocumentReadModel
+    ): DocumentResponse {
+        $list = $arrayDocumentReadModel->readValuesFromQueueMessages(
+            queue: $ref,
+            field: $this->requestData->retrieveString('field'),
+        );
+
+        return $this->documentResponse($list);
     }
 
     #[Route('/debug/status', method: 'PATCH')]
