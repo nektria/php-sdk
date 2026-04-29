@@ -82,7 +82,12 @@
     },
     "scripts": {
         "auto-scripts": {
-            "cache:clear": "symfony-cmd"
-        }
+            "cache:clear": "bin/console cache:clear -q &> /dev/null || true"
+        },
+        "post-update-cmd": [
+            "@auto-scripts"
+        ],
+        "check": "docker exec -it php-sdk /scripts/tools/validate",
+        "test": "docker exec -it php-sdk /scripts/tools/phpunit"
     }
 }

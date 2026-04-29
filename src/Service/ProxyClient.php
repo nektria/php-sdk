@@ -6,7 +6,6 @@ namespace Nektria\Service;
 
 use Nektria\Exception\RequestException;
 use Nektria\Infrastructure\SharedUserV2Cache;
-
 use function in_array;
 
 readonly class ProxyClient extends AbstractService
@@ -167,6 +166,24 @@ readonly class ProxyClient extends AbstractService
 
         $this->requestClient()->patch(
             "{$proxyHost}/api/admin/routes/{$routeId}/updated",
+            headers: $this->getHeaders(),
+        );
+    }
+
+    public function sendWarehouseAreasUpdated(string $warehouseId): void
+    {
+        $proxyHost = $this->securityService()->retrieveCurrentUser()->tenant->metadata->proxyHost();
+
+        if ($proxyHost === null) {
+            return;
+        }
+
+        if (!$this->pathIsAllowed("/api/admin/warehouses/{warehouseId}/areas-updated")) {
+            return;
+        }
+
+        $this->requestClient()->patch(
+            "{$proxyHost}/api/admin/warehouses/{$warehouseId}/areas-updated",
             headers: $this->getHeaders(),
         );
     }
