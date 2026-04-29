@@ -6,6 +6,7 @@ namespace Nektria\Service;
 
 use Nektria\Exception\RequestException;
 use Nektria\Infrastructure\SharedUserV2Cache;
+
 use function in_array;
 
 readonly class ProxyClient extends AbstractService
@@ -178,7 +179,7 @@ readonly class ProxyClient extends AbstractService
             return;
         }
 
-        if (!$this->pathIsAllowed("/api/admin/warehouses/{warehouseId}/areas-updated")) {
+        if (!$this->pathIsAllowed('/api/admin/warehouses/{warehouseId}/areas-updated')) {
             return;
         }
 

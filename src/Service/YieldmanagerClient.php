@@ -569,8 +569,12 @@ readonly class YieldmanagerClient extends AbstractService
         );
     }
 
+    /**
+     * @param string[]|null $tags
+     */
     public function saveOrder(
         string $orderNumber,
+        ?string $shiftId = null,
         ?Address $address = null,
         ?string $area = null,
         ?string $shopperCode = null,
@@ -580,11 +584,13 @@ readonly class YieldmanagerClient extends AbstractService
         ?LocalClock $endTime = null,
         ?bool $returnal = null,
         ?bool $createdByTenant = false,
+        ?array $tags = null,
     ): void {
         $this->requestClient()->put(
             "{$this->yieldmanagerHost}/api/admin/orders/{$orderNumber}",
             data: [
                 'address' => $address?->toArray(),
+                'shiftId' => $shiftId,
                 'area' => $area,
                 'createdByTenant' => $createdByTenant,
                 'productLines' => $productLines,
