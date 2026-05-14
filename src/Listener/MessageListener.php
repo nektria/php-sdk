@@ -42,7 +42,6 @@ use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 use Symfony\Component\Serializer\Normalizer\PropertyNormalizer;
 use Symfony\Component\Serializer\Serializer;
 use Throwable;
-
 use function in_array;
 
 abstract class MessageListener implements EventSubscriberInterface
@@ -372,6 +371,7 @@ abstract class MessageListener implements EventSubscriberInterface
                     $this->securityService->authenticateSystem($contextStamp->tenantId);
                 }
                 $this->contextService->addExtra('userId', $contextStamp->userId);
+                $this->contextService->addExtra('tenantId', $contextStamp->tenantId);
             }
 
             $this->messageStartedAt = Clock::now()->iso8601String();
