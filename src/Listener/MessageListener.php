@@ -42,7 +42,6 @@ use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 use Symfony\Component\Serializer\Normalizer\PropertyNormalizer;
 use Symfony\Component\Serializer\Serializer;
 use Throwable;
-
 use function in_array;
 
 abstract class MessageListener implements EventSubscriberInterface
@@ -365,6 +364,7 @@ abstract class MessageListener implements EventSubscriberInterface
         try {
             /** @var ContextStamp|null $contextStamp */
             $contextStamp = $event->getEnvelope()->last(ContextStamp::class);
+
             if ($contextStamp !== null) {
                 $this->contextService->setContext($contextStamp->context);
                 $this->contextService->setTraceId($contextStamp->traceId);
@@ -374,6 +374,12 @@ abstract class MessageListener implements EventSubscriberInterface
                 $this->contextService->addExtra('userId', $contextStamp->userId);
                 $this->contextService->addExtra('tenantId', $contextStamp->tenantId);
             }
+
+            $this->alertService->simpleMessage(
+                AlertService::CHANNEL_BUGS,
+                ($contextStamp !== null ? 'context ' : 'no-context ') .
+                ' ' . $this->contextService->getExtra('tenantId')
+            );
 
             $this->messageStartedAt = Clock::now()->iso8601String();
             $this->executionTime = microtime(true);
