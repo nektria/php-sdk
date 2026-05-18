@@ -11,5 +11,5 @@ readonly abstract class Document
     /**
      * @return mixed[]
      */
-    abstract public function toArray(ContextService $context): array;
+    abstract public function toArray(?ContextService $context): array;
 }

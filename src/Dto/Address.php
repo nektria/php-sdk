@@ -4,11 +4,13 @@ declare(strict_types=1);
 
 namespace Nektria\Dto;
 
+use Nektria\Document\Document;
+use Nektria\Service\ContextService;
 use Nektria\Util\StringUtil;
 use Nektria\Util\Validate;
 use Symfony\Component\String\Slugger\AsciiSlugger;
 
-readonly class Address
+readonly class Address extends Document
 {
     public function __construct(
         public string $addressLine1,
@@ -87,7 +89,7 @@ readonly class Address
      *     longitude: float,
      * }
      */
-    public function toArray(): array
+    public function toArray(ContextService $context): array
     {
         return [
             'addressLine1' => $this->addressLine1,
