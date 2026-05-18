@@ -91,7 +91,7 @@ readonly class ThrowableDocument extends Document
 
         if (
             $this->status !== Response::HTTP_INTERNAL_SERVER_ERROR
-            || $context->traceId() === '00000000-0000-4000-8000-000000000000'
+            || ($context !== null && $context->traceId() === '00000000-0000-4000-8000-000000000000')
         ) {
             $message = $exception->getMessage();
         }
