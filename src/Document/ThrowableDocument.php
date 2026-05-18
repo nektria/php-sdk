@@ -85,7 +85,7 @@ readonly class ThrowableDocument extends Document
         }
 
         $message = 'Internal Server Error';
-        if ($context->isPlayEnvironment()) {
+        if ($context === null || $context->isPlayEnvironment()) {
             $message = $exception->getMessage();
         }
 
@@ -101,7 +101,7 @@ readonly class ThrowableDocument extends Document
             'message' => $message,
         ];
 
-        if ($context->isPlayEnvironment() || $context->traceId() === '00000000-0000-4000-8000-000000000000') {
+        if ($context === null || $context->isPlayEnvironment() || $context->traceId() === '00000000-0000-4000-8000-000000000000') {
             $data['file'] = str_replace('/app/', '', $exception->getFile());
             $data['line'] = $exception->getLine();
             $data['trace'] = $this->trace();

@@ -39,7 +39,7 @@ readonly class User extends Document
 
     public function toArray(?ContextService $context): array
     {
-        if ($context->context() === ContextService::INTERNAL) {
+        if ($context !== null && $context->context() === ContextService::INTERNAL) {
             return [
                 'allowedTopics' => $this->socketInfo->topics(),
                 'dniNie' => $this->dniNie,
@@ -54,7 +54,7 @@ readonly class User extends Document
             ];
         }
 
-        if ($context->context() === ContextService::ADMIN) {
+        if ($context !== null && $context->context() === ContextService::ADMIN) {
             return [
                 'aiThreadId' => $this->aiThreadId,
                 'allowedTopics' => $this->socketInfo->topics(),
