@@ -11,7 +11,6 @@ use Nektria\Exception\NektriaException;
 use Nektria\Service\ContextService;
 use Nektria\Util\ArrayUtil;
 use Traversable;
-
 use function count;
 
 /**
@@ -179,7 +178,7 @@ readonly class DocumentCollection extends Document implements IteratorAggregate,
     /**
      * @return mixed[]
      */
-    public function toArray(ContextService $context): array
+    public function toArray(?ContextService $context): array
     {
         $list = [];
 

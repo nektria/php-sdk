@@ -5,9 +5,7 @@ declare(strict_types=1);
 namespace Nektria\Document;
 
 use Nektria\Service\ContextService;
-
 use function count;
-
 use const DIRECTORY_SEPARATOR;
 
 readonly class FileDocument extends Document
@@ -44,7 +42,7 @@ readonly class FileDocument extends Document
         $this->mime = $mime;
     }
 
-    public function toArray(ContextService $context): array
+    public function toArray(?ContextService $context): array
     {
         return [
             'path' => $this->file,

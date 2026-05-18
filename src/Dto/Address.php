@@ -89,7 +89,7 @@ readonly class Address extends Document
      *     longitude: float,
      * }
      */
-    public function toArray(ContextService $context): array
+    public function toArray(?ContextService $context): array
     {
         return [
             'addressLine1' => $this->addressLine1,

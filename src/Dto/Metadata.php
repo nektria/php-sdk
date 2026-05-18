@@ -55,7 +55,7 @@ readonly class Metadata extends Document
         return new static($newMetadata);
     }
 
-    public function toArray(ContextService $context): array
+    public function toArray(?ContextService $context): array
     {
         return $this->data;
     }

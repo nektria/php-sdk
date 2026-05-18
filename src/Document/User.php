@@ -37,7 +37,7 @@ readonly class User extends Document
         $this->socketInfo->appendSockets($token, $allowedTopics);
     }
 
-    public function toArray(ContextService $context): array
+    public function toArray(?ContextService $context): array
     {
         if ($context->context() === ContextService::INTERNAL) {
             return [

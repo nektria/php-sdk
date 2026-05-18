@@ -20,7 +20,7 @@ readonly class Tenant extends Document
     ) {
     }
 
-    public function toArray(ContextService $context): array
+    public function toArray(?ContextService $context): array
     {
         if ($context->context() === ContextService::ADMIN) {
             return [
