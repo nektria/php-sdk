@@ -29,7 +29,7 @@ readonly class WarehouseSharedInfo extends Document
     public function toArray(?ContextService $context): array
     {
         return [
-            'address' => $this->address->toArray(),
+            'address' => $this->address->toArray(null),
             'areas' => $this->areas,
             'enabled' => $this->enabled,
             'id' => $this->id,
