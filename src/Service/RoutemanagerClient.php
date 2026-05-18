@@ -662,7 +662,7 @@ readonly class RoutemanagerClient extends AbstractService
         $this->requestClient()->put(
             "{$this->routemanagerHost}/api/admin/orders/{$orderNumber}",
             data: [
-                'address' => $address?->toArray(),
+                'address' => $address?->toArray(null),
                 'area' => $area,
                 'boxes' => $boxes,
                 'cost' => $cost,
@@ -902,7 +902,7 @@ readonly class RoutemanagerClient extends AbstractService
             data: [
                 'name' => $name,
                 'warehouseCode' => $warehouseCode,
-                'address' => $address?->toArray(),
+                'address' => $address?->toArray(null),
                 'timezone' => $timezone,
                 'metadata' => $metadata?->data(),
                 'reload' => $reload,
