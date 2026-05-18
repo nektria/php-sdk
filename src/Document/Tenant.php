@@ -22,7 +22,7 @@ readonly class Tenant extends Document
 
     public function toArray(?ContextService $context): array
     {
-        if ($context->context() === ContextService::ADMIN) {
+        if ($context?->context() === ContextService::ADMIN) {
             return [
                 'aiAssistantId' => $this->aiAssistantId,
                 'id' => $this->id,
@@ -34,7 +34,7 @@ readonly class Tenant extends Document
             ];
         }
 
-        if ($context->context() === ContextService::INTERNAL) {
+        if ($context?->context() === ContextService::INTERNAL) {
             return [
                 'id' => $this->id,
                 'name' => $this->name,
