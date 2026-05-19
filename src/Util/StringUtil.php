@@ -8,9 +8,7 @@ use Nektria\Exception\NektriaException;
 use Random\Randomizer;
 use Symfony\Component\String\Slugger\AsciiSlugger;
 use Throwable;
-
 use function sprintf;
-
 use const STR_PAD_LEFT;
 
 class StringUtil
@@ -68,6 +66,11 @@ class StringUtil
         $value .= '00000000000000000000000000000000';
 
         return substr($value, 0, $length);
+    }
+
+    public static function isUuid4(string $uuid): bool
+    {
+        return preg_match('/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i', $uuid) === 1;
     }
 
     public static function randomColor(): string
