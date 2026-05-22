@@ -19,7 +19,7 @@ readonly class ProcessRegistry extends AbstractService
         $this->metadata = new MutableMetadata();
     }
 
-    public function addValue(string $key, string $value): void
+    public function addValue(string $key, string|null|int|float|bool $value): void
     {
         $this->metadata->updateField($key, $value);
     }
