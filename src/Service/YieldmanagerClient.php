@@ -193,18 +193,18 @@ use Nektria\Infrastructure\SharedUserV2Cache;
  *     productLines: int,
  *     reason: string,
  *     selectedSlotDelayTime: int,
- *     shiftId: string,
+ *     shiftId: string|null,
  *     shopperCode: string|null,
  *     timeRange: array{
  *         endTime: string,
  *         startTime: string
  *     },
- *     timeWindowId: string,
+ *     timeWindowId: string|null,
  *     transportDelayTime: int,
  *     travelTime: int,
  *     updatedAt: string,
  *     warehouseDelayTime: int,
- *     warehouseId: string,
+ *     warehouseId: string|null,
  *     weight: int,
  *     windowsOpened: int
  * }
@@ -227,8 +227,8 @@ use Nektria\Infrastructure\SharedUserV2Cache;
  *     area: string,
  *     createdAt: string,
  *     deliveryTime: int,
- *     expressPickerId: string,
- *     expressShiftId: string,
+ *     expressPickerId: string|null,
+ *     expressShiftId: string|null,
  *     id: string,
  *     lastStatusUpdate: string,
  *     locationId: string,
@@ -240,7 +240,7 @@ use Nektria\Infrastructure\SharedUserV2Cache;
  *     status: string,
  *     travelTime: int,
  *     updatedAt: string,
- *     warehouseId: string,
+ *     warehouseId: string|null,
  *     weight: int
  * }
  *
