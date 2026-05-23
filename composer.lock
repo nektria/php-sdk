@@ -6823,12 +6823,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/PHP-CS-Fixer/PHP-CS-Fixer.git",
-                "reference": "ebae9f6c223ba9cf82d2357fca1044a55eb9d0fc"
+                "reference": "9a38a9046893ff8ed61205734c94ca66f8c1ef5a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/PHP-CS-Fixer/PHP-CS-Fixer/zipball/ebae9f6c223ba9cf82d2357fca1044a55eb9d0fc",
-                "reference": "ebae9f6c223ba9cf82d2357fca1044a55eb9d0fc",
+                "url": "https://api.github.com/repos/PHP-CS-Fixer/PHP-CS-Fixer/zipball/9a38a9046893ff8ed61205734c94ca66f8c1ef5a",
+                "reference": "9a38a9046893ff8ed61205734c94ca66f8c1ef5a",
                 "shasum": ""
             },
             "require": {
@@ -6921,7 +6921,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2026-05-21T20:08:19+00:00"
+            "time": "2026-05-22T17:26:00+00:00"
         },
         {
             "name": "myclabs/deep-copy",
@@ -8508,12 +8508,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/Roave/SecurityAdvisories.git",
-                "reference": "21c2b457ed7139d838217f22d48985e5e2f80e5f"
+                "reference": "89aea44a53fbe571a89140af23654bd1c4d85bf6"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Roave/SecurityAdvisories/zipball/21c2b457ed7139d838217f22d48985e5e2f80e5f",
-                "reference": "21c2b457ed7139d838217f22d48985e5e2f80e5f",
+                "url": "https://api.github.com/repos/Roave/SecurityAdvisories/zipball/89aea44a53fbe571a89140af23654bd1c4d85bf6",
+                "reference": "89aea44a53fbe571a89140af23654bd1c4d85bf6",
                 "shasum": ""
             },
             "conflict": {
@@ -9487,7 +9487,7 @@
                 "xpressengine/xpressengine": "<3.0.15",
                 "yab/quarx": "<2.4.5",
                 "yansongda/pay": "<=3.7.19",
-                "yeswiki/yeswiki": "<=4.6",
+                "yeswiki/yeswiki": "<4.6.4",
                 "yetiforce/yetiforce-crm": "<6.5",
                 "yidashi/yii2cmf": "<=2",
                 "yii2mod/yii2-cms": "<1.9.2",
@@ -9581,7 +9581,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2026-05-21T21:34:10+00:00"
+            "time": "2026-05-22T16:47:49+00:00"
         },
         {
             "name": "sebastian/cli-parser",
