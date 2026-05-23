@@ -31,6 +31,7 @@ abstract class RequestListener extends BaseRequestListener
             str_starts_with($route, 'nektria_')
             || str_starts_with($route, 'app_admin_tools_')
             || str_starts_with($route, 'app_common_')
+            || str_starts_with($route, 'app_public_')
         ) {
             return self::LOG_LEVEL_NONE;
         }
@@ -43,7 +44,12 @@ abstract class RequestListener extends BaseRequestListener
         $route = $request->attributes->get('_route') ?? '';
         $apiKey = $this->readApiKey($request);
 
-        if (str_starts_with($route, 'app_common_') || str_starts_with($route, 'nektria_common_')) {
+        if (
+            str_starts_with($route, 'app_common_')
+            || str_starts_with($route, 'app_public_')
+            || str_starts_with($route, 'nektria_public_')
+            || str_starts_with($route, 'nektria_common_')
+        ) {
             if ($apiKey !== '') {
                 $this->securityService->authenticateUser($apiKey);
 
