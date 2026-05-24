@@ -11,7 +11,6 @@ use Nektria\Exception\NektriaException;
 use Nektria\Service\ContextService;
 use Nektria\Util\ArrayUtil;
 use Traversable;
-
 use function count;
 
 /**
@@ -56,7 +55,7 @@ readonly class DocumentCollection extends Document implements IteratorAggregate,
     {
         $tmp = ArrayUtil::classify(
             $this->items,
-            static fn (Document $item) => $item->toArray(ContextService::internal())[$field] ?? 'null'
+            static fn (Document $item) => $item->toArray(null)[$field] ?? 'null'
         );
 
         $ret = [];
@@ -133,7 +132,7 @@ readonly class DocumentCollection extends Document implements IteratorAggregate,
     {
         return ArrayUtil::mapify(
             $this->items,
-            static fn (Document $item) => $item->toArray(ContextService::internal())[$field] ?? 'null'
+            static fn (Document $item) => $item->toArray(null)[$field] ?? 'null'
         );
     }
 
