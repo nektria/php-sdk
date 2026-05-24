@@ -11,7 +11,6 @@ use Nektria\Exception\NektriaException;
 use Nektria\Service\ContextService;
 use Nektria\Util\ArrayUtil;
 use Traversable;
-
 use function count;
 
 /**
@@ -187,7 +186,7 @@ readonly class DocumentCollection extends Document implements IteratorAggregate,
             $list[] = $item->toArray($context);
         }
 
-        if ($context?->useOldDocumentCollecion === true) {
+        if ($context?->useOldDocumentCollecion() === true) {
             return [
                 'items' => $list,
             ];
