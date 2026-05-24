@@ -33,16 +33,20 @@ class ContextService
     public const string TEST = 'test';
 
     public static ?ContextService $dummyCS;
-
+    public bool $useOldDocumentCollecion {
+        get => in_array($this->project, [
+            'yieldmanager',
+            'routemanager',
+            'metrics',
+            'compass',
+        ], true);
+    }
     private string $context;
-
     /**
      * @var array<string, string>
      */
     private array $extras;
-
     private bool $forceSync;
-
     private string $traceId;
 
     public function __construct(
@@ -63,6 +67,8 @@ class ContextService
 
         return self::$dummyCS;
     }
+
+
 
     public function addExtra(string $key, ?string $value): void
     {
