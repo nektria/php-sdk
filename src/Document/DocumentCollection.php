@@ -186,7 +186,7 @@ readonly class DocumentCollection extends Document implements IteratorAggregate,
             $list[] = $item->toArray($context);
         }
 
-        if ($context?->useOldDocumentCollecion) {
+        if ($context?->useOldDocumentCollecion === true) {
             return [
                 'items' => $list,
             ];
