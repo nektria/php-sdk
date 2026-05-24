@@ -8,6 +8,8 @@ use Nektria\Infrastructure\SharedVariableCache;
 use Nektria\Util\StringUtil;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
+use function in_array;
+
 class ContextService
 {
     public const string ADMIN = 'admin';
@@ -33,6 +35,7 @@ class ContextService
     public const string TEST = 'test';
 
     public static ?ContextService $dummyCS;
+
     public bool $useOldDocumentCollecion {
         get => in_array($this->project, [
             'yieldmanager',
@@ -41,12 +44,16 @@ class ContextService
             'compass',
         ], true);
     }
+
     private string $context;
+
     /**
      * @var array<string, string>
      */
     private array $extras;
+
     private bool $forceSync;
+
     private string $traceId;
 
     public function __construct(
@@ -67,8 +74,6 @@ class ContextService
 
         return self::$dummyCS;
     }
-
-
 
     public function addExtra(string $key, ?string $value): void
     {
