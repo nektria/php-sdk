@@ -11,7 +11,6 @@ use Nektria\Exception\NektriaException;
 use Nektria\Service\ContextService;
 use Nektria\Util\ArrayUtil;
 use Traversable;
-
 use function count;
 
 /**
@@ -25,7 +24,7 @@ readonly class DocumentCollection extends Document implements IteratorAggregate,
      * @param T[] $items
      */
     public function __construct(
-        private array $items
+        private array $items = []
     ) {
     }
 
