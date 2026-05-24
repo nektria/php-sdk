@@ -11,7 +11,7 @@ class Route extends \Symfony\Component\Routing\Attribute\Route
 {
     public function __construct(string $path = '', ?string $method = null)
     {
-        $priority = str_contains($path, '{') ? 0 : 1;
+        $priority = 10 - substr_count($path, '{');
         $parts = explode('/', $path);
         $requirements = [];
 
