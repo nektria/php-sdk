@@ -17,7 +17,7 @@ class MetadataType extends JsonType
      */
     protected function convertToDatabase($phpValue): string
     {
-        return JsonUtil::encode($phpValue->data());
+        return JsonUtil::encode($phpValue->data(null));
     }
 
     protected function convertToPhp(string $databaseValue): Metadata

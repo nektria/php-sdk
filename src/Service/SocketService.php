@@ -33,7 +33,7 @@ readonly class SocketService extends AbstractService
         try {
             $this->hub->publish(new Update("/{$this->contextService()->getExtra('tenantId')}", JsonUtil::encode([
                 'type' => $type,
-                'payload' => $data->toArray($tmpContext),
+                'payload' => $data->data($tmpContext),
             ]), true));
         } catch (Throwable $e) {
             throw NektriaException::new($e);
@@ -57,7 +57,7 @@ readonly class SocketService extends AbstractService
         try {
             $this->hub->publish(new Update("/{$userId}", JsonUtil::encode([
                 'type' => $type,
-                'payload' => $data->toArray($tmpContext),
+                'payload' => $data->data($tmpContext),
             ]), true));
         } catch (Throwable $e) {
             throw NektriaException::new($e);

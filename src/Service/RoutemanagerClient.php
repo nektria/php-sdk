@@ -584,7 +584,7 @@ readonly class RoutemanagerClient extends AbstractService
             "{$this->routemanagerHost}/api/admin/drivers/{$driverId}",
             data: [
                 'identificationDocument' => $identificationDocument,
-                'metadata' => $metadata?->data(),
+                'metadata' => $metadata?->data(null),
                 'name' => $name,
                 'phoneNumber' => $phoneNumber,
                 'providerId' => $providerId,
@@ -662,13 +662,13 @@ readonly class RoutemanagerClient extends AbstractService
         $this->requestClient()->put(
             "{$this->routemanagerHost}/api/admin/orders/{$orderNumber}",
             data: [
-                'address' => $address?->toArray(null),
+                'address' => $address?->data(null),
                 'area' => $area,
                 'boxes' => $boxes,
                 'cost' => $cost,
                 'createdByTenant' => $createdByTenant,
                 'endTime' => $endTime?->dateTimeString(),
-                'metadata' => $metadata?->data(),
+                'metadata' => $metadata?->data(null),
                 'note' => $note,
                 'orderNumber' => $orderNumber,
                 'paid' => $paid,
@@ -797,7 +797,7 @@ readonly class RoutemanagerClient extends AbstractService
                 'pickingShiftId' => $pickingShiftId,
                 'itinerary' => $itinerary,
                 'platform' => $platform,
-                'metadata' => $metadata?->data(),
+                'metadata' => $metadata?->data(null),
             ],
             headers: $this->getHeaders(),
         );
@@ -902,9 +902,9 @@ readonly class RoutemanagerClient extends AbstractService
             data: [
                 'name' => $name,
                 'warehouseCode' => $warehouseCode,
-                'address' => $address?->toArray(null),
+                'address' => $address?->data(null),
                 'timezone' => $timezone,
-                'metadata' => $metadata?->data(),
+                'metadata' => $metadata?->data(null),
                 'reload' => $reload,
                 'returnToWarehouse' => $returnToWarehouse,
                 'sendToTenantAtPickingShiftClosesAt' => $sendToTenantAtPickingShiftClosesAt,

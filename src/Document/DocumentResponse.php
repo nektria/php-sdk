@@ -19,7 +19,7 @@ class DocumentResponse extends JsonResponse
         array $headers = []
     ) {
         if ($this->document instanceof ThrowableDocument) {
-            parent::__construct($this->document->toArray($context), $this->document->status);
+            parent::__construct($this->document->data($context), $this->document->status);
         } elseif (
             $this->document instanceof DocumentCollection
             && (
@@ -27,10 +27,10 @@ class DocumentResponse extends JsonResponse
             )
         ) {
             parent::__construct([
-                'list' => $this->document->toArray($context),
+                'list' => $this->document->data($context),
             ], $status);
         } else {
-            parent::__construct($this->document->toArray($context), $status);
+            parent::__construct($this->document->data($context), $status);
         }
 
         $this->headers->add($headers);

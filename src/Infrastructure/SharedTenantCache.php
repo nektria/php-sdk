@@ -48,7 +48,7 @@ class SharedTenantCache extends SharedRedisCache
                 'aiAssistantId' => $tenant->aiAssistantId,
                 'id' => $tenant->id,
                 'name' => $tenant->name,
-                'metadata' => $tenant->metadata->data(),
+                'metadata' => $tenant->metadata->data(null),
                 'timezone' => $tenant->timezone,
                 'alias' => $tenant->alias,
                 'countryCode' => $tenant->countryCode,

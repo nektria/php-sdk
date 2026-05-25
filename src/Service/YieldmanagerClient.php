@@ -548,7 +548,7 @@ readonly class YieldmanagerClient extends AbstractService
         $this->requestClient()->put(
             "{$this->yieldmanagerHost}/api/admin/express-orders/{$orderNumber}",
             data: [
-                'address' => $address?->toArray(null),
+                'address' => $address?->data(null),
                 'area' => $area,
                 'productLines' => $productLines,
                 'shopperCode' => $shopperCode,
@@ -589,7 +589,7 @@ readonly class YieldmanagerClient extends AbstractService
         $this->requestClient()->put(
             "{$this->yieldmanagerHost}/api/admin/orders/{$orderNumber}",
             data: [
-                'address' => $address?->toArray(null),
+                'address' => $address?->data(null),
                 'shiftId' => $shiftId,
                 'area' => $area,
                 'createdByTenant' => $createdByTenant,

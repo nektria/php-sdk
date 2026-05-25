@@ -24,6 +24,7 @@ readonly class FileDocument extends Document
         ?string $filename = null,
         ?string $mime = null,
     ) {
+        parent::__construct();
         $size = filesize($file);
         if ($size === false) {
             $size = 0;
@@ -44,7 +45,7 @@ readonly class FileDocument extends Document
         $this->mime = $mime;
     }
 
-    public function toArray(?ContextService $context): array
+    protected function toArray(?ContextService $context): array
     {
         return [
             'path' => $this->file,

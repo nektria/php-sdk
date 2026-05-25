@@ -10,14 +10,10 @@ readonly class ArrayDocument extends Document
 {
     public function __construct(public mixed $data)
     {
+        parent::__construct();
     }
 
-    public function data(): mixed
-    {
-        return $this->data;
-    }
-
-    public function toArray(?ContextService $context): array
+    protected function toArray(?ContextService $context): array
     {
         return $this->data;
     }

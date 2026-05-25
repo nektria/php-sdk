@@ -22,6 +22,7 @@ readonly class Address extends Document
         public float $latitude,
         public float $longitude,
     ) {
+        parent::__construct();
         // Validate::notEmpty($this->addressLine1);
         // Validate::notEmpty($this->postalCode);
         // Validate::notEmpty($this->city);
@@ -89,7 +90,7 @@ readonly class Address extends Document
      *     longitude: float,
      * }
      */
-    public function toArray(?ContextService $context): array
+    protected function toArray(?ContextService $context): array
     {
         return [
             'addressLine1' => $this->addressLine1,

@@ -24,12 +24,13 @@ readonly class WarehouseSharedInfo extends Document
         public float $latitudeFactor,
         public float $longitudeFactor,
     ) {
+        parent::__construct();
     }
 
-    public function toArray(?ContextService $context): array
+    protected function toArray(?ContextService $context): array
     {
         return [
-            'address' => $this->address->toArray(null),
+            'address' => $this->address->data(null),
             'areas' => $this->areas,
             'enabled' => $this->enabled,
             'id' => $this->id,

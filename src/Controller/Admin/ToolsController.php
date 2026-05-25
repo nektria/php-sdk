@@ -131,7 +131,7 @@ readonly class ToolsController extends Controller
         $data = [];
 
         foreach ($queues as $name => $messages) {
-            $data[$name] = $messages->toArray($this->context);
+            $data[$name] = $messages->data($this->context);
         }
 
         return $this->documentResponse(new ArrayDocument($data));

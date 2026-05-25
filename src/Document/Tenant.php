@@ -18,9 +18,10 @@ readonly class Tenant extends Document
         public string $alias,
         public string $countryCode,
     ) {
+        parent::__construct();
     }
 
-    public function toArray(?ContextService $context): array
+    protected function toArray(?ContextService $context): array
     {
         if ($context?->context() === ContextService::ADMIN) {
             return [
@@ -34,22 +35,22 @@ readonly class Tenant extends Document
             ];
         }
 
-        if ($context?->context() === ContextService::INTERNAL) {
+        if ($context?->isPublic() === true) {
             return [
                 'id' => $this->id,
                 'name' => $this->name,
-                'metadata' => $this->metadata->toArray($context),
+                'availableTags' => $this->metadata->availableTags(),
                 'timezone' => $this->timezone,
-                'alias' => $this->alias,
-                'countryCode' => $this->countryCode,
             ];
         }
 
         return [
             'id' => $this->id,
             'name' => $this->name,
-            'availableTags' => $this->metadata->availableTags(),
+            'metadata' => $this->metadata->toArray($context),
             'timezone' => $this->timezone,
+            'alias' => $this->alias,
+            'countryCode' => $this->countryCode,
         ];
     }
 }

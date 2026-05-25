@@ -26,6 +26,7 @@ readonly class User extends Document
         public ?string $dniNie,
         public ?string $aiThreadId,
     ) {
+        parent::__construct();
         $this->socketInfo = new SocketInfo();
     }
 
@@ -37,8 +38,18 @@ readonly class User extends Document
         $this->socketInfo->appendSockets($token, $allowedTopics);
     }
 
-    public function toArray(?ContextService $context): array
+    protected function toArray(?ContextService $context): array
     {
+        if ($context?->isPublic() === true) {
+            return [
+                'email' => $this->email,
+                'id' => $this->id,
+                'name' => $this->name,
+                'role' => $this->role,
+                'warehouses' => $this->warehouses,
+            ];
+        }
+
         if ($context !== null && $context->context() === ContextService::INTERNAL) {
             return [
                 'allowedTopics' => $this->socketInfo->topics(),
@@ -54,28 +65,18 @@ readonly class User extends Document
             ];
         }
 
-        if ($context !== null && $context->context() === ContextService::ADMIN) {
-            return [
-                'aiThreadId' => $this->aiThreadId,
-                'allowedTopics' => $this->socketInfo->topics(),
-                'apiKey' => $this->apiKey,
-                'dniNie' => $this->dniNie,
-                'email' => $this->email,
-                'id' => $this->id,
-                'language' => 'en',
-                'name' => $this->name,
-                'role' => $this->role,
-                'socketsToken' => $this->socketInfo->socketsToken(),
-                'tenant' => $this->tenant->toArray($context),
-                'warehouses' => $this->warehouses,
-            ];
-        }
-
         return [
+            'aiThreadId' => $this->aiThreadId,
+            'allowedTopics' => $this->socketInfo->topics(),
+            'apiKey' => $this->apiKey,
+            'dniNie' => $this->dniNie,
             'email' => $this->email,
             'id' => $this->id,
+            'language' => 'en',
             'name' => $this->name,
             'role' => $this->role,
+            'socketsToken' => $this->socketInfo->socketsToken(),
+            'tenant' => $this->tenant->toArray($context),
             'warehouses' => $this->warehouses,
         ];
     }

@@ -34,6 +34,7 @@ readonly class ThrowableDocument extends Document
     public function __construct(
         Throwable $throwable
     ) {
+        parent::__construct();
         $exception = $throwable;
         if ($exception instanceof NektriaException) {
             $this->silent = $exception->silent();
@@ -75,43 +76,6 @@ readonly class ThrowableDocument extends Document
             : "E_{$this->status}";
 
         $this->throwable = $exception;
-    }
-
-    public function toArray(?ContextService $context): array
-    {
-        $exception = $this->throwable;
-        if ($exception instanceof NektriaException) {
-            $exception = $exception->realException();
-        }
-
-        $message = 'Internal Server Error';
-        if ($context === null || $context->isPlayEnvironment()) {
-            $message = $exception->getMessage();
-        }
-
-        if (
-            $this->status !== Response::HTTP_INTERNAL_SERVER_ERROR
-            || ($context !== null && $context->traceId() === '00000000-0000-4000-8000-000000000000')
-        ) {
-            $message = $exception->getMessage();
-        }
-
-        $data = [
-            'errorCode' => $this->errorCode,
-            'message' => $message,
-        ];
-
-        if (
-            $context === null
-            || $context->isPlayEnvironment()
-            || $context->traceId() === '00000000-0000-4000-8000-000000000000'
-        ) {
-            $data['file'] = str_replace('/app/', '', $exception->getFile());
-            $data['line'] = $exception->getLine();
-            $data['trace'] = $this->trace();
-        }
-
-        return $data;
     }
 
     public function toDevArray(): mixed
@@ -172,5 +136,42 @@ readonly class ThrowableDocument extends Document
         }
 
         return $finalTrace;
+    }
+
+    protected function toArray(?ContextService $context): array
+    {
+        $exception = $this->throwable;
+        if ($exception instanceof NektriaException) {
+            $exception = $exception->realException();
+        }
+
+        $message = 'Internal Server Error';
+        if ($context === null || $context->isPlayEnvironment()) {
+            $message = $exception->getMessage();
+        }
+
+        if (
+            $this->status !== Response::HTTP_INTERNAL_SERVER_ERROR
+            || ($context !== null && $context->traceId() === '00000000-0000-4000-8000-000000000000')
+        ) {
+            $message = $exception->getMessage();
+        }
+
+        $data = [
+            'errorCode' => $this->errorCode,
+            'message' => $message,
+        ];
+
+        if (
+            $context === null
+            || $context->isPlayEnvironment()
+            || $context->traceId() === '00000000-0000-4000-8000-000000000000'
+        ) {
+            $data['file'] = str_replace('/app/', '', $exception->getFile());
+            $data['line'] = $exception->getLine();
+            $data['trace'] = $this->trace();
+        }
+
+        return $data;
     }
 }

@@ -22,10 +22,11 @@ readonly class PaginatedDocumentCollection extends Document
         public int $totalPages,
         public int $total,
     ) {
+        parent::__construct();
         $this->pageSize = $items->count();
     }
 
-    public function toArray(?ContextService $context = null): array
+    protected function toArray(?ContextService $context): array
     {
         return [
             'pageSize' => $this->pageSize,

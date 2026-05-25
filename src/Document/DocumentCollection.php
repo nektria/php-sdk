@@ -27,6 +27,7 @@ readonly class DocumentCollection extends Document implements IteratorAggregate,
     public function __construct(
         private array $items = []
     ) {
+        parent::__construct();
     }
 
     /**
@@ -56,7 +57,7 @@ readonly class DocumentCollection extends Document implements IteratorAggregate,
     {
         $tmp = ArrayUtil::classify(
             $this->items,
-            static fn (Document $item) => $item->toArray(null)[$field] ?? 'null'
+            static fn (Document $item) => $item->data(null)[$field] ?? 'null'
         );
 
         $ret = [];
@@ -133,7 +134,7 @@ readonly class DocumentCollection extends Document implements IteratorAggregate,
     {
         return ArrayUtil::mapify(
             $this->items,
-            static fn (Document $item) => $item->toArray(null)[$field] ?? 'null'
+            static fn (Document $item) => $item->data(null)[$field] ?? 'null'
         );
     }
 
@@ -179,7 +180,7 @@ readonly class DocumentCollection extends Document implements IteratorAggregate,
     /**
      * @return mixed[]
      */
-    public function toArray(?ContextService $context): array
+    protected function toArray(?ContextService $context): array
     {
         $list = [];
 

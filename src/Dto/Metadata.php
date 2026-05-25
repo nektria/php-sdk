@@ -17,15 +17,8 @@ readonly class Metadata extends Document
      */
     final public function __construct(array $data = [])
     {
+        parent::__construct();
         $this->data = $data;
-    }
-
-    /**
-     * @return mixed[]
-     */
-    public function data(): array
-    {
-        return $this->data;
     }
 
     public function getField(string $field): mixed
@@ -35,7 +28,7 @@ readonly class Metadata extends Document
 
     public function merge(?self $metadata): static
     {
-        return $this->mergeData($metadata?->data());
+        return $this->mergeData($metadata?->data(null));
     }
 
     /**
@@ -55,11 +48,6 @@ readonly class Metadata extends Document
         return new static($newMetadata);
     }
 
-    public function toArray(?ContextService $context): array
-    {
-        return $this->data;
-    }
-
     public function updateField(string $field, mixed $value): static
     {
         if ($this->getField($field) === $value) {
@@ -70,5 +58,10 @@ readonly class Metadata extends Document
         $data[$field] = $value;
 
         return new static($data);
+    }
+
+    protected function toArray(?ContextService $context): array
+    {
+        return $this->data;
     }
 }

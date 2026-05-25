@@ -244,7 +244,7 @@ abstract class BaseRequestListener implements EventSubscriberInterface
         } elseif ($document instanceof ThrowableDocument) {
             $responseContent = $document->toDevArray();
         } else {
-            $responseContent = $document->toArray($this->contextService());
+            $responseContent = $document->data($this->contextService());
         }
 
         $queryBody = [];
