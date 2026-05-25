@@ -15,7 +15,8 @@ readonly abstract class Document
             return (string) $this->id;
         }
 
-        throw new NektriaException('E_500', "Document {$this::class} does not have an id attribute");
+        $clss = $this::class;
+        throw new NektriaException('E_500', "Document {$clss} does not have an id attribute");
     }
 
     /**
