@@ -36,6 +36,7 @@ readonly abstract class Document
      */
     final public function data(?ContextService $context): array
     {
+        // @phpstan-ignore-next-line
         if (!isset($this->cache)) {
             return $this->toArray($context);
         }
