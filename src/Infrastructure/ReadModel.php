@@ -6,6 +6,7 @@ namespace Nektria\Infrastructure;
 
 use Doctrine\ORM\EntityManagerInterface;
 use Nektria\Document\Document;
+use Nektria\Document\DocumentCollection;
 use Nektria\Document\NewDocumentCollection;
 use Nektria\Exception\NektriaException;
 use Nektria\Util\StringUtil;
@@ -139,6 +140,22 @@ abstract class ReadModel
         }
 
         return $this->buildDocument($result);
+    }
+
+    /**
+     * @param array<string, string|int|float|bool|string[]|null> $params
+     * @return DocumentCollection<T>
+     */
+    protected function getResults(string $sql, array $params = []): DocumentCollection
+    {
+        $results = $this->getRawResults($sql, $params, $this->groupResults());
+        $parsed = [];
+
+        foreach ($results as $item) {
+            $parsed[] = $this->buildDocument($item);
+        }
+
+        return new DocumentCollection($parsed);
     }
 
     abstract protected function source(): string;
