@@ -7,7 +7,6 @@ namespace Nektria\Service;
 use Nektria\Infrastructure\SharedVariableCache;
 use Nektria\Util\StringUtil;
 use Symfony\Component\DependencyInjection\ContainerInterface;
-
 use function in_array;
 
 class ContextService
@@ -232,9 +231,9 @@ class ContextService
         return $this->traceId;
     }
 
-    public function useOldDocumentCollecion(): bool
+    public function useNewDocumentCollection(): bool
     {
-        return in_array($this->project, [
+        return !in_array($this->project, [
             'yieldmanager',
             'routemanager',
             'metrics',
