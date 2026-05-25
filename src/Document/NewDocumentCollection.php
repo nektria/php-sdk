@@ -33,7 +33,7 @@ readonly class NewDocumentCollection extends Document implements IteratorAggrega
     /**
      * @Template X of Document
      * @param DocumentCollection<X> $old
-     * @return DocumentCollection<X>
+     * @return NewDocumentCollection<X>
      */
     public static function fromOldDocumentCollection(DocumentCollection $old): self
     {
@@ -42,9 +42,9 @@ readonly class NewDocumentCollection extends Document implements IteratorAggrega
 
     /**
      * @template X of Document
-     * @param DocumentCollection<X> $a
-     * @param DocumentCollection<X> $b
-     * @return DocumentCollection<X>
+     * @param NewDocumentCollection<X> $a
+     * @param NewDocumentCollection<X> $b
+     * @return NewDocumentCollection<X>
      */
     public static function merge(self $a, self $b): self
     {
@@ -53,7 +53,7 @@ readonly class NewDocumentCollection extends Document implements IteratorAggrega
 
     /**
      * @param T[] $items
-     * @return DocumentCollection<T>
+     * @return NewDocumentCollection<T>
      */
     public static function new(array $items): self
     {
@@ -61,7 +61,7 @@ readonly class NewDocumentCollection extends Document implements IteratorAggrega
     }
 
     /**
-     * @return array<string, DocumentCollection<T>>
+     * @return array<string, NewDocumentCollection<T>>
      */
     public function classify(string $field): array
     {
@@ -86,7 +86,7 @@ readonly class NewDocumentCollection extends Document implements IteratorAggrega
 
     /**
      * @param callable(T): bool $callback
-     * @return DocumentCollection<T>
+     * @return NewDocumentCollection<T>
      */
     public function filter(callable $callback): self
     {
@@ -180,7 +180,7 @@ readonly class NewDocumentCollection extends Document implements IteratorAggrega
     }
 
     /**
-     * @return DocumentCollection<T>
+     * @return NewDocumentCollection<T>
      */
     public function reverse(): self
     {
