@@ -4,10 +4,8 @@ declare(strict_types=1);
 
 namespace Nektria\Document;
 
-use LogicException;
+use Nektria\Exception\NektriaException;
 use Nektria\Service\ContextService;
-
-use function sprintf;
 
 readonly abstract class Document
 {
@@ -17,7 +15,7 @@ readonly abstract class Document
             return (string) $this->id;
         }
 
-        throw new LogicException(sprintf('Document %s does not have an id attribute', $this::class));
+        throw new NektriaException('E_500', "Document {$this::class} does not have an id attribute");
     }
 
     /**
