@@ -13,7 +13,7 @@ readonly abstract class Document
     /**
      * @var Map<mixed[]>
      */
-    private ?Map $cache;
+    private Map $cache;
 
     public function __construct()
     {
