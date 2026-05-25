@@ -12,6 +12,7 @@ use Nektria\Service\ContextService;
 use Nektria\Util\ArrayUtil;
 use Traversable;
 
+use function array_slice;
 use function count;
 
 /**
@@ -185,6 +186,25 @@ readonly class NewDocumentCollection extends Document implements IteratorAggrega
     public function reverse(): self
     {
         return new self(array_reverse($this->items));
+    }
+
+    /**
+     * @return NewDocumentCollection<T>
+     */
+    public function slice(int $offset, ?int $length = null): self
+    {
+        return new self(array_slice($this->items, $offset, $length));
+    }
+
+    /**
+     * @return NewDocumentCollection<T>
+     */
+    public function sort(callable $callback): self
+    {
+        $data = [...$this->items];
+        usort($data, $callback);
+
+        return new self($data);
     }
 
     /**

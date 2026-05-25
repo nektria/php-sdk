@@ -28,8 +28,8 @@ if [ "$PIPELINE" = '1' ]; then
   bin/tools/phpcs -p
 else
   bin/tools/composer-validate
-  bin/tools/phpstan
   bin/tools/php-cs-fixer
   bin/tools/phpcs
+  bin/tools/phpstan
 fi
 

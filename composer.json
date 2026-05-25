@@ -1,7 +1,7 @@
 {
     "name": "nektria/php-sdk",
     "type": "library",
-    "description": "Nektria PHP SDK - 2.0.156",
+    "description": "Nektria PHP SDK - 2.0.157",
     "minimum-stability": "stable",
     "license": "proprietary",
     "autoload": {
@@ -87,7 +87,8 @@
         "post-update-cmd": [
             "@auto-scripts"
         ],
-        "check": "docker exec -it php-sdk /scripts/tools/validate",
+        "--check": "docker exec -it php-sdk /scripts/tools/validate",
+        "check": "bin/validate",
         "test": "docker exec -it php-sdk /scripts/tools/phpunit"
     }
 }
