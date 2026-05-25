@@ -31,7 +31,7 @@ readonly class NewDocumentCollection extends Document implements IteratorAggrega
     }
 
     /**
-     * @Template X of Document
+     * @template X of Document
      * @param DocumentCollection<X> $old
      * @return NewDocumentCollection<X>
      */
