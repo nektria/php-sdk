@@ -6,11 +6,10 @@ namespace Nektria\Infrastructure;
 
 use Doctrine\ORM\EntityManagerInterface;
 use Nektria\Document\Document;
-use Nektria\Document\DocumentCollection;
+use Nektria\Document\NewDocumentCollection;
 use Nektria\Exception\NektriaException;
 use Nektria\Util\StringUtil;
 use Throwable;
-
 use function count;
 use function is_array;
 
@@ -44,6 +43,22 @@ abstract class ReadModel
      * @return T
      */
     abstract protected function buildDocument(array $params): Document;
+
+    /**
+     * @param array<string, string|int|float|bool|string[]|null> $params
+     * @return NewDocumentCollection<T>
+     */
+    protected function getNewResults(string $sql, array $params = []): NewDocumentCollection
+    {
+        $results = $this->getRawResults($sql, $params, $this->groupResults());
+        $parsed = [];
+
+        foreach ($results as $item) {
+            $parsed[] = $this->buildDocument($item);
+        }
+
+        return new NewDocumentCollection($parsed);
+    }
 
     /**
      * @param array<string, string|int|float|bool|null> $params
@@ -124,22 +139,6 @@ abstract class ReadModel
         }
 
         return $this->buildDocument($result);
-    }
-
-    /**
-     * @param array<string, string|int|float|bool|string[]|null> $params
-     * @return DocumentCollection<T>
-     */
-    protected function getResults(string $sql, array $params = []): DocumentCollection
-    {
-        $results = $this->getRawResults($sql, $params, $this->groupResults());
-        $parsed = [];
-
-        foreach ($results as $item) {
-            $parsed[] = $this->buildDocument($item);
-        }
-
-        return new DocumentCollection($parsed);
     }
 
     abstract protected function source(): string;
