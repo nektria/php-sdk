@@ -31,6 +31,11 @@ abstract class Entity implements EntityInterface
         $this->updatedAt = $this->createdAt;
     }
 
+    public function __toString(): string
+    {
+        return $this->id;
+    }
+
     public function createdAt(): Clock
     {
         return $this->createdAt;
