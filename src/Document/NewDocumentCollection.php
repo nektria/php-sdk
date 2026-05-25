@@ -197,6 +197,7 @@ readonly class NewDocumentCollection extends Document implements IteratorAggrega
     }
 
     /**
+     * @param callable(T, T): int $callback
      * @return NewDocumentCollection<T>
      */
     public function sort(callable $callback): self
