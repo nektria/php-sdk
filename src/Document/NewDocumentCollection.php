@@ -18,15 +18,26 @@ use function count;
  * @implements IteratorAggregate<int, T>
  * @template T of Document
  */
-readonly class DocumentCollection extends Document implements IteratorAggregate, ArrayAccess, Countable
+readonly class NewDocumentCollection extends Document implements IteratorAggregate, ArrayAccess, Countable
 {
     /**
      * @param T[] $items
      */
     public function __construct(
         private array $items = []
-    ) {
+    )
+    {
         parent::__construct();
+    }
+
+    /**
+     * @Template X of Document
+     * @param DocumentCollection<X> $old
+     * @return DocumentCollection<X>
+     */
+    public static function fromOldDocumentCollection(DocumentCollection $old): self
+    {
+        return new self($old->list());
     }
 
     /**
@@ -56,7 +67,7 @@ readonly class DocumentCollection extends Document implements IteratorAggregate,
     {
         $tmp = ArrayUtil::classify(
             $this->items,
-            static fn (Document $item) => $item->data(null)[$field] ?? 'null'
+            static fn(Document $item) => $item->data(null)[$field] ?? 'null'
         );
 
         $ret = [];
@@ -133,7 +144,7 @@ readonly class DocumentCollection extends Document implements IteratorAggregate,
     {
         return ArrayUtil::mapify(
             $this->items,
-            static fn (Document $item) => $item->data(null)[$field] ?? 'null'
+            static fn(Document $item) => $item->data(null)[$field] ?? 'null'
         );
     }
 
@@ -187,6 +198,8 @@ readonly class DocumentCollection extends Document implements IteratorAggregate,
             $list[] = $item->toArray($context);
         }
 
-        return $list;
+        return [
+            'list' => $list,
+        ];
     }
 }

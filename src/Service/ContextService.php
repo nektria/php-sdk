@@ -8,8 +8,6 @@ use Nektria\Infrastructure\SharedVariableCache;
 use Nektria\Util\StringUtil;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
-use function in_array;
-
 class ContextService
 {
     public const string ADMIN = 'admin';
@@ -230,15 +228,5 @@ class ContextService
     public function traceId(): string
     {
         return $this->traceId;
-    }
-
-    public function useNewDocumentCollection(): bool
-    {
-        return !in_array($this->project, [
-            'yieldmanager',
-            'routemanager',
-            'metrics',
-            'compass',
-        ], true);
     }
 }
