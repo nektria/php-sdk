@@ -6,6 +6,7 @@ namespace Nektria\Document;
 
 use LogicException;
 use Nektria\Service\ContextService;
+
 use function sprintf;
 
 readonly abstract class Document
