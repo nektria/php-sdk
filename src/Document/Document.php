@@ -36,6 +36,10 @@ readonly abstract class Document
      */
     final public function data(?ContextService $context): array
     {
+        if (!isset($this->cache)) {
+            return $this->toArray($context);
+        }
+
         $ctx = $context?->context() ?? 'null';
 
         if ($this->cache->has($ctx)) {
