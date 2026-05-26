@@ -308,6 +308,11 @@ class Clock
         return $this->dateTime->format('D, d M Y H:i:s') . ' GMT';
     }
 
+    public function rfc3339String(): string
+    {
+        return $this->dateTime->format(DateTimeImmutable::RFC3339);
+    }
+
     public function setTime(int $hour, int $minutes = 0): self
     {
         return new self($this->dateTime->setTime($hour, $minutes));
