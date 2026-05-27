@@ -12,7 +12,6 @@ use Nektria\Document\PaginatedDocumentCollection;
 use Nektria\Exception\NektriaException;
 use Nektria\Util\StringUtil;
 use Throwable;
-
 use function count;
 use function is_array;
 
@@ -82,6 +81,7 @@ abstract class ReadModel
     ): PaginatedDocumentCollection {
         $page ??= 1;
         $limit ??= self::$defaultPageSize;
+        $limit = min($limit, 999);
         $offset = ($page - 1) * $limit;
 
         $sql = StringUtil::trim($sql);
