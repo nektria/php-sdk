@@ -12,10 +12,10 @@ use Nektria\Service\ContextService;
 readonly class PaginatedDocumentCollection extends Document
 {
     /**
-     * @param DocumentCollection<T> $items
+     * @param DocumentCollection<T>|NewDocumentCollection<T> $items
      */
     public function __construct(
-        public DocumentCollection $items,
+        public DocumentCollection|NewDocumentCollection $items,
         public int $page,
         public int $pageSize,
         public int $total,
