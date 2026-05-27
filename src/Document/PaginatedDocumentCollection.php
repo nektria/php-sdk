@@ -18,7 +18,7 @@ readonly class PaginatedDocumentCollection extends Document
         public NewDocumentCollection $items,
         public int $page,
         public int $pageSize,
-        public int $total,
+        public int $totalItems,
     ) {
         parent::__construct();
     }
@@ -28,8 +28,8 @@ readonly class PaginatedDocumentCollection extends Document
         $data = $this->items->toArray($context);
         $data['page'] = $this->page;
         $data['pageSize'] = $this->pageSize;
-        $data['total'] = $this->total;
-        $data['totalPages'] = (int) ceil($this->total / $this->pageSize);
+        $data['totalItems'] = $this->totalItems;
+        $data['totalPages'] = (int) ceil($this->totalItems / $this->pageSize);
 
         return $data;
     }
