@@ -12,10 +12,10 @@ use Nektria\Service\ContextService;
 readonly class PaginatedDocumentCollection extends Document
 {
     /**
-     * @param DocumentCollection<T>|NewDocumentCollection<T> $items
+     * @param NewDocumentCollection<T> $items
      */
     public function __construct(
-        public DocumentCollection|NewDocumentCollection $items,
+        public NewDocumentCollection $items,
         public int $page,
         public int $pageSize,
         public int $total,
@@ -25,12 +25,12 @@ readonly class PaginatedDocumentCollection extends Document
 
     protected function toArray(?ContextService $context): array
     {
-        return [
-            'pageSize' => $this->pageSize,
-            'items' => $this->items->toArray($context)['items'],
-            'page' => $this->page,
-            'total' => $this->total,
-            'totalPages' => (int) ceil($this->total / $this->pageSize),
-        ];
+        $data = $this->items->toArray($context);
+        $data['page'] = $this->page;
+        $data['pageSize'] = $this->pageSize;
+        $data['total'] = $this->total;
+        $data['totalPages'] = (int) ceil($this->total / $this->pageSize);
+
+        return $data;
     }
 }
