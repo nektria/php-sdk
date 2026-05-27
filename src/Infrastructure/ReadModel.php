@@ -8,6 +8,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Nektria\Document\Document;
 use Nektria\Document\DocumentCollection;
 use Nektria\Document\NewDocumentCollection;
+use Nektria\Document\PaginatedDocumentCollection;
 use Nektria\Exception\NektriaException;
 use Nektria\Util\StringUtil;
 use Throwable;
@@ -60,6 +61,42 @@ abstract class ReadModel
         }
 
         return new NewDocumentCollection($parsed);
+    }
+
+    /**
+     * @param array<string, string|int|float|bool|string[]|null> $params
+     * @return PaginatedDocumentCollection<T>
+     */
+    protected function getPaginatedResult(
+        string $sql,
+        ?int $page,
+        ?int $limit,
+        array $params = []
+    ): PaginatedDocumentCollection {
+        $page ??= 0;
+        $limit ??= 100;
+        $offset = $page * $limit;
+
+        $sql = StringUtil::trim($sql);
+        if (!str_starts_with($sql, 'SELECT')) {
+            $sql = "{$this->source()} {$sql}";
+        }
+
+        $sqls = explode('FROM', $sql);
+        $sql = "{$sqls[0]}, COUNT(*) OVER() AS __total__ FROM {$sqls[1]} LIMIT {$limit} OFFSET {$offset}";
+        $results = $this->getRawResults($sql, $params, $this->groupResults());
+        $parsed = [];
+
+        foreach ($results as $item) {
+            $parsed[] = $this->buildDocument($item);
+        }
+
+        return new PaginatedDocumentCollection(
+            new NewDocumentCollection($parsed),
+            $page,
+            $limit,
+            (int) ($results[0]['__total__'] ?? 0),
+        );
     }
 
     /**
