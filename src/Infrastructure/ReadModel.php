@@ -12,7 +12,6 @@ use Nektria\Document\PaginatedDocumentCollection;
 use Nektria\Exception\NektriaException;
 use Nektria\Util\StringUtil;
 use Throwable;
-
 use function count;
 use function is_array;
 
@@ -76,8 +75,8 @@ abstract class ReadModel
      */
     protected function getPaginatedResult(
         string $sql,
-        ?int $page,
-        ?int $limit,
+        ?int $page = null,
+        ?int $limit = null,
         array $params = []
     ): PaginatedDocumentCollection {
         $page ??= 0;
