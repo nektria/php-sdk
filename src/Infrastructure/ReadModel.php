@@ -21,11 +21,18 @@ use function is_array;
  */
 abstract class ReadModel
 {
+    private static int $defaultPageSize = 100;
+
     private EntityManagerInterface $manager;
 
     public function __construct(EntityManagerInterface $manager)
     {
         $this->manager = $manager;
+    }
+
+    public static function setDefaultPageSize(int $pageSize): void
+    {
+        self::$defaultPageSize = $pageSize;
     }
 
     /**
@@ -74,7 +81,7 @@ abstract class ReadModel
         array $params = []
     ): PaginatedDocumentCollection {
         $page ??= 0;
-        $limit ??= 100;
+        $limit ??= self::$defaultPageSize;
         $offset = $page * $limit;
 
         $sql = StringUtil::trim($sql);
