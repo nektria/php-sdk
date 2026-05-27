@@ -38,7 +38,7 @@ class ContainerBoxPass implements CompilerPassInterface
                 continue;
             }
 
-            if ($class instanceof AbstractService) {
+            if (is_a($class, AbstractService::class, true)) {
                 $definition->addMethodCall('setContainer', [new Reference('service_container')]);
             }
         }
