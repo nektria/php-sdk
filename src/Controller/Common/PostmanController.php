@@ -16,7 +16,6 @@ use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\Process\Process;
 use Throwable;
-
 use function count;
 use function is_array;
 
@@ -42,23 +41,25 @@ readonly class PostmanController extends Controller
     private function buildPostmanCollection(ContextService $contextService): array
     {
         $postmanId = match ($contextService->project()) {
-            'yieldmanager' => 'd4f9b932-ff22-4b71-985c-5034d0f879ed',
-            'routemanager' => '230de982-7d00-423d-b146-166fa019fcaf',
             'compass' => '068a161d-eacb-4922-ad59-cfc33f57606a',
             'metrics' => '493fdd90-bd82-466f-b4f1-23e2c65abdf7',
-            'proxy-fontvella' => 'afff0b97-a25e-4e7e-b5c0-41b6486df761',
+            'offlinemanager' => '89d6e197-b091-42cf-b06d-16772fa6e62f',
             'proxy-carrefour' => '58e7b81f-aecc-492c-a440-7b25957443dd',
             'proxy-dia' => '237cb057-d27b-4ed0-b458-3e5d8e237587',
+            'proxy-fontvella' => 'afff0b97-a25e-4e7e-b5c0-41b6486df761',
+            'routemanager' => '230de982-7d00-423d-b146-166fa019fcaf',
+            'yieldmanager' => 'd4f9b932-ff22-4b71-985c-5034d0f879ed',
             default => 'bd5c586b-4b1c-47be-a867-d9927e39177c',
         };
 
         $host = match ($contextService->project()) {
-            'yieldmanager' => '{{host_ym}}',
-            'routemanager' => '{{host_rm}}',
             'compass' => '{{host_compass}}',
             'metrics' => '{{host_metrics}}',
-            'seguros' => '{{host_seguros}}',
+            'offlinemanager' => '{{host_om}}',
             'proxy-sertradis', 'proxy-fontvella', 'proxy-carrefour', 'proxy-dia' => '{{host_proxy}}',
+            'routemanager' => '{{host_rm}}',
+            'seguros' => '{{host_seguros}}',
+            'yieldmanager' => '{{host_ym}}',
             default => '',
         };
 
@@ -642,14 +643,17 @@ readonly class PostmanController extends Controller
                 continue;
             }
 
+            $optional = false;
             $matches = [];
             if (str_contains($line, '->getFile')) {
+                $optional = true;
                 $pattern = '/get(\w+)\((\'|")([^\'"]+)\2/';
             } elseif (str_contains($line, '->retrieveFile')) {
                 $pattern = '/retrieve(\w+)\((\'|")([^\'"]+)\2/';
             } elseif (str_contains($line, '->requestData->retrieve')) {
                 $pattern = '/requestData->retrieve(\w+)\((\'|")([^\'"]+)\2/';
             } else {
+                $optional = true;
                 $pattern = '/requestData->get(\w+)\((\'|")([^\'"]+)\2/';
             }
             preg_match($pattern, $line, $matches);
@@ -706,7 +710,11 @@ readonly class PostmanController extends Controller
             foreach ($parts as $i => $iValue) {
                 $part = $iValue;
                 if ($i === ($partsLen - 1)) {
-                    $body[$part] = $sample;
+                    if ($optional) {
+                        $body["-{$part}"] = $sample;
+                    } else {
+                        $body[$part] = $sample;
+                    }
 
                     break;
                 }
