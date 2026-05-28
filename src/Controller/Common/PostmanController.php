@@ -410,7 +410,14 @@ readonly class PostmanController extends Controller
      *                value: string
      *            }[]
      *         },
-     *     }
+     *     },
+     *     event?: array{
+     *         listen: string,
+     *         script: array{
+     *             type: string,
+     *             exec: string[]
+     *         }
+     *     }|null
      * }
      */
     private function buildPostmanRequest(string $key, string $host, array $data, ContextService $contextService): array
