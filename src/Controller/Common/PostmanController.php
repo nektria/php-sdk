@@ -124,7 +124,7 @@ readonly class PostmanController extends Controller
          *                             language: string
          *                         }
          *                     }
-         *                 },
+         *                 }|null,
          *                 description: string,
          *                 method: string,
          *                 url: array{
@@ -134,7 +134,7 @@ readonly class PostmanController extends Controller
          *                    query?: array{
          *                        key: string,
          *                        value: string
-         *                    }[]
+         *                    }[]|null
          *                 },
          *             }
          *         }[]

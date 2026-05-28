@@ -16,37 +16,37 @@ use function in_array;
 
 /**
  * @phpstan-type AlertMessage array{
- *      content?: string,
+ *      content?: string|null,
  *      embeds?: array<array{
- *          title?: string,
- *          type?: string,
- *          description?: string,
- *          url?: string,
- *          timestamp?: string,
- *          color?: int,
+ *          title?: string|null,
+ *          type?: string|null,
+ *          description?: string|null,
+ *          url?: string|null,
+ *          timestamp?: string|null,
+ *          color?: int|null,
  *          footer?: array{
  *              text?: string,
  *              icon_url?: string
- *          },
+ *          }|null,
  *          image?: array{
  *              url?: string,
  *              height?: int,
  *              width?: int
- *          },
+ *          }|null,
  *          thumbnail?: array{
  *              url?: string,
  *              height?: int,
  *              width?: int
- *          },
+ *          }|null,
  *          author?: array{
  *              name?: string,
- *          },
+ *          }|null,
  *          fields?: array<array{
  *              name?: string,
  *              value?: string,
  *              inline?: bool
- *          }>,
- *      }>,
+ *          }>|null,
+ *      }>|null,
  *      components?: array<array{
  *          type: int,
  *          components: array<array{
@@ -55,7 +55,8 @@ use function in_array;
  *              label: string,
  *              custom_id: string
  *          }>
- *      }>
+ *      }>|null,
+ *      flags?: int|null,
  *  }
  */
 readonly class AlertService extends AbstractService
