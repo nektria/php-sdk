@@ -110,6 +110,13 @@ class Validate
         }
     }
 
+    public static function lessOrEqualThan(int | float $number, int | float $limit): void
+    {
+        if ($number > $limit) {
+            throw new InvalidArgumentException("Invalid '{$number}', must be less than {$limit}.");
+        }
+    }
+
     public static function lessThan(int | float $number, int | float $limit): void
     {
         if ($number >= $limit) {
@@ -152,8 +159,6 @@ class Validate
         }
     }
 
-    // coordinates
-
     public static function naturalNumber(int | float $number): void
     {
         if ($number < 0) {
@@ -165,6 +170,17 @@ class Validate
     {
         if ($value === '') {
             throw new InvalidArgumentException("Invalid string '{$value}', must not be empty.");
+        }
+    }
+
+    public static function pagination(int $page, int $maxResults): void
+    {
+        if ($maxResults < 1 || $maxResults >= 1000) {
+            throw new InvalidArgumentException("The field 'maxResults' must be greater than 0 and less than 1000.");
+        }
+
+        if ($page < 1) {
+            throw new InvalidArgumentException("The field 'page' must be greater than 0.");
         }
     }
 

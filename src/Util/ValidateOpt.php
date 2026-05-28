@@ -64,6 +64,13 @@ readonly class ValidateOpt
         }
     }
 
+    public static function lessOrEqualThan(int | float | null $number, int | float $limit): void
+    {
+        if ($number !== null) {
+            Validate::lessOrEqualThan($number, $limit);
+        }
+    }
+
     public static function lessThan(int | float | null $number, int | float $limit): void
     {
         if ($number !== null) {
@@ -109,13 +116,16 @@ readonly class ValidateOpt
         }
     }
 
-    // coordinates
-
     public static function notEmpty(?string $value): void
     {
         if ($value !== null) {
             Validate::notEmpty($value);
         }
+    }
+
+    public static function pagination(?int $page, ?int $maxResults): void
+    {
+        Validate::pagination($page ?? 1, $maxResults ?? 1);
     }
 
     public static function percentileNumber(int | float | null $number): void
