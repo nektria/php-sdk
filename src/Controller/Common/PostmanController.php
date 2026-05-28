@@ -16,7 +16,6 @@ use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\Process\Process;
 use Throwable;
-
 use function count;
 use function is_array;
 
@@ -138,7 +137,14 @@ readonly class PostmanController extends Controller
          *                 },
          *             }
          *         }[]
-         *     }[]
+         *     }[],
+         *     event?: array{
+         *         listen: string,
+         *         script: array{
+         *             type: string,
+         *             exec: string[]
+         *         }
+         *     }|null
          * } $items
          */
         $items = [];
@@ -351,7 +357,7 @@ readonly class PostmanController extends Controller
                             '}',
                             "if (pm.request.url.path.join('/').indexOf('/admin') > 0) {",
                             "    pm.request.addHeader({key: 'X-Api-Id', value: '{{api_key_admin}}'})",
-                            '} else {',
+                            "} else if (!pm.request.description.content.startsWith('app_common_')) {",
                             "    pm.request.addHeader({key: 'X-Api-Id', value: '{{api_key}}'})",
                             '}',
                             '',
