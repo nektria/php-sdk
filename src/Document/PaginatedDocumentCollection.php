@@ -26,7 +26,7 @@ readonly class PaginatedDocumentCollection extends Document
     protected function toArray(?ContextService $context): array
     {
         $data = $this->items->toArray($context);
-        $date['info'] = [
+        $data['info'] = [
             'page' => $this->page,
             'pageSize' => $this->pageSize,
             'totalItems' => $this->totalItems,
