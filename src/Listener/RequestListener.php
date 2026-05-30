@@ -120,7 +120,7 @@ abstract class RequestListener extends BaseRequestListener
         ];
     }
 
-    private function readApiKey(Request $request): string
+    protected function readApiKey(Request $request): string
     {
         if ($request->headers->has('X-Authorization')) {
             $header = 'X-Authorization';
